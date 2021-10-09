@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
 class Advertisement extends Equatable {
+  final int id;
   final String title;
   final int price;
   final DateTime datePosted;
@@ -11,6 +12,7 @@ class Advertisement extends Equatable {
   final Image photo;
 
   Advertisement({
+    required this.id,
     required this.photo,
     required this.price,
     required this.datePosted,
