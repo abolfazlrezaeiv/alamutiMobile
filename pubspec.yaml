@@ -66,6 +66,48 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
+
+  fonts:
+    - family: IRANSansX
+      fonts:
+        - asset: assets/fonts/IRANSansX-Thin.ttf
+          weight: 100
+        - asset: assets/fonts/IRANSansX-UltraLight.ttf
+          weight: 200
+        - asset: assets/fonts/IRANSansX-Light.ttf
+          weight: 300
+        - asset: assets/fonts/IRANSansX-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/IRANSansX-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/IRANSansX-Demibold.ttf
+          weight: 600
+        - asset: assets/fonts/IRANSansX-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/IRANSansX-ExtraBold.ttf
+          weight: 800
+        - asset: assets/fonts/IRANSansX-Black.ttf
+          weight: 900
+    - family: IRANSansXFaNum
+      fonts:
+        - asset: assets/fonts/IRANSansXFaNum-Thin.ttf
+          weight: 100
+        - asset: assets/fonts/IRANSansXFaNum-UltraLight.ttf
+          weight: 200
+        - asset: assets/fonts/IRANSansXFaNum-Light.ttf
+          weight: 300
+        - asset: assets/fonts/IRANSansXFaNum-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/IRANSansXFaNum-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/IRANSansXFaNum-Demibold.ttf
+          weight: 600
+        - asset: assets/fonts/IRANSansXFaNum-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/IRANSansXFaNum-ExtraBold.ttf
+          weight: 800
+        - asset: assets/fonts/IRANSansXFaNum-Black.ttf
+          weight: 900
   # fonts:
   #   - family: Schyler
   #     fonts:
