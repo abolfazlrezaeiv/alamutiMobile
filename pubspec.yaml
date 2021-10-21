@@ -28,8 +28,8 @@ dependencies:
   connectivity: ^3.0.6
   http: ^0.13.4
   shared_preferences: ^2.0.8
-
-
+  flutter_svg: ^0.23.0+1
+  flutter_sfsymbols: ^2.0.0
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
@@ -108,6 +108,9 @@ flutter:
           weight: 800
         - asset: assets/fonts/IRANSansXFaNum-Black.ttf
           weight: 900
+    - family: sficonsets
+      fonts:
+        - asset: packages/flutter_sfsymbols/fonts/sficonsets.ttf
   # fonts:
   #   - family: Schyler
   #     fonts:

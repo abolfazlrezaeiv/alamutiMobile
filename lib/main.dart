@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 void main() {
   runApp(Application());
@@ -7,7 +8,15 @@ void main() {
 class Application extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(home: HomePage());
+    return MaterialApp(
+      theme: ThemeData(
+        fontFamily: 'IRANSansX',
+        bottomNavigationBarTheme: BottomNavigationBarThemeData(
+          unselectedIconTheme: IconThemeData(color: Colors.black),
+        ),
+      ),
+      home: HomePage(),
+    );
   }
 }
 
@@ -16,6 +25,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        elevation: 0,
         backgroundColor: Colors.white,
         title: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -26,21 +36,32 @@ class HomePage extends StatelessWidget {
               decoration: InputDecoration(
                 enabledBorder: const OutlineInputBorder(
                   borderSide: BorderSide(
-                    color: Color.fromRGBO(112, 112, 112, 0.77),
+                    color: Color.fromRGBO(112, 112, 112, 0.2),
                     width: 2.0,
                   ),
                 ),
-                filled: true,
-                fillColor: Colors.white,
               ),
             ),
           ),
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[],
+        type: BottomNavigationBarType.fixed,
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: "الموتی من"),
+          BottomNavigationBarItem(icon: Icon(Icons.chat), label: "پیامها"),
+          BottomNavigationBarItem(icon: Icon(Icons.add), label: "ثبت آگهی"),
+          BottomNavigationBarItem(icon: Icon(Icons.menu), label: "دسته بندی"),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: "خانه"),
+        ],
       ),
-      body: Container(),
+      body: Container(
+        child: ListView.builder(
+          itemBuilder: (BuildContext context, int index) {
+            return SizedBox(width: 100, height: 150, child: Card());
+          },
+        ),
+      ),
     );
   }
 }
