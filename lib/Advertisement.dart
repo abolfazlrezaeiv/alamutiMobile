@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 class Advertisement {
   final int id;
   final String title;

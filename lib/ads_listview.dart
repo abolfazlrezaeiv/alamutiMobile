@@ -1,6 +1,8 @@
 import 'package:alamuti/Advertisement.dart';
 import 'package:alamuti/ads_card.dart';
+import 'package:alamuti/detail_page.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class AdsListView extends StatelessWidget {
   const AdsListView({
@@ -16,8 +18,11 @@ class AdsListView extends StatelessWidget {
         itemBuilder: (BuildContext context, int index) {
           return Container(
               height: 155.0,
-              child: AdsCard(
-                index: index,
+              child: GestureDetector(
+                onTap: () => Get.to(() => AdsDetail(imgUrl: ads[index].photo)),
+                child: AdsCard(
+                  index: index,
+                ),
               ));
         },
       ),

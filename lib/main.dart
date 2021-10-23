@@ -2,6 +2,7 @@ import 'package:alamuti/home_page.dart';
 import 'package:alamuti/theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 void main() {
   runApp(Application());
@@ -10,7 +11,7 @@ void main() {
 class Application extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       theme: themes,
       home: HomePage(),
     );

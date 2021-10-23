@@ -16,6 +16,7 @@ class _AlamutBottomNavBarState extends State<AlamutBottomNavBar> {
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
+      selectedItemColor: Colors.red,
       elevation: 0,
       type: BottomNavigationBarType.fixed,
       currentIndex: selectedTap,

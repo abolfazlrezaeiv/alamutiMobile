@@ -13,15 +13,15 @@ class _HomePageState extends State<HomePage> {
   bool isTyping = false;
   @override
   Widget build(BuildContext context) {
-    var mq = MediaQuery.of(context).size.width / 3;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(70.0), // here the desired height
         child: AppBar(
+          automaticallyImplyLeading: false,
           elevation: 4,
           backgroundColor: Colors.white,
-          title: AlamutSearchBar(mq: mq),
+          title: AlamutSearchBar(),
         ),
       ),
       bottomNavigationBar: AlamutBottomNavBar(),

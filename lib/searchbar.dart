@@ -4,9 +4,7 @@ import 'package:flutter/material.dart';
 class AlamutSearchBar extends StatefulWidget {
   const AlamutSearchBar({
     Key? key,
-    required this.mq,
   }) : super(key: key);
-  final double mq;
 
   @override
   State<AlamutSearchBar> createState() => _AlamutSearchBarState();
@@ -19,7 +17,6 @@ class _AlamutSearchBarState extends State<AlamutSearchBar> {
   Widget build(BuildContext context) {
     return Container(
       height: 50,
-      width: MediaQuery.of(context).size.width / 1.1,
       child: TextField(
         controller: _textEditingController,
         onTap: () {
@@ -37,19 +34,23 @@ class _AlamutSearchBarState extends State<AlamutSearchBar> {
         textAlign: TextAlign.end,
         decoration: InputDecoration(
           prefixIcon: !isTyping
-              ? Padding(
-                  padding: EdgeInsets.only(left: widget.mq),
-                  child: Opacity(
-                    opacity: 0.5,
+              ? Opacity(
+                  opacity: 0.5,
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                        left: MediaQuery.of(context).size.width / 2.3),
                     child: Row(
                       children: [
                         Image.asset(
                           'assets/logo/logo.png',
-                          width: 70,
+                          width: 60,
                         ),
                         Text(
                           'جستجو در',
-                          style: TextStyle(color: Colors.black),
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w400,
+                              fontSize: 17),
                         )
                       ],
                     ),
