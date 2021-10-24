@@ -11,47 +11,53 @@ class AdsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: MediaQuery.of(context).size.width,
-      child: Card(
-        elevation: 1,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(
+            color: Colors.grey.withOpacity(0.3),
+          ),
+        ),
+      ),
+      child: Center(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 5),
+          padding: const EdgeInsets.symmetric(horizontal: 13.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: Container(
-                  width: 170,
-                  height: 200,
-                  child: Image.asset(
-                    ads[index].photo,
-                    fit: BoxFit.fitWidth,
-                  ),
+              Container(
+                width: 170,
+                height: 130,
+                child: Image.asset(
+                  ads[index].photo,
+                  fit: BoxFit.cover,
                 ),
               ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    ads[index].title,
-                    style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
-                  ),
-                  SizedBox(
-                    height: 80.0,
-                  ),
-                  Text(
-                    '${ads[index].price.toString()}  تومان',
-                    style: TextStyle(
-                        fontFamily: 'IRANSansXFaNum',
-                        fontWeight: FontWeight.w300),
-                  ),
-                  Text(ads[index].datePosted,
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 3.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      ads[index].title,
                       style:
-                          TextStyle(fontWeight: FontWeight.w200, fontSize: 14)),
-                ],
+                          TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
+                    ),
+                    SizedBox(
+                      height: 75.0,
+                    ),
+                    Text(
+                      '${ads[index].price.toString()}  تومان',
+                      style: TextStyle(
+                          fontFamily: 'IRANSansXFaNum',
+                          fontWeight: FontWeight.w300),
+                    ),
+                    Text(ads[index].datePosted,
+                        style: TextStyle(
+                            fontWeight: FontWeight.w200, fontSize: 14)),
+                  ],
+                ),
               )
             ],
           ),

@@ -12,7 +12,6 @@ class AdsListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: MediaQuery.of(context).size.width,
       child: ListView.builder(
         itemCount: ads.length,
         itemBuilder: (BuildContext context, int index) {
