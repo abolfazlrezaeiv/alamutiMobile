@@ -127,7 +127,7 @@ class AdsDetail extends StatelessWidget {
             SafeArea(
               child: Padding(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10),
+                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 9),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
