@@ -24,7 +24,7 @@ var ads = [
       id: 1,
       photo: 'assets/photos/bread.jpeg',
       price: 2000,
-      title: 'نان صنتی الموت'),
+      title: 'نان سنتی الموت'),
   Advertisement(
       datePosted: 'دیروز',
       description:
@@ -32,7 +32,7 @@ var ads = [
       id: 2,
       photo: 'assets/photos/khormalo.jpeg',
       price: 2500,
-      title: 'هندوانه الموت'),
+      title: 'موز الموت'),
   Advertisement(
       datePosted: 'دیروز',
       description:

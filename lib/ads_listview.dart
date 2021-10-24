@@ -12,14 +12,19 @@ class AdsListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: MediaQuery.of(context).size.width / 0.6,
+      width: MediaQuery.of(context).size.width,
       child: ListView.builder(
         itemCount: ads.length,
         itemBuilder: (BuildContext context, int index) {
           return Container(
               height: 155.0,
               child: GestureDetector(
-                onTap: () => Get.to(() => AdsDetail(imgUrl: ads[index].photo)),
+                onTap: () => Get.to(() => AdsDetail(
+                      imgUrl: ads[index].photo,
+                      price: ads[index].price.toString(),
+                      title: ads[index].title,
+                      description: ads[index].description,
+                    )),
                 child: AdsCard(
                   index: index,
                 ),
