@@ -135,7 +135,7 @@ class AdsDetail extends StatelessWidget {
                       height: 50,
                       minWidth: MediaQuery.of(context).size.width / 2.2,
                       elevation: 0,
-                      color: Color.fromRGBO(255, 0, 0, 0.3),
+                      color: Color.fromRGBO(255, 0, 0, 0.4),
                       onPressed: () => null,
                       child: Text('تماس تلفنی'),
                     ),
@@ -143,7 +143,7 @@ class AdsDetail extends StatelessWidget {
                       elevation: 0,
                       height: 50,
                       minWidth: MediaQuery.of(context).size.width / 2.2,
-                      color: Color.fromRGBO(255, 0, 0, 0.3),
+                      color: Color.fromRGBO(255, 0, 0, 0.4),
                       onPressed: () => null,
                       child: Text('چت'),
                     )
