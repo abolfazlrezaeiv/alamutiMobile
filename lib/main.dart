@@ -12,6 +12,7 @@ class Application extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      defaultTransition: Transition.fade,
       debugShowCheckedModeBanner: false,
       theme: themes,
       home: HomePage(),

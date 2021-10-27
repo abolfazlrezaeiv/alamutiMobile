@@ -18,12 +18,14 @@ class AdsListView extends StatelessWidget {
           return Container(
               height: 155.0,
               child: GestureDetector(
-                onTap: () => Get.to(() => AdsDetail(
-                      imgUrl: ads[index].photo,
-                      price: ads[index].price.toString(),
-                      title: ads[index].title,
-                      description: ads[index].description,
-                    )),
+                onTap: () => Get.to(
+                  () => AdsDetail(
+                    imgUrl: ads[index].photo,
+                    price: ads[index].price.toString(),
+                    title: ads[index].title,
+                    description: ads[index].description,
+                  ),
+                ),
                 child: AdsCard(
                   index: index,
                 ),

@@ -1,5 +1,6 @@
 import 'package:alamuti/statics.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class AlamutBottomNavBar extends StatefulWidget {
   const AlamutBottomNavBar({
@@ -24,7 +25,9 @@ class _AlamutBottomNavBarState extends State<AlamutBottomNavBar> {
         setState(() {
           selectedTap = value;
         });
+        Get.to(() => bottomNavBarScreens[value]!);
       },
+      unselectedLabelStyle: TextStyle(fontSize: 14),
       items: bottomTapItems,
     );
   }
