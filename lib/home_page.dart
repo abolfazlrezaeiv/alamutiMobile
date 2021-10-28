@@ -16,7 +16,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(70.0), // here the desired height
+        preferredSize: Size.fromHeight(70.0),
         child: AppBar(
           automaticallyImplyLeading: false,
           elevation: 4,

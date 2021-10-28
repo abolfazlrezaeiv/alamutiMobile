@@ -85,7 +85,7 @@ class AdsDetail extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              '${price}   تومان',
+                              '$price   تومان',
                               style: TextStyle(
                                   fontFamily: 'IRANSansXFaNum',
                                   fontWeight: FontWeight.w400),

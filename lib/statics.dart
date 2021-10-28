@@ -31,4 +31,4 @@ const bottomTapItems = const <BottomNavigationBarItem>[
       label: "خانه"),
 ];
 
-var bottomNavBarScreens = [null, null, null, AlamutCategoryPage(), HomePage()];
+var bottomNavBarScreens = ['/myalamuti', '/chat', '/add_ads', '/category', '/'];
