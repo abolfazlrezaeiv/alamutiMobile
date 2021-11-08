@@ -44,7 +44,8 @@ class AdsDetail extends StatelessWidget {
                       child: Opacity(
                         opacity: 0.7,
                         child: GestureDetector(
-                          onTap: () => Get.to(() => HomePage()),
+                          onTap: () => Get.to(() => HomePage(),
+                              transition: Transition.noTransition),
                           child: Row(
                             children: [
                               Icon(

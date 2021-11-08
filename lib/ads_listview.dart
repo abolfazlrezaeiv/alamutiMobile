@@ -19,13 +19,13 @@ class AdsListView extends StatelessWidget {
               height: 155.0,
               child: GestureDetector(
                 onTap: () => Get.to(
-                  () => AdsDetail(
-                    imgUrl: ads[index].photo,
-                    price: ads[index].price.toString(),
-                    title: ads[index].title,
-                    description: ads[index].description,
-                  ),
-                ),
+                    () => AdsDetail(
+                          imgUrl: ads[index].photo,
+                          price: ads[index].price.toString(),
+                          title: ads[index].title,
+                          description: ads[index].description,
+                        ),
+                    transition: Transition.noTransition),
                 child: AdsCard(
                   index: index,
                 ),

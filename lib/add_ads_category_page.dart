@@ -1,16 +1,18 @@
 import 'package:alamuti/bottom_navbar.dart';
+import 'package:alamuti/foodad.dart';
 import 'package:alamuti/selectedTapController.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 
-class AlamutCategoryPage extends StatefulWidget {
-  AlamutCategoryPage({Key? key}) : super(key: key);
+class AddAdsCategoryPage extends StatefulWidget {
+  AddAdsCategoryPage({Key? key}) : super(key: key);
 
   @override
-  State<AlamutCategoryPage> createState() => _AlamutCategoryPageState();
+  State<AddAdsCategoryPage> createState() => _AddAdsCategoryPageState();
 }
 
-class _AlamutCategoryPageState extends State<AlamutCategoryPage> {
+class _AddAdsCategoryPageState extends State<AddAdsCategoryPage> {
   var categoryItems = [
     CategoryItem(icon: Icons.shopping_basket, title: 'مواد غذایی'),
     CategoryItem(icon: Icons.engineering, title: 'کسب و کار'),
@@ -26,8 +28,9 @@ class _AlamutCategoryPageState extends State<AlamutCategoryPage> {
             automaticallyImplyLeading: false,
             backgroundColor: Color.fromRGBO(8, 212, 76, 0.5),
             title: Text(
-              'دسته بندی',
+              'ثبت آگهی',
               style: TextStyle(fontSize: 19),
+              textDirection: TextDirection.rtl,
             ),
           ),
           bottomNavigationBar: AlamutBottomNavBar(),
@@ -43,7 +46,7 @@ class _AlamutCategoryPageState extends State<AlamutCategoryPage> {
                   child: Container(
                     width: MediaQuery.of(context).size.width,
                     child: Text(
-                      'دسته بندی مورد نظر خود را انتخاب کنید',
+                      'دسته بندی آگهی خود را انتخاب کنید',
                       style: TextStyle(
                         fontSize: 17,
                         fontWeight: FontWeight.w600,
@@ -58,31 +61,34 @@ class _AlamutCategoryPageState extends State<AlamutCategoryPage> {
                 Column(
                   children: categoryItems
                       .map(
-                        (CategoryItem x) => Card(
-                          elevation: 5,
-                          child: Padding(
-                            padding: const EdgeInsets.all(20.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Text(
-                                  x.title,
-                                  textDirection: TextDirection.rtl,
-                                  style: TextStyle(
-                                      fontSize: 17,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                                SizedBox(
-                                  width: 15,
-                                ),
-                                Container(
-                                  child: Icon(
-                                    x.icon,
-                                    color: Colors.grey,
-                                    size: 40,
+                        (CategoryItem x) => GestureDetector(
+                          onTap: () => Get.to(() => FoodAdForm()),
+                          child: Card(
+                            elevation: 5,
+                            child: Padding(
+                              padding: const EdgeInsets.all(20.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    x.title,
+                                    textDirection: TextDirection.rtl,
+                                    style: TextStyle(
+                                        fontSize: 17,
+                                        fontWeight: FontWeight.w600),
                                   ),
-                                ),
-                              ],
+                                  SizedBox(
+                                    width: 15,
+                                  ),
+                                  Container(
+                                    child: Icon(
+                                      x.icon,
+                                      color: Colors.grey,
+                                      size: 40,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),

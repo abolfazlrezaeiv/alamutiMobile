@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'bottom_navbar.dart';
+
 class MyAlamuti extends StatelessWidget {
   const MyAlamuti({Key? key}) : super(key: key);
 
@@ -7,8 +9,14 @@ class MyAlamuti extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('الموتی من'),
+        automaticallyImplyLeading: false,
+        backgroundColor: Color.fromRGBO(8, 212, 76, 0.5),
+        title: Text(
+          'الموتی من',
+          style: TextStyle(fontSize: 19),
+        ),
       ),
+      bottomNavigationBar: AlamutBottomNavBar(),
     );
   }
 }
