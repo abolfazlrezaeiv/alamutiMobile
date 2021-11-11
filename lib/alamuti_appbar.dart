@@ -1,4 +1,4 @@
-import 'package:alamuti/add_ads_category_page.dart';
+import 'package:alamuti/submit_ads_category.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -17,7 +17,8 @@ class AlamutiAppBar extends StatelessWidget implements PreferredSizeWidget {
         leading: Container(
           alignment: Alignment.center,
           child: GestureDetector(
-            onTap: () => Get.to(AddAdsCategoryPage()),
+            onTap: () => Get.to(SubmitAdsCategory(),
+                transition: Transition.noTransition),
             child: Row(
               children: [
                 Icon(
