@@ -3,6 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import 'alamuti_button.dart';
+
 class AdsDetail extends StatelessWidget {
   final String imgUrl;
 
@@ -21,9 +23,10 @@ class AdsDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var mq = MediaQuery.of(context).size;
     return Scaffold(
       body: Container(
-        width: MediaQuery.of(context).size.width,
+        width: mq.width,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -128,25 +131,25 @@ class AdsDetail extends StatelessWidget {
             SafeArea(
               child: Padding(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 9),
+                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 20),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     MaterialButton(
                       height: 50,
-                      minWidth: MediaQuery.of(context).size.width / 2.2,
+                      minWidth: mq.width / 2.2,
                       elevation: 0,
                       color: Color.fromRGBO(255, 0, 0, 0.4),
                       onPressed: () => null,
                       child: Text('تماس تلفنی'),
                     ),
-                    MaterialButton(
-                      elevation: 0,
-                      height: 50,
-                      minWidth: MediaQuery.of(context).size.width / 2.2,
+                    AlamutiButton(
                       color: Color.fromRGBO(255, 0, 0, 0.4),
-                      onPressed: () => null,
-                      child: Text('چت'),
+                      elevation: 0,
+                      func: () {},
+                      width: 2.2,
+                      height: 50,
+                      title: 'چت',
                     )
                   ],
                 ),

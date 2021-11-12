@@ -9,10 +9,10 @@ class DescriptionTextField extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Padding(
-          padding: const EdgeInsets.only(top: 15.0, bottom: 8),
+          padding: const EdgeInsets.only(top: 18.0, bottom: 3),
           child: Text(
             'توضیحات',
-            style: TextStyle(fontSize: 16),
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
             textDirection: TextDirection.rtl,
           ),
         ),

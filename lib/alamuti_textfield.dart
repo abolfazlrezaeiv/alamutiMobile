@@ -10,10 +10,10 @@ class AlamutiTextField extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Padding(
-          padding: const EdgeInsets.only(top: 15.0, bottom: 8),
+          padding: const EdgeInsets.only(top: 25.0, bottom: 3),
           child: Text(
-            'عنوان آگهی',
-            style: TextStyle(fontSize: 16),
+            title,
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
             textDirection: TextDirection.rtl,
           ),
         ),

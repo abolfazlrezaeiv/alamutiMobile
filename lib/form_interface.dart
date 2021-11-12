@@ -14,10 +14,11 @@ class BaseAdvertisementForm extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: AlamutiAppBar(
         title: 'ثبت آگهی',
+        hasBackButton: true,
         appBar: AppBar(),
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 18),
+        padding: const EdgeInsets.symmetric(horizontal: 23.0),
         child: Form(
           child: ListView(
             children: [
@@ -33,7 +34,8 @@ class BaseAdvertisementForm extends StatelessWidget {
                 ),
               ),
               AlamutiTextField(title: 'عنوان آگهی'),
-              AlamutiTextField(title: 'قیمت (به تومان)'),
+              getPriceTextField(),
+              getAreaTextField(),
               DescriptionTextField(),
               SubmitButton(),
             ],
@@ -41,5 +43,13 @@ class BaseAdvertisementForm extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Widget getAreaTextField() {
+    return Container();
+  }
+
+  Widget getPriceTextField() {
+    return AlamutiTextField(title: 'قیمت (به تومان)');
   }
 }

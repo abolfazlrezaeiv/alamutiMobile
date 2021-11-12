@@ -1,10 +1,10 @@
+import 'package:alamuti/myalamuti_page.dart';
 import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:get/get_navigation/get_navigation.dart' as trans;
 import 'submit_ads_category.dart';
 import 'category_page.dart';
 import 'chat.dart';
 import 'home_page.dart';
-import 'myalamuti.dart';
 
 var routes = [
   GetPage(
@@ -27,7 +27,7 @@ var routes = [
   ),
   GetPage(
     name: "/myalamuti",
-    page: () => MyAlamuti(),
+    page: () => MyAlamutiPage(),
     transition: trans.Transition.noTransition,
   ),
 ];

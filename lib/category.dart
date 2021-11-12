@@ -1,3 +1,5 @@
+import 'package:alamuti/home_page.dart';
+import 'package:alamuti/selectedTapController.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -17,6 +19,7 @@ class Category extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ScreenController c = Get.put(ScreenController());
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 20.0),
       child: Column(
@@ -46,6 +49,10 @@ class Category extends StatelessWidget {
                 .map(
                   (x) => GestureDetector(
                     onTap: () => Get.to(() {
+                      if (c.getScreen() == 3) {
+                        return HomePage();
+                      }
+
                       if (x.icon == Icons.engineering) {
                         return JobForm();
                       }
@@ -58,7 +65,7 @@ class Category extends StatelessWidget {
                       return FoodForm();
                     }, transition: Transition.noTransition),
                     child: Card(
-                      elevation: 0,
+                      elevation: 0.3,
                       child: Padding(
                         padding: const EdgeInsets.all(20.0),
                         child: Row(

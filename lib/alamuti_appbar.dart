@@ -6,7 +6,12 @@ import 'package:get/get.dart';
 class AlamutiAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final AppBar appBar;
-  const AlamutiAppBar({Key? key, required this.title, required this.appBar})
+  final bool hasBackButton;
+  const AlamutiAppBar(
+      {Key? key,
+      required this.title,
+      required this.appBar,
+      required this.hasBackButton})
       : super(key: key);
 
   @override
@@ -14,25 +19,29 @@ class AlamutiAppBar extends StatelessWidget implements PreferredSizeWidget {
         leadingWidth: 100,
         title: Text(title),
         backgroundColor: Color.fromRGBO(8, 212, 76, 0.5),
-        leading: Container(
-          alignment: Alignment.center,
-          child: GestureDetector(
-            onTap: () => Get.to(SubmitAdsCategory(),
-                transition: Transition.noTransition),
-            child: Row(
-              children: [
-                Icon(
-                  CupertinoIcons.chevron_back,
-                  size: 20,
+        automaticallyImplyLeading: false,
+        leading: hasBackButton
+            ? Container(
+                alignment: Alignment.center,
+                child: GestureDetector(
+                  onTap: () => Get.to(SubmitAdsCategory(),
+                      transition: Transition.noTransition),
+                  child: Row(
+                    children: [
+                      Icon(
+                        CupertinoIcons.chevron_back,
+                        size: 20,
+                      ),
+                      Text(
+                        'بازگشت',
+                        style: TextStyle(
+                            fontSize: 17, fontWeight: FontWeight.w400),
+                      ),
+                    ],
+                  ),
                 ),
-                Text(
-                  'بازگشت',
-                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.w400),
-                ),
-              ],
-            ),
-          ),
-        ),
+              )
+            : null,
       );
 
   @override
