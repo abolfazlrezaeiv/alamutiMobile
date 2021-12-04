@@ -12,7 +12,7 @@ class OnBoard extends StatelessWidget {
     AuthenticationManager _authManager = Get.put(AuthenticationManager());
 
     return Obx(() {
-      return _authManager.isLogged.value ? HomePage() : LoginPage();
+      return _authManager.isLogged.value ? HomePage() : LoginView();
     });
   }
 }
