@@ -6,6 +6,6 @@ class LoginResponseModel {
 
   LoginResponseModel.fromJson(Map<String, dynamic> json) {
     token = json['token'];
-    refreshtoken = json['refreshtoken'];
+    refreshtoken = json['refreshToken'];
   }
 }

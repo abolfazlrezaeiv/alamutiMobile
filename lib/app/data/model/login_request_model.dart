@@ -9,8 +9,8 @@ class LoginRequestModel {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['phonenumber'] = storage.read(CacheManagerKey.PHONENUMBER.toString());
-    data['password'] = this.password;
+    data['phoneNumber'] = storage.read(CacheManagerKey.PHONENUMBER.toString());
+    data['verificationCode'] = this.password;
     return data;
   }
 }

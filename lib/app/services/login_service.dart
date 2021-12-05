@@ -7,8 +7,8 @@ import 'package:alamuti/app/data/model/register_response_model.dart';
 import 'package:get/get.dart';
 
 class LoginService extends GetConnect {
-  final String loginUrl = 'https://localhost:44337/api/auth/login';
-  final String registerUrl = 'https://localhost:44337/api/auth/register';
+  final String loginUrl = 'https://localhost:44337/login';
+  final String registerUrl = 'https://localhost:44337/register';
 
   Future<LoginResponseModel?> fetchLogin(LoginRequestModel model) async {
     final response = await post(loginUrl, model.toJson());

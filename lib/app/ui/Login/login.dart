@@ -1,6 +1,8 @@
 import 'package:alamuti/app/controller/login_view_model.dart';
+import 'package:alamuti/app/data/storage/cachemanager.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({Key? key}) : super(key: key);
@@ -15,7 +17,7 @@ class _LoginViewState extends State<LoginView> {
 
   TextEditingController phoneNumberCtr = TextEditingController();
   TextEditingController passwordCtr = TextEditingController();
-  FormType _formType = FormType.login;
+  FormType _formType = FormType.register;
 
   @override
   Widget build(BuildContext context) {
@@ -36,44 +38,25 @@ class _LoginViewState extends State<LoginView> {
       key: formKey,
       child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
         TextFormField(
-          controller: phoneNumberCtr,
-          validator: (value) {
-            return (value == null || value.isEmpty)
-                ? 'لطفا شماره همراه خود را وارد کنید'
-                : null;
-          },
-          textAlign: TextAlign.right,
-          textDirection: TextDirection.rtl,
-          decoration: inputDecoration('موبایل', Icons.person),
-        ),
-        SizedBox(
-          height: 8,
-        ),
-        TextFormField(
           validator: (value) {
             return (value == null || value.isEmpty)
                 ? 'Please Enter Password'
                 : null;
           },
           controller: passwordCtr,
-          decoration: inputDecoration('Password', Icons.lock),
+          decoration: inputDecoration('رمز', Icons.lock),
         ),
         ElevatedButton(
           onPressed: () async {
             if (formKey.currentState?.validate() ?? false) {
-              await _viewModel.loginUser(phoneNumberCtr.text, passwordCtr.text);
+              await _viewModel.loginUser(passwordCtr.text);
+              setState(() {
+                _formType = FormType.register;
+              });
             }
           },
-          child: Text('Login'),
+          child: Text('ثبت'),
         ),
-        TextButton(
-          onPressed: () {
-            setState(() {
-              _formType = FormType.register;
-            });
-          },
-          child: Text('Does not have an account?'),
-        )
       ]),
     );
   }
@@ -90,48 +73,22 @@ class _LoginViewState extends State<LoginView> {
                 ? 'Please Enter Email'
                 : null;
           },
-          decoration: inputDecoration('E-mail', Icons.person),
-        ),
-        SizedBox(
-          height: 8,
-        ),
-        TextFormField(
-          validator: (value) {
-            return (value == null || value.isEmpty)
-                ? 'Please Enter Password'
-                : null;
-          },
-          controller: passwordCtr,
-          decoration: inputDecoration('Password', Icons.lock),
-        ),
-        SizedBox(
-          height: 8,
-        ),
-        TextFormField(
-          validator: (value) {
-            return (value == null || value.isEmpty || value != passwordCtr.text)
-                ? 'Passwords does not match'
-                : null;
-          },
-          decoration: inputDecoration('Retype Password', Icons.lock),
+          decoration: inputDecoration('موبایل', Icons.person),
         ),
         ElevatedButton(
           onPressed: () async {
             if (formKey.currentState?.validate() ?? false) {
-              await _viewModel.registerUser(
-                  phoneNumberCtr.text, passwordCtr.text);
+              await _viewModel.registerUser(phoneNumberCtr.text);
+              var storage = new GetStorage();
+              storage.write(
+                  CacheManagerKey.PHONENUMBER.toString(), phoneNumberCtr.text);
+              setState(() {
+                _formType = FormType.login;
+              });
             }
           },
-          child: Text('Register'),
+          child: Text('ارسال کد'),
         ),
-        TextButton(
-          onPressed: () {
-            setState(() {
-              _formType = FormType.login;
-            });
-          },
-          child: Text('Login'),
-        )
       ]),
     );
   }

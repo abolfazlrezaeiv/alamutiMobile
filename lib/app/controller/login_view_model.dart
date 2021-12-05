@@ -17,9 +17,9 @@ class LoginViewModel extends GetxController {
     _authManager = Get.find();
   }
 
-  Future<void> loginUser(String phone, String password) async {
-    final response = await _loginService
-        .fetchLogin(LoginRequestModel(phone: phone, password: password));
+  Future<void> loginUser(String password) async {
+    final response =
+        await _loginService.fetchLogin(LoginRequestModel(password: password));
 
     if (response != null) {
       /// Set isLogin to true
@@ -36,7 +36,7 @@ class LoginViewModel extends GetxController {
     }
   }
 
-  Future<void> registerUser(String phone, String password) async {
+  Future<void> registerUser(String phone) async {
     final response = await _loginService
         .fetchRegister(RegisterRequestModel(phonenumber: phone));
 
