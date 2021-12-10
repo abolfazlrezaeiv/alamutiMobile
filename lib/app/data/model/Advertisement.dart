@@ -1,10 +1,10 @@
 class Advertisement {
-  final int id;
-  final String title;
-  final String description;
-  final int price;
-  final String photo;
-  final String datePosted;
+  late int id;
+  late String title;
+  late String description;
+  late int price;
+  late String photo;
+  late String datePosted;
 
   Advertisement(
       {required this.id,
@@ -13,6 +13,15 @@ class Advertisement {
       required this.price,
       required this.photo,
       required this.datePosted});
+
+  Advertisement.fromJson(Map<String, dynamic> json) {
+    id = json["id"];
+    title = json["title"];
+    description = json["description"];
+    price = json["price"];
+    photo = json["photo"];
+    datePosted = json["datePosted"];
+  }
 }
 
 var ads = [

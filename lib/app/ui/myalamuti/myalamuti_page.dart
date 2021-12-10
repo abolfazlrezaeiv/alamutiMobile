@@ -1,7 +1,9 @@
+import 'package:alamuti/app/controller/authentication_manager.dart';
 import 'package:alamuti/app/ui/widgets/alamuti_appbar.dart';
 import 'package:alamuti/app/ui/widgets/alamuti_button.dart';
 import 'package:alamuti/app/ui/widgets/bottom_navbar.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class MyAlamutiPage extends StatelessWidget {
   const MyAlamutiPage({Key? key}) : super(key: key);
@@ -9,6 +11,7 @@ class MyAlamutiPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var mq = MediaQuery.of(context).size;
+    final AuthenticationManager auth = Get.put(AuthenticationManager());
     return Scaffold(
       appBar: AlamutiAppBar(
         appBar: AppBar(),
@@ -82,7 +85,9 @@ class MyAlamutiPage extends StatelessWidget {
                     AlamutiButton(
                       color: Color.fromRGBO(255, 0, 0, 0.4),
                       elevation: 0,
-                      func: () {},
+                      func: () {
+                        auth.logOut();
+                      },
                       width: 1.1,
                       height: 50,
                       title: 'خروج از حساب',

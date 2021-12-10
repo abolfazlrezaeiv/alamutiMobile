@@ -1,3 +1,4 @@
+import 'package:alamuti/app/data/provider/token_provider.dart';
 import 'package:alamuti/app/ui/home/home_page.dart';
 import 'package:alamuti/app/ui/onboard/onboard.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +8,7 @@ class SplashScreen extends StatelessWidget {
 
   Future<void> initializeSettings() async {
     //Simulate other services for 3 seconds
-    await Future.delayed(Duration(seconds: 3));
+    await Future.delayed(Duration(seconds: 2));
   }
 
   @override
@@ -20,8 +21,9 @@ class SplashScreen extends StatelessWidget {
         } else {
           if (snapshot.hasError)
             return errorView(snapshot);
-          else
+          else {
             return OnBoard();
+          }
         }
       },
     );

@@ -1,4 +1,5 @@
 import 'package:alamuti/app/data/model/Advertisement.dart';
+import 'package:alamuti/app/data/provider/token_provider.dart';
 import 'package:alamuti/app/ui/details/detail_page.dart';
 import 'package:alamuti/app/ui/widgets/ads_card.dart';
 import 'package:alamuti/app/ui/widgets/bottom_navbar.dart';
@@ -17,6 +18,21 @@ class _HomePageState extends State<HomePage> {
   int selectedTap = 4;
   bool isTyping = false;
   TextEditingController _textEditingController = TextEditingController();
+  var tp;
+  @override
+  void initState() {
+    super.initState();
+    tp = TokenProvider();
+    tp.getAdvertisements();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    tp.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

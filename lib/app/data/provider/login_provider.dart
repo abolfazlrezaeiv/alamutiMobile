@@ -1,14 +1,16 @@
-import 'dart:html';
-
 import 'package:alamuti/app/data/model/login_request_model.dart';
 import 'package:alamuti/app/data/model/login_response_model.dart';
 import 'package:alamuti/app/data/model/register_request_model.dart';
 import 'package:alamuti/app/data/model/register_response_model.dart';
+import 'package:dio/dio.dart';
 import 'package:get/get.dart';
+import 'package:get/get_connect/http/src/status/http_status.dart';
 
-class LoginService extends GetConnect {
-  final String loginUrl = 'https://localhost:44337/login';
-  final String registerUrl = 'https://localhost:44337/register';
+class LoginProvider extends GetConnect {
+  final String loginUrl = 'http://192.168.162.107:5114/login';
+
+  final String registerUrl = 'http://192.168.162.107:5114/register';
+  final Dio dio = Dio();
 
   Future<LoginResponseModel?> fetchLogin(LoginRequestModel model) async {
     final response = await post(loginUrl, model.toJson());
@@ -25,8 +27,12 @@ class LoginService extends GetConnect {
     final response = await post(registerUrl, model.toJson());
 
     if (response.statusCode == HttpStatus.ok) {
+      print('sucessful');
       return RegisterResponseModel.fromJson(response.body);
     } else {
+      print(response.statusText);
+      print('not successful');
+
       return null;
     }
   }
