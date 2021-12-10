@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:alamuti/app/data/storage/cachemanager.dart';
 import 'package:dio/dio.dart';
 import 'package:get/get_connect/http/src/status/http_status.dart';
@@ -10,68 +12,71 @@ class TokenProvider with CacheManager {
   var refreshtoken;
 
   getAdvertisements() async {
-    final response = await api.get(
-      'http://192.168.162.107:5114/api/Advertisement',
-      options: Options(headers: {
-        "authorization": 'Bearer ' + getAccessToken(),
-      }),
+    var response = await api.get(
+      'http://192.168.1.102:5113/api/Advertisement',
     );
-
-    if (response.statusCode == HttpStatus.ok) {
-      print('successfull advertisement reqquest');
-    }
-  }
-
-  String getAccessToken() {
-    var tokentoperint = GetStorage().read(CacheManagerKey.TOKEN.toString());
-
-    return tokentoperint;
   }
 
   var _storage = GetStorage();
-  Future<void> refreshToken() async {
+
+  Future<Response> refreshToken() async {
     refreshtoken =
         await this._storage.read(CacheManagerKey.REFRESHTOKEN.toString());
     token = await this._storage.read(CacheManagerKey.TOKEN.toString());
 
     final response = await this
         .api
-        .post('http://192.168.162.107:5114/RefreshToken', data: {
+        .post('http://192.168.1.102:5113/RefreshToken', data: {
       'token': token.toString(),
       'refreshToken': refreshtoken.toString()
     });
 
-    if (response.statusCode == 200 && response.data['token'] != null) {
+    if (response.statusCode == HttpStatus.ok &&
+        response.data['token'] != null) {
       saveTokenRefreshToken(
           response.data['token'], response.data['refreshToken']);
-      var newtoken = response.data['token'];
-      print(newtoken);
-      print('new tokens saved');
-    } else {}
-  }
 
-  Future<Response<dynamic>> _retry(RequestOptions requestOptions) async {
-    final options = new Options(
-      method: requestOptions.method,
-      headers: requestOptions.headers,
-    );
-    return this.api.request<dynamic>(requestOptions.path,
-        data: requestOptions.data,
-        queryParameters: requestOptions.queryParameters,
-        options: options);
+      return response;
+    } else {
+      return response;
+    }
   }
 
   TokenProvider() {
     this.api.interceptors.add(
-      InterceptorsWrapper(
-        onError: (error, err) async {
-          if (error.response?.statusCode == 403 ||
-              error.response?.statusCode == 401) {
-            await refreshToken();
-            await _retry(error.requestOptions);
-          }
-        },
-      ),
-    );
+          InterceptorsWrapper(
+            onRequest: (request, handler) {
+              if (token != null && token != '')
+                request.headers['Authorization'] = 'Bearer $token';
+              return handler.next(request);
+            },
+            onError: (e, handler) async {
+              if (e.response?.statusCode == 401) {
+                try {
+                  var refreshtokenResponse = await refreshToken();
+                  if (refreshtokenResponse.statusCode == 200) {
+                    //get new tokens ...
+                    print("access token" + token);
+                    print("refresh token" + refreshtoken);
+                    //set bearer
+                    e.requestOptions.headers["Authorization"] =
+                        "Bearer " + token;
+                    //create request with new access token
+                    final opts = new Options(
+                        method: e.requestOptions.method,
+                        headers: e.requestOptions.headers);
+                    final cloneReq = await api.request(e.requestOptions.path,
+                        options: opts,
+                        data: e.requestOptions.data,
+                        queryParameters: e.requestOptions.queryParameters);
+
+                    return handler.resolve(cloneReq);
+                  }
+                  return handler.next(e);
+                } catch (e, st) {}
+              }
+            },
+          ),
+        );
   }
 }

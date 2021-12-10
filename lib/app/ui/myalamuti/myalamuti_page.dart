@@ -65,11 +65,9 @@ class MyAlamutiPage extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(
-                  height: mq.height / 2.3,
-                ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(right: 4.0),

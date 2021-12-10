@@ -7,15 +7,17 @@ import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/status/http_status.dart';
 
 class LoginProvider extends GetConnect {
-  final String loginUrl = 'http://192.168.162.107:5114/login';
+  final String loginUrl = 'http://192.168.1.102:5113/login';
 
-  final String registerUrl = 'http://192.168.162.107:5114/register';
+  final String registerUrl = 'http://192.168.1.102:5113/register';
   final Dio dio = Dio();
 
   Future<LoginResponseModel?> fetchLogin(LoginRequestModel model) async {
     final response = await post(loginUrl, model.toJson());
 
     if (response.statusCode == HttpStatus.ok) {
+      print(response.body['token']);
+      print(response.body['refreshToken']);
       return LoginResponseModel.fromJson(response.body);
     } else {
       return null;

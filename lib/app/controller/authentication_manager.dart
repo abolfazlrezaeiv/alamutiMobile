@@ -13,8 +13,8 @@ class AuthenticationManager extends GetxController with CacheManager {
   void login(String token, String refreshtoken) async {
     isLogged.value = true;
     //Token is cached
-    await saveLogin();
     await saveTokenRefreshToken(token, refreshtoken);
+    await saveLogin();
   }
 
   checkLoginStatus() {

@@ -18,19 +18,13 @@ class _HomePageState extends State<HomePage> {
   int selectedTap = 4;
   bool isTyping = false;
   TextEditingController _textEditingController = TextEditingController();
-  var tp;
-  @override
-  void initState() {
-    super.initState();
-    tp = TokenProvider();
-    tp.getAdvertisements();
-  }
 
   @override
-  void dispose() {
-    // TODO: implement dispose
-    tp.dispose();
-    super.dispose();
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    var tp = TokenProvider();
+    tp.getAdvertisements();
   }
 
   @override
