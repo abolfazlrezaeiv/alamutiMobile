@@ -8,7 +8,7 @@ class SplashScreen extends StatelessWidget {
 
   Future<void> initializeSettings() async {
     //Simulate other services for 3 seconds
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(Duration(seconds: 10));
   }
 
   @override
@@ -36,17 +36,45 @@ Scaffold errorView(AsyncSnapshot<Object?> snapshot) {
 
 Scaffold waitingView() {
   return Scaffold(
-      body: Center(
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: CircularProgressIndicator(),
+      body: Stack(
+    children: [
+      Container(
+        color: Color.fromRGBO(141, 235, 172, 1),
+      ),
+      Padding(
+        padding: const EdgeInsets.all(30.0),
+        child: Center(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Opacity(
+                opacity: 0.8,
+                child: Image.asset(
+                  'assets/logo/logo.png',
+                  width: 220,
+                ),
+              ),
+              SizedBox(
+                height: 150,
+              ),
+              Text(
+                "به الموتی خوش آمدید",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w400,
+                    fontSize: 24),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              CircularProgressIndicator(
+                color: Color.fromRGBO(189, 121, 97, 1),
+              )
+            ],
+          ),
         ),
-        Text('Loading...'),
-      ],
-    ),
+      )
+    ],
   ));
 }

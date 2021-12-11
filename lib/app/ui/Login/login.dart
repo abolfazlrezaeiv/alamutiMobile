@@ -63,7 +63,6 @@ class _LoginViewState extends State<LoginView> {
 
   Form registerForm() {
     return Form(
-      autovalidateMode: AutovalidateMode.onUserInteraction,
       key: formKey,
       child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
         TextFormField(
