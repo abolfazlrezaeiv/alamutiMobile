@@ -22,13 +22,7 @@ class _LoginViewState extends State<LoginView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: _formType == FormType.login ? Text('ورود') : Text('ثبت نام'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12.0),
-        child: _formType == FormType.login ? loginForm() : registerForm(),
-      ),
+      body: _formType == FormType.login ? loginForm() : registerForm(),
     );
   }
 
@@ -64,30 +58,92 @@ class _LoginViewState extends State<LoginView> {
   Form registerForm() {
     return Form(
       key: formKey,
-      child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-        TextFormField(
-          controller: phoneNumberCtr,
-          validator: (value) {
-            return (value == null || value.isEmpty)
-                ? 'Please Enter Email'
-                : null;
-          },
-          decoration: inputDecoration('موبایل', Icons.person),
+      child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+        Container(
+          alignment: Alignment.centerRight,
+          color: Color.fromRGBO(71, 68, 68, 0.1),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
+            child: Opacity(
+              opacity: 0.8,
+              child: Image.asset(
+                'assets/logo/logo.png',
+                height: MediaQuery.of(context).size.height / 13,
+              ),
+            ),
+          ),
         ),
-        ElevatedButton(
-          onPressed: () async {
-            if (formKey.currentState?.validate() ?? false) {
-              await _viewModel.registerUser(phoneNumberCtr.text);
-              var storage = new GetStorage();
-              storage.write(
-                  CacheManagerKey.PHONENUMBER.toString(), phoneNumberCtr.text);
-              setState(() {
-                _formType = FormType.login;
-              });
-            }
-          },
-          child: Text('ارسال کد'),
+        SizedBox(
+          height: 15,
         ),
+        Container(
+          alignment: Alignment.centerRight,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 30, vertical: 0),
+            child: Opacity(
+                opacity: 0.8,
+                child: Text(
+                  "ورود یا عضویت",
+                  style: TextStyle(fontWeight: FontWeight.w400, fontSize: 30),
+                )),
+          ),
+        ),
+        SizedBox(
+          height: MediaQuery.of(context).size.height / 4,
+        ),
+        Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                alignment: Alignment.centerRight,
+                child: Text(
+                  "شماره همراه خود را وارد کنید",
+                  style: TextStyle(fontWeight: FontWeight.w300, fontSize: 18),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Directionality(
+                textDirection: TextDirection.rtl,
+                child: TextFormField(
+                  controller: phoneNumberCtr,
+                  validator: (value) {
+                    return (value == null || value.isEmpty)
+                        ? 'لطفا شماره همراه خود را وارد کنید'
+                        : null;
+                  },
+                  decoration: inputDecoration('موبایل', Icons.phone),
+                ),
+              ),
+            ),
+            Container(
+              width: 400,
+              height: 60,
+              padding: EdgeInsets.symmetric(horizontal: 8),
+              child: TextButton(
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.grey.withOpacity(0.5),
+                ),
+                onPressed: () async {
+                  if (formKey.currentState?.validate() ?? false) {
+                    await _viewModel.registerUser(phoneNumberCtr.text);
+                    var storage = new GetStorage();
+                    storage.write(CacheManagerKey.PHONENUMBER.toString(),
+                        phoneNumberCtr.text);
+                    setState(() {
+                      _formType = FormType.login;
+                    });
+                  }
+                },
+                child: Text(
+                  'تایید',
+                ),
+              ),
+            ),
+          ],
+        )
       ]),
     );
   }
@@ -96,14 +152,12 @@ class _LoginViewState extends State<LoginView> {
 InputDecoration inputDecoration(String labelText, IconData iconData,
     {String? prefix, String? helperText}) {
   return InputDecoration(
-    contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+    contentPadding: EdgeInsets.symmetric(vertical: 20, horizontal: 12),
     helperText: helperText,
     labelText: labelText,
     labelStyle: TextStyle(
       color: Colors.grey,
     ),
-    fillColor: Colors.grey.shade200,
-    filled: true,
     prefixText: prefix,
     prefixIcon: Icon(
       iconData,
@@ -111,17 +165,17 @@ InputDecoration inputDecoration(String labelText, IconData iconData,
     ),
     prefixIconConstraints: BoxConstraints(minWidth: 60),
     enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(30),
-        borderSide: BorderSide(color: Colors.black)),
+        borderRadius: BorderRadius.circular(8),
+        borderSide: BorderSide(color: Colors.green)),
     focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(30),
-        borderSide: BorderSide(color: Colors.black)),
+        borderRadius: BorderRadius.circular(8),
+        borderSide: BorderSide(color: Colors.green)),
     errorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(30),
-        borderSide: BorderSide(color: Colors.black)),
+        borderRadius: BorderRadius.circular(8),
+        borderSide: BorderSide(color: Colors.red)),
     border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(30),
-        borderSide: BorderSide(color: Colors.black)),
+        borderRadius: BorderRadius.circular(8),
+        borderSide: BorderSide(color: Colors.white)),
   );
 }
 
