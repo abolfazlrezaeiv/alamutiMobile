@@ -1,8 +1,7 @@
 import 'package:get_storage/get_storage.dart';
 
 mixin CacheManager {
-  Future<bool> saveTokenRefreshToken(
-      String? token, String? refreshtoken) async {
+  Future<bool> saveTokenRefreshToken(String token, String refreshtoken) async {
     final box = GetStorage();
     await box.write(CacheManagerKey.TOKEN.toString(), token);
     await box.write(CacheManagerKey.REFRESHTOKEN.toString(), refreshtoken);
@@ -36,9 +35,29 @@ mixin CacheManager {
     var pass = await box.read(CacheManagerKey.PASSWORD.toString());
     return UserInfo(phone, pass);
   }
+
+  bool isLoggedIn() {
+    final box = GetStorage();
+
+    var status = box.read(CacheManagerKey.ISLOGGEDIN.toString());
+    if (status == null) {
+      return false;
+    }
+    return status;
+  }
+
+  Future<void> saveLogin() async {
+    final box = GetStorage();
+    await box.write(CacheManagerKey.ISLOGGEDIN.toString(), true);
+  }
+
+  Future<void> saveLogout() async {
+    final box = GetStorage();
+    await box.write(CacheManagerKey.ISLOGGEDIN.toString(), false);
+  }
 }
 
-enum CacheManagerKey { TOKEN, REFRESHTOKEN, PHONENUMBER, PASSWORD }
+enum CacheManagerKey { TOKEN, REFRESHTOKEN, PHONENUMBER, PASSWORD, ISLOGGEDIN }
 
 class RefreshToken {
   final String token;

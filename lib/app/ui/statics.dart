@@ -29,4 +29,10 @@ const bottomTapItems = const <BottomNavigationBarItem>[
       label: "خانه"),
 ];
 
-var bottomNavBarScreens = ['/myalamuti', '/chat', '/add_ads', '/category', '/'];
+var bottomNavBarScreens = [
+  '/myalamuti',
+  '/chat',
+  '/add_ads',
+  '/category',
+  '/home'
+];

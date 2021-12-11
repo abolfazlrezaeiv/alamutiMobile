@@ -1,4 +1,5 @@
 import 'package:alamuti/app/controller/authentication_manager.dart';
+import 'package:alamuti/app/data/provider/token_provider.dart';
 import 'package:alamuti/app/ui/Login/login.dart';
 import 'package:alamuti/app/ui/home/home_page.dart';
 import 'package:flutter/material.dart';
@@ -11,8 +12,6 @@ class OnBoard extends StatelessWidget {
   Widget build(BuildContext context) {
     AuthenticationManager _authManager = Get.put(AuthenticationManager());
 
-    return Obx(() {
-      return _authManager.isLogged.value ? HomePage() : LoginView();
-    });
+    return _authManager.checkLoginStatus() ? HomePage() : LoginView();
   }
 }
