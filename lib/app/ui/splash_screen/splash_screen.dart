@@ -41,33 +41,22 @@ Scaffold waitingView() {
       Container(
         color: Color.fromRGBO(141, 235, 172, 1),
       ),
-      Padding(
-        padding: const EdgeInsets.all(30.0),
-        child: Center(
+      Align(
+        alignment: Alignment.center,
+        child: Opacity(
+          opacity: 0.8,
+          child: Image.asset(
+            'assets/logo/logo.png',
+            width: 220,
+          ),
+        ),
+      ),
+      Align(
+        alignment: Alignment.bottomCenter,
+        child: Container(
+          height: 200,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Opacity(
-                opacity: 0.8,
-                child: Image.asset(
-                  'assets/logo/logo.png',
-                  width: 220,
-                ),
-              ),
-              SizedBox(
-                height: 150,
-              ),
-              Text(
-                "به الموتی خوش آمدید",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w400,
-                    fontSize: 24),
-              ),
-              SizedBox(
-                height: 20,
-              ),
               CircularProgressIndicator(
                 color: Color.fromRGBO(189, 121, 97, 1),
               )

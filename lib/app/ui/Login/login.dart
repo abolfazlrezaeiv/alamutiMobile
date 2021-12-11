@@ -1,95 +1,96 @@
 import 'package:alamuti/app/controller/login_view_model.dart';
 import 'package:alamuti/app/data/storage/cachemanager.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
-class LoginView extends StatefulWidget {
-  const LoginView({Key? key}) : super(key: key);
+class Login extends StatefulWidget {
+  final String phonenumber;
+
+  Login({Key? key, required this.phonenumber}) : super(key: key);
 
   @override
-  _LoginViewState createState() => _LoginViewState();
+  State<Login> createState() => _LoginState();
 }
 
-class _LoginViewState extends State<LoginView> {
+class _LoginState extends State<Login> {
   final GlobalKey<FormState> formKey = GlobalKey();
+
   LoginViewModel _viewModel = Get.put(LoginViewModel());
 
-  TextEditingController phoneNumberCtr = TextEditingController();
   TextEditingController passwordCtr = TextEditingController();
-  FormType _formType = FormType.register;
+  bool isPinCode = false;
+
+  @override
+  void initState() {
+    super.initState();
+    passwordCtr.addListener(() {
+      var userInput = passwordCtr.text;
+      if (userInput.isNotEmpty && userInput.isNum && userInput.length == 4) {
+        setState(() {
+          isPinCode = true;
+        });
+      } else {
+        setState(() {
+          isPinCode = false;
+        });
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _formType == FormType.login ? loginForm() : registerForm(),
-    );
-  }
-
-  Form loginForm() {
-    return Form(
+        body: Form(
       autovalidateMode: AutovalidateMode.onUserInteraction,
-      key: formKey,
-      child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-        TextFormField(
-          validator: (value) {
-            return (value == null || value.isEmpty)
-                ? 'Please Enter Password'
-                : null;
-          },
-          controller: passwordCtr,
-          decoration: inputDecoration('رمز', Icons.lock),
-        ),
-        ElevatedButton(
-          onPressed: () async {
-            if (formKey.currentState?.validate() ?? false) {
-              await _viewModel.loginUser(passwordCtr.text);
-              setState(() {
-                _formType = FormType.register;
-              });
-            }
-          },
-          child: Text('ثبت'),
-        ),
-      ]),
-    );
-  }
-
-  Form registerForm() {
-    return Form(
       key: formKey,
       child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
         Container(
           alignment: Alignment.centerRight,
           color: Color.fromRGBO(71, 68, 68, 0.1),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
-            child: Opacity(
-              opacity: 0.8,
-              child: Image.asset(
-                'assets/logo/logo.png',
-                height: MediaQuery.of(context).size.height / 13,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 70, right: 20, bottom: 15),
+                child: TextButton.icon(
+                  icon: Icon(
+                    CupertinoIcons.back,
+                    color: Color.fromRGBO(112, 112, 112, 1),
+                  ),
+                  onPressed: () {
+                    Get.toNamed('/register');
+                  },
+                  label: Text('بازگشت',
+                      style: TextStyle(
+                          fontWeight: FontWeight.w300,
+                          fontSize: 18,
+                          color: Color.fromRGBO(112, 112, 112, 1))),
+                ),
               ),
-            ),
+              Padding(
+                padding: const EdgeInsets.only(
+                  top: 70,
+                  right: 20,
+                  bottom: 15,
+                ),
+                child: Opacity(
+                  opacity: 0.6,
+                  child: Image.asset(
+                    'assets/logo/logo.png',
+                    height: MediaQuery.of(context).size.height / 19,
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
         SizedBox(
           height: 15,
         ),
-        Container(
-          alignment: Alignment.centerRight,
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 30, vertical: 0),
-            child: Opacity(
-                opacity: 0.8,
-                child: Text(
-                  "ورود یا عضویت",
-                  style: TextStyle(fontWeight: FontWeight.w400, fontSize: 30),
-                )),
-          ),
-        ),
         SizedBox(
-          height: MediaQuery.of(context).size.height / 4,
+          height: MediaQuery.of(context).size.height / 5,
         ),
         Column(
           children: [
@@ -98,8 +99,22 @@ class _LoginViewState extends State<LoginView> {
               child: Container(
                 alignment: Alignment.centerRight,
                 child: Text(
-                  "شماره همراه خود را وارد کنید",
+                  "کد تایید را وارد کنید",
                   style: TextStyle(fontWeight: FontWeight.w300, fontSize: 18),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                alignment: Alignment.centerRight,
+                child: Text(
+                  "کد تایید به شماره ${widget.phonenumber} ارسال شد",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w300,
+                    fontSize: 14,
+                    color: Colors.green,
+                  ),
                 ),
               ),
             ),
@@ -108,44 +123,57 @@ class _LoginViewState extends State<LoginView> {
               child: Directionality(
                 textDirection: TextDirection.rtl,
                 child: TextFormField(
-                  controller: phoneNumberCtr,
+                  controller: passwordCtr,
                   validator: (value) {
-                    return (value == null || value.isEmpty)
-                        ? 'لطفا شماره همراه خود را وارد کنید'
+                    return (value == null ||
+                            value.isEmpty ||
+                            value.length != 4 ||
+                            !value.isNum)
+                        ? 'لطفا کد ارسال شده را وارد کنید'
                         : null;
                   },
-                  decoration: inputDecoration('موبایل', Icons.phone),
+                  decoration: inputDecoration(
+                      'کد ورود',
+                      !isPinCode
+                          ? CupertinoIcons.lock
+                          : CupertinoIcons.lock_open),
                 ),
               ),
             ),
+            SizedBox(
+              height: 12,
+            ),
             Container(
-              width: 400,
+              width: MediaQuery.of(context).size.width,
               height: 60,
               padding: EdgeInsets.symmetric(horizontal: 8),
               child: TextButton(
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.grey.withOpacity(0.5),
+                  primary: isPinCode
+                      ? Color.fromRGBO(141, 235, 172, 1)
+                      : Colors.grey.withOpacity(0.5),
                 ),
                 onPressed: () async {
                   if (formKey.currentState?.validate() ?? false) {
-                    await _viewModel.registerUser(phoneNumberCtr.text);
+                    await _viewModel.loginUser(passwordCtr.text);
                     var storage = new GetStorage();
-                    storage.write(CacheManagerKey.PHONENUMBER.toString(),
-                        phoneNumberCtr.text);
-                    setState(() {
-                      _formType = FormType.login;
-                    });
+                    storage.write(
+                        CacheManagerKey.PASSWORD.toString(), passwordCtr.text);
                   }
                 },
                 child: Text(
-                  'تایید',
+                  'تایید و ادامه',
+                  style: TextStyle(
+                      fontWeight: FontWeight.w300,
+                      fontSize: 18,
+                      color: Colors.white),
                 ),
               ),
             ),
           ],
         )
       ]),
-    );
+    ));
   }
 }
 
@@ -166,10 +194,12 @@ InputDecoration inputDecoration(String labelText, IconData iconData,
     prefixIconConstraints: BoxConstraints(minWidth: 60),
     enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: BorderSide(color: Colors.green)),
+        borderSide:
+            BorderSide(color: Color.fromRGBO(69, 230, 123, 1), width: 0.9)),
     focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: BorderSide(color: Colors.green)),
+        borderSide:
+            BorderSide(color: Color.fromRGBO(69, 230, 123, 1), width: 2)),
     errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
         borderSide: BorderSide(color: Colors.red)),
@@ -178,5 +208,3 @@ InputDecoration inputDecoration(String labelText, IconData iconData,
         borderSide: BorderSide(color: Colors.white)),
   );
 }
-
-enum FormType { login, register }
