@@ -29,6 +29,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom == 0;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: PreferredSize(
@@ -55,7 +56,7 @@ class _HomePageState extends State<HomePage> {
               },
               textAlign: TextAlign.end,
               decoration: InputDecoration(
-                prefixIcon: !isTyping
+                prefixIcon: isKeyboardOpen
                     ? Opacity(
                         opacity: 0.5,
                         child: Padding(
@@ -89,7 +90,7 @@ class _HomePageState extends State<HomePage> {
                 suffixIcon: IconButton(
                   icon: Icon(
                     CupertinoIcons.search,
-                    size: 40,
+                    size: 30,
                     color: Color.fromRGBO(112, 112, 112, 0.5),
                   ),
                   onPressed: () {

@@ -14,7 +14,7 @@ class AlamutBottomNavBar extends StatelessWidget {
     return GetBuilder<ScreenController>(
       builder: (controller) {
         return BottomNavigationBar(
-          selectedItemColor: Colors.red,
+          selectedItemColor: Colors.red.withOpacity(0.8),
           elevation: 0,
           type: BottomNavigationBarType.fixed,
           currentIndex: c.getScreen(),
@@ -22,7 +22,7 @@ class AlamutBottomNavBar extends StatelessWidget {
             c.selectIndex(value);
             Get.toNamed(bottomNavBarScreens[c.getScreen()]);
           },
-          unselectedLabelStyle: TextStyle(fontSize: 14),
+          unselectedLabelStyle: TextStyle(fontSize: 13),
           items: bottomTapItems,
         );
       },
