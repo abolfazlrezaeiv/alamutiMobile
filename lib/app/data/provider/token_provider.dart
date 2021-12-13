@@ -1,21 +1,18 @@
 import 'dart:convert';
 
+import 'package:alamuti/app/controller/authentication_manager.dart';
 import 'package:alamuti/app/data/storage/cachemanager.dart';
 import 'package:dio/dio.dart';
 import 'package:get/get_connect/http/src/status/http_status.dart';
+import 'package:get/get_instance/src/extension_instance.dart';
+import 'package:get/state_manager.dart';
 import 'package:get_storage/get_storage.dart';
 
-class TokenProvider with CacheManager {
+class TokenProvider extends GetxController with CacheManager {
   var api = Dio();
 
   var token;
   var refreshtoken;
-
-  getAdvertisements() async {
-    var response = await api.get(
-      'http://192.168.1.102:5113/api/Advertisement',
-    );
-  }
 
   var _storage = GetStorage();
 

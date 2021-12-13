@@ -19,6 +19,10 @@ class _RegisterationState extends State<Registeration> {
   TextEditingController phoneNumberCtr = TextEditingController();
 
   bool isPhoneNumber = false;
+
+  bool succesed = true;
+
+  var isSendingSms = false;
   @override
   void initState() {
     super.initState();
@@ -59,8 +63,11 @@ class _RegisterationState extends State<Registeration> {
                 alignment: Alignment.centerRight,
                 color: Color.fromRGBO(71, 68, 68, 0.1),
                 child: Padding(
-                  padding:
-                      const EdgeInsets.only(top: 70, right: 20, bottom: 15),
+                  padding: EdgeInsets.only(
+                    top: MediaQuery.of(context).size.height / 14,
+                    right: 20,
+                    bottom: 15,
+                  ),
                   child: Opacity(
                     opacity: 0.6,
                     child: Image.asset(
@@ -71,7 +78,7 @@ class _RegisterationState extends State<Registeration> {
                 ),
               ),
               SizedBox(
-                height: 15,
+                height: MediaQuery.of(context).size.height / 60,
               ),
               Container(
                 alignment: Alignment.centerRight,
@@ -90,7 +97,7 @@ class _RegisterationState extends State<Registeration> {
               ),
               isKeyboardOpen
                   ? SizedBox(
-                      height: MediaQuery.of(context).size.height / 5,
+                      height: MediaQuery.of(context).size.height / 6,
                     )
                   : SizedBox(
                       height: 30,
@@ -116,6 +123,9 @@ class _RegisterationState extends State<Registeration> {
                         keyboardType: TextInputType.phone,
                         controller: phoneNumberCtr,
                         validator: (value) {
+                          if (succesed == false) {
+                            return 'مشکل در ارتباط , لطفا اتصال به اینترنت تلفن همراه خود را بررسی کنید';
+                          }
                           if (value == null ||
                               value.isEmpty ||
                               !value.isNum ||
@@ -134,7 +144,7 @@ class _RegisterationState extends State<Registeration> {
                   ),
                   Container(
                     width: MediaQuery.of(context).size.width,
-                    height: 60,
+                    height: MediaQuery.of(context).size.height / 9,
                     padding: EdgeInsets.symmetric(horizontal: 8),
                     child: TextButton(
                       style: ElevatedButton.styleFrom(
@@ -143,25 +153,54 @@ class _RegisterationState extends State<Registeration> {
                             : Colors.grey.withOpacity(0.5),
                       ),
                       onPressed: () async {
+                        //editt
+                        setState(() {
+                          succesed = true;
+                        });
                         if (formKey.currentState?.validate() ?? false) {
-                          await _viewModel.registerUser(phoneNumberCtr.text);
-                          var storage = new GetStorage();
-                          storage.write(CacheManagerKey.PHONENUMBER.toString(),
-                              phoneNumberCtr.text);
-                          Get.to(
-                              Login(
-                                phonenumber: phoneNumberCtr.text,
-                              ),
-                              transition: Transition.noTransition);
+                          setState(() {
+                            isSendingSms = true;
+                          });
+                          var result = await _viewModel
+                              .registerUser(phoneNumberCtr.text);
+
+                          if (result == true) {
+                            var storage = new GetStorage();
+                            storage.write(
+                                CacheManagerKey.PHONENUMBER.toString(),
+                                phoneNumberCtr.text);
+                            setState(() {
+                              succesed = true;
+                              isSendingSms = true;
+                            });
+                            Get.to(
+                                Login(
+                                  phonenumber: phoneNumberCtr.text,
+                                ),
+                                transition: Transition.noTransition);
+                          } else {
+                            setState(() {
+                              succesed = false;
+                            });
+                          }
+                          Future.delayed(Duration(seconds: 3), () {
+                            setState(() {
+                              succesed = false;
+                              isSendingSms = false;
+                            });
+                            formKey.currentState?.validate();
+                          });
                         }
                       },
-                      child: Text(
-                        'دریافت کد ورود',
-                        style: TextStyle(
-                            fontWeight: FontWeight.w300,
-                            fontSize: 18,
-                            color: Colors.white),
-                      ),
+                      child: isSendingSms
+                          ? CircularProgressIndicator()
+                          : Text(
+                              'دریافت کد ورود',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w300,
+                                  fontSize: 18,
+                                  color: Colors.white),
+                            ),
                     ),
                   ),
                 ],

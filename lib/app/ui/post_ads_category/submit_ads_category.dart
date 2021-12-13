@@ -1,3 +1,4 @@
+import 'package:alamuti/app/ui/widgets/alamuti_appbar.dart';
 import 'package:alamuti/app/ui/widgets/bottom_navbar.dart';
 import 'package:alamuti/app/controller/selectedTapController.dart';
 import 'package:flutter/material.dart';
@@ -20,14 +21,10 @@ class _SubmitAdsCategoryState extends State<SubmitAdsCategory> {
     return GetBuilder<ScreenController>(
       builder: (controller) {
         return Scaffold(
-          appBar: AppBar(
-            automaticallyImplyLeading: false,
-            backgroundColor: Color.fromRGBO(8, 212, 76, 0.5),
-            title: Text(
-              'ثبت آگهی',
-              style: TextStyle(fontSize: 19),
-              textDirection: TextDirection.rtl,
-            ),
+          appBar: AlamutiAppBar(
+            appBar: AppBar(),
+            title: 'ثبت آگهی',
+            hasBackButton: false,
           ),
           bottomNavigationBar: AlamutBottomNavBar(),
           body: Category(

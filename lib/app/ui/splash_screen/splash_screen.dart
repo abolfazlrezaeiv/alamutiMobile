@@ -58,6 +58,7 @@ Scaffold waitingView() {
           child: Column(
             children: [
               CircularProgressIndicator(
+                strokeWidth: 2,
                 color: Color.fromRGBO(189, 121, 97, 1),
               )
             ],

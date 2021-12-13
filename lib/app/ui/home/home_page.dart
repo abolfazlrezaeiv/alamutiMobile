@@ -1,4 +1,5 @@
 import 'package:alamuti/app/data/model/Advertisement.dart';
+import 'package:alamuti/app/data/provider/advertisement_provider.dart';
 import 'package:alamuti/app/data/provider/token_provider.dart';
 import 'package:alamuti/app/ui/details/detail_page.dart';
 import 'package:alamuti/app/ui/widgets/ads_card.dart';
@@ -23,8 +24,8 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    var tp = TokenProvider();
-    tp.getAdvertisements();
+    var ap = AdvertisementProvider();
+    ap.getAll();
   }
 
   @override

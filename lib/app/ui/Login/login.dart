@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_countdown_timer/countdown.dart';
+import 'package:flutter_countdown_timer/countdown_timer_controller.dart';
 import 'package:flutter_countdown_timer/current_remaining_time.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 import 'package:get/get.dart';
@@ -21,17 +22,25 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   final GlobalKey<FormState> formKey = GlobalKey();
-
   LoginViewModel _viewModel = Get.put(LoginViewModel());
 
   TextEditingController passwordCtr = TextEditingController();
   bool isPinCode = false;
-  int endTime = DateTime.now().millisecondsSinceEpoch + 1000 * 200;
-  bool? succesed;
+  int endTime = DateTime.now().millisecondsSinceEpoch + 1000 * 20;
+  bool succesed = true;
 
+  late CountdownTimerController timercontroller;
+  bool canRequestAgain = false;
   @override
   void initState() {
-    super.initState();
+    timercontroller = CountdownTimerController(
+      endTime: endTime,
+      onEnd: () {
+        setState(() {
+          canRequestAgain = true;
+        });
+      },
+    );
     passwordCtr.addListener(() {
       var userInput = passwordCtr.text;
       if (userInput.isNotEmpty && userInput.isNum && userInput.length == 4) {
@@ -44,6 +53,7 @@ class _LoginState extends State<Login> {
         });
       }
     });
+    super.initState();
   }
 
   @override
@@ -53,7 +63,6 @@ class _LoginState extends State<Login> {
     return Scaffold(
         resizeToAvoidBottomInset: false,
         body: SingleChildScrollView(
-          reverse: true,
           child: Form(
             autovalidateMode: AutovalidateMode.onUserInteraction,
             key: formKey,
@@ -66,8 +75,10 @@ class _LoginState extends State<Login> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Padding(
-                      padding:
-                          const EdgeInsets.only(top: 70, right: 20, bottom: 15),
+                      padding: EdgeInsets.only(
+                          top: MediaQuery.of(context).size.height / 14,
+                          right: 20,
+                          bottom: 15),
                       child: TextButton.icon(
                         icon: Icon(
                           CupertinoIcons.back,
@@ -84,8 +95,8 @@ class _LoginState extends State<Login> {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(
-                        top: 70,
+                      padding: EdgeInsets.only(
+                        top: MediaQuery.of(context).size.height / 14,
                         right: 20,
                         bottom: 15,
                       ),
@@ -102,10 +113,10 @@ class _LoginState extends State<Login> {
               ),
               isKeyboardOpen
                   ? SizedBox(
-                      height: MediaQuery.of(context).size.height / 5,
+                      height: MediaQuery.of(context).size.height / 6,
                     )
                   : SizedBox(
-                      height: 20,
+                      height: 30,
                     ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -146,6 +157,9 @@ class _LoginState extends State<Login> {
                             ],
                             controller: passwordCtr,
                             validator: (value) {
+                              if (succesed == false) {
+                                return ' ورود ناموفق لطفا کد صحیح را دوباره وارد کنید و دکمه تایید را بزنید';
+                              }
                               if (value == null ||
                                   value.isEmpty ||
                                   value.length != 4) {
@@ -160,31 +174,16 @@ class _LoginState extends State<Login> {
                                     ? CupertinoIcons.lock
                                     : CupertinoIcons.lock_open),
                           ),
-                          (succesed != null && succesed == false)
-                              ? Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 8, vertical: 10),
-                                  child: Text(
-                                    'ورود ناموفق لطفا کد صحیح را دوباره وارد کنید',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 14,
-                                      color: Colors.red.withOpacity(0.9),
-                                    ),
-                                    textDirection: TextDirection.rtl,
-                                  ),
-                                )
-                              : Text('')
                         ],
                       ),
                     ),
                   ),
                   SizedBox(
-                    height: 12,
+                    height: MediaQuery.of(context).size.height / 180,
                   ),
                   Container(
                     width: MediaQuery.of(context).size.width,
-                    height: 60,
+                    height: MediaQuery.of(context).size.height / 9,
                     padding: EdgeInsets.symmetric(horizontal: 8),
                     child: TextButton(
                       style: ElevatedButton.styleFrom(
@@ -197,7 +196,6 @@ class _LoginState extends State<Login> {
                           var result =
                               await _viewModel.loginUser(passwordCtr.text);
                           if (result == true) {
-                            print('winnn');
                             setState(() {
                               succesed = true;
                             });
@@ -221,26 +219,72 @@ class _LoginState extends State<Login> {
                       ),
                     ),
                   ),
-                  CountdownTimer(
-                    endTime: endTime,
-                    onEnd: () {
-                      print('finished');
-                    },
-                    widgetBuilder: (_, CurrentRemainingTime? time) {
-                      if (time == null) {
-                        return Center(child: Text(''));
-                      }
-                      return Center(
-                        child: Text(
-                          '${time.min ?? 0} : ${time.sec} ',
-                          style: TextStyle(
-                              fontFamily: 'IRANSansXFaNum',
-                              fontWeight: FontWeight.w400,
-                              fontSize: 20),
-                        ),
-                      );
-                    },
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height / 50,
                   ),
+                  canRequestAgain
+                      ? Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height / 9,
+                          padding: EdgeInsets.symmetric(horizontal: 8),
+                          child: TextButton(
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.red.withOpacity(0.4),
+                            ),
+                            onPressed: () async {
+                              await _viewModel.registerUser(widget.phonenumber);
+                              var newEndTime =
+                                  DateTime.now().millisecondsSinceEpoch +
+                                      1000 * 20;
+                              setState(() {
+                                canRequestAgain = false;
+                                endTime = newEndTime;
+                                succesed = true;
+                              });
+                              timercontroller.endTime = newEndTime;
+                              timercontroller.start();
+                            },
+                            child: Text(
+                              'ارسال کد',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w300,
+                                  fontSize: 18,
+                                  color: Colors.black),
+                            ),
+                          ),
+                        )
+                      : CountdownTimer(
+                          controller: timercontroller,
+                          widgetBuilder: (_, CurrentRemainingTime? time) {
+                            if (time == null) {
+                              return Center(child: Text(''));
+                            }
+                            return Center(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    '${time.min ?? 0} : ${time.sec}',
+                                    style: TextStyle(
+                                        fontFamily: 'IRANSansXFaNum',
+                                        fontWeight: FontWeight.w300,
+                                        fontSize: 20),
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Container(
+                                    height: 15,
+                                    width: 15,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 1,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
                 ],
               )
             ]),
