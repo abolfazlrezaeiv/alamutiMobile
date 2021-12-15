@@ -1,12 +1,15 @@
+import 'dart:convert';
+import 'dart:io';
+import 'package:alamuti/app/controller/ConnectionController.dart';
 import 'package:alamuti/app/data/model/Advertisement.dart';
 import 'package:alamuti/app/data/provider/advertisement_provider.dart';
-import 'package:alamuti/app/data/provider/token_provider.dart';
 import 'package:alamuti/app/ui/details/detail_page.dart';
-import 'package:alamuti/app/ui/widgets/ads_card.dart';
+import 'package:alamuti/app/ui/imgaebase64.dart';
 import 'package:alamuti/app/ui/widgets/bottom_navbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/get_navigation/src/routes/transitions_type.dart';
 
@@ -19,13 +22,20 @@ class _HomePageState extends State<HomePage> {
   int selectedTap = 4;
   bool isTyping = false;
   TextEditingController _textEditingController = TextEditingController();
+  var ap = AdvertisementProvider();
+  List<Advertisement> adsList = [];
+  ConnectionController connectionController = Get.put(ConnectionController());
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    var ap = AdvertisementProvider();
-    ap.getAll();
+    ap.getAll().then((value) {
+      setState(() {
+        adsList = value;
+      });
+    });
+
+    connectionController.checkConnectionStatus();
   }
 
   @override
@@ -62,7 +72,7 @@ class _HomePageState extends State<HomePage> {
                         opacity: 0.5,
                         child: Padding(
                           padding: EdgeInsets.only(
-                              left: MediaQuery.of(context).size.width / 2.3),
+                              left: MediaQuery.of(context).size.width / 3),
                           child: Row(
                             children: [
                               Image.asset(
@@ -112,26 +122,96 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       bottomNavigationBar: AlamutBottomNavBar(),
-      body: ListView.builder(
-        itemCount: ads.length,
-        itemBuilder: (BuildContext context, int index) {
-          return Container(
-              height: 155.0,
-              child: GestureDetector(
-                onTap: () => Get.to(
-                    () => AdsDetail(
-                          imgUrl: ads[index].photo,
-                          price: ads[index].price.toString(),
-                          title: ads[index].title,
-                          description: ads[index].description,
-                        ),
-                    transition: Transition.noTransition),
-                child: AdsCard(
-                  index: index,
-                ),
-              ));
-        },
-      ),
+      body: (!connectionController.isConnected.value)
+          ? Center(
+              child: Text('لطفا اتصال به اینترنت همراه خود را بررسی کنید'),
+            )
+          : ListView.builder(
+              itemCount: adsList.length,
+              itemBuilder: (BuildContext context, int index) {
+                return Container(
+                    height: 155.0,
+                    child: GestureDetector(
+                        onTap: () => Get.to(
+                            () => AdsDetail(
+                                  imgUrl: adsList[index].photo ?? image64,
+                                  price: adsList[index].price.toString(),
+                                  title: adsList[index].title,
+                                  description: adsList[index].description,
+                                ),
+                            transition: Transition.noTransition),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            border: Border(
+                              bottom: BorderSide(
+                                color: Colors.grey.withOpacity(0.3),
+                              ),
+                            ),
+                          ),
+                          child: Center(
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal:
+                                      MediaQuery.of(context).size.width / 35),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    width:
+                                        MediaQuery.of(context).size.width / 2.0,
+                                    height: MediaQuery.of(context).size.height /
+                                        3.9,
+                                    child: Image.memory(
+                                      base64Decode(
+                                          adsList[index].photo ?? image64),
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 3.0),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      children: [
+                                        Text(
+                                          adsList[index].title,
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 16),
+                                          textDirection: TextDirection.rtl,
+                                        ),
+                                        SizedBox(
+                                          height: 75.0,
+                                        ),
+                                        Text(
+                                          '${adsList[index].price.toString()}  تومان',
+                                          style: TextStyle(
+                                              fontFamily: 'IRANSansXFaNum',
+                                              fontWeight: FontWeight.w300),
+                                        ),
+                                        Text(
+                                          adsList[index].datePosted,
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w200,
+                                              fontFamily: 'IRANSansXFaNum',
+                                              fontSize: 14),
+                                          textDirection: TextDirection.rtl,
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                        )));
+              },
+            ),
     );
   }
 }
