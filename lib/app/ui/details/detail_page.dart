@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -35,10 +37,10 @@ class AdsDetail extends StatelessWidget {
                 Stack(
                   children: [
                     Container(
-                      height: 350,
+                      height: MediaQuery.of(context).size.height / 2.3,
                       width: MediaQuery.of(context).size.width,
-                      child: Image.asset(
-                        imgUrl,
+                      child: Image.memory(
+                        base64Decode(imgUrl),
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -80,27 +82,35 @@ class AdsDetail extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Text(title,
-                          style: TextStyle(
-                              fontWeight: FontWeight.w500, fontSize: 19)),
+                      Text(
+                        title,
+                        style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: MediaQuery.of(context).size.width / 24),
+                        textDirection: TextDirection.rtl,
+                      ),
                       Opacity(
                         opacity: 0.7,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              '$price   تومان',
-                              style: TextStyle(
-                                  fontFamily: 'IRANSansXFaNum',
-                                  fontWeight: FontWeight.w400),
-                            ),
-                            SizedBox(
-                              height: 70,
-                            ),
-                            Text('قیمت',
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                              vertical: MediaQuery.of(context).size.width / 40),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                '$price   تومان',
+                                textDirection: TextDirection.ltr,
                                 style: TextStyle(
-                                    fontWeight: FontWeight.w500, fontSize: 15))
-                          ],
+                                    fontFamily: 'IRANSansXFaNum',
+                                    fontWeight: FontWeight.w400),
+                              ),
+                              Text('قیمت',
+                                  textDirection: TextDirection.rtl,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 15))
+                            ],
+                          ),
                         ),
                       )
                     ],
@@ -109,20 +119,23 @@ class AdsDetail extends StatelessWidget {
                 Divider(
                   indent: 10,
                   endIndent: 10,
-                  height: 10.0,
+                  height: MediaQuery.of(context).size.width / 40,
                   thickness: 1,
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 14.0, vertical: 10),
-                  child: Text(
-                    description,
-                    maxLines: 7,
-                    overflow: TextOverflow.fade,
-                    textDirection: TextDirection.rtl,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w400,
-                      fontSize: 15,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 14.0, vertical: 0),
+                  child: Container(
+                    alignment: Alignment.centerRight,
+                    child: Text(
+                      description,
+                      maxLines: 8,
+                      overflow: TextOverflow.visible,
+                      textDirection: TextDirection.rtl,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w400,
+                        fontSize: MediaQuery.of(context).size.width / 28,
+                      ),
                     ),
                   ),
                 ),
@@ -130,27 +143,28 @@ class AdsDetail extends StatelessWidget {
             ),
             SafeArea(
               child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 20),
+                padding: EdgeInsets.symmetric(
+                    horizontal: 8.0,
+                    vertical: MediaQuery.of(context).size.height / 50),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     MaterialButton(
-                      height: 50,
+                      height: MediaQuery.of(context).size.width / 8,
                       minWidth: mq.width / 2.2,
                       elevation: 0,
                       color: Color.fromRGBO(255, 0, 0, 0.4),
                       onPressed: () => null,
                       child: Text('تماس تلفنی'),
                     ),
-                    AlamutiButton(
-                      color: Color.fromRGBO(255, 0, 0, 0.4),
+                    MaterialButton(
+                      height: MediaQuery.of(context).size.width / 8,
+                      minWidth: mq.width / 2.2,
                       elevation: 0,
-                      func: () {},
-                      width: 2.2,
-                      height: 50,
-                      title: 'چت',
-                    )
+                      color: Color.fromRGBO(255, 0, 0, 0.4),
+                      onPressed: () => null,
+                      child: Text('چت'),
+                    ),
                   ],
                 ),
               ),

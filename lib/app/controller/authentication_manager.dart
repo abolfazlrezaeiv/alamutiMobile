@@ -1,4 +1,5 @@
 import 'package:alamuti/app/data/storage/cachemanager.dart';
+import 'package:alamuti/app/ui/home/home_page.dart';
 import 'package:get/get.dart';
 
 class AuthenticationManager extends GetxController with CacheManager {
@@ -8,6 +9,7 @@ class AuthenticationManager extends GetxController with CacheManager {
     isLogged.value = false;
     saveLogout();
     removeTokenRefreshToken();
+    Get.toNamed('/register');
   }
 
   void login(String token, String refreshtoken) async {

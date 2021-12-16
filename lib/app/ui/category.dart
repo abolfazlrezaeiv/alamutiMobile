@@ -1,4 +1,6 @@
+import 'package:alamuti/app/controller/adsFormController.dart';
 import 'package:alamuti/app/controller/selectedTapController.dart';
+import 'package:alamuti/app/ui/advertisementForm.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'food_form/food_form.dart';
@@ -53,15 +55,15 @@ class Category extends StatelessWidget {
                       }
 
                       if (x.icon == Icons.engineering) {
-                        return JobForm();
+                        // return JobForm();
                       }
                       if (x.icon == Icons.home_work) {
-                        return RealStateForm();
+                        return AdvertisementForm();
                       }
                       if (x.icon == Icons.shopping_basket) {
-                        return FoodForm();
+                        // return FoodForm();
                       }
-                      return FoodForm();
+                      // return FoodForm();
                     }, transition: Transition.noTransition),
                     child: Card(
                       elevation: 0.3,
@@ -103,6 +105,7 @@ class Category extends StatelessWidget {
 class CategoryItem {
   final IconData icon;
   final String title;
+  final AdsFormState state;
 
-  CategoryItem({required this.icon, required this.title});
+  CategoryItem({required this.state, required this.icon, required this.title});
 }

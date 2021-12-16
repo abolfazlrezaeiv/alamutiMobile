@@ -20,6 +20,7 @@ class AlamutiAppBar extends StatelessWidget implements PreferredSizeWidget {
         title: Text(title),
         backgroundColor: Color.fromRGBO(8, 212, 76, 0.5),
         automaticallyImplyLeading: false,
+        centerTitle: true,
         leading: hasBackButton
             ? Container(
                 alignment: Alignment.center,

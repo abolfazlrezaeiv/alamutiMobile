@@ -1,10 +1,10 @@
 import 'package:alamuti/app/data/model/login_request_model.dart';
+import 'package:alamuti/app/data/model/login_response_model.dart';
 import 'package:alamuti/app/data/model/register_request_model.dart';
 import 'package:alamuti/app/data/provider/login_provider.dart';
 import 'package:alamuti/app/ui/home/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart';
 
 import 'authentication_manager.dart';
 
@@ -19,44 +19,29 @@ class LoginViewModel extends GetxController {
     _authManager = Get.find();
   }
 
-  Future<void> loginUser(String password) async {
+  Future<bool> loginUser(String password) async {
     final response =
         await _loginProvider.fetchLogin(LoginRequestModel(password: password));
 
     if (response != null) {
-      /// Set isLogin to true
-      _authManager.login(response.token!, response.refreshtoken!);
-      Get.to(HomePage());
+      if (response.success == true) {
+        _authManager.login(response.token!, response.refreshtoken!);
+      }
+
+      return true;
     } else {
-      /// Show user a dialog about the error response
-      Get.defaultDialog(
-          middleText: 'User not found!',
-          textConfirm: 'OK',
-          confirmTextColor: Colors.white,
-          onConfirm: () {
-            Get.back();
-          });
+      return false;
     }
   }
 
-  Future<void> registerUser(String phone) async {
+  Future<bool> registerUser(String phone) async {
     final response = await _loginProvider
         .fetchRegister(RegisterRequestModel(phonenumber: phone));
 
     if (response != null) {
-      /// Set isLogin to true
-
+      return true;
     } else {
-      print('failed');
-
-      /// Show user a dialog about the error response
-      Get.defaultDialog(
-          middleText: 'Register Error',
-          textConfirm: 'OK',
-          confirmTextColor: Colors.white,
-          onConfirm: () {
-            Get.back();
-          });
+      return false;
     }
   }
 }

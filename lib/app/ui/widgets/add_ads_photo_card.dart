@@ -8,6 +8,8 @@ class AddPhotoWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      height: MediaQuery.of(context).size.height / 5.5,
+      width: MediaQuery.of(context).size.width / 3.8,
       child: Padding(
         padding: EdgeInsets.all(MediaQuery.of(context).size.width / 14),
         child: Column(
@@ -19,7 +21,9 @@ class AddPhotoWidget extends StatelessWidget {
             ),
             Text(
               'افزودن عکس',
-              style: TextStyle(fontWeight: FontWeight.w500),
+              style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  fontSize: MediaQuery.of(context).size.width / 40),
             )
           ],
         ),

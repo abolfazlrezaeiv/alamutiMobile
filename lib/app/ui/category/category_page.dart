@@ -1,5 +1,6 @@
 import 'package:alamuti/app/ui/category.dart';
 import 'package:alamuti/app/controller/selectedTapController.dart';
+import 'package:alamuti/app/ui/widgets/alamuti_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 
@@ -19,13 +20,10 @@ class _AlamutCategoryPageState extends State<AlamutCategoryPage> {
     return GetBuilder<ScreenController>(
       builder: (controller) {
         return Scaffold(
-            appBar: AppBar(
-              automaticallyImplyLeading: false,
-              backgroundColor: Color.fromRGBO(8, 212, 76, 0.5),
-              title: Text(
-                'دسته بندی',
-                style: TextStyle(fontSize: 19),
-              ),
+            appBar: AlamutiAppBar(
+              appBar: AppBar(),
+              title: 'دسته بندی',
+              hasBackButton: false,
             ),
             bottomNavigationBar: AlamutBottomNavBar(),
             body: Category(

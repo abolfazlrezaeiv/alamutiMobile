@@ -19,16 +19,12 @@ class AlamutiButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var mq = MediaQuery.of(context).size;
-    return SizedBox(
-      width: mq.width / 1.1,
-      height: 45,
-      child: TextButton(
-        style: ElevatedButton.styleFrom(
-          primary: Color.fromRGBO(255, 0, 0, 0.4),
-        ),
-        onPressed: func,
-        child: Text(title),
+    return TextButton(
+      style: ElevatedButton.styleFrom(
+        primary: Color.fromRGBO(255, 0, 0, 0.4),
       ),
+      onPressed: func,
+      child: Text(title),
     );
   }
 }
