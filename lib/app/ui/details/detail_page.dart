@@ -41,7 +41,7 @@ class AdsDetail extends StatelessWidget {
                       width: MediaQuery.of(context).size.width,
                       child: Image.memory(
                         base64Decode(imgUrl),
-                        fit: BoxFit.fitWidth,
+                        fit: BoxFit.cover,
                       ),
                     ),
                     Padding(
@@ -82,25 +82,30 @@ class AdsDetail extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Text(title,
-                          style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize:
-                                  MediaQuery.of(context).size.width / 19)),
+                      Text(
+                        title,
+                        style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: MediaQuery.of(context).size.width / 24),
+                        textDirection: TextDirection.rtl,
+                      ),
                       Opacity(
                         opacity: 0.7,
                         child: Padding(
-                          padding: const EdgeInsets.all(14.0),
+                          padding: EdgeInsets.symmetric(
+                              vertical: MediaQuery.of(context).size.width / 40),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
                                 '$price   تومان',
+                                textDirection: TextDirection.ltr,
                                 style: TextStyle(
                                     fontFamily: 'IRANSansXFaNum',
                                     fontWeight: FontWeight.w400),
                               ),
                               Text('قیمت',
+                                  textDirection: TextDirection.rtl,
                                   style: TextStyle(
                                       fontWeight: FontWeight.w500,
                                       fontSize: 15))
@@ -114,21 +119,22 @@ class AdsDetail extends StatelessWidget {
                 Divider(
                   indent: 10,
                   endIndent: 10,
-                  height: 8.0,
+                  height: MediaQuery.of(context).size.width / 40,
                   thickness: 1,
                 ),
                 Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 14.0, vertical: 0),
                   child: Container(
+                    alignment: Alignment.centerRight,
                     child: Text(
                       description,
-                      maxLines: 5,
+                      maxLines: 8,
                       overflow: TextOverflow.visible,
                       textDirection: TextDirection.rtl,
                       style: TextStyle(
                         fontWeight: FontWeight.w400,
-                        fontSize: MediaQuery.of(context).size.width / 25,
+                        fontSize: MediaQuery.of(context).size.width / 28,
                       ),
                     ),
                   ),

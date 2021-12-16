@@ -25,6 +25,9 @@ dependencies:
     sdk: flutter
   get_storage: ^2.0.3
   equatable: ^2.0.3
+  file_picker: ^4.2.7
+  image_picker: ^0.8.4+4
+
   connectivity: ^3.0.6
   http: ^0.13.4
   shared_preferences: ^2.0.8

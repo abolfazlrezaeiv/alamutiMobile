@@ -183,7 +183,7 @@ class _LoginState extends State<Login> {
                   ),
                   Container(
                     width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height / 9,
+                    height: MediaQuery.of(context).size.height / 11,
                     padding: EdgeInsets.symmetric(horizontal: 8),
                     child: TextButton(
                       style: ElevatedButton.styleFrom(
@@ -225,7 +225,7 @@ class _LoginState extends State<Login> {
                   canRequestAgain
                       ? Container(
                           width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height / 9,
+                          height: MediaQuery.of(context).size.height / 11,
                           padding: EdgeInsets.symmetric(horizontal: 8),
                           child: TextButton(
                             style: ElevatedButton.styleFrom(

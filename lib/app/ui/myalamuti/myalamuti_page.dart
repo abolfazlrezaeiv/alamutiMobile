@@ -65,32 +65,30 @@ class MyAlamutiPage extends StatelessWidget {
                     ),
                   ),
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(right: 4.0),
-                      child: Text(
+                Container(
+                  width: mq.width,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(
                         'شما با شماره ۰۹۹۰۴۶۴۰۷۶۰ وارد شده اید',
                         textDirection: TextDirection.rtl,
                         style: TextStyle(fontSize: 16),
                       ),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    AlamutiButton(
-                      color: Color.fromRGBO(255, 0, 0, 0.4),
-                      elevation: 0,
-                      func: () {
-                        auth.logOut();
-                      },
-                      width: 1.1,
-                      height: 50,
-                      title: 'خروج از حساب',
-                    )
-                  ],
+                      SizedBox(
+                        height: 10,
+                      ),
+                      MaterialButton(
+                        height: mq.width / 9,
+                        minWidth: mq.width / 2,
+                        elevation: 0,
+                        color: Color.fromRGBO(255, 0, 0, 0.4),
+                        onPressed: () => auth.logOut(),
+                        child: Text('خروج از حساب'),
+                      ),
+                    ],
+                  ),
                 )
               ],
             ),

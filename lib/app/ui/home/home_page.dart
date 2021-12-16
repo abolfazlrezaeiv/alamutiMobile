@@ -30,9 +30,13 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     ap.getAll().then((value) {
+      if (value == null) {
+        print('value is null');
+      }
       setState(() {
         adsList = value;
       });
+      print(adsList.length);
     });
 
     connectionController.checkConnectionStatus();
@@ -72,7 +76,7 @@ class _HomePageState extends State<HomePage> {
                         opacity: 0.5,
                         child: Padding(
                           padding: EdgeInsets.only(
-                              left: MediaQuery.of(context).size.width / 3),
+                              left: MediaQuery.of(context).size.width / 2.3),
                           child: Row(
                             children: [
                               Image.asset(
@@ -160,9 +164,9 @@ class _HomePageState extends State<HomePage> {
                                 children: [
                                   Container(
                                     width:
-                                        MediaQuery.of(context).size.width / 2.0,
-                                    height: MediaQuery.of(context).size.height /
-                                        3.9,
+                                        MediaQuery.of(context).size.width / 2.2,
+                                    height:
+                                        MediaQuery.of(context).size.height / 5,
                                     child: Image.memory(
                                       base64Decode(
                                           adsList[index].photo ?? image64),
