@@ -1,4 +1,6 @@
 import 'package:alamuti/app/controller/authentication_manager.dart';
+import 'package:alamuti/app/ui/home/home_page.dart';
+import 'package:alamuti/app/ui/myalamuti/myadvertisement.dart';
 import 'package:alamuti/app/ui/widgets/alamuti_appbar.dart';
 import 'package:alamuti/app/ui/widgets/alamuti_button.dart';
 import 'package:alamuti/app/ui/widgets/bottom_navbar.dart';
@@ -17,6 +19,7 @@ class MyAlamutiPage extends StatelessWidget {
         appBar: AppBar(),
         title: 'الموتی من',
         hasBackButton: false,
+        backwidget: HomePage(),
       ),
       bottomNavigationBar: AlamutBottomNavBar(),
       body: Padding(
@@ -32,10 +35,13 @@ class MyAlamutiPage extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        Text(
-                          'آگهی های من',
-                          style: TextStyle(fontSize: 18),
-                          textDirection: TextDirection.rtl,
+                        GestureDetector(
+                          onTap: () => Get.to(MyAdvertisement()),
+                          child: Text(
+                            'آگهی های من',
+                            style: TextStyle(fontSize: 18),
+                            textDirection: TextDirection.rtl,
+                          ),
                         ),
                         SizedBox(
                           width: 5,
@@ -67,27 +73,35 @@ class MyAlamutiPage extends StatelessWidget {
                 ),
                 Container(
                   width: mq.width,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text(
-                        'شما با شماره ۰۹۹۰۴۶۴۰۷۶۰ وارد شده اید',
-                        textDirection: TextDirection.rtl,
-                        style: TextStyle(fontSize: 16),
+                  child: Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Text(
+                            'شما با شماره ۰۹۹۰۴۶۴۰۷۶۰ وارد شده اید',
+                            textDirection: TextDirection.rtl,
+                            style: TextStyle(fontSize: 16),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: MaterialButton(
+                              height: mq.width / 9,
+                              minWidth: mq.width,
+                              elevation: 0,
+                              color: Color.fromRGBO(255, 0, 0, 0.4),
+                              onPressed: () => auth.logOut(),
+                              child: Text('خروج از حساب'),
+                            ),
+                          ),
+                        ],
                       ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      MaterialButton(
-                        height: mq.width / 9,
-                        minWidth: mq.width / 2,
-                        elevation: 0,
-                        color: Color.fromRGBO(255, 0, 0, 0.4),
-                        onPressed: () => auth.logOut(),
-                        child: Text('خروج از حساب'),
-                      ),
-                    ],
+                    ),
                   ),
                 )
               ],

@@ -5,6 +5,9 @@ class Advertisement {
   late int price;
   late String? photo;
   late String datePosted;
+  late String adsType;
+  late String area;
+  late String userId;
 
   Advertisement(
       {required this.id,
@@ -12,6 +15,9 @@ class Advertisement {
       required this.description,
       required this.price,
       required this.photo,
+      required this.adsType,
+      required this.area,
+      required this.userId,
       required this.datePosted});
 
   Advertisement.fromJson(Map<String, dynamic> json) {
@@ -21,6 +27,9 @@ class Advertisement {
     price = json["price"];
     photo = json["photo"];
     datePosted = json["DaySended"];
+    adsType = json['adsType'];
+    area = json['area'];
+    userId = json['userId'];
   }
 }
 

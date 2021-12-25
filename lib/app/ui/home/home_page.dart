@@ -1,8 +1,10 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:alamuti/app/controller/ConnectionController.dart';
+import 'package:alamuti/app/controller/selectedTapController.dart';
 import 'package:alamuti/app/data/model/Advertisement.dart';
 import 'package:alamuti/app/data/provider/advertisement_provider.dart';
+import 'package:alamuti/app/data/provider/chat_message_provider.dart';
+import 'package:alamuti/app/data/provider/signalr_helper.dart';
 import 'package:alamuti/app/ui/details/detail_page.dart';
 import 'package:alamuti/app/ui/imgaebase64.dart';
 import 'package:alamuti/app/ui/widgets/bottom_navbar.dart';
@@ -14,6 +16,9 @@ import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/get_navigation/src/routes/transitions_type.dart';
 
 class HomePage extends StatefulWidget {
+  final String? adstype;
+
+  const HomePage({Key? key, this.adstype}) : super(key: key);
   @override
   State<HomePage> createState() => _HomePageState();
 }
@@ -25,11 +30,15 @@ class _HomePageState extends State<HomePage> {
   var ap = AdvertisementProvider();
   List<Advertisement> adsList = [];
   ConnectionController connectionController = Get.put(ConnectionController());
+  ScreenController screenController = Get.put(ScreenController());
+  late SignalRHelper signalHelper;
+  var mp = MessageProvider();
 
   @override
   void initState() {
     super.initState();
-    ap.getAll().then((value) {
+    screenController.selectedIndex = 4;
+    ap.getAll(widget.adstype ?? " ").then((value) {
       if (value == null) {
         print('value is null');
       }
@@ -39,6 +48,9 @@ class _HomePageState extends State<HomePage> {
       print(adsList.length);
     });
 
+    // signalHelper = SignalRHelper();
+    // signalHelper.initiateConnection();
+    // signalHelper.reciveMessage();
     connectionController.checkConnectionStatus();
   }
 
@@ -110,7 +122,29 @@ class _HomePageState extends State<HomePage> {
                   ),
                   onPressed: () {
                     FocusScope.of(context).unfocus();
-                    _textEditingController.clear();
+                    if (_textEditingController.text.isNotEmpty) {
+                      ap.findAll(_textEditingController.text)
+                        ..then((value) {
+                          if (value == null || value.length == 0) {
+                            print('value is null');
+                            Get.rawSnackbar(
+                              messageText: Text(
+                                'چیزی پیدا نشد',
+                                style: TextStyle(color: Colors.white),
+                                textDirection: TextDirection.rtl,
+                              ),
+                            );
+                          } else {
+                            setState(() {
+                              adsList = value;
+                            });
+                          }
+
+                          print(adsList.length);
+                        });
+                    }
+
+                    // _textEditingController.clear();
                   },
                 ),
                 enabledBorder: const OutlineInputBorder(
@@ -134,13 +168,14 @@ class _HomePageState extends State<HomePage> {
               itemCount: adsList.length,
               itemBuilder: (BuildContext context, int index) {
                 return Container(
-                    height: 155.0,
+                    height: MediaQuery.of(context).size.height / 4,
                     child: GestureDetector(
                         onTap: () => Get.to(
                             () => AdsDetail(
                                   imgUrl: adsList[index].photo ?? image64,
                                   price: adsList[index].price.toString(),
                                   title: adsList[index].title,
+                                  userId: adsList[index].userId,
                                   description: adsList[index].description,
                                 ),
                             transition: Transition.noTransition),

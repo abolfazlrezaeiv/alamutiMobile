@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
 class DescriptionTextField extends StatelessWidget {
-  const DescriptionTextField({Key? key, required this.textEditingController})
+  String? initialvalue = ' ';
+
+  DescriptionTextField(
+      {Key? key, required this.textEditingController, this.initialvalue})
       : super(key: key);
   final TextEditingController textEditingController;
 

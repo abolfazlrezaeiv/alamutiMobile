@@ -3,26 +3,35 @@ import 'package:get/state_manager.dart';
 class UploadImageController extends GetxController {
   final isFirstOneSelected = false.obs;
   final imageCounter = 0.obs;
-  final image1byteCode = ''.obs;
-  final image2byteCode = ''.obs;
+  final rightImagebyteCode = ''.obs;
+  final leftImagebyteCode = ''.obs;
 
   void getImage(String image) {
     imageCounter.value++;
     if (imageCounter.value == 1) {
-      image1byteCode.value = image;
-      print('first image uploaded');
+      rightImagebyteCode.value = image;
     } else if (imageCounter.value == 2) {
-      image2byteCode.value = image;
-      print('second image uploaded');
+      leftImagebyteCode.value = image;
     } else if (imageCounter > 2) {
-      image2byteCode.value = image;
-      print('please remove other items');
+      if (rightImagebyteCode.value.length < 2) {
+        rightImagebyteCode.value = image;
+      } else if (leftImagebyteCode.value.length < 2) {
+        leftImagebyteCode.value = image;
+      }
     }
   }
 
-  void resetImageCounter() {
-    imageCounter.value = 0;
-    image1byteCode.value = '';
-    image2byteCode.value = '';
+  getRightImage() {
+    return rightImagebyteCode;
   }
+
+  getLeftImage() {
+    return leftImagebyteCode;
+  }
+
+  // void resetImageCounter() {
+  //   imageCounter.value = 0;
+  //   image1byteCode.value = '';
+  //   image2byteCode.value = '';
+  // }
 }

@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 
 class AlamutiTextField extends StatelessWidget {
   final TextEditingController textEditingController;
-  const AlamutiTextField({Key? key, required this.textEditingController})
-      : super(key: key);
+  AlamutiTextField({
+    Key? key,
+    required this.textEditingController,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

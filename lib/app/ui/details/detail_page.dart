@@ -1,5 +1,8 @@
 import 'dart:convert';
 
+import 'package:alamuti/app/controller/chat_message_controller.dart';
+import 'package:alamuti/app/controller/chat_target_controller.dart';
+import 'package:alamuti/app/ui/chat/newchat.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -8,23 +11,31 @@ import '../home/home_page.dart';
 import '../widgets/alamuti_button.dart';
 
 class AdsDetail extends StatelessWidget {
+  ChatMessageController chatMessageController =
+      Get.put(ChatMessageController());
+
   final String imgUrl;
 
   final String title;
 
   final String price;
 
+  final String userId;
+
   final String description;
-  const AdsDetail(
+  AdsDetail(
       {Key? key,
       required this.imgUrl,
       required this.title,
       required this.price,
-      required this.description})
+      required this.description,
+      required this.userId})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    ChatTargetUserController chatTargetUserController =
+        Get.put(ChatTargetUserController());
     var mq = MediaQuery.of(context).size;
     return Scaffold(
       body: Container(
@@ -162,7 +173,17 @@ class AdsDetail extends StatelessWidget {
                       minWidth: mq.width / 2.2,
                       elevation: 0,
                       color: Color.fromRGBO(255, 0, 0, 0.4),
-                      onPressed: () => null,
+                      onPressed: () {
+                        chatTargetUserController.saveUserId(userId);
+                        print(chatTargetUserController.userId.value);
+                        chatMessageController.messageList.clear();
+                        Get.to(
+                            () => NewChat(
+                                receiverId:
+                                    chatTargetUserController.userId.value,
+                                groupTitle: this.title),
+                            transition: Transition.noTransition);
+                      },
                       child: Text('چت'),
                     ),
                   ],

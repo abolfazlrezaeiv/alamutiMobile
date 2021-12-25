@@ -1,5 +1,6 @@
 import 'package:alamuti/app/controller/adsFormController.dart';
-import 'package:alamuti/app/ui/advertisementForm.dart';
+import 'package:alamuti/app/ui/advetisement_form_page/advertisement_form_page.dart';
+import 'package:alamuti/app/ui/home/home_page.dart';
 import 'package:alamuti/app/ui/widgets/alamuti_appbar.dart';
 import 'package:alamuti/app/ui/widgets/bottom_navbar.dart';
 import 'package:alamuti/app/controller/selectedTapController.dart';
@@ -28,6 +29,7 @@ class _SubmitAdsCategoryState extends State<SubmitAdsCategory> {
         return Scaffold(
           appBar: AlamutiAppBar(
             appBar: AppBar(),
+            backwidget: HomePage(),
             title: 'ثبت آگهی',
             hasBackButton: false,
           ),
