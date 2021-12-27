@@ -5,9 +5,12 @@ class ChatGroup {
   final String name;
   final String title;
   final bool isChecked;
-  final List messages;
+  final ChatMessage lastMessage;
+  final String? groupImage;
+
   ChatGroup(
-      {required this.messages,
+      {required this.groupImage,
+      required this.lastMessage,
       required this.title,
       required this.isChecked,
       required this.id,

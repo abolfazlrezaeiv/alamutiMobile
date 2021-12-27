@@ -1,13 +1,11 @@
 import 'package:alamuti/app/controller/chat_group_controller.dart';
 import 'package:alamuti/app/controller/chat_message_controller.dart';
 import 'package:alamuti/app/controller/chat_target_controller.dart';
-import 'package:alamuti/app/data/model/chatMessage.dart';
 import 'package:alamuti/app/data/provider/chat_message_provider.dart';
 import 'package:alamuti/app/data/storage/cachemanager.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:http/http.dart';
 import 'package:signalr_core/signalr_core.dart';
 
 class SignalRHelper with CacheManager {
@@ -70,9 +68,16 @@ class SignalRHelper with CacheManager {
       required String senderId,
       required String message,
       required String grouptitle,
-      String? groupname}) async {
-    await connection.invoke('SendMessage',
-        args: [receiverId, senderId, message, groupname, grouptitle]);
+      String? groupname,
+      String? groupImage}) async {
+    await connection.invoke('SendMessage', args: [
+      receiverId,
+      senderId,
+      message,
+      groupname,
+      grouptitle,
+      groupImage
+    ]);
   }
 
   createGroup(String userId) async {

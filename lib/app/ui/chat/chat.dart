@@ -1,3 +1,4 @@
+import 'package:alamuti/app/controller/chat_group_controller.dart';
 import 'package:alamuti/app/controller/chat_message_controller.dart';
 import 'package:alamuti/app/controller/chat_target_controller.dart';
 import 'package:alamuti/app/data/model/chatMessage.dart';
@@ -7,6 +8,7 @@ import 'package:alamuti/app/data/storage/cachemanager.dart';
 import 'package:alamuti/app/ui/chat/chatgroup.dart';
 import 'package:alamuti/app/ui/widgets/alamuti_appbar.dart';
 import 'package:alamuti/app/ui/widgets/alamuti_textfield.dart';
+import 'package:bubble/bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -16,13 +18,14 @@ class Chat extends StatefulWidget with CacheManager {
 
   final String groupTitle;
 
-  final List messages;
-  const Chat(
-      {Key? key,
-      required this.groupname,
-      required this.groupTitle,
-      required this.messages})
-      : super(key: key);
+  final String groupImage;
+
+  Chat({
+    Key? key,
+    required this.groupname,
+    required this.groupTitle,
+    required this.groupImage,
+  }) : super(key: key);
 
   @override
   State<Chat> createState() => _ChatState();
@@ -35,8 +38,11 @@ class _ChatState extends State<Chat> {
 
   ChatTargetUserController chatTargetUserController =
       Get.put(ChatTargetUserController());
+
   ChatMessageController chatMessageController =
       Get.put(ChatMessageController());
+
+  ChatGroupController chatGroupController = Get.put(ChatGroupController());
 
   MessageProvider mp = MessageProvider();
 
@@ -55,12 +61,10 @@ class _ChatState extends State<Chat> {
     );
 
     mp.getGroupMessages(widget.groupname);
-    //state is null at fisr after changing the state - hot relod will be fixed
   }
 
   @override
   Widget build(BuildContext context) {
-    //state is null at fisr after changing the state - hot relod will be fixed
     signalHelper = SignalRHelper();
     signalHelper.initiateConnection();
     signalHelper.reciveMessage();
@@ -92,46 +96,92 @@ class _ChatState extends State<Chat> {
         child: Column(
           children: [
             Expanded(
-              child: ListView.builder(
-                controller: _scrollcontroller,
-                itemCount: widget.messages.length,
-                itemBuilder: (context, index) {
-                  var storage = GetStorage();
-                  if (ChatMessage.fromJson(widget.messages[index]).sender
-                      // chatMessageController
-                      //         .messageList.value[index].sender
-                      ==
-                      storage.read(CacheManagerKey.USERID.toString())) {
-                    return Padding(
-                      padding: const EdgeInsets.only(
-                          right: 8, left: 150, bottom: 8, top: 8),
-                      child: Card(
-                        child: Padding(
-                          padding: const EdgeInsets.all(15.0),
-                          child: Text(
-                            ChatMessage.fromJson(widget.messages[index])
-                                .message,
-                            textDirection: TextDirection.rtl,
+              child: Obx(() => ListView.builder(
+                    controller: _scrollcontroller,
+                    itemCount: chatMessageController.messageList.length,
+                    itemBuilder: (context, index) {
+                      var storage = GetStorage();
+                      if (chatMessageController
+                              .messageList.value[index].sender ==
+                          storage.read(CacheManagerKey.USERID.toString())) {
+                        return SizedBox(
+                          width: MediaQuery.of(context).size.width / 1.4,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Bubble(
+                              margin: BubbleEdges.only(top: 10),
+                              alignment: Alignment.topRight,
+                              nipWidth: 8,
+                              nipHeight: 24,
+                              nip: BubbleNip.rightTop,
+                              color: Color.fromRGBO(225, 255, 199, 1.0),
+                              child: Text(
+                                chatMessageController
+                                    .messageList.value[index].message,
+                                textDirection: TextDirection.rtl,
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                    );
-                  } else {
-                    return Padding(
-                      padding: const EdgeInsets.only(
-                          right: 150, left: 8, bottom: 8, top: 8),
-                      child: Card(
-                        child: Padding(
-                          padding: const EdgeInsets.all(15.0),
-                          child: Text(
-                              ChatMessage.fromJson(widget.messages[index])
-                                  .message),
-                        ),
-                      ),
-                    );
-                  }
-                },
-              ),
+                        );
+                      } else {
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Padding(
+                              //   padding: const EdgeInsets.only(
+                              //       right: 150, left: 8, bottom: 8, top: 8),
+                              //   child: Card(
+                              //     elevation: 4,
+                              //     child: Padding(
+                              //       padding: const EdgeInsets.all(15.0),
+                              //       child: Text(
+                              //         chatMessageController
+                              //             .messageList.value[index].message,
+                              //         textDirection: TextDirection.rtl,
+                              //       ),
+                              //     ),
+                              //   ),
+                              // ),
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width / 1.4,
+                                child: Bubble(
+                                  margin: BubbleEdges.only(top: 10),
+                                  alignment: Alignment.topLeft,
+                                  nipWidth: 8,
+                                  nipHeight: 24,
+                                  nip: BubbleNip.leftTop,
+                                  color: Colors.white,
+                                  child: Text(
+                                    chatMessageController
+                                        .messageList.value[index].message,
+                                    textDirection: TextDirection.rtl,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 8,
+                              ),
+                              Bubble(
+                                alignment: Alignment.center,
+                                color: Color.fromRGBO(212, 234, 244, 1.0),
+                                child: Text(
+                                    chatMessageController
+                                        .messageList.value[index].daySended,
+                                    textDirection: TextDirection.rtl,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w400,
+                                        fontFamily: 'IRANSansXFaNum',
+                                        fontSize: 11)),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+                    },
+                  )),
             ),
             Container(
               color: Colors.grey.withOpacity(0.1),
@@ -165,6 +215,7 @@ class _ChatState extends State<Chat> {
                               ),
                               message: textEditingController.text,
                               groupname: widget.groupname,
+                              groupImage: widget.groupImage,
                               grouptitle: widget.groupTitle);
 
                           // chatMessageController.addMessage(ChatMessage(
@@ -173,8 +224,7 @@ class _ChatState extends State<Chat> {
                           //       CacheManagerKey.USERID.toString(),
                           //     ),
                           //     message: textEditingController.text,
-                          //     reciever:
-                          //         chatTargetUserController.userId.value));
+                          //     reciever: chatTargetUserController.userId.value));
                           print(textEditingController.text);
                           WidgetsBinding.instance?.addPostFrameCallback((_) {
                             if (_scrollcontroller.hasClients) {

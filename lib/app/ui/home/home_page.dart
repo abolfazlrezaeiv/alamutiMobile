@@ -168,7 +168,7 @@ class _HomePageState extends State<HomePage> {
               itemCount: adsList.length,
               itemBuilder: (BuildContext context, int index) {
                 return Container(
-                    height: MediaQuery.of(context).size.height / 4,
+                    height: MediaQuery.of(context).size.height / 5,
                     child: GestureDetector(
                         onTap: () => Get.to(
                             () => AdsDetail(
@@ -191,26 +191,35 @@ class _HomePageState extends State<HomePage> {
                             child: Padding(
                               padding: EdgeInsets.symmetric(
                                   horizontal:
-                                      MediaQuery.of(context).size.width / 35),
+                                      MediaQuery.of(context).size.width / 50),
                               child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  Container(
-                                    width:
-                                        MediaQuery.of(context).size.width / 2.2,
-                                    height:
-                                        MediaQuery.of(context).size.height / 5,
-                                    child: Image.memory(
-                                      base64Decode(
-                                          adsList[index].photo ?? image64),
-                                      fit: BoxFit.cover,
+                                  FittedBox(
+                                    fit: BoxFit.fill,
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(8),
+                                      child: Image.memory(
+                                        base64Decode(
+                                          adsList[index].photo ?? image64,
+                                        ),
+                                        fit: BoxFit.fitHeight,
+                                        height:
+                                            MediaQuery.of(context).size.height /
+                                                6,
+                                        width:
+                                            MediaQuery.of(context).size.height /
+                                                6,
+                                      ),
                                     ),
                                   ),
                                   Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 3.0),
+                                    padding: EdgeInsets.symmetric(
+                                        vertical:
+                                            MediaQuery.of(context).size.height /
+                                                70),
                                     child: Column(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
@@ -220,25 +229,29 @@ class _HomePageState extends State<HomePage> {
                                         Text(
                                           adsList[index].title,
                                           style: TextStyle(
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 16),
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 15),
                                           textDirection: TextDirection.rtl,
                                         ),
                                         SizedBox(
-                                          height: 75.0,
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height /
+                                              18,
                                         ),
                                         Text(
                                           '${adsList[index].price.toString()}  تومان',
                                           style: TextStyle(
                                               fontFamily: 'IRANSansXFaNum',
                                               fontWeight: FontWeight.w300),
+                                          textDirection: TextDirection.rtl,
                                         ),
                                         Text(
                                           adsList[index].datePosted,
                                           style: TextStyle(
                                               fontWeight: FontWeight.w200,
                                               fontFamily: 'IRANSansXFaNum',
-                                              fontSize: 14),
+                                              fontSize: 13),
                                           textDirection: TextDirection.rtl,
                                         ),
                                       ],

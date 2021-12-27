@@ -15,9 +15,13 @@ import 'package:get_storage/get_storage.dart';
 
 class NewChat extends StatefulWidget with CacheManager {
   final String receiverId;
-
+  final String groupImage;
   final String groupTitle;
-  const NewChat({Key? key, required this.groupTitle, required this.receiverId})
+  const NewChat(
+      {Key? key,
+      required this.groupTitle,
+      required this.receiverId,
+      required this.groupImage})
       : super(key: key);
 
   @override
@@ -133,14 +137,15 @@ class _NewChatState extends State<NewChat> {
                         TextButton(
                             onPressed: () {
                               signalHelper.sendMessage(
-                                receiverId:
-                                    chatTargetUserController.userId.value,
-                                grouptitle: widget.groupTitle,
-                                senderId: storage.read(
-                                  CacheManagerKey.USERID.toString(),
-                                ),
-                                message: textEditingController.text,
-                              );
+                                  receiverId:
+                                      chatTargetUserController.userId.value,
+                                  grouptitle: widget.groupTitle,
+                                  senderId: storage.read(
+                                    CacheManagerKey.USERID.toString(),
+                                  ),
+                                  message: textEditingController.text,
+                                  groupImage: widget.groupImage,
+                                  groupname: null);
 
                               chatMessageController.addMessage(ChatMessage(
                                   id: 44,
@@ -149,7 +154,8 @@ class _NewChatState extends State<NewChat> {
                                   ),
                                   message: textEditingController.text,
                                   reciever:
-                                      chatTargetUserController.userId.value));
+                                      chatTargetUserController.userId.value,
+                                  daySended: ''));
 
                               WidgetsBinding.instance
                                   ?.addPostFrameCallback((_) {

@@ -181,6 +181,7 @@ class AdsDetail extends StatelessWidget {
                             () => NewChat(
                                 receiverId:
                                     chatTargetUserController.userId.value,
+                                groupImage: this.imgUrl,
                                 groupTitle: this.title),
                             transition: Transition.noTransition);
                       },

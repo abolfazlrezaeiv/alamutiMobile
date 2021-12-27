@@ -33,6 +33,7 @@ class MessageProvider {
             id: element['id'],
             message: element['message'],
             reciever: element['reciever'],
+            daySended: element['daySended'],
           ),
         );
       },
@@ -57,6 +58,7 @@ class MessageProvider {
             id: element['id'],
             message: element['message'],
             reciever: element['reciever'],
+            daySended: element['daySended'],
           ),
         );
       },
@@ -89,6 +91,7 @@ class MessageProvider {
     );
 
     var myMap = response.data;
+    print('is working in message provider ${response.statusCode}');
     List<ChatGroup> mygroups = [];
     myMap.forEach(
       (element) {
@@ -98,14 +101,14 @@ class MessageProvider {
             id: element['id'],
             title: element['title'],
             isChecked: element['isChecked'],
-            messages: element['messages'],
+            lastMessage: ChatMessage.fromJson(element['lastMessage']),
+            groupImage: element['image'],
           ),
         );
       },
     );
-
+    print('is working in message provider ${response.statusCode}');
     chatGroupController.groupList.value = mygroups;
-    print(mygroups);
     return mygroups;
     // print(mymessages.length);
     // return mymessages;

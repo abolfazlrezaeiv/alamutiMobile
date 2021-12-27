@@ -28,6 +28,7 @@ dependencies:
   file_picker: ^4.2.7
   image_picker: ^0.8.4+4
   signalr_core: ^1.1.1
+  bubble: ^1.2.1
 
   connectivity: ^3.0.6
   http: ^0.13.4

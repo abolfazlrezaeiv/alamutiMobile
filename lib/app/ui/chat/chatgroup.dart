@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:alamuti/app/controller/chat_group_controller.dart';
 import 'package:alamuti/app/controller/chat_message_controller.dart';
 import 'package:alamuti/app/controller/chat_target_controller.dart';
@@ -71,7 +73,6 @@ class _ChatGroupsState extends State<ChatGroups> with CacheManager {
     signalHelper = SignalRHelper();
     signalHelper.initiateConnection();
     signalHelper.reciveMessage();
-    //state is null at fisr after changing the state - hot relod will be fixed
   }
 
   @override
@@ -79,7 +80,6 @@ class _ChatGroupsState extends State<ChatGroups> with CacheManager {
     signalHelper.createGroup(
       storage.read(CacheManagerKey.USERID.toString()),
     );
-    //state is null at fisr after changing the state - hot relod will be fixed
     chatMessageController.messageList.listen((p0) {
       WidgetsBinding.instance?.addPostFrameCallback((_) {
         if (_scrollcontroller.hasClients) {
@@ -125,63 +125,174 @@ class _ChatGroupsState extends State<ChatGroups> with CacheManager {
                   indexGroupList.changeIndex(index);
 
                   return GestureDetector(
-                      onTap: () async {
-                        if (await getUserId() != await sender()) {
-                          mp.updateGroupStatus(
-                              name: chatGroupController.groupList[index].name,
-                              id: chatGroupController.groupList[index].id,
-                              title: chatGroupController.groupList[index].title,
-                              isChecked: true);
-                        }
+                    onTap: () async {
+                      if (await getUserId() != await sender()) {
+                        mp.updateGroupStatus(
+                            name: chatGroupController.groupList[index].name,
+                            id: chatGroupController.groupList[index].id,
+                            title: chatGroupController.groupList[index].title,
+                            isChecked: true);
+                      }
 
-                        chatGroupController.groupList.forEach((element) {
-                          signalHelper.leaveGroup((element as ChatGroup).name);
-                        });
+                      chatGroupController.groupList.forEach((element) {
+                        signalHelper.leaveGroup((element as ChatGroup).name);
+                      });
 
-                        // chatGroupController.groupList[index].name
-                        //     .toString()
-                        //     .indexOf(storage
-                        //         .read(CacheManagerKey.USERID.toString()));
-                        Get.to(
-                            () => Chat(
+                      // chatGroupController.groupList[index].name
+                      //     .toString()
+                      //     .indexOf(storage
+                      //         .read(CacheManagerKey.USERID.toString()));
+                      Get.to(
+                          () => Chat(
                                 groupname:
                                     chatGroupController.groupList[index].name,
                                 groupTitle:
                                     chatGroupController.groupList[index].title,
-                                messages: chatGroupController
-                                    .groupList[index].messages),
-                            transition: Transition.noTransition);
-                      },
-                      child: Card(
-                        color:
-                            (chatGroupController.groupList[index].isChecked ==
-                                        false &&
-                                    ChatMessage.fromJson(chatGroupController
-                                                .groupList[index].messages.last)
-                                            .sender !=
-                                        getUserId())
-                                ? Colors.red
-                                : Colors.yellow,
-                        child: Padding(
-                          padding: const EdgeInsets.all(40.0),
-                          child: Column(
-                            children: [
-                              Text(
-                                chatGroupController.groupList[index].title,
-                                textDirection: TextDirection.rtl,
-                                style: TextStyle(fontWeight: FontWeight.w400),
+                                groupImage: chatGroupController
+                                    .groupList[index].groupImage,
                               ),
-                              Text(
-                                ChatMessage.fromJson(chatGroupController
-                                        .groupList[index].messages.last)
-                                    .message,
-                                textDirection: TextDirection.rtl,
-                                style: TextStyle(fontWeight: FontWeight.w400),
+                          transition: Transition.noTransition);
+                    },
+                    child: Obx(
+                      () => Stack(alignment: Alignment.bottomLeft, children: [
+                        Obx(() => Card(
+                              color:
+                                  //  (chatGroupController
+                                  //                 .groupList[index].isChecked ==
+                                  //             false &&
+                                  //         chatGroupController.groupList[index]
+                                  //                 .lastMessage.sender !=
+                                  //             getUserId())
+                                  //     ? Colors.red
+                                  //     :
+                                  Colors.white,
+                              child: Padding(
+                                padding: EdgeInsets.all(
+                                    MediaQuery.of(context).size.height / 50),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Text(
+                                      chatGroupController
+                                          .groupList[index].lastMessage.message,
+                                      textDirection: TextDirection.rtl,
+                                      style: TextStyle(
+                                          fontWeight: (chatGroupController
+                                                          .groupList[index]
+                                                          .isChecked ==
+                                                      false &&
+                                                  chatGroupController
+                                                          .groupList[index]
+                                                          .lastMessage
+                                                          .sender !=
+                                                      getUserId())
+                                              ? FontWeight.w500
+                                              : FontWeight.w300,
+                                          fontSize: 13),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    SizedBox(
+                                      height:
+                                          MediaQuery.of(context).size.height /
+                                              80,
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        Text(
+                                          chatGroupController
+                                              .groupList[index].title,
+                                          textDirection: TextDirection.rtl,
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w400,
+                                              fontFamily: 'IRANSansXFaNum',
+                                              fontSize: 12),
+                                        ),
+                                        SizedBox(
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width /
+                                              30,
+                                        ),
+                                        FittedBox(
+                                          fit: BoxFit.fill,
+                                          child: ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                            child: Image.memory(
+                                              base64Decode(chatGroupController
+                                                      .groupList[index]
+                                                      .groupImage ??
+                                                  base64),
+                                              fit: BoxFit.fitHeight,
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width /
+                                                  7,
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .width /
+                                                  7,
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ],
+                            )),
+                        Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: Align(
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              chatGroupController
+                                  .groupList[index].lastMessage.daySended,
+                              textDirection: TextDirection.rtl,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w200,
+                                  fontFamily: 'IRANSansXFaNum',
+                                  fontSize: 12),
+                            ),
                           ),
                         ),
-                      ));
+                        (chatGroupController.groupList[index].isChecked ==
+                                    false &&
+                                chatGroupController
+                                        .groupList[index].lastMessage.sender !=
+                                    getUserId())
+                            ? Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 20.0, vertical: 40),
+                                child: Container(
+                                  width: 18,
+                                  height: 18,
+                                  decoration: BoxDecoration(
+                                    color: Colors.green
+                                        .withOpacity(0.25), // border color
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Padding(
+                                    padding: EdgeInsets.all(2), // border width
+                                    child: Container(
+                                      // or ClipRRect if you need to clip the content
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: Colors.red, // inner circle color
+                                      ),
+                                      child: Container(), // inner content
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : Container(
+                                color: Colors.transparent,
+                              )
+                      ]),
+                    ),
+                  );
                 },
               );
             }

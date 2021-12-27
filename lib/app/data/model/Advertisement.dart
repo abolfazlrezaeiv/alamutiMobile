@@ -2,7 +2,7 @@ class Advertisement {
   late int id;
   late String title;
   late String description;
-  late int price;
+  late String price;
   late String? photo;
   late String datePosted;
   late String adsType;
@@ -13,12 +13,29 @@ class Advertisement {
       {required this.id,
       required this.title,
       required this.description,
-      required this.price,
+      required String price,
       required this.photo,
       required this.adsType,
       required this.area,
       required this.userId,
-      required this.datePosted});
+      required this.datePosted}) {
+    var value = price
+        .split('')
+        .reversed
+        .join()
+        .replaceAllMapped(RegExp(r".{3}"), (match) => "${match.group(0)},")
+        .split('')
+        .reversed
+        .join();
+    if (value.startsWith(',')) {
+      value = value.substring(1, value.length);
+    }
+
+    print(value);
+    print(value);
+    print(value);
+    this.price = value;
+  }
 
   Advertisement.fromJson(Map<String, dynamic> json) {
     id = json["id"];
