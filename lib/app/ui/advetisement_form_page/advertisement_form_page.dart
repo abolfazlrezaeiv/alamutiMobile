@@ -90,8 +90,9 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
                         bottom: 3),
                     child: Text(
                       'عنوان آگهی',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
+                      style: TextStyle(
+                          fontSize: MediaQuery.of(context).size.width / 27,
+                          fontWeight: FontWeight.w300),
                       textDirection: TextDirection.rtl,
                     ),
                   ),
@@ -117,7 +118,9 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
                 ),
                 child: Text(
                   'توضیحات',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
+                  style: TextStyle(
+                      fontSize: MediaQuery.of(context).size.width / 27,
+                      fontWeight: FontWeight.w300),
                   textDirection: TextDirection.rtl,
                 ),
               ),
@@ -143,13 +146,16 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
                       price: int.parse(priceTextFieldController.text),
                       title: titleTextFieldController.text,
                     );
-                    screenController.selectedIndex = 4;
 
                     Get.toNamed('/home');
                   },
                   child: Text(
                     'ثبت',
-                    style: TextStyle(color: Colors.grey[700], fontSize: 20),
+                    style: TextStyle(
+                      color: Colors.grey[700],
+                      fontWeight: FontWeight.w300,
+                      fontSize: MediaQuery.of(context).size.width / 25,
+                    ),
                   ),
                 ),
               ),
@@ -170,7 +176,9 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
                     top: MediaQuery.of(context).size.width / 40.0, bottom: 3),
                 child: Text(
                   "متراژ",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
+                  style: TextStyle(
+                      fontSize: MediaQuery.of(context).size.width / 27,
+                      fontWeight: FontWeight.w300),
                   textDirection: TextDirection.rtl,
                 ),
               ),
@@ -220,7 +228,9 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
           top: MediaQuery.of(context).size.width / 35.0, bottom: 3),
       child: Text(
         title,
-        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
+        style: TextStyle(
+            fontSize: MediaQuery.of(context).size.width / 27,
+            fontWeight: FontWeight.w300),
         textDirection: TextDirection.rtl,
       ),
     );

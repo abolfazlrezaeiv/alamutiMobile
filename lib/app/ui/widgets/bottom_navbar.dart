@@ -1,3 +1,4 @@
+import 'package:alamuti/app/controller/new_message_controller.dart';
 import 'package:alamuti/app/controller/selectedTapController.dart';
 import 'package:alamuti/app/ui/statics.dart';
 import 'package:flutter/material.dart';
@@ -11,21 +12,18 @@ class AlamutBottomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ScreenController c = Get.put(ScreenController());
-    return GetBuilder<ScreenController>(
-      builder: (controller) {
-        return BottomNavigationBar(
-          selectedItemColor: Colors.red.withOpacity(0.8),
+
+    return Obx(() => BottomNavigationBar(
+          selectedItemColor: Colors.white.withOpacity(0.9),
           elevation: 0,
           type: BottomNavigationBarType.fixed,
-          currentIndex: c.getScreen(),
+          currentIndex: c.selectedIndex.value,
           onTap: (value) {
-            c.selectIndex(value);
-            Get.toNamed(bottomNavBarScreens[c.getScreen()]);
+            c.selectedIndex.value = value;
+            Get.toNamed(bottomNavBarScreens[c.selectedIndex.value]);
           },
           unselectedLabelStyle: TextStyle(fontSize: 13),
           items: bottomTapItems,
-        );
-      },
-    );
+        ));
   }
 }

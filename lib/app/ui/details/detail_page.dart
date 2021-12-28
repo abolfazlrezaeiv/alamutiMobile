@@ -47,40 +47,75 @@ class AdsDetail extends StatelessWidget {
               children: [
                 Stack(
                   children: [
-                    Container(
-                      height: MediaQuery.of(context).size.height / 2.3,
-                      width: MediaQuery.of(context).size.width,
-                      child: Image.memory(
-                        base64Decode(imgUrl),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(top: 40.0),
-                      child: Opacity(
-                        opacity: 0.7,
-                        child: GestureDetector(
-                          onTap: () => Get.to(() => HomePage(),
-                              transition: Transition.noTransition),
-                          child: Row(
-                            children: [
-                              Icon(
-                                CupertinoIcons.back,
-                                size: 31,
-                                color: Colors.white,
+                    (imgUrl.length > 4)
+                        ? Container(
+                            height: MediaQuery.of(context).size.height / 2.3,
+                            width: MediaQuery.of(context).size.width,
+                            child: Image.memory(
+                              base64Decode(imgUrl),
+                              fit: BoxFit.cover,
+                            ),
+                          )
+                        : Container(),
+                    (imgUrl.length > 4)
+                        ? Padding(
+                            padding: EdgeInsets.only(top: 40.0),
+                            child: Opacity(
+                              opacity: 0.7,
+                              child: GestureDetector(
+                                onTap: () => Get.to(() => HomePage(),
+                                    transition: Transition.noTransition),
+                                child: Container(
+                                  width: MediaQuery.of(context).size.width / 4,
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        CupertinoIcons.back,
+                                        size: 25,
+                                        color: Colors.white,
+                                      ),
+                                      Text(
+                                        'بازگشت',
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 16),
+                                      )
+                                    ],
+                                  ),
+                                ),
                               ),
-                              Text(
-                                'بازگشت',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 16),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                    )
+                            ),
+                          )
+                        : Container(
+                            color: Color.fromRGBO(8, 212, 76, 0.5),
+                            child: Padding(
+                              padding: EdgeInsets.only(top: 40.0, bottom: 20),
+                              child: Opacity(
+                                opacity: 0.5,
+                                child: GestureDetector(
+                                  onTap: () => Get.to(() => HomePage(),
+                                      transition: Transition.noTransition),
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        CupertinoIcons.back,
+                                        size: 25,
+                                        color: Colors.black,
+                                      ),
+                                      Text(
+                                        'بازگشت',
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 16),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          )
                   ],
                   alignment: Alignment.topLeft,
                 ),
@@ -96,7 +131,7 @@ class AdsDetail extends StatelessWidget {
                       Text(
                         title,
                         style: TextStyle(
-                            fontWeight: FontWeight.w500,
+                            fontWeight: FontWeight.w300,
                             fontSize: MediaQuery.of(context).size.width / 24),
                         textDirection: TextDirection.rtl,
                       ),
@@ -112,14 +147,19 @@ class AdsDetail extends StatelessWidget {
                                 '$price   تومان',
                                 textDirection: TextDirection.ltr,
                                 style: TextStyle(
+                                    fontSize:
+                                        MediaQuery.of(context).size.width / 27,
                                     fontFamily: 'IRANSansXFaNum',
                                     fontWeight: FontWeight.w400),
                               ),
-                              Text('قیمت',
-                                  textDirection: TextDirection.rtl,
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 15))
+                              Text(
+                                'قیمت',
+                                textDirection: TextDirection.rtl,
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w300,
+                                    fontSize:
+                                        MediaQuery.of(context).size.width / 27),
+                              )
                             ],
                           ),
                         ),

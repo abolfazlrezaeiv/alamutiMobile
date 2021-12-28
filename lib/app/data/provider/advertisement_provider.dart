@@ -1,6 +1,8 @@
 import 'package:alamuti/app/controller/adsFormController.dart';
+import 'package:alamuti/app/controller/advertisementController.dart';
 import 'package:alamuti/app/data/model/Advertisement.dart';
 import 'package:alamuti/app/controller/token_provider.dart';
+import 'package:alamuti/app/data/provider/base_url.dart';
 import 'package:dio/dio.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/utils.dart';
@@ -8,15 +10,17 @@ import 'package:get/utils.dart';
 class AdvertisementProvider {
   TokenProvider tokenProvider = Get.put(TokenProvider());
   AdsFormController adsFormController = Get.put(AdsFormController());
+  ListAdvertisementController listAdvertisementController =
+      Get.put(ListAdvertisementController());
 
   Future<void> deleteAds(int id) async {
-    var response = await tokenProvider.api
-        .delete('http://192.168.1.102:5113/api/Advertisement/${id}');
+    var response =
+        await tokenProvider.api.delete(baseUrl + 'Advertisement/${id}');
   }
 
   Future<List<Advertisement>> getMyAds() async {
-    var response = await tokenProvider.api
-        .get('http://192.168.1.102:5113/api/Advertisement/myalamuti/myAds');
+    var response =
+        await tokenProvider.api.get(baseUrl + 'Advertisement/myalamuti/myAds');
 
     var myMap = response.data;
     List<Advertisement> myads = [];
@@ -42,12 +46,12 @@ class AdvertisementProvider {
     if (searchInput == null) {
       print('input is null');
       response = await tokenProvider.api.get(
-        'http://192.168.1.102:5113/api/Advertisement',
+        baseUrl + 'Advertisement',
       );
     } else {
       print('searching');
       response = await tokenProvider.api.get(
-        'http://192.168.1.102:5113/api/Advertisement/find/${searchInput}',
+        baseUrl + 'Advertisement/find/${searchInput}',
       );
     }
 
@@ -72,13 +76,13 @@ class AdvertisementProvider {
 
   Future<List<Advertisement>> getAll([String? adstype]) async {
     var response;
-    if (adstype == null) {
+    if (adstype == null || adstype.isEmpty == true) {
       response = await tokenProvider.api.get(
-        'http://192.168.1.102:5113/api/Advertisement',
+        baseUrl + 'Advertisement',
       );
     } else {
       response = await tokenProvider.api.get(
-        'http://192.168.1.102:5113/api/Advertisement/filter/${adstype}',
+        baseUrl + 'Advertisement/filter/$adstype',
       );
     }
 
@@ -102,6 +106,8 @@ class AdvertisementProvider {
       },
     );
     print(myads.length);
+    listAdvertisementController.adsList.value = myads;
+
     return myads;
   }
 
@@ -122,7 +128,7 @@ class AdvertisementProvider {
       'adsType': adsFormController.formState.value.toString().toLowerCase(),
     });
     var response = await tokenProvider.api.post(
-      'http://192.168.1.102:5113/api/Advertisement',
+      baseUrl + 'Advertisement',
       data: formData,
     );
     print(response.statusMessage);
@@ -148,7 +154,7 @@ class AdvertisementProvider {
       'adsType': adsFormController.formState.value.toString().toLowerCase(),
     });
     var response = await tokenProvider.api.put(
-      'http://192.168.1.102:5113/api/Advertisement',
+      baseUrl + 'Advertisement',
       data: formData,
     );
     print(response.statusMessage);

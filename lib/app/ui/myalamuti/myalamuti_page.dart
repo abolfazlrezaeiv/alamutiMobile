@@ -39,7 +39,8 @@ class MyAlamutiPage extends StatelessWidget {
                           onTap: () => Get.to(MyAdvertisement()),
                           child: Text(
                             'آگهی های من',
-                            style: TextStyle(fontSize: 18),
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.w300),
                             textDirection: TextDirection.rtl,
                           ),
                         ),
@@ -61,7 +62,8 @@ class MyAlamutiPage extends StatelessWidget {
                         Text(
                           'درباره الموتی',
                           textDirection: TextDirection.rtl,
-                          style: TextStyle(fontSize: 18),
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.w300),
                         ),
                         SizedBox(
                           width: 5,
@@ -73,34 +75,29 @@ class MyAlamutiPage extends StatelessWidget {
                 ),
                 Container(
                   width: mq.width,
-                  child: Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Text(
-                            'شما با شماره ۰۹۹۰۴۶۴۰۷۶۰ وارد شده اید',
-                            textDirection: TextDirection.rtl,
-                            style: TextStyle(fontSize: 16),
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TextButton(
+                          onPressed: () => auth.logOut(),
+                          child: Text(
+                            'خروج از حساب',
+                            style: TextStyle(color: Colors.red),
                           ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: MaterialButton(
-                              height: mq.width / 9,
-                              minWidth: mq.width,
-                              elevation: 0,
-                              color: Color.fromRGBO(255, 0, 0, 0.4),
-                              onPressed: () => auth.logOut(),
-                              child: Text('خروج از حساب'),
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width / 40,
+                        ),
+                        Text(
+                          'شما با شماره ۰۹۹۰۴۶۴۰۷۶۰ وارد شده اید',
+                          textDirection: TextDirection.rtl,
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.w300),
+                        ),
+                      ],
                     ),
                   ),
                 )

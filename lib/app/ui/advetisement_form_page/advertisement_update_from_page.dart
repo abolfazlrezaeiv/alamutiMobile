@@ -98,8 +98,9 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
                         bottom: 3),
                     child: Text(
                       'عنوان آگهی',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
+                      style: TextStyle(
+                          fontSize: MediaQuery.of(context).size.width / 27,
+                          fontWeight: FontWeight.w300),
                       textDirection: TextDirection.rtl,
                     ),
                   ),
@@ -125,7 +126,9 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
                 ),
                 child: Text(
                   'توضیحات',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
+                  style: TextStyle(
+                      fontSize: MediaQuery.of(context).size.width / 27,
+                      fontWeight: FontWeight.w300),
                   textDirection: TextDirection.rtl,
                 ),
               ),
@@ -154,13 +157,15 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
                       price: int.parse(priceTextFieldController.text),
                       title: titleTextFieldController.text,
                     );
-                    screenController.selectedIndex = 4;
 
                     Get.toNamed('/home');
                   },
                   child: Text(
                     'ثبت',
-                    style: TextStyle(color: Colors.grey[700], fontSize: 20),
+                    style: TextStyle(
+                        color: Colors.grey[700],
+                        fontSize: MediaQuery.of(context).size.width / 25,
+                        fontWeight: FontWeight.w300),
                   ),
                 ),
               ),
@@ -181,7 +186,9 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
                     top: MediaQuery.of(context).size.width / 40.0, bottom: 3),
                 child: Text(
                   "متراژ",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
+                  style: TextStyle(
+                      fontSize: MediaQuery.of(context).size.width / 27,
+                      fontWeight: FontWeight.w300),
                   textDirection: TextDirection.rtl,
                 ),
               ),
@@ -233,7 +240,9 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
           top: MediaQuery.of(context).size.width / 35.0, bottom: 3),
       child: Text(
         title,
-        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
+        style: TextStyle(
+            fontSize: MediaQuery.of(context).size.width / 27,
+            fontWeight: FontWeight.w300),
         textDirection: TextDirection.rtl,
       ),
     );

@@ -1,6 +1,8 @@
 import 'package:alamuti/app/controller/chat_group_controller.dart';
 import 'package:alamuti/app/controller/chat_message_controller.dart';
 import 'package:alamuti/app/controller/chat_target_controller.dart';
+import 'package:alamuti/app/controller/new_message_controller.dart';
+import 'package:alamuti/app/data/provider/base_url.dart';
 import 'package:alamuti/app/data/provider/chat_message_provider.dart';
 import 'package:alamuti/app/data/storage/cachemanager.dart';
 import 'package:flutter/material.dart';
@@ -15,13 +17,14 @@ class SignalRHelper with CacheManager {
   ChatMessageController chatMessageController =
       Get.put(ChatMessageController());
   ChatGroupController chatGroupController = Get.put(ChatGroupController());
+  NewMessageController newMessageController = Get.put(NewMessageController());
 
   var mp = MessageProvider();
 
   SignalRHelper() {
     connection = HubConnectionBuilder()
         .withUrl(
-          'http://192.168.1.102:5113/chat',
+          baseLoginUrl + 'chat',
           HttpConnectionOptions(
             // logging: (level, message) => print(message),
             skipNegotiation: true,
@@ -57,7 +60,9 @@ class SignalRHelper with CacheManager {
       //     .invoke('CreatenewGroup', args: [arguments[0], arguments[1]]);
       await connection
           .invoke('CreatenewGroup', args: [arguments[3], arguments[4]]);
-
+      if (arguments[0] == getUserId()) {
+        newMessageController.haveNewMessage.value = true;
+      }
       await mp.getGroups();
       await mp.getGroupMessages(arguments[3]);
     });

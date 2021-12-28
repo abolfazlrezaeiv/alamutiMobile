@@ -38,7 +38,6 @@ class _MyAdvertisementState extends State<MyAdvertisement> {
   @override
   void initState() {
     super.initState();
-    screenController.selectedIndex = 0;
     ap.getMyAds().then((value) {
       print('its calling');
       if (value == null) {
@@ -73,7 +72,7 @@ class _MyAdvertisementState extends State<MyAdvertisement> {
               itemBuilder: (BuildContext context, int index) {
                 return Stack(children: [
                   Container(
-                    height: MediaQuery.of(context).size.height / 4,
+                    height: MediaQuery.of(context).size.height / 5,
                     decoration: BoxDecoration(
                       border: Border(
                         bottom: BorderSide(
@@ -84,22 +83,49 @@ class _MyAdvertisementState extends State<MyAdvertisement> {
                     child: Center(
                       child: Padding(
                         padding: EdgeInsets.symmetric(
-                            horizontal: MediaQuery.of(context).size.width / 35),
+                            horizontal: MediaQuery.of(context).size.width / 50),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Container(
-                              width: MediaQuery.of(context).size.width / 2.2,
-                              height: MediaQuery.of(context).size.height / 5,
-                              child: Image.memory(
-                                base64Decode(adsList[index].photo ?? image64),
-                                fit: BoxFit.cover,
+                            FittedBox(
+                              fit: BoxFit.fill,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(8),
+                                child: (adsList[index].photo == null)
+                                    ? Opacity(
+                                        opacity: 0.6,
+                                        child: Image.asset(
+                                          'assets/logo/no-image.png',
+                                          fit: BoxFit.fitHeight,
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height /
+                                              6,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .height /
+                                              6,
+                                        ),
+                                      )
+                                    : Image.memory(
+                                        base64Decode(
+                                          adsList[index].photo ?? image64,
+                                        ),
+                                        fit: BoxFit.fitHeight,
+                                        height:
+                                            MediaQuery.of(context).size.height /
+                                                6,
+                                        width:
+                                            MediaQuery.of(context).size.height /
+                                                6,
+                                      ),
                               ),
                             ),
                             Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 3.0),
+                              padding: EdgeInsets.symmetric(
+                                  vertical:
+                                      MediaQuery.of(context).size.height / 70),
                               child: Column(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -108,12 +134,13 @@ class _MyAdvertisementState extends State<MyAdvertisement> {
                                   Text(
                                     adsList[index].title,
                                     style: TextStyle(
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 16),
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 14),
                                     textDirection: TextDirection.rtl,
                                   ),
                                   SizedBox(
-                                    height: 75.0,
+                                    height:
+                                        MediaQuery.of(context).size.height / 18,
                                   ),
                                   Row(
                                     children: [
@@ -127,7 +154,7 @@ class _MyAdvertisementState extends State<MyAdvertisement> {
                                           style: TextStyle(
                                             color:
                                                 Colors.white.withOpacity(0.8),
-                                            fontWeight: FontWeight.w700,
+                                            fontWeight: FontWeight.w300,
                                           ),
                                         ),
                                         style: ButtonStyle(
@@ -172,14 +199,14 @@ class _MyAdvertisementState extends State<MyAdvertisement> {
                                           'ویرایش',
                                           style: TextStyle(
                                             color:
-                                                Colors.black.withOpacity(0.5),
-                                            fontWeight: FontWeight.w700,
+                                                Colors.black.withOpacity(0.8),
+                                            fontWeight: FontWeight.w200,
                                           ),
                                         ),
                                         style: ButtonStyle(
                                           backgroundColor:
                                               MaterialStateProperty.all(
-                                            Color.fromRGBO(10, 210, 71, 0.5),
+                                            Color.fromRGBO(10, 210, 71, 0.4),
                                           ),
                                           shape: MaterialStateProperty.all<
                                               RoundedRectangleBorder>(

@@ -20,29 +20,23 @@ class AlamutiAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) => AppBar(
         leadingWidth: 100,
-        title: Text(title),
+        title: Text(
+          title,
+          style: TextStyle(
+              fontSize: 17,
+              fontWeight: FontWeight.w400,
+              color: Colors.white.withOpacity(0.9)),
+        ),
         backgroundColor: Color.fromRGBO(8, 212, 76, 0.5),
         automaticallyImplyLeading: false,
         centerTitle: true,
         leading: hasBackButton
-            ? Container(
-                alignment: Alignment.center,
-                child: GestureDetector(
-                  onTap: () => Get.to(this.backwidget,
-                      transition: Transition.noTransition),
-                  child: Row(
-                    children: [
-                      Icon(
-                        CupertinoIcons.chevron_back,
-                        size: 20,
-                      ),
-                      Text(
-                        'بازگشت',
-                        style: TextStyle(
-                            fontSize: 17, fontWeight: FontWeight.w400),
-                      ),
-                    ],
-                  ),
+            ? GestureDetector(
+                onTap: () => Get.to(this.backwidget,
+                    transition: Transition.noTransition),
+                child: Icon(
+                  CupertinoIcons.chevron_back,
+                  size: 30,
                 ),
               )
             : null,
