@@ -3,7 +3,8 @@ class Advertisement {
   late String title;
   late String description;
   late String price;
-  late String? photo;
+  late String? photo1;
+  late String? photo2;
   late String datePosted;
   late String adsType;
   late String area;
@@ -14,7 +15,8 @@ class Advertisement {
       required this.title,
       required this.description,
       required String price,
-      required this.photo,
+      required this.photo1,
+      required this.photo2,
       required this.adsType,
       required this.area,
       required this.userId,
@@ -42,7 +44,8 @@ class Advertisement {
     title = json["title"];
     description = json["description"];
     price = json["price"];
-    photo = json["photo"];
+    photo1 = json["photo1"];
+    photo2 = json["photo2"];
     datePosted = json["DaySended"];
     adsType = json['adsType'];
     area = json['area'];

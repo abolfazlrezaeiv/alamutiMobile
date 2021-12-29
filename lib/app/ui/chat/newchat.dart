@@ -15,7 +15,7 @@ import 'package:get_storage/get_storage.dart';
 
 class NewChat extends StatefulWidget with CacheManager {
   final String receiverId;
-  final String groupImage;
+  final String? groupImage;
   final String groupTitle;
   const NewChat(
       {Key? key,

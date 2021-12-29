@@ -169,8 +169,22 @@ class MessageProvider with CacheManager {
   deleteMessageGroup({
     required String groupName,
   }) async {
+    for (var i = 0; i < chatGroupController.groupList.value.length; i++) {
+      if (chatGroupController.groupList[i].name == groupName) {
+        chatGroupController.groupList.removeAt(i);
+        break;
+      }
+    }
+    // chatGroupController.groupList.forEach((element) {
+
+    //   if (element.name == groupName) {
+
+    //     chatGroupController.groupList.remove(element);
+
+    //   }
+    // });
     await tokenProvider.api.delete(
-      baseChatUrl + 'api/Chat/groups/$groupName',
+      baseChatUrl + 'api/Chat/group/$groupName',
     );
   }
 }

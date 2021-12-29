@@ -245,12 +245,15 @@ class _HomePageState extends State<HomePage> {
                     child: GestureDetector(
                       onTap: () => Get.to(
                           () => AdsDetail(
-                                imgUrl: listAdvertisementController
-                                        .adsList[Index].photo ??
-                                    '',
+                                byteImage1: listAdvertisementController
+                                    .adsList[Index].photo1,
+                                byteImage2: listAdvertisementController
+                                    .adsList[Index].photo2,
                                 price: listAdvertisementController
                                     .adsList[Index].price
                                     .toString(),
+                                sendedDate: listAdvertisementController
+                                    .adsList[Index].datePosted,
                                 title: listAdvertisementController
                                     .adsList[Index].title,
                                 userId: listAdvertisementController
@@ -282,7 +285,7 @@ class _HomePageState extends State<HomePage> {
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.circular(8),
                                         child: (listAdvertisementController
-                                                    .adsList[Index].photo ==
+                                                    .adsList[Index].photo1 ==
                                                 null)
                                             ? Opacity(
                                                 opacity: 0.6,
@@ -302,9 +305,7 @@ class _HomePageState extends State<HomePage> {
                                             : Image.memory(
                                                 base64Decode(
                                                   listAdvertisementController
-                                                          .adsList[Index]
-                                                          .photo ??
-                                                      image64,
+                                                      .adsList[Index].photo1,
                                                 ),
                                                 fit: BoxFit.fitHeight,
                                                 height: MediaQuery.of(context)

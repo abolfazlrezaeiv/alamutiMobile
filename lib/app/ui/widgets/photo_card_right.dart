@@ -17,12 +17,12 @@ class RightPhotoCard extends StatelessWidget {
 
     return Obx(
       () => Container(
-        height: MediaQuery.of(context).size.height / 6,
-        width: MediaQuery.of(context).size.width / 3.0,
+        height: Get.height / 6,
+        width: Get.height / 6,
         child: Card(
-          elevation: 2,
+          elevation: 3,
           clipBehavior: Clip.antiAliasWithSaveLayer,
-          color: Colors.grey[100],
+          // color: Colors.grey[100],
           child: (uploadImageController.rightImagebyteCode.value.length > 2)
               ? Stack(
                   children: [

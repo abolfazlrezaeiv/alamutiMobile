@@ -68,16 +68,33 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
             children: [
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 15.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                child: Column(
                   children: [
-                    LeftPhotoCard(),
-                    RightPhotoCard(),
-                    GestureDetector(
-                        onTap: () {
-                          chooseImage();
-                        },
-                        child: AddPhotoWidget()),
+                    Container(
+                      padding: EdgeInsets.all(Get.height / 60),
+                      alignment: Alignment.centerRight,
+                      child: Text(
+                        'عکس آگهی',
+                        style: TextStyle(
+                          fontSize: Get.width / 25,
+                          fontWeight: FontWeight.w400,
+                        ),
+                        textDirection: TextDirection.rtl,
+                      ),
+                    ),
+                    Container(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        LeftPhotoCard(),
+                        RightPhotoCard(),
+                        GestureDetector(
+                            onTap: () {
+                              chooseImage();
+                            },
+                            child: AddPhotoWidget()),
+                      ],
+                    ),
                   ],
                 ),
               ),
@@ -88,73 +105,112 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
                     padding: EdgeInsets.only(
                         top: MediaQuery.of(context).size.width / 40.0,
                         bottom: 3),
-                    child: Text(
-                      'عنوان آگهی',
-                      style: TextStyle(
-                          fontSize: MediaQuery.of(context).size.width / 27,
-                          fontWeight: FontWeight.w300),
-                      textDirection: TextDirection.rtl,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          'عنوان آگهی',
+                          style: TextStyle(
+                              fontSize: Get.width / 25,
+                              fontWeight: FontWeight.w400),
+                          textDirection: TextDirection.rtl,
+                        ),
+                        SizedBox(
+                          height: Get.height / 65,
+                        ),
+                        Text(
+                          'در عنوان آگهی به موارد مهم و چشمگیر اشاره کنید',
+                          style: TextStyle(
+                              fontSize: Get.width / 31,
+                              fontWeight: FontWeight.w300),
+                          textDirection: TextDirection.rtl,
+                        ),
+                      ],
                     ),
+                  ),
+                  SizedBox(
+                    height: Get.height / 80,
                   ),
                   AlamutiTextField(
                     textEditingController: titleTextFieldController,
                   ),
                 ],
               ),
+              SizedBox(
+                height: Get.height / 40,
+              ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   getPriceTextFieldTitle(),
+                  SizedBox(
+                    height: Get.height / 80,
+                  ),
                   AlamutiTextField(
                     textEditingController: priceTextFieldController,
                   ),
                 ],
               ),
+              SizedBox(
+                height: Get.height / 40,
+              ),
               getAreaTextField(),
-              Padding(
-                padding: EdgeInsets.only(
-                  top: MediaQuery.of(context).size.width / 40.0,
-                  bottom: 3,
-                ),
-                child: Text(
-                  'توضیحات',
-                  style: TextStyle(
-                      fontSize: MediaQuery.of(context).size.width / 27,
-                      fontWeight: FontWeight.w300),
-                  textDirection: TextDirection.rtl,
-                ),
+              SizedBox(
+                height: Get.height / 40,
+              ),
+              Text(
+                ' توضیحات آگهی',
+                style: TextStyle(
+                    fontSize: Get.width / 25, fontWeight: FontWeight.w400),
+                textDirection: TextDirection.rtl,
+              ),
+              SizedBox(
+                height: Get.height / 65,
+              ),
+              Text(
+                'جزئیات و نکات قابل توجه آگهی خود را کامل و دقیق بنویسید',
+                style: TextStyle(
+                    fontSize: Get.width / 31, fontWeight: FontWeight.w300),
+                textDirection: TextDirection.rtl,
+              ),
+              SizedBox(
+                height: Get.height / 80,
               ),
               DescriptionTextField(
                   textEditingController: descriptionTextFieldController),
               Padding(
-                padding: EdgeInsets.only(
-                    top: MediaQuery.of(context).size.width / 40.0,
-                    bottom: MediaQuery.of(context).size.height / 20.0),
-                child: TextButton(
-                  style: ElevatedButton.styleFrom(
-                    primary: Color.fromRGBO(10, 210, 71, 0.5),
-                  ),
-                  onPressed: () async {
-                    var response =
-                        await advertisementProvider.postAdvertisement(
-                      area: areaTextFieldController.text.isEmpty
-                          ? 0
-                          : int.parse(areaTextFieldController.text),
-                      description: descriptionTextFieldController.text,
-                      photo1: uploadImageController.leftImagebyteCode.value,
-                      photo2: uploadImageController.rightImagebyteCode.value,
-                      price: int.parse(priceTextFieldController.text),
-                      title: titleTextFieldController.text,
-                    );
+                padding: EdgeInsets.symmetric(
+                    vertical: MediaQuery.of(context).size.height / 35.0),
+                child: Container(
+                  padding: EdgeInsets.only(right: Get.width / 2),
+                  child: TextButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: Color.fromRGBO(10, 210, 71, 0.5),
+                      minimumSize: Size(88, 36),
+                    ),
+                    onPressed: () async {
+                      var response =
+                          await advertisementProvider.postAdvertisement(
+                        area: areaTextFieldController.text.isEmpty
+                            ? 0
+                            : int.parse(areaTextFieldController.text),
+                        description: descriptionTextFieldController.text,
+                        photo1: uploadImageController.leftImagebyteCode.value,
+                        photo2: uploadImageController.rightImagebyteCode.value,
+                        price: int.parse(priceTextFieldController.text),
+                        title: titleTextFieldController.text,
+                      );
 
-                    Get.toNamed('/home');
-                  },
-                  child: Text(
-                    'ثبت',
-                    style: TextStyle(
-                      color: Colors.grey[700],
-                      fontWeight: FontWeight.w300,
-                      fontSize: MediaQuery.of(context).size.width / 25,
+                      Get.toNamed('/home');
+                    },
+                    child: Text(
+                      'ثبت',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w400,
+                        fontSize: MediaQuery.of(context).size.width / 25,
+                      ),
                     ),
                   ),
                 ),
@@ -177,8 +233,8 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
                 child: Text(
                   "متراژ",
                   style: TextStyle(
-                      fontSize: MediaQuery.of(context).size.width / 27,
-                      fontWeight: FontWeight.w300),
+                      fontSize: MediaQuery.of(context).size.width / 25,
+                      fontWeight: FontWeight.w400),
                   textDirection: TextDirection.rtl,
                 ),
               ),
@@ -228,9 +284,7 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
           top: MediaQuery.of(context).size.width / 35.0, bottom: 3),
       child: Text(
         title,
-        style: TextStyle(
-            fontSize: MediaQuery.of(context).size.width / 27,
-            fontWeight: FontWeight.w300),
+        style: TextStyle(fontSize: Get.width / 25, fontWeight: FontWeight.w400),
         textDirection: TextDirection.rtl,
       ),
     );

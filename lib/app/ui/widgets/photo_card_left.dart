@@ -17,13 +17,13 @@ class LeftPhotoCard extends StatelessWidget {
         Get.put(UploadImageController());
 
     return Container(
-      height: MediaQuery.of(context).size.height / 6,
-      width: MediaQuery.of(context).size.width / 3.0,
+      height: Get.height / 6,
+      width: Get.height / 6,
       child: Obx(
         () => Card(
-          elevation: 2,
+          elevation: 3,
           clipBehavior: Clip.antiAliasWithSaveLayer,
-          color: Colors.grey[100],
+          // color: Colors.grey[100],
           child: (!uploadImageController.leftImagebyteCode.isEmpty)
               ? Stack(
                   children: [

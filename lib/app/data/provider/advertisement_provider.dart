@@ -1,8 +1,10 @@
 import 'package:alamuti/app/controller/adsFormController.dart';
 import 'package:alamuti/app/controller/advertisementController.dart';
+import 'package:alamuti/app/controller/myAdvertisementController.dart';
 import 'package:alamuti/app/data/model/Advertisement.dart';
 import 'package:alamuti/app/controller/token_provider.dart';
 import 'package:alamuti/app/data/provider/base_url.dart';
+import 'package:alamuti/app/ui/myalamuti/myadvertisement.dart';
 import 'package:dio/dio.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/utils.dart';
@@ -12,8 +14,17 @@ class AdvertisementProvider {
   AdsFormController adsFormController = Get.put(AdsFormController());
   ListAdvertisementController listAdvertisementController =
       Get.put(ListAdvertisementController());
+  MyAdvertisementController myAdvertisementController =
+      Get.put(MyAdvertisementController());
 
   Future<void> deleteAds(int id) async {
+    for (var i = 0; i < myAdvertisementController.adsList.length; i++) {
+      if (myAdvertisementController.adsList[i].id == id) {
+        myAdvertisementController.adsList.removeAt(i);
+        break;
+      }
+    }
+
     var response =
         await tokenProvider.api.delete(baseUrl + 'Advertisement/${id}');
   }
@@ -31,12 +42,13 @@ class AdvertisementProvider {
           description: element['description'],
           datePosted: element['daySended'],
           price: element['price'].toString(),
-          photo: element['photo1'],
+          photo1: element['photo1'],
+          photo2: element['photo2'],
           area: element['area'].toString(),
           userId: element['userId'],
           adsType: element['adsType']));
     });
-    print(myads.length);
+    myAdvertisementController.adsList.value = myads;
     return myads;
   }
 
@@ -64,7 +76,8 @@ class AdvertisementProvider {
         description: element['description'],
         datePosted: element['daySended'],
         price: element['price'].toString(),
-        photo: element['photo2'],
+        photo1: element['photo1'],
+        photo2: element['photo2'],
         area: element['area'].toString(),
         userId: element['userId'],
         adsType: element['adsType'],
@@ -97,7 +110,8 @@ class AdvertisementProvider {
             description: element['description'],
             datePosted: element['daySended'],
             price: element['price'].toString(),
-            photo: element['photo1'],
+            photo1: element['photo1'],
+            photo2: element['photo2'],
             area: element['area'].toString(),
             userId: element['userId'],
             adsType: element['adsType'],

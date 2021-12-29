@@ -21,8 +21,7 @@ class DescriptionTextField extends StatelessWidget {
           borderSide: BorderSide(color: Colors.greenAccent, width: 2.0),
         ),
         enabledBorder: OutlineInputBorder(
-          borderSide:
-              BorderSide(color: Colors.black38.withOpacity(0.1), width: 2.0),
+          borderSide: BorderSide(color: Colors.black, width: 0.6),
         ),
       ),
     );

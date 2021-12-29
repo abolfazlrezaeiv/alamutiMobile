@@ -17,6 +17,7 @@ import 'package:alamuti/app/ui/widgets/bottom_navbar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:http/http.dart';
 
 class ChatGroups extends StatefulWidget with CacheManager {
   const ChatGroups({Key? key}) : super(key: key);
@@ -126,11 +127,61 @@ class _ChatGroupsState extends State<ChatGroups> with CacheManager {
                       return GestureDetector(
                         onLongPress: () {
                           print(chatGroupController.groupList[index].name);
+                          Get.defaultDialog(
+                            radius: 5,
+                            title: 'از حذف چت مطمئن هستید ؟ ',
+                            barrierDismissible: false,
+                            titlePadding: EdgeInsets.all(20),
+                            titleStyle: TextStyle(
+                              fontWeight: FontWeight.w300,
+                              fontSize: 16,
+                            ),
+                            content: Text(
+                              'پیامهای مربوط به این کاربر حذف میشوند',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w200,
+                                fontSize: 14,
+                              ),
+                            ),
+                            cancel: Padding(
+                              padding: const EdgeInsets.all(5.0),
+                              child: TextButton(
+                                  onPressed: () {
+                                    Get.back();
+                                  },
+                                  child: Text(
+                                    'انصراف',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w300,
+                                        fontSize: 14,
+                                        color: Colors.green),
+                                  )),
+                            ),
+                            confirm: Padding(
+                              padding: const EdgeInsets.all(5.0),
+                              child: TextButton(
+                                  onPressed: () async {
+                                    await mp.deleteMessageGroup(
+                                        groupName: chatGroupController
+                                            .groupList.value[index].name);
+
+                                    Get.back();
+                                  },
+                                  child: Text(
+                                    'حذف',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w300,
+                                        fontSize: 14,
+                                        color: Colors.red),
+                                  )),
+                            ),
+                          );
                         },
                         onTap: () async {
                           if (await getUserId() != await sender()) {
                             mp.updateGroupStatus(
-                                name: chatGroupController.groupList[index].name,
+                                name: chatGroupController
+                                    .groupList.value[index].name,
                                 id: chatGroupController.groupList[index].id,
                                 title:
                                     chatGroupController.groupList[index].title,
@@ -182,8 +233,8 @@ class _ChatGroupsState extends State<ChatGroups> with CacheManager {
                                           CrossAxisAlignment.end,
                                       children: [
                                         Text(
-                                          chatGroupController.groupList[index]
-                                              .lastMessage.message,
+                                          chatGroupController.groupList
+                                              .value[index].lastMessage.message,
                                           textDirection: TextDirection.rtl,
                                           style: TextStyle(
                                               fontWeight: (chatGroupController

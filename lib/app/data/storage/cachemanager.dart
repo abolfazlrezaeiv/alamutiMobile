@@ -29,6 +29,12 @@ mixin CacheManager {
     return true;
   }
 
+  String getPhonenNumber() {
+    final box = GetStorage();
+    var phone = box.read(CacheManagerKey.PHONENUMBER.toString());
+    return phone;
+  }
+
   Future<bool> saveUserId(String userId) async {
     final box = GetStorage();
     await box.write(CacheManagerKey.USERID.toString(), userId);
@@ -39,7 +45,6 @@ mixin CacheManager {
   String getUserId() {
     final box = GetStorage();
     var id = box.read(CacheManagerKey.USERID.toString());
-    print('${id} from cach manager');
     return id;
   }
 
