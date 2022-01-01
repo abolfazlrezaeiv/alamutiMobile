@@ -7,9 +7,10 @@ import 'package:alamuti/app/data/storage/cachemanager.dart';
 import 'package:alamuti/app/ui/chat/chatgroup.dart';
 import 'package:alamuti/app/ui/widgets/alamuti_appbar.dart';
 import 'package:alamuti/app/ui/widgets/alamuti_textfield.dart';
-import 'package:alamuti/app/ui/widgets/appbar.dart';
-import 'package:alamuti/app/ui/widgets/bottom_navbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_chat_bubble/bubble_type.dart';
+import 'package:flutter_chat_bubble/chat_bubble.dart';
+import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_9.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
@@ -93,29 +94,89 @@ class _NewChatState extends State<NewChat> {
                       if (chatMessageController
                               .messageList.value[index].sender ==
                           storage.read(CacheManagerKey.USERID.toString())) {
-                        return Padding(
-                          padding: const EdgeInsets.only(
-                              right: 8, left: 150, bottom: 8, top: 8),
-                          child: Card(
-                            child: Padding(
-                              padding: const EdgeInsets.all(15.0),
-                              child: Text(
-                                chatMessageController
-                                    .messageList[index].message,
-                                textDirection: TextDirection.rtl,
-                              ),
+                        return ChatBubble(
+                          clipper:
+                              ChatBubbleClipper9(type: BubbleType.sendBubble),
+                          alignment: Alignment.topRight,
+                          margin: EdgeInsets.only(top: 20),
+                          backGroundColor: Color.fromRGBO(8, 212, 76, 0.5),
+                          child: Container(
+                            constraints: BoxConstraints(
+                              maxWidth: MediaQuery.of(context).size.width * 0.7,
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(
+                                  chatMessageController
+                                      .messageList.value[index].message,
+                                  textDirection: TextDirection.rtl,
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Text(
+                                      '',
+                                      style: TextStyle(color: Colors.black),
+                                    ),
+                                    Text(
+                                      chatMessageController
+                                          .messageList.value[index].daySended,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w200,
+                                          fontFamily: 'IRANSansXFaNum',
+                                          fontSize: 13),
+                                      textDirection: TextDirection.rtl,
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
                           ),
                         );
                       } else {
-                        return Padding(
-                          padding: const EdgeInsets.only(
-                              right: 150, left: 8, bottom: 8, top: 8),
-                          child: Card(
-                            child: Padding(
-                              padding: const EdgeInsets.all(15.0),
-                              child: Text(chatMessageController
-                                  .messageList.value[index].message),
+                        return ChatBubble(
+                          clipper: ChatBubbleClipper9(
+                              type: BubbleType.receiverBubble),
+                          backGroundColor: Color(0xffE7E7ED),
+                          margin: EdgeInsets.only(top: 20),
+                          child: Container(
+                            constraints: BoxConstraints(
+                              maxWidth: MediaQuery.of(context).size.width * 0.7,
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(
+                                  chatMessageController
+                                      .messageList.value[index].message,
+                                  textDirection: TextDirection.rtl,
+                                  style: TextStyle(color: Colors.black),
+                                ),
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Text(
+                                      '',
+                                      style: TextStyle(color: Colors.black),
+                                    ),
+                                    Text(
+                                      chatMessageController
+                                          .messageList.value[index].daySended,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w200,
+                                          fontFamily: 'IRANSansXFaNum',
+                                          fontSize: 13),
+                                      textDirection: TextDirection.rtl,
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
                           ),
                         );
@@ -137,15 +198,16 @@ class _NewChatState extends State<NewChat> {
                         TextButton(
                             onPressed: () {
                               signalHelper.sendMessage(
-                                  receiverId:
-                                      chatTargetUserController.userId.value,
-                                  grouptitle: widget.groupTitle,
-                                  senderId: storage.read(
-                                    CacheManagerKey.USERID.toString(),
-                                  ),
-                                  message: textEditingController.text,
-                                  groupImage: widget.groupImage,
-                                  groupname: null);
+                                receiverId:
+                                    chatTargetUserController.userId.value,
+                                grouptitle: widget.groupTitle,
+                                senderId: storage.read(
+                                  CacheManagerKey.USERID.toString(),
+                                ),
+                                message: textEditingController.text,
+                                groupname: null,
+                                groupImage: widget.groupImage,
+                              );
 
                               chatMessageController.addMessage(ChatMessage(
                                   id: 44,
@@ -165,7 +227,10 @@ class _NewChatState extends State<NewChat> {
                                 }
                               });
                             },
-                            child: Text('ارسال'))
+                            child: Text(
+                              'ارسال',
+                              style: TextStyle(color: Colors.greenAccent),
+                            ))
                       ],
                     ),
                   ),

@@ -2,7 +2,7 @@ import 'package:alamuti/app/controller/adsFormController.dart';
 import 'package:alamuti/app/controller/advertisementController.dart';
 import 'package:alamuti/app/controller/myAdvertisementController.dart';
 import 'package:alamuti/app/data/model/Advertisement.dart';
-import 'package:alamuti/app/controller/token_provider.dart';
+import 'package:alamuti/app/data/provider/token_provider.dart';
 import 'package:alamuti/app/data/provider/base_url.dart';
 import 'package:alamuti/app/ui/myalamuti/myadvertisement.dart';
 import 'package:dio/dio.dart';
@@ -46,6 +46,7 @@ class AdvertisementProvider {
           photo2: element['photo2'],
           area: element['area'].toString(),
           userId: element['userId'],
+          published: element['published'],
           adsType: element['adsType']));
     });
     myAdvertisementController.adsList.value = myads;
@@ -53,15 +54,12 @@ class AdvertisementProvider {
   }
 
   Future<List<Advertisement>> findAll([String? searchInput = null]) async {
-    print('search called');
     var response;
     if (searchInput == null) {
-      print('input is null');
       response = await tokenProvider.api.get(
         baseUrl + 'Advertisement',
       );
     } else {
-      print('searching');
       response = await tokenProvider.api.get(
         baseUrl + 'Advertisement/find/${searchInput}',
       );
@@ -81,9 +79,10 @@ class AdvertisementProvider {
         area: element['area'].toString(),
         userId: element['userId'],
         adsType: element['adsType'],
+        published: element['published'],
       ));
     });
-    print(myads.length);
+
     return myads;
   }
 
@@ -115,11 +114,12 @@ class AdvertisementProvider {
             area: element['area'].toString(),
             userId: element['userId'],
             adsType: element['adsType'],
+            published: element['published'],
           ),
         );
       },
     );
-    print(myads.length);
+
     listAdvertisementController.adsList.value = myads;
 
     return myads;
@@ -145,8 +145,6 @@ class AdvertisementProvider {
       baseUrl + 'Advertisement',
       data: formData,
     );
-    print(response.statusMessage);
-    print(response.statusCode);
   }
 
   updateAdvertisement(
@@ -171,7 +169,5 @@ class AdvertisementProvider {
       baseUrl + 'Advertisement',
       data: formData,
     );
-    print(response.statusMessage);
-    print(response.statusCode);
   }
 }

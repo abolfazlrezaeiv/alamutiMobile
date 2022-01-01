@@ -116,6 +116,11 @@ class _HomePageState extends State<HomePage> {
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: TextField(
                           controller: _textEditingController,
+                          style: TextStyle(
+                              backgroundColor: Colors.white,
+                              fontSize: Get.width / 27,
+                              fontFamily: 'IRANSansXFaNum',
+                              fontWeight: FontWeight.w300),
                           onTap: () {
                             setState(() {
                               isTyping = true;
@@ -130,6 +135,9 @@ class _HomePageState extends State<HomePage> {
                           },
                           textAlign: TextAlign.end,
                           decoration: InputDecoration(
+                            contentPadding: EdgeInsets.all(
+                              8, // HERE THE IMPORTANT PART
+                            ),
                             prefixIcon: isKeyboardOpen
                                 ? Opacity(
                                     opacity: 0.5,
@@ -281,7 +289,7 @@ class _HomePageState extends State<HomePage> {
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     FittedBox(
-                                      fit: BoxFit.fill,
+                                      fit: BoxFit.cover,
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.circular(8),
                                         child: (listAdvertisementController
@@ -291,7 +299,7 @@ class _HomePageState extends State<HomePage> {
                                                 opacity: 0.6,
                                                 child: Image.asset(
                                                   'assets/logo/no-image.png',
-                                                  fit: BoxFit.fitHeight,
+                                                  fit: BoxFit.cover,
                                                   height: MediaQuery.of(context)
                                                           .size
                                                           .height /
@@ -307,7 +315,7 @@ class _HomePageState extends State<HomePage> {
                                                   listAdvertisementController
                                                       .adsList[Index].photo1,
                                                 ),
-                                                fit: BoxFit.fitHeight,
+                                                fit: BoxFit.cover,
                                                 height: MediaQuery.of(context)
                                                         .size
                                                         .height /

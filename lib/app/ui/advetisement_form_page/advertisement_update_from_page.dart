@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:alamuti/app/controller/adsFormController.dart';
 import 'package:alamuti/app/controller/selectedTapController.dart';
+import 'package:alamuti/app/controller/update_image_advertisement.dart';
 import 'package:alamuti/app/controller/upload_image_controller.dart';
 import 'package:alamuti/app/data/model/Advertisement.dart';
 import 'package:alamuti/app/data/provider/advertisement_provider.dart';
@@ -12,6 +13,8 @@ import 'package:alamuti/app/ui/imgaebase64.dart';
 import 'package:alamuti/app/ui/myalamuti/myadvertisement.dart';
 import 'package:alamuti/app/ui/post_ads_category/submit_ads_category.dart';
 import 'package:alamuti/app/ui/widgets/photo_card_left.dart';
+import 'package:alamuti/app/ui/widgets/update_image_card_left.dart';
+import 'package:alamuti/app/ui/widgets/update_image_card_right.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -34,27 +37,35 @@ class AdvertisementUpdateForm extends StatefulWidget {
 
 class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
   AdsFormController adsFormController = Get.put(AdsFormController());
+
   ScreenController screenController = Get.put(ScreenController());
-  UploadImageController uploadImageController =
-      Get.put(UploadImageController());
+
+  UpdateUploadImageController updateUploadImageController =
+      Get.put(UpdateUploadImageController());
+
   final GlobalKey<FormState> formKey = GlobalKey();
 
   AdvertisementProvider advertisementProvider = AdvertisementProvider();
 
   late TextEditingController titleTextFieldController;
+
   late TextEditingController priceTextFieldController;
 
   late TextEditingController areaTextFieldController;
 
   late TextEditingController descriptionTextFieldController;
-
+  var photo1;
+  var photo2;
   @override
-  void initState() {
+  initState() {
     super.initState();
+
+    // executes after build
     titleTextFieldController = TextEditingController(text: widget.ads.title);
     priceTextFieldController =
         TextEditingController(text: widget.ads.price.toString());
-
+    var photo1 = widget.ads.photo1 ?? '';
+    var photo2 = widget.ads.photo2 ?? '';
     areaTextFieldController = TextEditingController(text: widget.ads.area);
 
     descriptionTextFieldController =
@@ -67,9 +78,19 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
   var _image;
 
   String? _image64;
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    updateUploadImageController.resetImageCounter();
+  }
 
   @override
   Widget build(BuildContext context) {
+    // updateUploadImageController.leftImagebyteCode.value =
+    //     widget.ads.photo1 ?? '';
+    // updateUploadImageController.rightImagebyteCode.value =
+    //     widget.ads.photo2 ?? '';
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AlamutiAppBar(
@@ -79,8 +100,7 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
         backwidget: SubmitAdsCategory(),
       ),
       body: Padding(
-        padding: EdgeInsets.symmetric(
-            horizontal: MediaQuery.of(context).size.width / 40),
+        padding: EdgeInsets.symmetric(horizontal: Get.width / 40),
         child: Form(
           child: ListView(
             children: [
@@ -104,8 +124,8 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        LeftPhotoCard(),
-                        RightPhotoCard(),
+                        UpdateLeftPhotoCard(),
+                        UpdateRightPhotoCard(),
                         GestureDetector(
                             onTap: () {
                               chooseImage();
@@ -120,9 +140,7 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Padding(
-                    padding: EdgeInsets.only(
-                        top: MediaQuery.of(context).size.width / 40.0,
-                        bottom: 3),
+                    padding: EdgeInsets.only(top: Get.width / 40.0, bottom: 3),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.end,
@@ -198,8 +216,7 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
               DescriptionTextField(
                   textEditingController: descriptionTextFieldController),
               Padding(
-                padding: EdgeInsets.symmetric(
-                    vertical: MediaQuery.of(context).size.height / 35.0),
+                padding: EdgeInsets.symmetric(vertical: Get.height / 35.0),
                 child: Container(
                   padding: EdgeInsets.only(right: Get.width / 2),
                   child: TextButton(
@@ -209,15 +226,19 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
                     ),
                     onPressed: () async {
                       var response =
-                          await advertisementProvider.postAdvertisement(
+                          await advertisementProvider.updateAdvertisement(
                         area: areaTextFieldController.text.isEmpty
                             ? 0
                             : int.parse(areaTextFieldController.text),
                         description: descriptionTextFieldController.text,
-                        photo1: uploadImageController.leftImagebyteCode.value,
-                        photo2: uploadImageController.rightImagebyteCode.value,
-                        price: int.parse(priceTextFieldController.text),
+                        photo1:
+                            updateUploadImageController.leftImagebyteCode.value,
+                        photo2: updateUploadImageController
+                            .rightImagebyteCode.value,
+                        price: int.parse(priceTextFieldController.text
+                            .replaceAll(RegExp(r','), '')),
                         title: titleTextFieldController.text,
+                        id: widget.ads.id,
                       );
 
                       Get.toNamed('/home');
@@ -227,7 +248,7 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
                       style: TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.w400,
-                        fontSize: MediaQuery.of(context).size.width / 25,
+                        fontSize: Get.width / 25,
                       ),
                     ),
                   ),
@@ -395,7 +416,7 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
         setState(() {
           _image64 = img64;
         });
-        uploadImageController.getImage(img64);
+        updateUploadImageController.getImage(img64);
       }
     } else {
       print('picked image is null');

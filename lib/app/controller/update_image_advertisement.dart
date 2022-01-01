@@ -1,6 +1,6 @@
 import 'package:get/state_manager.dart';
 
-class UploadImageController extends GetxController {
+class UpdateUploadImageController extends GetxController {
   var isFirstOneSelected = false.obs;
   var imageCounter = 0.obs;
   var rightImagebyteCode = ''.obs;
@@ -29,9 +29,9 @@ class UploadImageController extends GetxController {
   //   return leftImagebyteCode;
   // }
 
-  // void resetImageCounter() {
-  //   imageCounter.value = 0;
-  //   rightImagebyteCode.value = '';
-  //   leftImagebyteCode.value = '';
-  // }
+  void resetImageCounter() {
+    imageCounter.value = 0;
+    rightImagebyteCode.value = '';
+    leftImagebyteCode.value = '';
+  }
 }

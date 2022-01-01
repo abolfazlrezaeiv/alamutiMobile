@@ -21,8 +21,16 @@ class AlamutiTextField extends StatelessWidget {
           return null;
         },
         textDirection: TextDirection.rtl,
-        style: TextStyle(backgroundColor: Colors.white),
+        textAlign: TextAlign.start,
+        style: TextStyle(
+            backgroundColor: Colors.white,
+            fontSize: Get.width / 27,
+            fontFamily: 'IRANSansXFaNum',
+            fontWeight: FontWeight.w300),
         decoration: InputDecoration(
+          contentPadding: EdgeInsets.all(
+            8, // HERE THE IMPORTANT PART
+          ),
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(color: Colors.greenAccent, width: 2.0),
           ),

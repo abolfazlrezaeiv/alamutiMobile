@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class DescriptionTextField extends StatelessWidget {
   String? initialvalue = ' ';
@@ -15,8 +16,15 @@ class DescriptionTextField extends StatelessWidget {
       textDirection: TextDirection.rtl,
       keyboardType: TextInputType.multiline,
       maxLines: 6,
-      style: TextStyle(backgroundColor: Colors.white),
+      textAlign: TextAlign.start,
+      style: TextStyle(
+          backgroundColor: Colors.white,
+          fontSize: Get.width / 27,
+          fontWeight: FontWeight.w300),
       decoration: InputDecoration(
+        contentPadding: EdgeInsets.all(
+          8, // HERE THE IMPORTANT PART
+        ),
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(color: Colors.greenAccent, width: 2.0),
         ),

@@ -3,6 +3,7 @@ import 'package:alamuti/app/controller/ConnectionController.dart';
 import 'package:alamuti/app/controller/adsFormController.dart';
 import 'package:alamuti/app/controller/myAdvertisementController.dart';
 import 'package:alamuti/app/controller/selectedTapController.dart';
+import 'package:alamuti/app/controller/update_image_advertisement.dart';
 import 'package:alamuti/app/data/model/Advertisement.dart';
 import 'package:alamuti/app/data/provider/advertisement_provider.dart';
 import 'package:alamuti/app/ui/advetisement_form_page/advertisement_update_from_page.dart';
@@ -38,6 +39,8 @@ class _MyAdvertisementState extends State<MyAdvertisement> {
   AdsFormController adsFormController = AdsFormController();
   MyAdvertisementController myAdvertisementController =
       Get.put(MyAdvertisementController());
+  UpdateUploadImageController updateUploadImageController =
+      Get.put(UpdateUploadImageController());
   @override
   void initState() {
     super.initState();
@@ -103,7 +106,7 @@ class _MyAdvertisementState extends State<MyAdvertisement> {
                                           opacity: 0.6,
                                           child: Image.asset(
                                             'assets/logo/no-image.png',
-                                            fit: BoxFit.fitHeight,
+                                            fit: BoxFit.cover,
                                             height: Get.height / 6,
                                             width: Get.height / 6,
                                           ),
@@ -113,7 +116,7 @@ class _MyAdvertisementState extends State<MyAdvertisement> {
                                             myAdvertisementController
                                                 .adsList[index].photo1!,
                                           ),
-                                          fit: BoxFit.fitHeight,
+                                          fit: BoxFit.cover,
                                           height: Get.height / 6,
                                           width: Get.height / 6,
                                         ),
@@ -140,137 +143,211 @@ class _MyAdvertisementState extends State<MyAdvertisement> {
                                     ),
                                     Row(
                                       children: [
-                                        TextButton(
-                                          onPressed: () {
-                                            Get.defaultDialog(
-                                              radius: 5,
-                                              title: 'از حذف آگهی مطمعن هستید؟',
-                                              barrierDismissible: false,
-                                              titlePadding: EdgeInsets.all(20),
-                                              titleStyle: TextStyle(
-                                                fontWeight: FontWeight.w300,
-                                                fontSize: 16,
-                                              ),
-                                              content: Text(
-                                                'آگهی به طور کامل حذف میشود و قابل بازگشت نیست',
+                                        myAdvertisementController
+                                                    .adsList[index].published ==
+                                                false
+                                            ? Padding(
+                                                padding:
+                                                    const EdgeInsets.all(13.0),
+                                                child: Container(
+                                                  child: Padding(
+                                                    padding: const EdgeInsets
+                                                            .symmetric(
+                                                        horizontal: 5.0,
+                                                        vertical: 2),
+                                                    child: Text(
+                                                      'در صف انتشار',
+                                                      style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w300,
+                                                          fontSize:
+                                                              Get.width / 28,
+                                                          color: Colors.grey),
+                                                    ),
+                                                  ),
+                                                  decoration: BoxDecoration(
+                                                      border: Border.all(
+                                                          color: Colors
+                                                              .greenAccent,
+                                                          width: 0.7),
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  5))),
+                                                ),
+                                              )
+                                            : Container(),
+                                        Row(
+                                          children: [
+                                            TextButton(
+                                              onPressed: () {
+                                                Get.defaultDialog(
+                                                  radius: 5,
+                                                  title:
+                                                      'از حذف آگهی مطمعن هستید؟',
+                                                  barrierDismissible: false,
+                                                  titlePadding:
+                                                      EdgeInsets.all(20),
+                                                  titleStyle: TextStyle(
+                                                    fontWeight: FontWeight.w300,
+                                                    fontSize: 16,
+                                                  ),
+                                                  content: Text(
+                                                    'آگهی به طور کامل حذف میشود و قابل بازگشت نیست',
+                                                    style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w200,
+                                                      fontSize: 14,
+                                                    ),
+                                                  ),
+                                                  cancel: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            5.0),
+                                                    child: TextButton(
+                                                        onPressed: () {
+                                                          Get.back();
+                                                        },
+                                                        child: Text(
+                                                          'انصراف',
+                                                          style: TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w300,
+                                                              fontSize: 14,
+                                                              color:
+                                                                  Colors.green),
+                                                        )),
+                                                  ),
+                                                  confirm: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            5.0),
+                                                    child: TextButton(
+                                                        onPressed: () async {
+                                                          await advertisementProvider
+                                                              .deleteAds(
+                                                                  myAdvertisementController
+                                                                      .adsList[
+                                                                          index]
+                                                                      .id);
+
+                                                          Get.back();
+                                                        },
+                                                        child: Text(
+                                                          'حذف',
+                                                          style: TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w300,
+                                                              fontSize: 14,
+                                                              color:
+                                                                  Colors.red),
+                                                        )),
+                                                  ),
+                                                );
+                                              },
+                                              child: Text(
+                                                'حذف',
                                                 style: TextStyle(
-                                                  fontWeight: FontWeight.w200,
-                                                  fontSize: 14,
+                                                  color: Colors.white
+                                                      .withOpacity(0.8),
+                                                  fontWeight: FontWeight.w300,
                                                 ),
                                               ),
-                                              cancel: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(5.0),
-                                                child: TextButton(
-                                                    onPressed: () {
-                                                      Get.back();
-                                                    },
-                                                    child: Text(
-                                                      'انصراف',
-                                                      style: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.w300,
-                                                          fontSize: 14,
-                                                          color: Colors.green),
-                                                    )),
-                                              ),
-                                              confirm: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(5.0),
-                                                child: TextButton(
-                                                    onPressed: () async {
-                                                      await advertisementProvider
-                                                          .deleteAds(
-                                                              myAdvertisementController
-                                                                  .adsList[
-                                                                      index]
-                                                                  .id);
-
-                                                      Get.back();
-                                                    },
-                                                    child: Text(
-                                                      'حذف',
-                                                      style: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.w300,
-                                                          fontSize: 14,
-                                                          color: Colors.red),
-                                                    )),
-                                              ),
-                                            );
-                                          },
-                                          child: Text(
-                                            'حذف',
-                                            style: TextStyle(
-                                              color:
-                                                  Colors.white.withOpacity(0.8),
-                                              fontWeight: FontWeight.w300,
-                                            ),
-                                          ),
-                                          style: ButtonStyle(
-                                            backgroundColor:
-                                                MaterialStateProperty.all(
-                                              Color.fromRGBO(255, 0, 0, 0.4),
-                                            ),
-                                            shape: MaterialStateProperty.all<
-                                                RoundedRectangleBorder>(
-                                              RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(0),
+                                              style: ButtonStyle(
+                                                backgroundColor:
+                                                    MaterialStateProperty.all(
+                                                  Color.fromRGBO(
+                                                      255, 0, 0, 0.4),
+                                                ),
+                                                shape:
+                                                    MaterialStateProperty.all<
+                                                        RoundedRectangleBorder>(
+                                                  RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            0),
+                                                  ),
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          width: 3,
-                                        ),
-                                        TextButton(
-                                          onPressed: () {
-                                            if (myAdvertisementController
-                                                    .adsList[index].adsType ==
-                                                AdsFormState.FOOD.toString()) {
-                                              adsFormController.formState
-                                                  .value = AdsFormState.FOOD;
-                                            }
-                                            if (myAdvertisementController
-                                                    .adsList[index].adsType ==
-                                                AdsFormState.JOB.toString()) {
-                                              adsFormController.formState
-                                                  .value = AdsFormState.JOB;
-                                            }
-                                            if (myAdvertisementController
-                                                    .adsList[index].adsType ==
-                                                AdsFormState.REALSTATE
-                                                    .toString()) {
-                                              adsFormController
-                                                      .formState.value =
-                                                  AdsFormState.REALSTATE;
-                                            }
-                                            Get.to(AdvertisementUpdateForm(
-                                                ads: myAdvertisementController
-                                                    .adsList[index]));
-                                          },
-                                          child: Text(
-                                            'ویرایش',
-                                            style: TextStyle(
-                                              color:
-                                                  Colors.black.withOpacity(0.8),
-                                              fontWeight: FontWeight.w200,
+                                            SizedBox(
+                                              width: 3,
                                             ),
-                                          ),
-                                          style: ButtonStyle(
-                                            backgroundColor:
-                                                MaterialStateProperty.all(
-                                              Color.fromRGBO(10, 210, 71, 0.4),
-                                            ),
-                                            shape: MaterialStateProperty.all<
-                                                RoundedRectangleBorder>(
-                                              RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(0),
+                                            TextButton(
+                                              onPressed: () {
+                                                if (myAdvertisementController
+                                                        .adsList[index]
+                                                        .adsType ==
+                                                    AdsFormState.FOOD
+                                                        .toString()) {
+                                                  adsFormController
+                                                          .formState.value =
+                                                      AdsFormState.FOOD;
+                                                }
+                                                if (myAdvertisementController
+                                                        .adsList[index]
+                                                        .adsType ==
+                                                    AdsFormState.JOB
+                                                        .toString()) {
+                                                  adsFormController.formState
+                                                      .value = AdsFormState.JOB;
+                                                }
+                                                if (myAdvertisementController
+                                                        .adsList[index]
+                                                        .adsType ==
+                                                    AdsFormState.REALSTATE
+                                                        .toString()) {
+                                                  adsFormController
+                                                          .formState.value =
+                                                      AdsFormState.REALSTATE;
+                                                }
+                                                updateUploadImageController
+                                                        .leftImagebyteCode
+                                                        .value =
+                                                    myAdvertisementController
+                                                            .adsList[index]
+                                                            .photo1 ??
+                                                        '';
+                                                updateUploadImageController
+                                                        .rightImagebyteCode
+                                                        .value =
+                                                    myAdvertisementController
+                                                            .adsList[index]
+                                                            .photo2 ??
+                                                        '';
+                                                Get.to(AdvertisementUpdateForm(
+                                                    ads:
+                                                        myAdvertisementController
+                                                            .adsList[index]));
+                                              },
+                                              child: Text(
+                                                'ویرایش',
+                                                style: TextStyle(
+                                                  color: Colors.black
+                                                      .withOpacity(0.8),
+                                                  fontWeight: FontWeight.w200,
+                                                ),
+                                              ),
+                                              style: ButtonStyle(
+                                                backgroundColor:
+                                                    MaterialStateProperty.all(
+                                                  Color.fromRGBO(
+                                                      10, 210, 71, 0.4),
+                                                ),
+                                                shape:
+                                                    MaterialStateProperty.all<
+                                                        RoundedRectangleBorder>(
+                                                  RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            0),
+                                                  ),
+                                                ),
                                               ),
                                             ),
-                                          ),
+                                          ],
                                         ),
                                       ],
                                     ),

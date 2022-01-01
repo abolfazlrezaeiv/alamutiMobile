@@ -45,12 +45,15 @@ class MyAlamutiPage extends StatelessWidget with CacheManager {
                               onPressed: () {
                                 auth.logOut();
                               },
-                              child: Text(
-                                'خروج از پروفایل',
-                                style: TextStyle(
-                                    color: Colors.black.withOpacity(1),
-                                    fontWeight: FontWeight.w300,
-                                    fontSize: Get.width / 33),
+                              child: Padding(
+                                padding: const EdgeInsets.all(2.0),
+                                child: Text(
+                                  'خروج ازحساب',
+                                  style: TextStyle(
+                                      color: Colors.black.withOpacity(1),
+                                      fontWeight: FontWeight.w300,
+                                      fontSize: Get.width / 33),
+                                ),
                               ),
                               style: ButtonStyle(
                                 backgroundColor: MaterialStateProperty.all(

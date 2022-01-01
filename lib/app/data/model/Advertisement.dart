@@ -9,7 +9,7 @@ class Advertisement {
   late String adsType;
   late String area;
   late String userId;
-
+  late bool published;
   Advertisement(
       {required this.id,
       required this.title,
@@ -20,6 +20,7 @@ class Advertisement {
       required this.adsType,
       required this.area,
       required this.userId,
+      required this.published,
       required this.datePosted}) {
     var value = price
         .split('')
@@ -33,9 +34,6 @@ class Advertisement {
       value = value.substring(1, value.length);
     }
 
-    print(value);
-    print(value);
-    print(value);
     this.price = value;
   }
 
@@ -50,6 +48,7 @@ class Advertisement {
     adsType = json['adsType'];
     area = json['area'];
     userId = json['userId'];
+    published = json['published'];
   }
 }
 

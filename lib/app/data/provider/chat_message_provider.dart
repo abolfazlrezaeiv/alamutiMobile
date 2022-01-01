@@ -2,7 +2,7 @@ import 'package:alamuti/app/controller/chat_group_controller.dart';
 import 'package:alamuti/app/controller/chat_message_controller.dart';
 import 'package:alamuti/app/controller/last_message_sender_controller.dart';
 import 'package:alamuti/app/controller/new_message_controller.dart';
-import 'package:alamuti/app/controller/token_provider.dart';
+import 'package:alamuti/app/data/provider/token_provider.dart';
 import 'package:alamuti/app/data/model/chatMessage.dart';
 import 'package:alamuti/app/data/model/chatgroup.dart';
 import 'package:alamuti/app/data/provider/base_url.dart';

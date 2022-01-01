@@ -27,7 +27,9 @@ class AdvertisementForm extends StatefulWidget {
 
 class _AdvertisementFormState extends State<AdvertisementForm> {
   AdsFormController adsFormController = Get.put(AdsFormController());
+
   ScreenController screenController = Get.put(ScreenController());
+
   UploadImageController uploadImageController =
       Get.put(UploadImageController());
   final GlobalKey<FormState> formKey = GlobalKey();

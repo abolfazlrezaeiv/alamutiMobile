@@ -1,5 +1,4 @@
 import 'package:alamuti/app/controller/ConnectionController.dart';
-import 'package:alamuti/app/controller/token_provider.dart';
 import 'package:alamuti/app/ui/onboard/onboard.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

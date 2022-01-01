@@ -225,9 +225,7 @@ class _ChatGroupsState extends State<ChatGroups> with CacheManager {
                                       //     :
                                       Colors.white,
                                   child: Padding(
-                                    padding: EdgeInsets.all(
-                                        MediaQuery.of(context).size.height /
-                                            50),
+                                    padding: EdgeInsets.all(Get.height / 50),
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.end,
@@ -253,10 +251,7 @@ class _ChatGroupsState extends State<ChatGroups> with CacheManager {
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                         SizedBox(
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height /
-                                              80,
+                                          height: Get.height / 80,
                                         ),
                                         Row(
                                           mainAxisAlignment:
@@ -272,10 +267,7 @@ class _ChatGroupsState extends State<ChatGroups> with CacheManager {
                                                   fontSize: 12),
                                             ),
                                             SizedBox(
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width /
-                                                  30,
+                                              width: Get.width / 30,
                                             ),
                                             FittedBox(
                                               fit: BoxFit.fill,
@@ -283,48 +275,41 @@ class _ChatGroupsState extends State<ChatGroups> with CacheManager {
                                                 borderRadius:
                                                     BorderRadius.circular(8),
                                                 child: (chatGroupController
-                                                                .groupList[
-                                                                    index]
-                                                                .groupImage
-                                                                .length >
-                                                            4 &&
-                                                        chatGroupController
-                                                                .groupList[
-                                                                    index]
-                                                                .groupImage !=
-                                                            null)
+                                                            .groupList[index]
+                                                            .groupImage !=
+                                                        null)
                                                     ? Image.memory(
                                                         base64Decode(
                                                             chatGroupController
                                                                 .groupList[
                                                                     index]
                                                                 .groupImage),
-                                                        fit: BoxFit.fitHeight,
-                                                        width: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .width /
-                                                            7,
-                                                        height: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .width /
-                                                            7,
+                                                        fit: BoxFit.cover,
+                                                        width: Get.width / 7,
+                                                        height: Get.width / 7,
                                                       )
-                                                    : Image.asset(
-                                                        'assets/logo/no-image.png',
-                                                        fit: BoxFit.fitHeight,
-                                                        width: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .width /
-                                                            7,
-                                                        height: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .width /
-                                                            7,
-                                                      ),
+                                                    : (chatGroupController
+                                                                .groupList[
+                                                                    index]
+                                                                .title ==
+                                                            'الموتی'
+                                                        ? Image.asset(
+                                                            'assets/logo/logo.png',
+                                                            fit:
+                                                                BoxFit.fitWidth,
+                                                            width:
+                                                                Get.width / 7,
+                                                            height:
+                                                                Get.width / 7,
+                                                          )
+                                                        : Image.asset(
+                                                            'assets/logo/no-image.png',
+                                                            fit: BoxFit.cover,
+                                                            width:
+                                                                Get.width / 7,
+                                                            height:
+                                                                Get.width / 7,
+                                                          )),
                                               ),
                                             )
                                           ],

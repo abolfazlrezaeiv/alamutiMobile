@@ -25,7 +25,7 @@ class Chat extends StatefulWidget with CacheManager {
 
   final String groupTitle;
 
-  final String groupImage;
+  final String? groupImage;
 
   Chat({
     Key? key,
@@ -221,13 +221,19 @@ class _ChatState extends State<Chat> {
                                   ),
                                   '')
                               .trimRight();
+                          print(target);
+                          print(storage.read(
+                            CacheManagerKey.USERID.toString(),
+                          ));
+
+                          print('${textEditingController.text} our messag');
+
+                          print(widget.groupname);
+
+                          print(widget.groupTitle);
 
                           signalHelper.sendMessage(
-                              receiverId:
-                                  chatTargetUserController.userId.value.length <
-                                          2
-                                      ? target
-                                      : chatTargetUserController.userId.value,
+                              receiverId: target,
                               senderId: storage.read(
                                 CacheManagerKey.USERID.toString(),
                               ),
@@ -251,7 +257,10 @@ class _ChatState extends State<Chat> {
                             }
                           });
                         },
-                        child: Text('ارسال'))
+                        child: Text(
+                          'ارسال',
+                          style: TextStyle(color: Colors.greenAccent),
+                        ))
                   ],
                 ),
               ),

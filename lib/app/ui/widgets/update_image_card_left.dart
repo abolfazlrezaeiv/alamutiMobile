@@ -1,19 +1,18 @@
 import 'dart:convert';
+import 'package:alamuti/app/controller/update_image_advertisement.dart';
 import 'package:alamuti/app/controller/upload_image_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class LeftPhotoCard extends StatelessWidget {
-  LeftPhotoCard({
+class UpdateLeftPhotoCard extends StatelessWidget {
+  UpdateLeftPhotoCard({
     Key? key,
   }) : super(key: key);
-
+  UpdateUploadImageController updateUploadImageController =
+      Get.put(UpdateUploadImageController());
   @override
   Widget build(BuildContext context) {
-    UploadImageController uploadImageController =
-        Get.put(UploadImageController());
-
     return Container(
         height: Get.width / 3,
         width: Get.width / 3,
@@ -21,12 +20,13 @@ class LeftPhotoCard extends StatelessWidget {
           () => Card(
             elevation: 3,
             clipBehavior: Clip.antiAliasWithSaveLayer,
-            child: (uploadImageController.leftImagebyteCode.value.length > 2)
+            child: (updateUploadImageController.leftImagebyteCode.value.length >
+                    2)
                 ? Stack(
                     children: [
                       Image.memory(
-                        base64Decode(
-                            uploadImageController.leftImagebyteCode.value),
+                        base64Decode(updateUploadImageController
+                            .leftImagebyteCode.value),
                         fit: BoxFit.cover,
                       ),
                       IconButton(
@@ -35,7 +35,8 @@ class LeftPhotoCard extends StatelessWidget {
                           color: Colors.white,
                         ),
                         onPressed: () {
-                          uploadImageController.leftImagebyteCode.value = '';
+                          updateUploadImageController.leftImagebyteCode.value =
+                              '';
                         },
                       )
                     ],

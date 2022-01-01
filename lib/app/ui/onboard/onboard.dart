@@ -1,8 +1,4 @@
-import 'dart:io';
-
 import 'package:alamuti/app/controller/authentication_manager.dart';
-import 'package:alamuti/app/ui/Login/login.dart';
-
 import 'package:alamuti/app/ui/Login/register.dart';
 import 'package:alamuti/app/ui/home/home_page.dart';
 import 'package:flutter/material.dart';
