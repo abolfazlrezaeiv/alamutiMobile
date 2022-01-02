@@ -29,6 +29,25 @@ mixin CacheManager {
     return true;
   }
 
+  String getPhonenNumber() {
+    final box = GetStorage();
+    var phone = box.read(CacheManagerKey.PHONENUMBER.toString());
+    return phone;
+  }
+
+  Future<bool> saveUserId(String userId) async {
+    final box = GetStorage();
+    await box.write(CacheManagerKey.USERID.toString(), userId);
+
+    return true;
+  }
+
+  String getUserId() {
+    final box = GetStorage();
+    var id = box.read(CacheManagerKey.USERID.toString());
+    return id;
+  }
+
   Future<UserInfo> getUserInfo(String phoneNumber, String password) async {
     final box = GetStorage();
     var phone = await box.read(CacheManagerKey.PHONENUMBER.toString());
@@ -57,7 +76,14 @@ mixin CacheManager {
   }
 }
 
-enum CacheManagerKey { TOKEN, REFRESHTOKEN, PHONENUMBER, PASSWORD, ISLOGGEDIN }
+enum CacheManagerKey {
+  TOKEN,
+  REFRESHTOKEN,
+  PHONENUMBER,
+  PASSWORD,
+  ISLOGGEDIN,
+  USERID
+}
 
 class RefreshToken {
   final String token;

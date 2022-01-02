@@ -1,4 +1,3 @@
-import 'package:alamuti/app/controller/chat_group_controller.dart';
 import 'package:alamuti/app/controller/chat_message_controller.dart';
 import 'package:alamuti/app/controller/chat_target_controller.dart';
 import 'package:alamuti/app/data/model/chatMessage.dart';
@@ -11,45 +10,34 @@ import 'package:alamuti/app/ui/widgets/alamuti_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_bubble/bubble_type.dart';
 import 'package:flutter_chat_bubble/chat_bubble.dart';
-import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_1.dart';
-import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_3.dart';
-import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_4.dart';
-import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_7.dart';
-import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_8.dart';
 import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_9.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
-class Chat extends StatefulWidget with CacheManager {
-  final String groupname;
-
-  final String groupTitle;
-
+class NewChat extends StatefulWidget with CacheManager {
+  final String receiverId;
   final String? groupImage;
-
-  Chat({
-    Key? key,
-    required this.groupname,
-    required this.groupTitle,
-    required this.groupImage,
-  }) : super(key: key);
+  final String groupTitle;
+  const NewChat(
+      {Key? key,
+      required this.groupTitle,
+      required this.receiverId,
+      required this.groupImage})
+      : super(key: key);
 
   @override
-  State<Chat> createState() => _ChatState();
+  State<NewChat> createState() => _NewChatState();
 }
 
-class _ChatState extends State<Chat> {
+class _NewChatState extends State<NewChat> {
   TextEditingController textEditingController = TextEditingController();
   late SignalRHelper signalHelper;
   var _scrollcontroller = ScrollController();
 
   ChatTargetUserController chatTargetUserController =
       Get.put(ChatTargetUserController());
-
   ChatMessageController chatMessageController =
       Get.put(ChatMessageController());
-
-  ChatGroupController chatGroupController = Get.put(ChatGroupController());
 
   MessageProvider mp = MessageProvider();
 
@@ -63,22 +51,16 @@ class _ChatState extends State<Chat> {
     signalHelper = SignalRHelper();
     signalHelper.initiateConnection();
     signalHelper.reciveMessage();
-    signalHelper.createGroup(
-      widget.groupname,
-    );
 
-    mp.getGroupMessages(widget.groupname);
+    //state is null at fisr after changing the state - hot relod will be fixed
   }
 
   @override
   Widget build(BuildContext context) {
-    signalHelper = SignalRHelper();
-    signalHelper.initiateConnection();
-    signalHelper.reciveMessage();
-    signalHelper.createGroup(
-      widget.groupname,
-    );
-
+    //state is null at fisr after changing the state - hot relod will be fixed
+    // signalHelper.createGroup(
+    //   storage.read(CacheManagerKey.USERID.toString()),
+    // );
     chatMessageController.messageList.listen((p0) {
       WidgetsBinding.instance?.addPostFrameCallback((_) {
         if (_scrollcontroller.hasClients) {
@@ -94,16 +76,17 @@ class _ChatState extends State<Chat> {
     return Scaffold(
       appBar: AlamutiAppBar(
         appBar: AppBar(),
-        title: 'پیامها',
+        title: 'ارسال پیام',
         hasBackButton: true,
         backwidget: ChatGroups(),
       ),
       body: Container(
-        width: MediaQuery.of(context).size.width,
-        child: Column(
-          children: [
-            Expanded(
-              child: Obx(() => ListView.builder(
+          width: MediaQuery.of(context).size.width,
+          child: Obx(
+            () => Column(
+              children: [
+                Expanded(
+                  child: ListView.builder(
                     controller: _scrollcontroller,
                     itemCount: chatMessageController.messageList.length,
                     itemBuilder: (context, index) {
@@ -199,75 +182,62 @@ class _ChatState extends State<Chat> {
                         );
                       }
                     },
-                  )),
-            ),
-            Container(
-              color: Colors.grey.withOpacity(0.1),
-              height: 60,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    Expanded(
-                        child: AlamutiTextField(
-                      textEditingController: textEditingController,
-                    )),
-                    TextButton(
-                        onPressed: () {
-                          var target = widget.groupname
-                              .replaceAll(
-                                  storage.read(
+                  ),
+                ),
+                Container(
+                  color: Colors.grey.withOpacity(0.1),
+                  height: 60,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                            child: AlamutiTextField(
+                          textEditingController: textEditingController,
+                        )),
+                        TextButton(
+                            onPressed: () {
+                              signalHelper.sendMessage(
+                                receiverId:
+                                    chatTargetUserController.userId.value,
+                                grouptitle: widget.groupTitle,
+                                senderId: storage.read(
+                                  CacheManagerKey.USERID.toString(),
+                                ),
+                                message: textEditingController.text,
+                                groupname: null,
+                                groupImage: widget.groupImage,
+                              );
+
+                              chatMessageController.addMessage(ChatMessage(
+                                  id: 44,
+                                  sender: storage.read(
                                     CacheManagerKey.USERID.toString(),
                                   ),
-                                  '')
-                              .trimRight();
-                          print(target);
-                          print(storage.read(
-                            CacheManagerKey.USERID.toString(),
-                          ));
+                                  message: textEditingController.text,
+                                  reciever:
+                                      chatTargetUserController.userId.value,
+                                  daySended: ''));
 
-                          print('${textEditingController.text} our messag');
-
-                          print(widget.groupname);
-
-                          print(widget.groupTitle);
-
-                          signalHelper.sendMessage(
-                              receiverId: target,
-                              senderId: storage.read(
-                                CacheManagerKey.USERID.toString(),
-                              ),
-                              message: textEditingController.text,
-                              groupname: widget.groupname,
-                              groupImage: widget.groupImage,
-                              grouptitle: widget.groupTitle);
-
-                          // chatMessageController.addMessage(ChatMessage(
-                          //     id: 44,
-                          //     sender: storage.read(
-                          //       CacheManagerKey.USERID.toString(),
-                          //     ),
-                          //     message: textEditingController.text,
-                          //     reciever: chatTargetUserController.userId.value));
-                          print(textEditingController.text);
-                          WidgetsBinding.instance?.addPostFrameCallback((_) {
-                            if (_scrollcontroller.hasClients) {
-                              _scrollcontroller.jumpTo(
-                                  _scrollcontroller.position.maxScrollExtent);
-                            }
-                          });
-                        },
-                        child: Text(
-                          'ارسال',
-                          style: TextStyle(color: Colors.greenAccent),
-                        ))
-                  ],
-                ),
-              ),
-            )
-          ],
-        ),
-      ),
+                              WidgetsBinding.instance
+                                  ?.addPostFrameCallback((_) {
+                                if (_scrollcontroller.hasClients) {
+                                  _scrollcontroller.jumpTo(_scrollcontroller
+                                      .position.maxScrollExtent);
+                                }
+                              });
+                            },
+                            child: Text(
+                              'ارسال',
+                              style: TextStyle(color: Colors.greenAccent),
+                            ))
+                      ],
+                    ),
+                  ),
+                )
+              ],
+            ),
+          )),
     );
 
     // return Scaffold(

@@ -1,175 +1,410 @@
 import 'dart:convert';
 
+import 'package:alamuti/app/controller/chat_message_controller.dart';
+import 'package:alamuti/app/controller/chat_target_controller.dart';
+import 'package:alamuti/app/ui/chat/newchat.dart';
+import 'package:alamuti/app/ui/details/fullscreen_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
 import 'package:get/get.dart';
 
 import '../home/home_page.dart';
-import '../widgets/alamuti_button.dart';
 
 class AdsDetail extends StatelessWidget {
-  final String imgUrl;
+  ChatMessageController chatMessageController =
+      Get.put(ChatMessageController());
+
+  final String? byteImage1;
+  final String? byteImage2;
 
   final String title;
 
   final String price;
+  final String sendedDate;
+  final String userId;
 
   final String description;
-  const AdsDetail(
+  AdsDetail(
       {Key? key,
-      required this.imgUrl,
+      required this.byteImage1,
+      required this.byteImage2,
       required this.title,
       required this.price,
-      required this.description})
+      required this.description,
+      required this.userId,
+      required this.sendedDate})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    ChatTargetUserController chatTargetUserController =
+        Get.put(ChatTargetUserController());
     var mq = MediaQuery.of(context).size;
     return Scaffold(
-      body: Container(
-        width: mq.width,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Column(
-              children: [
-                Stack(
-                  children: [
-                    Container(
-                      height: MediaQuery.of(context).size.height / 2.3,
-                      width: MediaQuery.of(context).size.width,
-                      child: Image.memory(
-                        base64Decode(imgUrl),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(top: 40.0),
-                      child: Opacity(
-                        opacity: 0.7,
-                        child: GestureDetector(
-                          onTap: () => Get.to(() => HomePage(),
-                              transition: Transition.noTransition),
-                          child: Row(
-                            children: [
-                              Icon(
-                                CupertinoIcons.back,
-                                size: 31,
-                                color: Colors.white,
-                              ),
-                              Text(
-                                'بازگشت',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 16),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                    )
-                  ],
-                  alignment: Alignment.topLeft,
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Column(
+            children: [
+              ((byteImage1 != null) && (byteImage2 != null))
+                  ? getImageSlider()
+                  : getImageOrEmpty(),
+
+              // (Stack(
+              //   children: [
+              //     getImageOrEmpty(),
+              //     (byteImage1 != null)
+              //         ? getStackedBackButton()
+              //         : getAppbarWithBack()
+              //   ],
+              //   alignment: Alignment.topLeft,
+              // )),
+              Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: Get.width / 50,
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                    top: 10,
-                    left: 20,
-                    right: 20,
-                  ),
+                child: Container(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                          vertical: Get.height / 55,
+                        ),
+                        child: Text(
+                          title,
+                          style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: Get.width / 24),
+                          textDirection: TextDirection.rtl,
+                        ),
+                      ),
                       Text(
-                        title,
+                        sendedDate,
                         style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontSize: MediaQuery.of(context).size.width / 24),
+                            fontWeight: FontWeight.w300,
+                            fontFamily: 'IRANSansXFaNum',
+                            fontSize: Get.width / 31),
                         textDirection: TextDirection.rtl,
                       ),
-                      Opacity(
-                        opacity: 0.7,
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                              vertical: MediaQuery.of(context).size.width / 40),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                '$price   تومان',
-                                textDirection: TextDirection.ltr,
-                                style: TextStyle(
-                                    fontFamily: 'IRANSansXFaNum',
-                                    fontWeight: FontWeight.w400),
-                              ),
-                              Text('قیمت',
-                                  textDirection: TextDirection.rtl,
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 15))
-                            ],
-                          ),
+                      SizedBox(
+                        height: Get.height / 55,
+                      ),
+                      Divider(),
+                      Padding(
+                        padding: EdgeInsets.symmetric(vertical: Get.width / 55),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              '$price   تومان',
+                              textDirection: TextDirection.ltr,
+                              style: TextStyle(
+                                  fontSize:
+                                      MediaQuery.of(context).size.width / 26,
+                                  fontFamily: 'IRANSansXFaNum',
+                                  fontWeight: FontWeight.w400),
+                            ),
+                            Text(
+                              'قیمت',
+                              textDirection: TextDirection.rtl,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w300,
+                                  fontSize:
+                                      MediaQuery.of(context).size.width / 27),
+                            )
+                          ],
                         ),
                       )
                     ],
                   ),
                 ),
-                Divider(
-                  indent: 10,
-                  endIndent: 10,
-                  height: MediaQuery.of(context).size.width / 40,
-                  thickness: 1,
-                ),
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 14.0, vertical: 0),
-                  child: Container(
-                    alignment: Alignment.centerRight,
-                    child: Text(
-                      description,
-                      maxLines: 8,
-                      overflow: TextOverflow.visible,
-                      textDirection: TextDirection.rtl,
+              ),
+              Divider(),
+
+              Padding(
+                padding: EdgeInsets.symmetric(
+                    horizontal: Get.width / 30, vertical: Get.height / 55),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      'توضیحات',
                       style: TextStyle(
-                        fontWeight: FontWeight.w400,
-                        fontSize: MediaQuery.of(context).size.width / 28,
+                          fontWeight: FontWeight.w500,
+                          fontSize: MediaQuery.of(context).size.width / 24),
+                    ),
+                    SizedBox(
+                      height: Get.height / 55,
+                    ),
+                    Container(
+                      alignment: Alignment.centerRight,
+                      child: Text(
+                        description,
+                        maxLines: 7,
+                        overflow: TextOverflow.visible,
+                        textDirection: TextDirection.rtl,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w300,
+                          fontSize: MediaQuery.of(context).size.width / 28,
+                        ),
                       ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(
+                horizontal: 8.0, vertical: Get.height / 50),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                MaterialButton(
+                  height: Get.width / 9,
+                  minWidth: Get.width / 2.2,
+                  elevation: 0,
+                  color: Color.fromRGBO(255, 0, 0, 0.4),
+                  onPressed: () => null,
+                  child: Text(
+                    'تماس تلفنی',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: MediaQuery.of(context).size.width / 26,
+                    ),
+                  ),
+                ),
+                MaterialButton(
+                  height: Get.width / 9,
+                  minWidth: Get.width / 2.2,
+                  elevation: 0,
+                  color: Color.fromRGBO(255, 0, 0, 0.4),
+                  onPressed: () {
+                    chatTargetUserController.saveUserId(userId);
+                    print(chatTargetUserController.userId.value);
+                    chatMessageController.messageList.clear();
+                    Get.to(
+                        () => NewChat(
+                            receiverId: chatTargetUserController.userId.value,
+                            groupImage: this.byteImage1,
+                            groupTitle: this.title),
+                        transition: Transition.noTransition);
+                  },
+                  child: Text(
+                    'چت',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: MediaQuery.of(context).size.width / 26,
                     ),
                   ),
                 ),
               ],
             ),
-            SafeArea(
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                    horizontal: 8.0,
-                    vertical: MediaQuery.of(context).size.height / 50),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    MaterialButton(
-                      height: MediaQuery.of(context).size.width / 8,
-                      minWidth: mq.width / 2.2,
-                      elevation: 0,
-                      color: Color.fromRGBO(255, 0, 0, 0.4),
-                      onPressed: () => null,
-                      child: Text('تماس تلفنی'),
-                    ),
-                    MaterialButton(
-                      height: MediaQuery.of(context).size.width / 8,
-                      minWidth: mq.width / 2.2,
-                      elevation: 0,
-                      color: Color.fromRGBO(255, 0, 0, 0.4),
-                      onPressed: () => null,
-                      child: Text('چت'),
-                    ),
-                  ],
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget getImageSlider() {
+    return Stack(children: [
+      ImageSlideshow(
+        width: double.infinity,
+        height: Get.height / 3,
+        initialPage: 0,
+        indicatorColor: Colors.greenAccent,
+        indicatorBackgroundColor: Colors.white,
+        children: [
+          GestureDetector(
+            onTap: () {
+              Get.to(
+                () => FullscreenImage(image: byteImage1!),
+              );
+            },
+            child: Image.memory(
+              base64Decode(byteImage1!),
+              fit: BoxFit.cover,
+            ),
+          ),
+          GestureDetector(
+            onTap: () {
+              Get.to(
+                () => FullscreenImage(image: byteImage2!),
+              );
+            },
+            child: Image.memory(
+              base64Decode(byteImage2!),
+              fit: BoxFit.cover,
+            ),
+          ),
+        ],
+        autoPlayInterval: null,
+        isLoop: true,
+      ),
+      Container(
+        padding: EdgeInsets.only(top: Get.width / 12, left: Get.width / 45),
+        width: Get.width,
+        height: Get.height / 3,
+        alignment: Alignment.topLeft,
+        child: GestureDetector(
+          onTap: () =>
+              Get.to(() => HomePage(), transition: Transition.noTransition),
+          child: Row(
+            children: [
+              Icon(
+                CupertinoIcons.back,
+                size: 25,
+                color: Colors.black,
+              ),
+              Text(
+                'بازگشت',
+                style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 16),
+              )
+            ],
+          ),
+        ),
+      ),
+      // Container(
+      //   width: Get.width,
+      //   height: Get.height / 2.3,
+      //   alignment: Alignment.centerLeft,
+      //   child: Opacity(
+      //     opacity: 0.3,
+      //     child: Icon(
+      //       CupertinoIcons.back,
+      //       size: Get.height / 4,
+      //     ),
+      //   ),
+      // ),
+      // Container(
+      //   width: Get.width,
+      //   height: Get.height / 2.3,
+      //   alignment: Alignment.centerRight,
+      //   child: Opacity(
+      //     opacity: 0.3,
+      //     child: Icon(
+      //       CupertinoIcons.chevron_forward,
+      //       size: Get.height / 4,
+      //     ),
+      //   ),
+      // ),
+    ]);
+  }
+
+  Widget getImageOrEmpty() {
+    return (byteImage1 != null)
+        ? GestureDetector(
+            onTap: () {
+              Get.to(
+                () => FullscreenImage(image: byteImage1!),
+              );
+            },
+            child: Stack(children: [
+              Container(
+                height: Get.height / 2.5,
+                width: Get.width,
+                child: Image.memory(
+                  base64Decode(byteImage1!),
+                  fit: BoxFit.cover,
                 ),
               ),
-            )
-          ],
+              Container(
+                padding:
+                    EdgeInsets.only(top: Get.width / 12, left: Get.width / 45),
+                width: Get.width,
+                height: Get.height / 2.5,
+                alignment: Alignment.topLeft,
+                child: GestureDetector(
+                  onTap: () => Get.to(() => HomePage(),
+                      transition: Transition.noTransition),
+                  child: Row(
+                    children: [
+                      Icon(
+                        CupertinoIcons.back,
+                        size: 25,
+                        color: Colors.black,
+                      ),
+                      Text(
+                        'بازگشت',
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ]),
+          )
+        : getAppbarWithBack();
+  }
+
+  Widget getAppbarWithBack() {
+    return Container(
+      color: Color.fromRGBO(8, 212, 76, 0.5),
+      child: Padding(
+        padding: EdgeInsets.only(top: 40.0, bottom: 20),
+        child: Opacity(
+          opacity: 0.5,
+          child: GestureDetector(
+            onTap: () =>
+                Get.to(() => HomePage(), transition: Transition.noTransition),
+            child: Row(
+              children: [
+                Icon(
+                  CupertinoIcons.back,
+                  size: 25,
+                  color: Colors.black,
+                ),
+                Text(
+                  'بازگشت',
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 16),
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget getStackedBackButton() {
+    return Padding(
+      padding: EdgeInsets.only(top: 40.0),
+      child: Opacity(
+        opacity: 0.7,
+        child: GestureDetector(
+          onTap: () =>
+              Get.to(() => HomePage(), transition: Transition.noTransition),
+          child: Container(
+            width: Get.width / 4,
+            child: Row(
+              children: [
+                Icon(
+                  CupertinoIcons.back,
+                  size: 25,
+                  color: Colors.white,
+                ),
+                Text(
+                  'بازگشت',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 16),
+                )
+              ],
+            ),
+          ),
         ),
       ),
     );

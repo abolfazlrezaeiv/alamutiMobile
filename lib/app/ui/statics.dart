@@ -1,16 +1,33 @@
+import 'package:alamuti/app/controller/new_message_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
-const bottomTapItems = const <BottomNavigationBarItem>[
+final NewMessageController newMessageController =
+    Get.put(NewMessageController());
+var bottomTapItems = <BottomNavigationBarItem>[
   BottomNavigationBarItem(
       icon: Icon(
         CupertinoIcons.person,
       ),
       label: "الموتی من"),
   BottomNavigationBarItem(
-      icon: Icon(
-        CupertinoIcons.chat_bubble,
-      ),
+      icon: Obx(() => Stack(
+            children: [
+              Icon(
+                CupertinoIcons.chat_bubble,
+              ),
+              newMessageController.haveNewMessage.value
+                  ? Icon(
+                      CupertinoIcons.circle_fill,
+                      color: Colors.red,
+                      size: 13,
+                    )
+                  : Icon(
+                      CupertinoIcons.chat_bubble,
+                    ),
+            ],
+          )),
       label: "پیامها"),
   BottomNavigationBarItem(
       icon: Icon(
@@ -19,20 +36,9 @@ const bottomTapItems = const <BottomNavigationBarItem>[
       label: "ثبت آگهی"),
   BottomNavigationBarItem(
       icon: Icon(
-        CupertinoIcons.square_grid_2x2,
-      ),
-      label: "دسته بندی"),
-  BottomNavigationBarItem(
-      icon: Icon(
         CupertinoIcons.home,
       ),
       label: "خانه"),
 ];
 
-var bottomNavBarScreens = [
-  '/myalamuti',
-  '/chat',
-  '/add_ads',
-  '/category',
-  '/home'
-];
+var bottomNavBarScreens = ['/myalamuti', '/chat', '/add_ads', '/home'];

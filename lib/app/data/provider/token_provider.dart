@@ -1,12 +1,7 @@
-import 'dart:convert';
-
-import 'package:alamuti/app/controller/authentication_manager.dart';
+import 'package:alamuti/app/data/provider/base_url.dart';
 import 'package:alamuti/app/data/storage/cachemanager.dart';
-import 'package:alamuti/app/ui/Login/register.dart';
 import 'package:dio/dio.dart';
 import 'package:get/get_connect/http/src/status/http_status.dart';
-import 'package:get/get_instance/src/extension_instance.dart';
-import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/state_manager.dart';
 import 'package:get_storage/get_storage.dart';
 
@@ -23,9 +18,7 @@ class TokenProvider extends GetxController with CacheManager {
         await this._storage.read(CacheManagerKey.REFRESHTOKEN.toString());
     token = await this._storage.read(CacheManagerKey.TOKEN.toString());
 
-    final response = await this
-        .api
-        .post('http://192.168.1.102:5113/RefreshToken', data: {
+    final response = await this.api.post(baseLoginUrl + 'RefreshToken', data: {
       'token': token.toString(),
       'refreshToken': refreshtoken.toString()
     });
