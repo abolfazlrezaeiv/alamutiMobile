@@ -7,7 +7,6 @@ import 'package:alamuti/app/data/storage/cachemanager.dart';
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/status/http_status.dart';
-import 'package:get_storage/get_storage.dart';
 
 class LoginProvider extends GetConnect with CacheManager {
   final String loginUrl = baseLoginUrl + 'login';

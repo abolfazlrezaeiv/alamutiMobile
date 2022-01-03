@@ -1,6 +1,6 @@
 import 'package:alamuti/app/controller/new_message_controller.dart';
 import 'package:alamuti/app/controller/selectedTapController.dart';
-import 'package:alamuti/app/ui/statics.dart';
+import 'package:alamuti/app/ui/widgets/buttom_navbar_items.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

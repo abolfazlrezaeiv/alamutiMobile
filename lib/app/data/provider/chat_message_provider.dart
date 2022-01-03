@@ -12,16 +12,14 @@ import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/route_manager.dart';
 
 class MessageProvider with CacheManager {
-  TokenProvider tokenProvider = Get.put(TokenProvider());
-  ChatMessageController chatMessageController =
-      Get.put(ChatMessageController());
+  var tokenProvider = Get.put(TokenProvider());
+  var chatMessageController = Get.put(ChatMessageController());
 
-  ChatGroupController chatGroupController = Get.put(ChatGroupController());
+  var chatGroupController = Get.put(ChatGroupController());
 
-  LastMessageSenderIDController lastMessageSenderIDController =
-      Get.put(LastMessageSenderIDController());
+  var lastMessageSenderIDController = Get.put(LastMessageSenderIDController());
 
-  NewMessageController newMessageController = Get.put(NewMessageController());
+  var newMessageController = Get.put(NewMessageController());
 
   getMassages() async {
     var response = await tokenProvider.api.get(
@@ -44,13 +42,11 @@ class MessageProvider with CacheManager {
       },
     );
     chatMessageController.messageList.value = mymessages;
-    // print(mymessages.length);
-    // return mymessages;
   }
 
   getGroupMessages(String groupname) async {
     var response = await tokenProvider.api.get(
-      baseChatUrl + 'api/Chat/massages/${groupname}',
+      baseChatUrl + 'api/Chat/massages/$groupname',
     );
 
     var myMap = response.data;
@@ -69,13 +65,11 @@ class MessageProvider with CacheManager {
       },
     );
     chatMessageController.messageList.value = mymessages;
-    // print(mymessages.length);
-    // return mymessages;
   }
 
   Future<String> getLastItemOfGroup(String groupname) async {
     var response = await tokenProvider.api.get(
-      baseChatUrl + 'api/Chat/groups/${groupname}',
+      baseChatUrl + 'api/Chat/groups/$groupname',
     );
 
     var sender = response.data['sender'];
@@ -86,8 +80,6 @@ class MessageProvider with CacheManager {
 
     lastMessageSenderIDController.lastsender.add(sender);
     return sender;
-    // print(mymessages.length);
-    // return mymessages;
   }
 
   Future<List<ChatGroup>> getGroups() async {
@@ -96,7 +88,7 @@ class MessageProvider with CacheManager {
     );
 
     var myMap = response.data;
-    // print('is working in message provider ${response.statusCode}');
+
     List<ChatGroup> mygroups = [];
     myMap.forEach(
       (element) {
@@ -112,7 +104,7 @@ class MessageProvider with CacheManager {
         );
       },
     );
-    // print('is working in message provider ${response.statusCode}');
+
     chatGroupController.groupList.value = mygroups;
     for (var i = 0; i < chatGroupController.groupList.value.length; i++) {
       if ((chatGroupController.groupList[i].isChecked == false &&
@@ -120,11 +112,8 @@ class MessageProvider with CacheManager {
         newMessageController.haveNewMessage.value = true;
       }
     }
-    // print('getgroup from home page');
-    // print('${newMessageController.haveNewMessage.value} value of new message');
+
     return mygroups;
-    // print(mymessages.length);
-    // return mymessages;
   }
 
   updateGroupStatus({
@@ -139,12 +128,10 @@ class MessageProvider with CacheManager {
       'name': name,
       'isChecked': isChecked,
     });
-    var response = await tokenProvider.api.put(
+    await tokenProvider.api.put(
       baseChatUrl + 'api/Chat',
       data: formData,
     );
-    // print(response.statusMessage);
-    // print(response.statusCode);
   }
 
   postMessage(
@@ -158,12 +145,10 @@ class MessageProvider with CacheManager {
       'message': message,
       'reciever': reciever,
     });
-    var response = await tokenProvider.api.post(
+    await tokenProvider.api.post(
       baseChatUrl + 'api/chat',
       data: formData,
     );
-    // print(response.statusMessage);
-    // print(response.statusCode);
   }
 
   deleteMessageGroup({
@@ -175,14 +160,7 @@ class MessageProvider with CacheManager {
         break;
       }
     }
-    // chatGroupController.groupList.forEach((element) {
 
-    //   if (element.name == groupName) {
-
-    //     chatGroupController.groupList.remove(element);
-
-    //   }
-    // });
     await tokenProvider.api.delete(
       baseChatUrl + 'api/Chat/group/$groupName',
     );

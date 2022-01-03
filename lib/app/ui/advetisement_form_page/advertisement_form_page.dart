@@ -7,7 +7,7 @@ import 'package:alamuti/app/controller/selectedTapController.dart';
 import 'package:alamuti/app/controller/upload_image_controller.dart';
 import 'package:alamuti/app/data/provider/advertisement_provider.dart';
 import 'package:alamuti/app/ui/home/home_page.dart';
-import 'package:alamuti/app/ui/imgaebase64.dart';
+import 'package:alamuti/app/ui/widgets/imgaebase64.dart';
 import 'package:alamuti/app/ui/post_ads_category/submit_ads_category.dart';
 import 'package:alamuti/app/ui/widgets/photo_card_left.dart';
 import 'package:file_picker/file_picker.dart';
