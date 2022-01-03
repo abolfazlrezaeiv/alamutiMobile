@@ -8,6 +8,7 @@ import 'package:alamuti/app/data/model/Advertisement.dart';
 import 'package:alamuti/app/data/provider/advertisement_provider.dart';
 import 'package:alamuti/app/data/provider/chat_message_provider.dart';
 import 'package:alamuti/app/data/provider/signalr_helper.dart';
+import 'package:alamuti/app/data/storage/cachemanager.dart';
 import 'package:alamuti/app/ui/details/detail_page.dart';
 import 'package:alamuti/app/ui/imgaebase64.dart';
 import 'package:alamuti/app/ui/widgets/bottom_navbar.dart';
@@ -15,6 +16,7 @@ import 'package:chips_choice_null_safety/chips_choice_null_safety.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
 class HomePage extends StatefulWidget {
   final String? adstype;
@@ -25,7 +27,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  bool isTyping = false;
+  var isTyping = false;
 
   var _textEditingController = TextEditingController();
 
@@ -41,10 +43,10 @@ class _HomePageState extends State<HomePage> {
 
   var newMessageController = Get.put(NewMessageController());
 
-  late SignalRHelper signalHelper;
+  var signalHelper = SignalRHelper();
 
   var mp = MessageProvider();
-
+  var storage = GetStorage();
   getChatMessageGroups() async {
     return await mp.getGroups();
   }
@@ -57,6 +59,11 @@ class _HomePageState extends State<HomePage> {
   int tag = 0;
   @override
   Widget build(BuildContext context) {
+    signalHelper.initiateConnection();
+    signalHelper.reciveMessage();
+    signalHelper.createGroup(
+      storage.read(CacheManagerKey.USERID.toString()),
+    );
     getChatMessageGroups();
     mp.getGroups();
     ap.getAll();

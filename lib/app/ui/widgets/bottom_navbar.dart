@@ -14,14 +14,12 @@ class AlamutBottomNavBar extends StatelessWidget {
     final ScreenController c = Get.put(ScreenController());
 
     return Obx(() => BottomNavigationBar(
-          elevation: 0,
           type: BottomNavigationBarType.fixed,
           currentIndex: c.selectedIndex.value,
           onTap: (value) {
             c.selectedIndex.value = value;
             Get.toNamed(bottomNavBarScreens[c.selectedIndex.value]);
           },
-          unselectedLabelStyle: TextStyle(fontSize: 13),
           items: bottomTapItems,
         ));
   }

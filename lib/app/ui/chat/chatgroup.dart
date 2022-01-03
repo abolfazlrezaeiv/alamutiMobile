@@ -49,9 +49,7 @@ class _ChatGroupsState extends State<ChatGroups> with CacheManager {
   IndexGroupList indexGroupList = Get.put(IndexGroupList());
 
   var storage = GetStorage();
-  bool issenderANDuserEqual = false;
   int groupIndex = 0;
-  bool isResponse = false;
   var mp = MessageProvider();
   List<ChatGroup> groupList = [];
 
