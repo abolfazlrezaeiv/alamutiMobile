@@ -9,8 +9,8 @@ class ChatMessageController extends GetxController with CacheManager {
     messageList.add(message);
   }
 
-  bool isSender() {
+  Future<bool> isSender() async {
     return (messageList[messageList.length] as ChatMessage).sender ==
-        getUserId();
+        await getUserId();
   }
 }

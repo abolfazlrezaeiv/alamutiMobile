@@ -42,9 +42,9 @@ mixin CacheManager {
     return true;
   }
 
-  String getUserId() {
+  Future<String> getUserId() async {
     final box = GetStorage();
-    var id = box.read(CacheManagerKey.USERID.toString());
+    var id = await box.read(CacheManagerKey.USERID.toString());
     return id;
   }
 
