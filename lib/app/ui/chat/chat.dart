@@ -1,7 +1,6 @@
 import 'package:alamuti/app/controller/chat_group_controller.dart';
 import 'package:alamuti/app/controller/chat_message_controller.dart';
 import 'package:alamuti/app/controller/chat_target_controller.dart';
-import 'package:alamuti/app/data/model/chatMessage.dart';
 import 'package:alamuti/app/data/provider/chat_message_provider.dart';
 import 'package:alamuti/app/data/provider/signalr_helper.dart';
 import 'package:alamuti/app/data/storage/cachemanager.dart';
@@ -11,11 +10,6 @@ import 'package:alamuti/app/ui/widgets/alamuti_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_bubble/bubble_type.dart';
 import 'package:flutter_chat_bubble/chat_bubble.dart';
-import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_1.dart';
-import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_3.dart';
-import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_4.dart';
-import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_7.dart';
-import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_8.dart';
 import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_9.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -39,19 +33,19 @@ class Chat extends StatefulWidget with CacheManager {
 }
 
 class _ChatState extends State<Chat> {
-  TextEditingController textEditingController = TextEditingController();
-  late SignalRHelper signalHelper;
+  var textEditingController = TextEditingController();
+
+  var signalHelper = SignalRHelper();
+
   var _scrollcontroller = ScrollController();
 
-  ChatTargetUserController chatTargetUserController =
-      Get.put(ChatTargetUserController());
+  var chatTargetUserController = Get.put(ChatTargetUserController());
 
-  ChatMessageController chatMessageController =
-      Get.put(ChatMessageController());
+  var chatMessageController = Get.put(ChatMessageController());
 
-  ChatGroupController chatGroupController = Get.put(ChatGroupController());
+  var chatGroupController = Get.put(ChatGroupController());
 
-  MessageProvider mp = MessageProvider();
+  var mp = MessageProvider();
 
   var storage = GetStorage();
 
@@ -60,7 +54,6 @@ class _ChatState extends State<Chat> {
   @override
   void initState() {
     super.initState();
-    signalHelper = SignalRHelper();
     signalHelper.initiateConnection();
     signalHelper.reciveMessage();
     signalHelper.createGroup(
@@ -72,7 +65,6 @@ class _ChatState extends State<Chat> {
 
   @override
   Widget build(BuildContext context) {
-    signalHelper = SignalRHelper();
     signalHelper.initiateConnection();
     signalHelper.reciveMessage();
     signalHelper.createGroup(
@@ -99,7 +91,7 @@ class _ChatState extends State<Chat> {
         backwidget: ChatGroups(),
       ),
       body: Container(
-        width: MediaQuery.of(context).size.width,
+        width: Get.width,
         child: Column(
           children: [
             Expanded(
@@ -107,7 +99,6 @@ class _ChatState extends State<Chat> {
                     controller: _scrollcontroller,
                     itemCount: chatMessageController.messageList.length,
                     itemBuilder: (context, index) {
-                      var storage = GetStorage();
                       if (chatMessageController
                               .messageList.value[index].sender ==
                           storage.read(CacheManagerKey.USERID.toString())) {
@@ -119,7 +110,7 @@ class _ChatState extends State<Chat> {
                           backGroundColor: Color.fromRGBO(8, 212, 76, 0.5),
                           child: Container(
                             constraints: BoxConstraints(
-                              maxWidth: MediaQuery.of(context).size.width * 0.7,
+                              maxWidth: Get.width * 0.7,
                             ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.end,
@@ -162,7 +153,7 @@ class _ChatState extends State<Chat> {
                           margin: EdgeInsets.only(top: 20),
                           child: Container(
                             constraints: BoxConstraints(
-                              maxWidth: MediaQuery.of(context).size.width * 0.7,
+                              maxWidth: Get.width * 0.7,
                             ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.end,
@@ -256,17 +247,5 @@ class _ChatState extends State<Chat> {
         ),
       ),
     );
-  }
-
-  void _onScroll() {
-    if (_isBottom) {
-      print('eeeeeeeeeeeeeeeend');
-    } else {}
-  }
-
-  bool get _isBottom {
-    final maxScroll = _scrollcontroller.position.maxScrollExtent;
-    final currentScroll = _scrollcontroller.offset;
-    return currentScroll >= (maxScroll * 0.9);
   }
 }

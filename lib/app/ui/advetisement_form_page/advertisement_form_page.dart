@@ -194,8 +194,7 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
                       minimumSize: Size(88, 36),
                     ),
                     onPressed: () async {
-                      var response =
-                          await advertisementProvider.postAdvertisement(
+                      await advertisementProvider.postAdvertisement(
                         area: areaTextFieldController.text.isEmpty
                             ? 0
                             : int.parse(areaTextFieldController.text),
@@ -213,7 +212,7 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
                       style: TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.w400,
-                        fontSize: MediaQuery.of(context).size.width / 25,
+                        fontSize: Get.width / 25,
                       ),
                     ),
                   ),
@@ -227,7 +226,7 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
   }
 
   Widget getAreaTextField() {
-    return adsFormController.formState == AdsFormState.REALSTATE
+    return adsFormController.formState.value == AdsFormState.REALSTATE
         ? Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
@@ -254,20 +253,13 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
       source: ImageSource.gallery,
     );
     if (image != null) {
-      print('its not null');
-      if (image != null) {
-        setState(() {
-          _image = File(image.path);
-        });
+      final bytes = File(image.path).readAsBytesSync();
 
-        final bytes = File(image.path).readAsBytesSync();
-
-        String img64 = base64Encode(bytes);
-        setState(() {
-          _image64 = img64;
-        });
-        uploadImageController.getImage(img64);
-      }
+      String img64 = base64Encode(bytes);
+      setState(() {
+        _image64 = img64;
+      });
+      uploadImageController.getImage(img64);
     } else {
       print('picked image is null');
     }
@@ -275,13 +267,13 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
 
   Widget getPriceTextFieldTitle() {
     var title;
-    if (adsFormController.formState == AdsFormState.FOOD) {
+    if (adsFormController.formState.value == AdsFormState.FOOD) {
       title = 'قیمت (به تومان)';
     }
-    if (adsFormController.formState == AdsFormState.JOB) {
+    if (adsFormController.formState.value == AdsFormState.JOB) {
       title = 'حقوق ماهیانه';
     }
-    if (adsFormController.formState == AdsFormState.REALSTATE) {
+    if (adsFormController.formState.value == AdsFormState.REALSTATE) {
       title = 'قیمت کل';
     }
     return Padding(

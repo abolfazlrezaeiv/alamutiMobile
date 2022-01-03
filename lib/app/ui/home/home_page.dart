@@ -245,6 +245,8 @@ class _HomePageState extends State<HomePage> {
                                   price: listAdvertisementController
                                       .adsList[index].price
                                       .toString(),
+                                  phoneNumber: listAdvertisementController
+                                      .adsList[index].phoneNumber,
                                   sendedDate: listAdvertisementController
                                       .adsList[index].datePosted,
                                   title: listAdvertisementController

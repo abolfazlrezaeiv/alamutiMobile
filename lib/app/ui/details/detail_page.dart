@@ -1,17 +1,14 @@
 import 'dart:convert';
-
 import 'package:alamuti/app/controller/chat_message_controller.dart';
 import 'package:alamuti/app/controller/chat_target_controller.dart';
 import 'package:alamuti/app/ui/chat/newchat.dart';
 import 'package:alamuti/app/ui/details/fullscreen_image.dart';
+import 'package:alamuti/app/ui/home/home_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
-import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-import '../home/home_page.dart';
 
 // ignore: must_be_immutable
 class AdsDetail extends StatelessWidget {
@@ -19,14 +16,13 @@ class AdsDetail extends StatelessWidget {
 
   final String? byteImage1;
   final String? byteImage2;
-
+  final String phoneNumber;
   final String title;
-
   final String price;
   final String sendedDate;
   final String userId;
-
   final String description;
+
   AdsDetail(
       {Key? key,
       required this.byteImage1,
@@ -35,7 +31,8 @@ class AdsDetail extends StatelessWidget {
       required this.price,
       required this.description,
       required this.userId,
-      required this.sendedDate})
+      required this.sendedDate,
+      required this.phoneNumber})
       : super(key: key);
 
   @override
@@ -156,7 +153,7 @@ class AdsDetail extends StatelessWidget {
                   elevation: 0,
                   color: Color.fromRGBO(255, 0, 0, 0.4),
                   onPressed: () async {
-                    _makePhoneCall('4342342243');
+                    _makePhoneCall(this.phoneNumber);
                   },
                   child: Text(
                     'تماس تلفنی',

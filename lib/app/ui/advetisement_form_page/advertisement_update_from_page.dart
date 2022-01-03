@@ -1,29 +1,21 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
-
 import 'package:alamuti/app/controller/adsFormController.dart';
 import 'package:alamuti/app/controller/selectedTapController.dart';
 import 'package:alamuti/app/controller/update_image_advertisement.dart';
-import 'package:alamuti/app/controller/upload_image_controller.dart';
 import 'package:alamuti/app/data/model/Advertisement.dart';
 import 'package:alamuti/app/data/provider/advertisement_provider.dart';
-import 'package:alamuti/app/ui/home/home_page.dart';
-import 'package:alamuti/app/ui/imgaebase64.dart';
-import 'package:alamuti/app/ui/myalamuti/myadvertisement.dart';
 import 'package:alamuti/app/ui/post_ads_category/submit_ads_category.dart';
-import 'package:alamuti/app/ui/widgets/photo_card_left.dart';
+import 'package:alamuti/app/ui/widgets/add_ads_photo_card.dart';
+import 'package:alamuti/app/ui/widgets/alamuti_appbar.dart';
+import 'package:alamuti/app/ui/widgets/alamuti_textfield.dart';
+import 'package:alamuti/app/ui/widgets/description_textfield.dart';
 import 'package:alamuti/app/ui/widgets/update_image_card_left.dart';
 import 'package:alamuti/app/ui/widgets/update_image_card_right.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import '../widgets/add_ads_photo_card.dart';
-import '../widgets/alamuti_appbar.dart';
-import '../widgets/alamuti_textfield.dart';
-import '../widgets/description_textfield.dart';
-import '../widgets/photo_card_right.dart';
 
 class AdvertisementUpdateForm extends StatefulWidget {
   final Advertisement ads;
@@ -36,16 +28,15 @@ class AdvertisementUpdateForm extends StatefulWidget {
 }
 
 class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
-  AdsFormController adsFormController = Get.put(AdsFormController());
+  var adsFormController = Get.put(AdsFormController());
 
-  ScreenController screenController = Get.put(ScreenController());
+  var screenController = Get.put(ScreenController());
 
-  UpdateUploadImageController updateUploadImageController =
-      Get.put(UpdateUploadImageController());
+  var updateUploadImageController = Get.put(UpdateUploadImageController());
 
   final GlobalKey<FormState> formKey = GlobalKey();
 
-  AdvertisementProvider advertisementProvider = AdvertisementProvider();
+  var advertisementProvider = AdvertisementProvider();
 
   late TextEditingController titleTextFieldController;
 
@@ -60,12 +51,10 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
   initState() {
     super.initState();
 
-    // executes after build
     titleTextFieldController = TextEditingController(text: widget.ads.title);
     priceTextFieldController =
         TextEditingController(text: widget.ads.price.toString());
-    var photo1 = widget.ads.photo1 ?? '';
-    var photo2 = widget.ads.photo2 ?? '';
+
     areaTextFieldController = TextEditingController(text: widget.ads.area);
 
     descriptionTextFieldController =
@@ -75,22 +64,14 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
   Uint8List? logoBase64;
   var pickedFile;
 
-  var _image;
-
-  String? _image64;
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     updateUploadImageController.resetImageCounter();
   }
 
   @override
   Widget build(BuildContext context) {
-    // updateUploadImageController.leftImagebyteCode.value =
-    //     widget.ads.photo1 ?? '';
-    // updateUploadImageController.rightImagebyteCode.value =
-    //     widget.ads.photo2 ?? '';
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AlamutiAppBar(
@@ -227,8 +208,7 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
                       minimumSize: Size(88, 36),
                     ),
                     onPressed: () async {
-                      var response =
-                          await advertisementProvider.updateAdvertisement(
+                      await advertisementProvider.updateAdvertisement(
                         area: areaTextFieldController.text.isEmpty
                             ? 0
                             : int.parse(areaTextFieldController.text),
@@ -264,18 +244,16 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
   }
 
   Widget getAreaTextField(TextEditingController textEditingController) {
-    return adsFormController.formState == AdsFormState.REALSTATE
+    return adsFormController.formState.value == AdsFormState.REALSTATE
         ? Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Padding(
-                padding: EdgeInsets.only(
-                    top: MediaQuery.of(context).size.width / 40.0, bottom: 3),
+                padding: EdgeInsets.only(top: Get.width / 40.0, bottom: 3),
                 child: Text(
                   "متراژ",
                   style: TextStyle(
-                      fontSize: MediaQuery.of(context).size.width / 27,
-                      fontWeight: FontWeight.w300),
+                      fontSize: Get.width / 27, fontWeight: FontWeight.w300),
                   textDirection: TextDirection.rtl,
                 ),
               ),
@@ -293,20 +271,11 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
       source: ImageSource.gallery,
     );
     if (image != null) {
-      print('its not null');
-      if (image != null) {
-        setState(() {
-          _image = File(image.path);
-        });
+      final bytes = File(image.path).readAsBytesSync();
 
-        final bytes = File(image.path).readAsBytesSync();
+      String img64 = base64Encode(bytes);
 
-        String img64 = base64Encode(bytes);
-        setState(() {
-          _image64 = img64;
-        });
-        updateUploadImageController.getImage(img64);
-      }
+      updateUploadImageController.getImage(img64);
     } else {
       print('picked image is null');
     }
@@ -314,13 +283,13 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
 
   Widget getPriceTextFieldTitle() {
     var title;
-    if (adsFormController.formState == AdsFormState.FOOD) {
+    if (adsFormController.formState.value == AdsFormState.FOOD) {
       title = 'قیمت (به تومان)';
     }
-    if (adsFormController.formState == AdsFormState.JOB) {
+    if (adsFormController.formState.value == AdsFormState.JOB) {
       title = 'حقوق ماهیانه';
     }
-    if (adsFormController.formState == AdsFormState.REALSTATE) {
+    if (adsFormController.formState.value == AdsFormState.REALSTATE) {
       title = 'قیمت کل';
     }
     return Padding(

@@ -34,16 +34,13 @@ class _NewChatState extends State<NewChat> {
   late SignalRHelper signalHelper;
   var _scrollcontroller = ScrollController();
 
-  ChatTargetUserController chatTargetUserController =
-      Get.put(ChatTargetUserController());
-  ChatMessageController chatMessageController =
-      Get.put(ChatMessageController());
+  var chatTargetUserController = Get.put(ChatTargetUserController());
 
-  MessageProvider mp = MessageProvider();
+  var chatMessageController = Get.put(ChatMessageController());
+
+  var mp = MessageProvider();
 
   var storage = GetStorage();
-
-  bool isResponse = false;
 
   @override
   void initState() {
@@ -51,16 +48,10 @@ class _NewChatState extends State<NewChat> {
     signalHelper = SignalRHelper();
     signalHelper.initiateConnection();
     signalHelper.reciveMessage();
-
-    //state is null at fisr after changing the state - hot relod will be fixed
   }
 
   @override
   Widget build(BuildContext context) {
-    //state is null at fisr after changing the state - hot relod will be fixed
-    // signalHelper.createGroup(
-    //   storage.read(CacheManagerKey.USERID.toString()),
-    // );
     chatMessageController.messageList.listen((p0) {
       WidgetsBinding.instance?.addPostFrameCallback((_) {
         if (_scrollcontroller.hasClients) {
@@ -81,7 +72,7 @@ class _NewChatState extends State<NewChat> {
         backwidget: ChatGroups(),
       ),
       body: Container(
-          width: MediaQuery.of(context).size.width,
+          width: Get.width,
           child: Obx(
             () => Column(
               children: [
@@ -102,7 +93,7 @@ class _NewChatState extends State<NewChat> {
                           backGroundColor: Color.fromRGBO(8, 212, 76, 0.5),
                           child: Container(
                             constraints: BoxConstraints(
-                              maxWidth: MediaQuery.of(context).size.width * 0.7,
+                              maxWidth: Get.width * 0.7,
                             ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.end,
@@ -145,7 +136,7 @@ class _NewChatState extends State<NewChat> {
                           margin: EdgeInsets.only(top: 20),
                           child: Container(
                             constraints: BoxConstraints(
-                              maxWidth: MediaQuery.of(context).size.width * 0.7,
+                              maxWidth: Get.width * 0.7,
                             ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.end,
@@ -240,48 +231,5 @@ class _NewChatState extends State<NewChat> {
             ),
           )),
     );
-
-    // return Scaffold(
-    //   appBar: AlamutiAppBar(
-    //     appBar: AppBar(),
-    //     title: 'پیامها',
-    //     hasBackButton: false,
-    //   ),
-    //   bottomNavigationBar: AlamutBottomNavBar(),
-    //   body: Container(
-    //     child: Center(
-    //       child: Column(
-    //         children: [
-    //           Text(messageText),
-    //           TextButton(
-    //             onPressed: () {
-    //               signalHelper.sendMessage(
-    //                 chatTargetUserController.userId.value,
-    //                 storage.read(
-    //                   CacheManagerKey.USERID.toString(),
-    //                 ),
-    //                 'message',
-    //               );
-    //               print(storage.read(CacheManagerKey.USERID.toString()));
-    //             },
-    //             child: Text('send Hi'),
-    //           ),
-    //         ],
-    //       ),
-    //     ),
-    //   ),
-    // );
-  }
-
-  void _onScroll() {
-    if (_isBottom) {
-      print('eeeeeeeeeeeeeeeend');
-    } else {}
-  }
-
-  bool get _isBottom {
-    final maxScroll = _scrollcontroller.position.maxScrollExtent;
-    final currentScroll = _scrollcontroller.offset;
-    return currentScroll >= (maxScroll * 0.9);
   }
 }

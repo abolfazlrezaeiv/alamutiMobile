@@ -46,6 +46,7 @@ class AdvertisementProvider {
           area: element['area'].toString(),
           userId: element['userId'],
           published: element['published'],
+          phoneNumber: element['phoneNumber'],
           adsType: element['adsType']));
     });
     myAdvertisementController.adsList.value = myads;
@@ -79,6 +80,7 @@ class AdvertisementProvider {
         userId: element['userId'],
         adsType: element['adsType'],
         published: element['published'],
+        phoneNumber: element['phoneNumber'],
       ));
     });
 
@@ -113,6 +115,7 @@ class AdvertisementProvider {
             area: element['area'].toString(),
             userId: element['userId'],
             adsType: element['adsType'],
+            phoneNumber: element['phoneNumber'],
             published: element['published'],
           ),
         );

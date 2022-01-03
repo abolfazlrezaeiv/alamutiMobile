@@ -17,7 +17,6 @@ import 'package:alamuti/app/ui/widgets/bottom_navbar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:http/http.dart';
 
 class ChatGroups extends StatefulWidget with CacheManager {
   const ChatGroups({Key? key}) : super(key: key);
@@ -27,30 +26,29 @@ class ChatGroups extends StatefulWidget with CacheManager {
 }
 
 class _ChatGroupsState extends State<ChatGroups> with CacheManager {
-  TextEditingController textEditingController = TextEditingController();
+  var textEditingController = TextEditingController();
   late SignalRHelper signalHelper;
   var _scrollcontroller = ScrollController();
 
-  ChatTargetUserController chatTargetUserController =
-      Get.put(ChatTargetUserController());
+  var chatTargetUserController = Get.put(ChatTargetUserController());
 
-  ChatMessageController chatMessageController =
-      Get.put(ChatMessageController());
+  var chatMessageController = Get.put(ChatMessageController());
 
-  ChatGroupController chatGroupController = Get.put(ChatGroupController());
+  var chatGroupController = Get.put(ChatGroupController());
 
-  NewMessageController newMessageController = Get.put(NewMessageController());
+  var newMessageController = Get.put(NewMessageController());
 
-  SenderController senderController = Get.put(SenderController());
+  var senderController = Get.put(SenderController());
 
-  LastMessageSenderIDController lastMessageSenderIDController =
-      Get.put(LastMessageSenderIDController());
+  var lastMessageSenderIDController = Get.put(LastMessageSenderIDController());
 
-  IndexGroupList indexGroupList = Get.put(IndexGroupList());
+  var indexGroupList = Get.put(IndexGroupList());
 
   var storage = GetStorage();
-  int groupIndex = 0;
+  var groupIndex = 0;
+
   var mp = MessageProvider();
+
   List<ChatGroup> groupList = [];
 
   getGroups() async {
@@ -112,14 +110,6 @@ class _ChatGroupsState extends State<ChatGroups> with CacheManager {
                             chatGroupController.groupList[index].name);
                       }
 
-                      // if ((chatGroupController.groupList[index].isChecked ==
-                      //         false &&
-                      //     chatGroupController
-                      //             .groupList[index].lastMessage.sender !=
-                      //         getUserId())) {
-                      //   newMessageController.haveNewMessage.value = true;
-                      // }
-
                       indexGroupList.changeIndex(index);
 
                       return GestureDetector(
@@ -160,9 +150,9 @@ class _ChatGroupsState extends State<ChatGroups> with CacheManager {
                               child: TextButton(
                                   onPressed: () async {
                                     await mp.deleteMessageGroup(
-                                        groupName: chatGroupController
-                                            .groupList.value[index].name);
-
+                                      groupName: chatGroupController
+                                          .groupList.value[index].name,
+                                    );
                                     Get.back();
                                   },
                                   child: Text(
@@ -193,10 +183,6 @@ class _ChatGroupsState extends State<ChatGroups> with CacheManager {
                                 .leaveGroup((element as ChatGroup).name);
                           });
 
-                          // chatGroupController.groupList[index].name
-                          //     .toString()
-                          //     .indexOf(storage
-                          //         .read(CacheManagerKey.USERID.toString()));
                           Get.to(
                               () => Chat(
                                     groupname: chatGroupController
@@ -212,16 +198,7 @@ class _ChatGroupsState extends State<ChatGroups> with CacheManager {
                           () =>
                               Stack(alignment: Alignment.bottomLeft, children: [
                             Obx(() => Card(
-                                  color:
-                                      //  (chatGroupController
-                                      //                 .groupList[index].isChecked ==
-                                      //             false &&
-                                      //         chatGroupController.groupList[index]
-                                      //                 .lastMessage.sender !=
-                                      //             getUserId())
-                                      //     ? Colors.red
-                                      //     :
-                                      Colors.white,
+                                  color: Colors.white,
                                   child: Padding(
                                     padding: EdgeInsets.all(Get.height / 50),
                                     child: Column(
@@ -343,21 +320,17 @@ class _ChatGroupsState extends State<ChatGroups> with CacheManager {
                                       width: 18,
                                       height: 18,
                                       decoration: BoxDecoration(
-                                        color: Colors.green
-                                            .withOpacity(0.25), // border color
+                                        color: Colors.green.withOpacity(0.25),
                                         shape: BoxShape.circle,
                                       ),
                                       child: Padding(
-                                        padding:
-                                            EdgeInsets.all(2), // border width
+                                        padding: EdgeInsets.all(2),
                                         child: Container(
-                                          // or ClipRRect if you need to clip the content
                                           decoration: BoxDecoration(
                                             shape: BoxShape.circle,
-                                            color: Colors
-                                                .red, // inner circle color
+                                            color: Colors.red,
                                           ),
-                                          child: Container(), // inner content
+                                          child: Container(),
                                         ),
                                       ),
                                     ),
@@ -373,48 +346,5 @@ class _ChatGroupsState extends State<ChatGroups> with CacheManager {
             }
           },
         ));
-
-    // return Scaffold(
-    //   appBar: AlamutiAppBar(
-    //     appBar: AppBar(),
-    //     title: 'پیامها',
-    //     hasBackButton: false,
-    //   ),
-    //   bottomNavigationBar: AlamutBottomNavBar(),
-    //   body: Container(
-    //     child: Center(
-    //       child: Column(
-    //         children: [
-    //           Text(messageText),
-    //           TextButton(
-    //             onPressed: () {
-    //               signalHelper.sendMessage(
-    //                 chatTargetUserController.userId.value,
-    //                 storage.read(
-    //                   CacheManagerKey.USERID.toString(),
-    //                 ),
-    //                 'message',
-    //               );
-    //               print(storage.read(CacheManagerKey.USERID.toString()));
-    //             },
-    //             child: Text('send Hi'),
-    //           ),
-    //         ],
-    //       ),
-    //     ),
-    //   ),
-    // );
-  }
-
-  void _onScroll() {
-    if (_isBottom) {
-      print('eeeeeeeeeeeeeeeend');
-    } else {}
-  }
-
-  bool get _isBottom {
-    final maxScroll = _scrollcontroller.position.maxScrollExtent;
-    final currentScroll = _scrollcontroller.offset;
-    return currentScroll >= (maxScroll * 0.9);
   }
 }

@@ -12,7 +12,6 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   Future<void> initializeSettings() async {
-    //Simulate other services for 3 seconds
     await Future.delayed(Duration(seconds: 2));
   }
 
@@ -39,6 +38,7 @@ Scaffold errorView(AsyncSnapshot<Object?> snapshot) {
   return Scaffold(body: Center(child: Text('Error: ${snapshot.error}')));
 }
 
+// ignore: must_be_immutable
 class WaitingSplashScreen extends StatelessWidget {
   WaitingSplashScreen({Key? key}) : super(key: key);
   ConnectionController connectionController = Get.put(ConnectionController());
