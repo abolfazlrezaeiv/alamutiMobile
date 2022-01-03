@@ -4,18 +4,18 @@ import 'package:alamuti/app/controller/myAdvertisementController.dart';
 import 'package:alamuti/app/data/model/Advertisement.dart';
 import 'package:alamuti/app/data/provider/token_provider.dart';
 import 'package:alamuti/app/data/provider/base_url.dart';
-import 'package:alamuti/app/ui/myalamuti/myadvertisement.dart';
 import 'package:dio/dio.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/utils.dart';
 
 class AdvertisementProvider {
-  TokenProvider tokenProvider = Get.put(TokenProvider());
-  AdsFormController adsFormController = Get.put(AdsFormController());
-  ListAdvertisementController listAdvertisementController =
-      Get.put(ListAdvertisementController());
-  MyAdvertisementController myAdvertisementController =
-      Get.put(MyAdvertisementController());
+  var tokenProvider = Get.put(TokenProvider());
+
+  var adsFormController = Get.put(AdsFormController());
+
+  var listAdvertisementController = Get.put(ListAdvertisementController());
+
+  var myAdvertisementController = Get.put(MyAdvertisementController());
 
   Future<void> deleteAds(int id) async {
     for (var i = 0; i < myAdvertisementController.adsList.length; i++) {
@@ -25,8 +25,7 @@ class AdvertisementProvider {
       }
     }
 
-    var response =
-        await tokenProvider.api.delete(baseUrl + 'Advertisement/${id}');
+    await tokenProvider.api.delete(baseUrl + 'Advertisement/$id');
   }
 
   Future<List<Advertisement>> getMyAds() async {
@@ -53,7 +52,7 @@ class AdvertisementProvider {
     return myads;
   }
 
-  Future<List<Advertisement>> findAll([String? searchInput = null]) async {
+  Future<List<Advertisement>> findAll([String? searchInput]) async {
     var response;
     if (searchInput == null) {
       response = await tokenProvider.api.get(
@@ -61,7 +60,7 @@ class AdvertisementProvider {
       );
     } else {
       response = await tokenProvider.api.get(
-        baseUrl + 'Advertisement/find/${searchInput}',
+        baseUrl + 'Advertisement/search/$searchInput',
       );
     }
 
@@ -86,7 +85,7 @@ class AdvertisementProvider {
     return myads;
   }
 
-  Future<List<Advertisement>> getAll([String? adstype]) async {
+  Future<List<Advertisement>> getAll([String? adstype = null]) async {
     var response;
     if (adstype == null || adstype.isEmpty == true) {
       response = await tokenProvider.api.get(
@@ -141,7 +140,8 @@ class AdvertisementProvider {
       'area': area,
       'adsType': adsFormController.formState.value.toString().toLowerCase(),
     });
-    var response = await tokenProvider.api.post(
+
+    await tokenProvider.api.post(
       baseUrl + 'Advertisement',
       data: formData,
     );
@@ -165,7 +165,7 @@ class AdvertisementProvider {
       'area': area,
       'adsType': adsFormController.formState.value.toString().toLowerCase(),
     });
-    var response = await tokenProvider.api.put(
+    await tokenProvider.api.put(
       baseUrl + 'Advertisement',
       data: formData,
     );

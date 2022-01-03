@@ -30,8 +30,9 @@ dependencies:
   signalr_core: ^1.1.1
   flutter_chat_bubble: ^2.0.0
   chips_choice_null_safety: ^2.0.4
+  url_launcher: ^6.0.17
   flutter_image_slideshow: any
-
+  flutter_phone_direct_caller: ^2.1.0
   connectivity: ^3.0.6
   http: ^0.13.4
   shared_preferences: ^2.0.8

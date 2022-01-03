@@ -211,6 +211,7 @@ class _ChatState extends State<Chat> {
                     Expanded(
                         child: AlamutiTextField(
                       textEditingController: textEditingController,
+                      isNumber: false,
                     )),
                     TextButton(
                         onPressed: () {
@@ -226,12 +227,6 @@ class _ChatState extends State<Chat> {
                             CacheManagerKey.USERID.toString(),
                           ));
 
-                          print('${textEditingController.text} our messag');
-
-                          print(widget.groupname);
-
-                          print(widget.groupTitle);
-
                           signalHelper.sendMessage(
                               receiverId: target,
                               senderId: storage.read(
@@ -242,14 +237,6 @@ class _ChatState extends State<Chat> {
                               groupImage: widget.groupImage,
                               grouptitle: widget.groupTitle);
 
-                          // chatMessageController.addMessage(ChatMessage(
-                          //     id: 44,
-                          //     sender: storage.read(
-                          //       CacheManagerKey.USERID.toString(),
-                          //     ),
-                          //     message: textEditingController.text,
-                          //     reciever: chatTargetUserController.userId.value));
-                          print(textEditingController.text);
                           WidgetsBinding.instance?.addPostFrameCallback((_) {
                             if (_scrollcontroller.hasClients) {
                               _scrollcontroller.jumpTo(
@@ -269,37 +256,6 @@ class _ChatState extends State<Chat> {
         ),
       ),
     );
-
-    // return Scaffold(
-    //   appBar: AlamutiAppBar(
-    //     appBar: AppBar(),
-    //     title: 'پیامها',
-    //     hasBackButton: false,
-    //   ),
-    //   bottomNavigationBar: AlamutBottomNavBar(),
-    //   body: Container(
-    //     child: Center(
-    //       child: Column(
-    //         children: [
-    //           Text(messageText),
-    //           TextButton(
-    //             onPressed: () {
-    //               signalHelper.sendMessage(
-    //                 chatTargetUserController.userId.value,
-    //                 storage.read(
-    //                   CacheManagerKey.USERID.toString(),
-    //                 ),
-    //                 'message',
-    //               );
-    //               print(storage.read(CacheManagerKey.USERID.toString()));
-    //             },
-    //             child: Text('send Hi'),
-    //           ),
-    //         ],
-    //       ),
-    //     ),
-    //   ),
-    // );
   }
 
   void _onScroll() {

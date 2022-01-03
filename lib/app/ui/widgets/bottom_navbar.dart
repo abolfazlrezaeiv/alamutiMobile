@@ -14,7 +14,6 @@ class AlamutBottomNavBar extends StatelessWidget {
     final ScreenController c = Get.put(ScreenController());
 
     return Obx(() => BottomNavigationBar(
-          selectedItemColor: Colors.white.withOpacity(0.9),
           elevation: 0,
           type: BottomNavigationBarType.fixed,
           currentIndex: c.selectedIndex.value,

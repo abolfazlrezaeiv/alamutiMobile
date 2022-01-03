@@ -136,6 +136,7 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
                   ),
                   AlamutiTextField(
                     textEditingController: titleTextFieldController,
+                    isNumber: false,
                   ),
                 ],
               ),
@@ -151,6 +152,7 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
                   ),
                   AlamutiTextField(
                     textEditingController: priceTextFieldController,
+                    isNumber: true,
                   ),
                 ],
               ),
@@ -230,17 +232,18 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Padding(
-                padding: EdgeInsets.only(
-                    top: MediaQuery.of(context).size.width / 40.0, bottom: 3),
+                padding: EdgeInsets.only(top: Get.width / 40.0, bottom: 3),
                 child: Text(
                   "متراژ",
                   style: TextStyle(
-                      fontSize: MediaQuery.of(context).size.width / 25,
-                      fontWeight: FontWeight.w400),
+                      fontSize: Get.width / 25, fontWeight: FontWeight.w400),
                   textDirection: TextDirection.rtl,
                 ),
               ),
-              AlamutiTextField(textEditingController: areaTextFieldController),
+              AlamutiTextField(
+                textEditingController: areaTextFieldController,
+                isNumber: true,
+              ),
             ],
           )
         : Container();
@@ -282,8 +285,7 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
       title = 'قیمت کل';
     }
     return Padding(
-      padding: EdgeInsets.only(
-          top: MediaQuery.of(context).size.width / 35.0, bottom: 3),
+      padding: EdgeInsets.only(top: Get.width / 35.0, bottom: 3),
       child: Text(
         title,
         style: TextStyle(fontSize: Get.width / 25, fontWeight: FontWeight.w400),

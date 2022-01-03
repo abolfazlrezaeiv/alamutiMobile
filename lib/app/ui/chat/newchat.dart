@@ -194,6 +194,7 @@ class _NewChatState extends State<NewChat> {
                         Expanded(
                             child: AlamutiTextField(
                           textEditingController: textEditingController,
+                          isNumber: false,
                         )),
                         TextButton(
                             onPressed: () {

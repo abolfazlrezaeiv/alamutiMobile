@@ -3,9 +3,12 @@ import 'package:get/get.dart';
 
 class AlamutiTextField extends StatelessWidget {
   final TextEditingController textEditingController;
+
+  final bool isNumber;
   AlamutiTextField({
     Key? key,
     required this.textEditingController,
+    required this.isNumber,
   }) : super(key: key);
 
   @override
@@ -21,6 +24,7 @@ class AlamutiTextField extends StatelessWidget {
           return null;
         },
         textDirection: TextDirection.rtl,
+        keyboardType: isNumber ? TextInputType.number : TextInputType.name,
         textAlign: TextAlign.start,
         style: TextStyle(
             backgroundColor: Colors.white,

@@ -170,6 +170,7 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
                   ),
                   AlamutiTextField(
                     textEditingController: titleTextFieldController,
+                    isNumber: false,
                   ),
                 ],
               ),
@@ -185,6 +186,7 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
                   ),
                   AlamutiTextField(
                     textEditingController: priceTextFieldController,
+                    isNumber: true,
                   ),
                 ],
               ),
@@ -259,120 +261,6 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
         ),
       ),
     );
-    // return Scaffold(
-    //   backgroundColor: Colors.white,
-    //   appBar: AlamutiAppBar(
-    //     title: 'ثبت آگهی',
-    //     hasBackButton: true,
-    //     appBar: AppBar(),
-    //     backwidget: MyAdvertisement(),
-    //   ),
-    //   body: Padding(
-    //     padding: EdgeInsets.symmetric(
-    //         horizontal: MediaQuery.of(context).size.width / 40),
-    //     child: Form(
-    //       child: ListView(
-    //         children: [
-    //           Padding(
-    //             padding: const EdgeInsets.symmetric(vertical: 15.0),
-    //             child: Row(
-    //               mainAxisAlignment: MainAxisAlignment.center,
-    //               children: [
-    //                 LeftPhotoCard(),
-    //                 RightPhotoCard(),
-    //                 GestureDetector(
-    //                     onTap: () {
-    //                       chooseImage();
-    //                     },
-    //                     child: AddPhotoWidget()),
-    //               ],
-    //             ),
-    //           ),
-    //           Column(
-    //             crossAxisAlignment: CrossAxisAlignment.end,
-    //             children: [
-    //               Padding(
-    //                 padding: EdgeInsets.only(
-    //                     top: MediaQuery.of(context).size.width / 40.0,
-    //                     bottom: 3),
-    //                 child: Text(
-    //                   'عنوان آگهی',
-    //                   style: TextStyle(
-    //                       fontSize: MediaQuery.of(context).size.width / 27,
-    //                       fontWeight: FontWeight.w300),
-    //                   textDirection: TextDirection.rtl,
-    //                 ),
-    //               ),
-    //               AlamutiTextField(
-    //                 textEditingController: titleTextFieldController,
-    //               ),
-    //             ],
-    //           ),
-    //           Column(
-    //             crossAxisAlignment: CrossAxisAlignment.end,
-    //             children: [
-    //               getPriceTextFieldTitle(),
-    //               AlamutiTextField(
-    //                 textEditingController: priceTextFieldController,
-    //               ),
-    //             ],
-    //           ),
-    //           getAreaTextField(areaTextFieldController),
-    //           Padding(
-    //             padding: EdgeInsets.only(
-    //               top: MediaQuery.of(context).size.width / 40.0,
-    //               bottom: 3,
-    //             ),
-    //             child: Text(
-    //               'توضیحات',
-    //               style: TextStyle(
-    //                   fontSize: MediaQuery.of(context).size.width / 27,
-    //                   fontWeight: FontWeight.w300),
-    //               textDirection: TextDirection.rtl,
-    //             ),
-    //           ),
-    //           DescriptionTextField(
-    //             textEditingController: descriptionTextFieldController,
-    //             initialvalue: widget.ads.description,
-    //           ),
-    //           Padding(
-    //             padding: EdgeInsets.only(
-    //                 top: MediaQuery.of(context).size.width / 40.0,
-    //                 bottom: MediaQuery.of(context).size.height / 20.0),
-    //             child: TextButton(
-    //               style: ElevatedButton.styleFrom(
-    //                 primary: Color.fromRGBO(10, 210, 71, 0.5),
-    //               ),
-    //               onPressed: () async {
-    //                 var response =
-    //                     await advertisementProvider.updateAdvertisement(
-    //                   id: widget.ads.id,
-    //                   area: areaTextFieldController.text.isEmpty
-    //                       ? 0
-    //                       : int.parse(areaTextFieldController.text),
-    //                   description: descriptionTextFieldController.text,
-    //                   photo1: uploadImageController.leftImagebyteCode.value,
-    //                   photo2: uploadImageController.rightImagebyteCode.value,
-    //                   price: int.parse(priceTextFieldController.text),
-    //                   title: titleTextFieldController.text,
-    //                 );
-
-    //                 Get.toNamed('/home');
-    //               },
-    //               child: Text(
-    //                 'ثبت',
-    //                 style: TextStyle(
-    //                     color: Colors.grey[700],
-    //                     fontSize: MediaQuery.of(context).size.width / 25,
-    //                     fontWeight: FontWeight.w300),
-    //               ),
-    //             ),
-    //           ),
-    //         ],
-    //       ),
-    //     ),
-    //   ),
-    // );
   }
 
   Widget getAreaTextField(TextEditingController textEditingController) {
@@ -393,6 +281,7 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
               ),
               AlamutiTextField(
                 textEditingController: textEditingController,
+                isNumber: true,
               ),
             ],
           )
@@ -435,8 +324,7 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
       title = 'قیمت کل';
     }
     return Padding(
-      padding: EdgeInsets.only(
-          top: MediaQuery.of(context).size.width / 35.0, bottom: 3),
+      padding: EdgeInsets.only(top: Get.width / 35.0, bottom: 3),
       child: Text(
         title,
         style: TextStyle(fontSize: Get.width / 25, fontWeight: FontWeight.w400),

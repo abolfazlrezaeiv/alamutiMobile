@@ -15,10 +15,6 @@ import 'package:chips_choice_null_safety/chips_choice_null_safety.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_instance/src/extension_instance.dart';
-import 'package:get/get_navigation/src/extension_navigation.dart';
-import 'package:get/get_navigation/src/routes/transitions_type.dart';
 
 class HomePage extends StatefulWidget {
   final String? adstype;
@@ -29,21 +25,21 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int selectedTap = 4;
   bool isTyping = false;
-  TextEditingController _textEditingController = TextEditingController();
+
+  var _textEditingController = TextEditingController();
+
   var ap = AdvertisementProvider();
 
   List<Advertisement> adsList = [];
 
-  ConnectionController connectionController = Get.put(ConnectionController());
+  var connectionController = Get.put(ConnectionController());
 
-  ScreenController screenController = Get.put(ScreenController());
+  var screenController = Get.put(ScreenController());
 
-  ListAdvertisementController listAdvertisementController =
-      Get.put(ListAdvertisementController());
+  var listAdvertisementController = Get.put(ListAdvertisementController());
 
-  NewMessageController newMessageController = Get.put(NewMessageController());
+  var newMessageController = Get.put(NewMessageController());
 
   late SignalRHelper signalHelper;
 
@@ -56,28 +52,16 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    getChatMessageGroups();
-    mp.getGroups();
-    ap.getAll();
-    // ap.getAll(widget.adstype ?? " ").then((value) {
-    //   if (value == null) {
-    //     print('value is null');
-    //   }
-    //   setState(() {
-    //     adsList = value;
-    //   });
-    //   print(adsList.length);
-    // });
-
-    // signalHelper = SignalRHelper();
-    // signalHelper.initiateConnection();
-    // signalHelper.reciveMessage();
-    connectionController.checkConnectionStatus();
   }
 
   int tag = 0;
   @override
   Widget build(BuildContext context) {
+    getChatMessageGroups();
+    mp.getGroups();
+    ap.getAll();
+
+    connectionController.checkConnectionStatus();
     bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom == 0;
     var filterType = [
       '',
@@ -95,10 +79,8 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: PreferredSize(
-        preferredSize:
-            Size.fromHeight(MediaQuery.of(context).size.height / 5.7),
+        preferredSize: Size.fromHeight(Get.height / 5.7),
         child: SafeArea(
-          // minimum: EdgeInsets.symmetric(vertical: 35),
           child: Padding(
             padding: const EdgeInsets.only(top: 8.0),
             child: Container(
@@ -136,17 +118,14 @@ class _HomePageState extends State<HomePage> {
                           textAlign: TextAlign.end,
                           decoration: InputDecoration(
                             contentPadding: EdgeInsets.all(
-                              8, // HERE THE IMPORTANT PART
+                              8,
                             ),
                             prefixIcon: isKeyboardOpen
                                 ? Opacity(
                                     opacity: 0.5,
                                     child: Padding(
                                       padding: EdgeInsets.only(
-                                          left: MediaQuery.of(context)
-                                                  .size
-                                                  .width /
-                                              2.3),
+                                          left: Get.width / 2.3),
                                       child: Row(
                                         children: [
                                           Image.asset(
@@ -184,27 +163,22 @@ class _HomePageState extends State<HomePage> {
                                 if (_textEditingController.text.isNotEmpty) {
                                   ap.findAll(_textEditingController.text)
                                     ..then((value) {
-                                      if (value == null || value.length == 0) {
-                                        // print('value is null');
+                                      if (value.length == 0) {
                                         Get.rawSnackbar(
-                                          messageText: Text(
-                                            'چیزی پیدا نشد',
-                                            style:
-                                                TextStyle(color: Colors.white),
-                                            textDirection: TextDirection.rtl,
-                                          ),
-                                        );
+                                            messageText: Text(
+                                              'چیزی پیدا نشد',
+                                              style: TextStyle(
+                                                  color: Colors.white),
+                                              textDirection: TextDirection.rtl,
+                                            ),
+                                            backgroundColor: Colors.black);
                                       } else {
                                         setState(() {
                                           adsList = value;
                                         });
                                       }
-
-                                      // print(adsList.length);
                                     });
                                 }
-
-                                // _textEditingController.clear();
                               },
                             ),
                             enabledBorder: const OutlineInputBorder(
@@ -245,141 +219,131 @@ class _HomePageState extends State<HomePage> {
           ? Center(
               child: Text('لطفا اتصال به اینترنت همراه خود را بررسی کنید'),
             )
-          : Obx(() => ListView.builder(
-                itemCount: listAdvertisementController.adsList.length,
-                itemBuilder: (BuildContext context, int Index) {
-                  return Container(
-                    height: MediaQuery.of(context).size.height / 5,
-                    child: GestureDetector(
-                      onTap: () => Get.to(
-                          () => AdsDetail(
-                                byteImage1: listAdvertisementController
-                                    .adsList[Index].photo1,
-                                byteImage2: listAdvertisementController
-                                    .adsList[Index].photo2,
-                                price: listAdvertisementController
-                                    .adsList[Index].price
-                                    .toString(),
-                                sendedDate: listAdvertisementController
-                                    .adsList[Index].datePosted,
-                                title: listAdvertisementController
-                                    .adsList[Index].title,
-                                userId: listAdvertisementController
-                                    .adsList[Index].userId,
-                                description: listAdvertisementController
-                                    .adsList[Index].description,
-                              ),
-                          transition: Transition.noTransition),
-                      child: Obx(() => Container(
-                            decoration: BoxDecoration(
-                              border: Border(
-                                bottom: BorderSide(
-                                  color: Colors.grey.withOpacity(0.3),
-                                ),
-                              ),
-                            ),
-                            child: Center(
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal:
-                                        MediaQuery.of(context).size.width / 50),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    FittedBox(
-                                      fit: BoxFit.cover,
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(8),
-                                        child: (listAdvertisementController
-                                                    .adsList[Index].photo1 ==
-                                                null)
-                                            ? Opacity(
-                                                opacity: 0.6,
-                                                child: Image.asset(
-                                                  'assets/logo/no-image.png',
-                                                  fit: BoxFit.cover,
-                                                  height: MediaQuery.of(context)
-                                                          .size
-                                                          .height /
-                                                      6,
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .height /
-                                                      6,
-                                                ),
-                                              )
-                                            : Image.memory(
-                                                base64Decode(
-                                                  listAdvertisementController
-                                                      .adsList[Index].photo1,
-                                                ),
-                                                fit: BoxFit.cover,
-                                                height: MediaQuery.of(context)
-                                                        .size
-                                                        .height /
-                                                    6,
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .height /
-                                                    6,
-                                              ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          vertical: MediaQuery.of(context)
-                                                  .size
-                                                  .height /
-                                              70),
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.end,
-                                        children: [
-                                          Text(
-                                            listAdvertisementController
-                                                .adsList[Index].title,
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w400,
-                                                fontSize: 15),
-                                            textDirection: TextDirection.rtl,
-                                          ),
-                                          SizedBox(
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height /
-                                                18,
-                                          ),
-                                          Text(
-                                            '${listAdvertisementController.adsList[Index].price.toString()}  تومان',
-                                            style: TextStyle(
-                                                fontFamily: 'IRANSansXFaNum',
-                                                fontWeight: FontWeight.w300),
-                                            textDirection: TextDirection.rtl,
-                                          ),
-                                          Text(
-                                            listAdvertisementController
-                                                .adsList[Index].datePosted,
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w200,
-                                                fontFamily: 'IRANSansXFaNum',
-                                                fontSize: 13),
-                                            textDirection: TextDirection.rtl,
-                                          ),
-                                        ],
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                          )),
-                    ),
-                  );
+          : Obx(() => RefreshIndicator(
+                onRefresh: () {
+                  return ap.getAll();
                 },
+                child: ListView.builder(
+                  itemCount: listAdvertisementController.adsList.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Container(
+                      height: Get.height / 5,
+                      child: GestureDetector(
+                        onTap: () => Get.to(
+                            () => AdsDetail(
+                                  byteImage1: listAdvertisementController
+                                      .adsList[index].photo1,
+                                  byteImage2: listAdvertisementController
+                                      .adsList[index].photo2,
+                                  price: listAdvertisementController
+                                      .adsList[index].price
+                                      .toString(),
+                                  sendedDate: listAdvertisementController
+                                      .adsList[index].datePosted,
+                                  title: listAdvertisementController
+                                      .adsList[index].title,
+                                  userId: listAdvertisementController
+                                      .adsList[index].userId,
+                                  description: listAdvertisementController
+                                      .adsList[index].description,
+                                ),
+                            transition: Transition.noTransition),
+                        child: Obx(() => Container(
+                              decoration: BoxDecoration(
+                                border: Border(
+                                  bottom: BorderSide(
+                                    color: Colors.grey.withOpacity(0.3),
+                                  ),
+                                ),
+                              ),
+                              child: Center(
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal:
+                                          MediaQuery.of(context).size.width /
+                                              50),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      FittedBox(
+                                        fit: BoxFit.cover,
+                                        child: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                          child: (listAdvertisementController
+                                                      .adsList[index].photo1 ==
+                                                  null)
+                                              ? Opacity(
+                                                  opacity: 0.6,
+                                                  child: Image.asset(
+                                                    'assets/logo/no-image.png',
+                                                    fit: BoxFit.cover,
+                                                    height: Get.height / 6,
+                                                    width: Get.height / 6,
+                                                  ),
+                                                )
+                                              : Image.memory(
+                                                  base64Decode(
+                                                    listAdvertisementController
+                                                        .adsList[index].photo1,
+                                                  ),
+                                                  fit: BoxFit.cover,
+                                                  height: Get.height / 6,
+                                                  width: Get.height / 6,
+                                                ),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            vertical: Get.height / 70),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
+                                          children: [
+                                            Text(
+                                              listAdvertisementController
+                                                  .adsList[index].title,
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w400,
+                                                  fontSize: 15),
+                                              textDirection: TextDirection.rtl,
+                                            ),
+                                            SizedBox(
+                                              height: Get.height / 18,
+                                            ),
+                                            Text(
+                                              '${listAdvertisementController.adsList[index].price.toString()}  تومان',
+                                              style: TextStyle(
+                                                  fontFamily: 'IRANSansXFaNum',
+                                                  fontWeight: FontWeight.w300),
+                                              textDirection: TextDirection.rtl,
+                                            ),
+                                            Text(
+                                              listAdvertisementController
+                                                  .adsList[index].datePosted,
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w200,
+                                                  fontFamily: 'IRANSansXFaNum',
+                                                  fontSize: 13),
+                                              textDirection: TextDirection.rtl,
+                                            ),
+                                          ],
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            )),
+                      ),
+                    );
+                  },
+                ),
               )),
     );
   }

@@ -7,7 +7,9 @@ import 'package:alamuti/app/ui/details/fullscreen_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
+import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../home/home_page.dart';
 
@@ -168,7 +170,9 @@ class AdsDetail extends StatelessWidget {
                   minWidth: Get.width / 2.2,
                   elevation: 0,
                   color: Color.fromRGBO(255, 0, 0, 0.4),
-                  onPressed: () => null,
+                  onPressed: () async {
+                    _makePhoneCall('4342342243');
+                  },
                   child: Text(
                     'تماس تلفنی',
                     style: TextStyle(
@@ -207,6 +211,18 @@ class AdsDetail extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Future<void> _makePhoneCall(String phoneNumber) async {
+    // Use `Uri` to ensure that `phoneNumber` is properly URL-encoded.
+    // Just using 'tel:$phoneNumber' would create invalid URLs in some cases,
+    // such as spaces in the input, which would cause `launch` to fail on some
+    // platforms.
+    final Uri launchUri = Uri(
+      scheme: 'tel',
+      path: phoneNumber,
+    );
+    await launch(launchUri.toString());
   }
 
   Widget getImageSlider() {
