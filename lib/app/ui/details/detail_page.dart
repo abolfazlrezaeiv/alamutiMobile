@@ -13,9 +13,9 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../home/home_page.dart';
 
+// ignore: must_be_immutable
 class AdsDetail extends StatelessWidget {
-  ChatMessageController chatMessageController =
-      Get.put(ChatMessageController());
+  var chatMessageController = Get.put(ChatMessageController());
 
   final String? byteImage1;
   final String? byteImage2;
@@ -40,9 +40,7 @@ class AdsDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ChatTargetUserController chatTargetUserController =
-        Get.put(ChatTargetUserController());
-    var mq = MediaQuery.of(context).size;
+    var chatTargetUserController = Get.put(ChatTargetUserController());
     return Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -52,16 +50,6 @@ class AdsDetail extends StatelessWidget {
               ((byteImage1 != null) && (byteImage2 != null))
                   ? getImageSlider()
                   : getImageOrEmpty(),
-
-              // (Stack(
-              //   children: [
-              //     getImageOrEmpty(),
-              //     (byteImage1 != null)
-              //         ? getStackedBackButton()
-              //         : getAppbarWithBack()
-              //   ],
-              //   alignment: Alignment.topLeft,
-              // )),
               Padding(
                 padding: EdgeInsets.symmetric(
                   horizontal: Get.width / 50,
@@ -103,8 +91,7 @@ class AdsDetail extends StatelessWidget {
                               '$price   تومان',
                               textDirection: TextDirection.ltr,
                               style: TextStyle(
-                                  fontSize:
-                                      MediaQuery.of(context).size.width / 26,
+                                  fontSize: Get.width / 26,
                                   fontFamily: 'IRANSansXFaNum',
                                   fontWeight: FontWeight.w400),
                             ),
@@ -113,8 +100,7 @@ class AdsDetail extends StatelessWidget {
                               textDirection: TextDirection.rtl,
                               style: TextStyle(
                                   fontWeight: FontWeight.w300,
-                                  fontSize:
-                                      MediaQuery.of(context).size.width / 27),
+                                  fontSize: Get.width / 27),
                             )
                           ],
                         ),
@@ -124,7 +110,6 @@ class AdsDetail extends StatelessWidget {
                 ),
               ),
               Divider(),
-
               Padding(
                 padding: EdgeInsets.symmetric(
                     horizontal: Get.width / 30, vertical: Get.height / 55),
@@ -135,7 +120,7 @@ class AdsDetail extends StatelessWidget {
                       'توضیحات',
                       style: TextStyle(
                           fontWeight: FontWeight.w500,
-                          fontSize: MediaQuery.of(context).size.width / 24),
+                          fontSize: Get.width / 24),
                     ),
                     SizedBox(
                       height: Get.height / 55,
@@ -149,7 +134,7 @@ class AdsDetail extends StatelessWidget {
                         textDirection: TextDirection.rtl,
                         style: TextStyle(
                           fontWeight: FontWeight.w300,
-                          fontSize: MediaQuery.of(context).size.width / 28,
+                          fontSize: Get.width / 28,
                         ),
                       ),
                     ),
@@ -177,7 +162,7 @@ class AdsDetail extends StatelessWidget {
                     'تماس تلفنی',
                     style: TextStyle(
                       fontWeight: FontWeight.w500,
-                      fontSize: MediaQuery.of(context).size.width / 26,
+                      fontSize: Get.width / 26,
                     ),
                   ),
                 ),
@@ -201,7 +186,7 @@ class AdsDetail extends StatelessWidget {
                     'چت',
                     style: TextStyle(
                       fontWeight: FontWeight.w500,
-                      fontSize: MediaQuery.of(context).size.width / 26,
+                      fontSize: Get.width / 26,
                     ),
                   ),
                 ),
@@ -214,10 +199,6 @@ class AdsDetail extends StatelessWidget {
   }
 
   Future<void> _makePhoneCall(String phoneNumber) async {
-    // Use `Uri` to ensure that `phoneNumber` is properly URL-encoded.
-    // Just using 'tel:$phoneNumber' would create invalid URLs in some cases,
-    // such as spaces in the input, which would cause `launch` to fail on some
-    // platforms.
     final Uri launchUri = Uri(
       scheme: 'tel',
       path: phoneNumber,
@@ -286,30 +267,6 @@ class AdsDetail extends StatelessWidget {
           ),
         ),
       ),
-      // Container(
-      //   width: Get.width,
-      //   height: Get.height / 2.3,
-      //   alignment: Alignment.centerLeft,
-      //   child: Opacity(
-      //     opacity: 0.3,
-      //     child: Icon(
-      //       CupertinoIcons.back,
-      //       size: Get.height / 4,
-      //     ),
-      //   ),
-      // ),
-      // Container(
-      //   width: Get.width,
-      //   height: Get.height / 2.3,
-      //   alignment: Alignment.centerRight,
-      //   child: Opacity(
-      //     opacity: 0.3,
-      //     child: Icon(
-      //       CupertinoIcons.chevron_forward,
-      //       size: Get.height / 4,
-      //     ),
-      //   ),
-      // ),
     ]);
   }
 
