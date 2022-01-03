@@ -50,7 +50,7 @@ class _SubmitAdsCategoryState extends State<SubmitAdsCategory> {
           GestureDetector(
             onTap: () {
               adsFormController.formState.value = AdsFormState.FOOD;
-              Get.to(AdvertisementForm());
+              Get.toNamed('/ads_form');
             },
             child: Container(
               child: Column(
@@ -76,7 +76,7 @@ class _SubmitAdsCategoryState extends State<SubmitAdsCategory> {
           GestureDetector(
             onTap: () {
               adsFormController.formState.value = AdsFormState.JOB;
-              Get.to(AdvertisementForm());
+              Get.toNamed('/ads_form');
             },
             child: Container(
               child: Column(
@@ -100,7 +100,7 @@ class _SubmitAdsCategoryState extends State<SubmitAdsCategory> {
           GestureDetector(
             onTap: () {
               adsFormController.formState.value = AdsFormState.REALSTATE;
-              Get.to(AdvertisementForm());
+              Get.toNamed('/ads_form');
             },
             child: Container(
               child: Column(

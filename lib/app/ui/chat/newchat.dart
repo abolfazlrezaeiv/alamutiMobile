@@ -5,6 +5,7 @@ import 'package:alamuti/app/data/provider/chat_message_provider.dart';
 import 'package:alamuti/app/data/provider/signalr_helper.dart';
 import 'package:alamuti/app/data/storage/cachemanager.dart';
 import 'package:alamuti/app/ui/chat/chatgroup.dart';
+import 'package:alamuti/app/ui/theme.dart';
 import 'package:alamuti/app/ui/widgets/alamuti_appbar.dart';
 import 'package:alamuti/app/ui/widgets/alamuti_textfield.dart';
 import 'package:flutter/material.dart';
@@ -72,164 +73,161 @@ class _NewChatState extends State<NewChat> {
         backwidget: ChatGroups(),
       ),
       body: Container(
-          width: Get.width,
-          child: Obx(
-            () => Column(
-              children: [
-                Expanded(
-                  child: ListView.builder(
-                    controller: _scrollcontroller,
-                    itemCount: chatMessageController.messageList.length,
-                    itemBuilder: (context, index) {
-                      var storage = GetStorage();
-                      if (chatMessageController
-                              .messageList.value[index].sender ==
-                          storage.read(CacheManagerKey.USERID.toString())) {
-                        return ChatBubble(
-                          clipper:
-                              ChatBubbleClipper9(type: BubbleType.sendBubble),
-                          alignment: Alignment.topRight,
-                          margin: EdgeInsets.only(top: 20),
-                          backGroundColor: Color.fromRGBO(8, 212, 76, 0.5),
-                          child: Container(
-                            constraints: BoxConstraints(
-                              maxWidth: Get.width * 0.7,
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Text(
-                                  chatMessageController
-                                      .messageList.value[index].message,
-                                  textDirection: TextDirection.rtl,
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                                Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    Text(
-                                      '',
-                                      style: TextStyle(color: Colors.black),
-                                    ),
-                                    Text(
-                                      chatMessageController
-                                          .messageList.value[index].daySended,
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w200,
-                                          fontFamily: 'IRANSansXFaNum',
-                                          fontSize: 13),
-                                      textDirection: TextDirection.rtl,
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
+        width: Get.width,
+        child: Obx(
+          () => Column(
+            children: [
+              Expanded(
+                child: ListView.builder(
+                  controller: _scrollcontroller,
+                  itemCount: chatMessageController.messageList.length,
+                  itemBuilder: (context, index) {
+                    var storage = GetStorage();
+                    if (chatMessageController.messageList.value[index].sender ==
+                        storage.read(CacheManagerKey.USERID.toString())) {
+                      return ChatBubble(
+                        clipper:
+                            ChatBubbleClipper9(type: BubbleType.sendBubble),
+                        alignment: Alignment.topRight,
+                        margin: EdgeInsets.only(top: 20),
+                        backGroundColor: alamutPrimaryColor,
+                        child: Container(
+                          constraints: BoxConstraints(
+                            maxWidth: Get.width * 0.7,
                           ),
-                        );
-                      } else {
-                        return ChatBubble(
-                          clipper: ChatBubbleClipper9(
-                              type: BubbleType.receiverBubble),
-                          backGroundColor: Color(0xffE7E7ED),
-                          margin: EdgeInsets.only(top: 20),
-                          child: Container(
-                            constraints: BoxConstraints(
-                              maxWidth: Get.width * 0.7,
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Text(
-                                  chatMessageController
-                                      .messageList.value[index].message,
-                                  textDirection: TextDirection.rtl,
-                                  style: TextStyle(color: Colors.black),
-                                ),
-                                Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    Text(
-                                      '',
-                                      style: TextStyle(color: Colors.black),
-                                    ),
-                                    Text(
-                                      chatMessageController
-                                          .messageList.value[index].daySended,
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w200,
-                                          fontFamily: 'IRANSansXFaNum',
-                                          fontSize: 13),
-                                      textDirection: TextDirection.rtl,
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                chatMessageController
+                                    .messageList.value[index].message,
+                                textDirection: TextDirection.rtl,
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    '',
+                                    style: TextStyle(color: Colors.black),
+                                  ),
+                                  Text(
+                                    chatMessageController
+                                        .messageList.value[index].daySended,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w200,
+                                        fontFamily: persianNumber,
+                                        fontSize: 13),
+                                    textDirection: TextDirection.rtl,
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
-                        );
-                      }
-                    },
-                  ),
+                        ),
+                      );
+                    } else {
+                      return ChatBubble(
+                        clipper:
+                            ChatBubbleClipper9(type: BubbleType.receiverBubble),
+                        backGroundColor: Color(0xffE7E7ED),
+                        margin: EdgeInsets.only(top: 20),
+                        child: Container(
+                          constraints: BoxConstraints(
+                            maxWidth: Get.width * 0.7,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                chatMessageController
+                                    .messageList.value[index].message,
+                                textDirection: TextDirection.rtl,
+                                style: TextStyle(color: Colors.black),
+                              ),
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    '',
+                                    style: TextStyle(color: Colors.black),
+                                  ),
+                                  Text(
+                                    chatMessageController
+                                        .messageList.value[index].daySended,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w200,
+                                        fontFamily: persianNumber,
+                                        fontSize: 13),
+                                    textDirection: TextDirection.rtl,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }
+                  },
                 ),
-                Container(
-                  color: Colors.grey.withOpacity(0.1),
-                  height: 60,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      children: [
-                        Expanded(
-                            child: AlamutiTextField(
-                          textEditingController: textEditingController,
-                          isNumber: false,
-                        )),
-                        TextButton(
-                            onPressed: () {
-                              signalHelper.sendMessage(
-                                receiverId:
-                                    chatTargetUserController.userId.value,
-                                grouptitle: widget.groupTitle,
-                                senderId: storage.read(
+              ),
+              Container(
+                color: Colors.grey.withOpacity(0.1),
+                height: 60,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      Expanded(
+                          child: AlamutiTextField(
+                        textEditingController: textEditingController,
+                        isNumber: false,
+                      )),
+                      TextButton(
+                          onPressed: () {
+                            signalHelper.sendMessage(
+                              receiverId: chatTargetUserController.userId.value,
+                              grouptitle: widget.groupTitle,
+                              senderId: storage.read(
+                                CacheManagerKey.USERID.toString(),
+                              ),
+                              message: textEditingController.text,
+                              groupname: null,
+                              groupImage: widget.groupImage,
+                            );
+
+                            chatMessageController.addMessage(ChatMessage(
+                                id: 44,
+                                sender: storage.read(
                                   CacheManagerKey.USERID.toString(),
                                 ),
                                 message: textEditingController.text,
-                                groupname: null,
-                                groupImage: widget.groupImage,
-                              );
+                                reciever: chatTargetUserController.userId.value,
+                                daySended: ''));
 
-                              chatMessageController.addMessage(ChatMessage(
-                                  id: 44,
-                                  sender: storage.read(
-                                    CacheManagerKey.USERID.toString(),
-                                  ),
-                                  message: textEditingController.text,
-                                  reciever:
-                                      chatTargetUserController.userId.value,
-                                  daySended: ''));
-
-                              WidgetsBinding.instance
-                                  ?.addPostFrameCallback((_) {
-                                if (_scrollcontroller.hasClients) {
-                                  _scrollcontroller.jumpTo(_scrollcontroller
-                                      .position.maxScrollExtent);
-                                }
-                              });
-                            },
-                            child: Text(
-                              'ارسال',
-                              style: TextStyle(color: Colors.greenAccent),
-                            ))
-                      ],
-                    ),
+                            WidgetsBinding.instance?.addPostFrameCallback((_) {
+                              if (_scrollcontroller.hasClients) {
+                                _scrollcontroller.jumpTo(
+                                    _scrollcontroller.position.maxScrollExtent);
+                              }
+                            });
+                          },
+                          child: Text(
+                            'ارسال',
+                            style: TextStyle(color: Colors.greenAccent),
+                          ))
+                    ],
                   ),
-                )
-              ],
-            ),
-          )),
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

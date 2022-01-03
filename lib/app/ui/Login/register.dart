@@ -174,9 +174,9 @@ class _RegisterationState extends State<Registeration> {
                               isSendingSms = true;
                             });
                             Get.to(
-                                Login(
-                                  phonenumber: phoneNumberCtr.text,
-                                ),
+                                () => Login(
+                                      phonenumber: phoneNumberCtr.text,
+                                    ),
                                 transition: Transition.noTransition);
                           } else {
                             setState(() {

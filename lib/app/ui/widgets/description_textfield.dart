@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+// ignore: must_be_immutable
 class DescriptionTextField extends StatelessWidget {
   String? initialvalue = ' ';
+
+  final TextEditingController textEditingController;
 
   DescriptionTextField(
       {Key? key, required this.textEditingController, this.initialvalue})
       : super(key: key);
-  final TextEditingController textEditingController;
 
   @override
   Widget build(BuildContext context) {
@@ -22,9 +24,7 @@ class DescriptionTextField extends StatelessWidget {
           fontSize: Get.width / 27,
           fontWeight: FontWeight.w300),
       decoration: InputDecoration(
-        contentPadding: EdgeInsets.all(
-          8, // HERE THE IMPORTANT PART
-        ),
+        contentPadding: EdgeInsets.all(8),
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(color: Colors.greenAccent, width: 2.0),
         ),

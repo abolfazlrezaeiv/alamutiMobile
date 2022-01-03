@@ -1,6 +1,8 @@
 import 'package:alamuti/app/ui/Login/register.dart';
+import 'package:alamuti/app/ui/advetisement_form_page/advertisement_form_page.dart';
 import 'package:alamuti/app/ui/chat/chatgroup.dart';
 import 'package:alamuti/app/ui/home/home_page.dart';
+import 'package:alamuti/app/ui/myalamuti/myadvertisement.dart';
 import 'package:alamuti/app/ui/myalamuti/myalamuti_page.dart';
 import 'package:alamuti/app/ui/post_ads_category/submit_ads_category.dart';
 import 'package:alamuti/app/ui/splash_screen/splash_screen.dart';
@@ -24,6 +26,16 @@ var routes = [
   GetPage(
     name: "/chat",
     page: () => ChatGroups(),
+    transition: trans.Transition.noTransition,
+  ),
+  GetPage(
+    name: "/myads",
+    page: () => MyAdvertisement(),
+    transition: trans.Transition.noTransition,
+  ),
+  GetPage(
+    name: "/ads_form",
+    page: () => AdvertisementForm(),
     transition: trans.Transition.noTransition,
   ),
   GetPage(

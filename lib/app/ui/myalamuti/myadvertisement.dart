@@ -26,13 +26,21 @@ class MyAdvertisement extends StatefulWidget {
 
 class _MyAdvertisementState extends State<MyAdvertisement> {
   var ap = AdvertisementProvider();
+
   List<Advertisement> adsList = [];
+
   var connectionController = Get.put(ConnectionController());
+
   var screenController = Get.put(ScreenController());
+
   var advertisementProvider = AdvertisementProvider();
+
   var adsFormController = AdsFormController();
+
   var myAdvertisementController = Get.put(MyAdvertisementController());
+
   var updateUploadImageController = Get.put(UpdateUploadImageController());
+
   @override
   void initState() {
     super.initState();
@@ -63,11 +71,15 @@ class _MyAdvertisementState extends State<MyAdvertisement> {
           : Obx(
               () => RefreshIndicator(
                 onRefresh: () {
-                  return ap.getMyAds().then((value) {
-                    setState(() {
-                      adsList = value;
-                    });
-                  });
+                  return ap.getMyAds().then(
+                    (value) {
+                      setState(
+                        () {
+                          adsList = value;
+                        },
+                      );
+                    },
+                  );
                 },
                 child: ListView.builder(
                   itemCount: myAdvertisementController.adsList.length,
@@ -329,7 +341,7 @@ class _MyAdvertisementState extends State<MyAdvertisement> {
                                                                 .photo2 ??
                                                             '';
                                                     Get.to(
-                                                      AdvertisementUpdateForm(
+                                                      () => AdvertisementUpdateForm(
                                                           ads:
                                                               myAdvertisementController
                                                                       .adsList[

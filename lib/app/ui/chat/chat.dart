@@ -5,6 +5,7 @@ import 'package:alamuti/app/data/provider/chat_message_provider.dart';
 import 'package:alamuti/app/data/provider/signalr_helper.dart';
 import 'package:alamuti/app/data/storage/cachemanager.dart';
 import 'package:alamuti/app/ui/chat/chatgroup.dart';
+import 'package:alamuti/app/ui/theme.dart';
 import 'package:alamuti/app/ui/widgets/alamuti_appbar.dart';
 import 'package:alamuti/app/ui/widgets/alamuti_textfield.dart';
 import 'package:flutter/material.dart';
@@ -135,7 +136,7 @@ class _ChatState extends State<Chat> {
                                           .messageList.value[index].daySended,
                                       style: TextStyle(
                                           fontWeight: FontWeight.w200,
-                                          fontFamily: 'IRANSansXFaNum',
+                                          fontFamily: persianNumber,
                                           fontSize: 13),
                                       textDirection: TextDirection.rtl,
                                     ),
@@ -178,7 +179,7 @@ class _ChatState extends State<Chat> {
                                           .messageList.value[index].daySended,
                                       style: TextStyle(
                                           fontWeight: FontWeight.w200,
-                                          fontFamily: 'IRANSansXFaNum',
+                                          fontFamily: persianNumber,
                                           fontSize: 13),
                                       textDirection: TextDirection.rtl,
                                     ),
@@ -213,10 +214,6 @@ class _ChatState extends State<Chat> {
                                   ),
                                   '')
                               .trimRight();
-                          print(target);
-                          print(storage.read(
-                            CacheManagerKey.USERID.toString(),
-                          ));
 
                           signalHelper.sendMessage(
                               receiverId: target,

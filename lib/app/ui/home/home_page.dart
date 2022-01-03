@@ -10,6 +10,7 @@ import 'package:alamuti/app/data/provider/chat_message_provider.dart';
 import 'package:alamuti/app/data/provider/signalr_helper.dart';
 import 'package:alamuti/app/data/storage/cachemanager.dart';
 import 'package:alamuti/app/ui/details/detail_page.dart';
+import 'package:alamuti/app/ui/theme.dart';
 import 'package:alamuti/app/ui/widgets/imgaebase64.dart';
 import 'package:alamuti/app/ui/widgets/bottom_navbar.dart';
 import 'package:chips_choice_null_safety/chips_choice_null_safety.dart';
@@ -108,7 +109,7 @@ class _HomePageState extends State<HomePage> {
                           style: TextStyle(
                               backgroundColor: Colors.white,
                               fontSize: Get.width / 27,
-                              fontFamily: 'IRANSansXFaNum',
+                              fontFamily: persianNumber,
                               fontWeight: FontWeight.w300),
                           onTap: () {
                             setState(() {
@@ -223,12 +224,19 @@ class _HomePageState extends State<HomePage> {
       ),
       bottomNavigationBar: AlamutBottomNavBar(),
       body: (!connectionController.isConnected.value)
-          ? Center(
-              child: Text('لطفا اتصال به اینترنت همراه خود را بررسی کنید'),
+          ? RefreshIndicator(
+              onRefresh: () async {
+                connectionController.checkConnectionStatus();
+                return await ap.getAll();
+              },
+              child: Center(
+                child: Text('لطفا اتصال به اینترنت همراه خود را بررسی کنید'),
+              ),
             )
-          : Obx(() => RefreshIndicator(
-                onRefresh: () {
-                  return ap.getAll();
+          : Obx(
+              () => RefreshIndicator(
+                onRefresh: () async {
+                  return await ap.getAll();
                 },
                 child: ListView.builder(
                   itemCount: listAdvertisementController.adsList.length,
@@ -257,103 +265,102 @@ class _HomePageState extends State<HomePage> {
                                       .adsList[index].description,
                                 ),
                             transition: Transition.noTransition),
-                        child: Obx(() => Container(
-                              decoration: BoxDecoration(
-                                border: Border(
-                                  bottom: BorderSide(
-                                    color: Colors.grey.withOpacity(0.3),
-                                  ),
+                        child: Obx(
+                          () => Container(
+                            decoration: BoxDecoration(
+                              border: Border(
+                                bottom: BorderSide(
+                                  color: Colors.grey.withOpacity(0.3),
                                 ),
                               ),
-                              child: Center(
-                                child: Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal:
-                                          MediaQuery.of(context).size.width /
-                                              50),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      FittedBox(
-                                        fit: BoxFit.cover,
-                                        child: ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                          child: (listAdvertisementController
-                                                      .adsList[index].photo1 ==
-                                                  null)
-                                              ? Opacity(
-                                                  opacity: 0.6,
-                                                  child: Image.asset(
-                                                    'assets/logo/no-image.png',
-                                                    fit: BoxFit.cover,
-                                                    height: Get.height / 6,
-                                                    width: Get.height / 6,
-                                                  ),
-                                                )
-                                              : Image.memory(
-                                                  base64Decode(
-                                                    listAdvertisementController
-                                                        .adsList[index].photo1,
-                                                  ),
+                            ),
+                            child: Center(
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: Get.width / 50),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    FittedBox(
+                                      fit: BoxFit.cover,
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(8),
+                                        child: (listAdvertisementController
+                                                    .adsList[index].photo1 ==
+                                                null)
+                                            ? Opacity(
+                                                opacity: 0.6,
+                                                child: Image.asset(
+                                                  'assets/logo/no-image.png',
                                                   fit: BoxFit.cover,
                                                   height: Get.height / 6,
                                                   width: Get.height / 6,
                                                 ),
-                                        ),
+                                              )
+                                            : Image.memory(
+                                                base64Decode(
+                                                  listAdvertisementController
+                                                      .adsList[index].photo1,
+                                                ),
+                                                fit: BoxFit.cover,
+                                                height: Get.height / 6,
+                                                width: Get.height / 6,
+                                              ),
                                       ),
-                                      Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: Get.height / 70),
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.end,
-                                          children: [
-                                            Text(
-                                              listAdvertisementController
-                                                  .adsList[index].title,
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.w400,
-                                                  fontSize: 15),
-                                              textDirection: TextDirection.rtl,
-                                            ),
-                                            SizedBox(
-                                              height: Get.height / 18,
-                                            ),
-                                            Text(
-                                              '${listAdvertisementController.adsList[index].price.toString()}  تومان',
-                                              style: TextStyle(
-                                                  fontFamily: 'IRANSansXFaNum',
-                                                  fontWeight: FontWeight.w300),
-                                              textDirection: TextDirection.rtl,
-                                            ),
-                                            Text(
-                                              listAdvertisementController
-                                                  .adsList[index].datePosted,
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.w200,
-                                                  fontFamily: 'IRANSansXFaNum',
-                                                  fontSize: 13),
-                                              textDirection: TextDirection.rtl,
-                                            ),
-                                          ],
-                                        ),
-                                      )
-                                    ],
-                                  ),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: Get.height / 70),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
+                                        children: [
+                                          Text(
+                                            listAdvertisementController
+                                                .adsList[index].title,
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w400,
+                                                fontSize: 15),
+                                            textDirection: TextDirection.rtl,
+                                          ),
+                                          SizedBox(
+                                            height: Get.height / 18,
+                                          ),
+                                          Text(
+                                            '${listAdvertisementController.adsList[index].price.toString()}  تومان',
+                                            style: TextStyle(
+                                                fontFamily: persianNumber,
+                                                fontWeight: FontWeight.w300),
+                                            textDirection: TextDirection.rtl,
+                                          ),
+                                          Text(
+                                            listAdvertisementController
+                                                .adsList[index].datePosted,
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w200,
+                                                fontFamily: persianNumber,
+                                                fontSize: 13),
+                                            textDirection: TextDirection.rtl,
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                  ],
                                 ),
                               ),
-                            )),
+                            ),
+                          ),
+                        ),
                       ),
                     );
                   },
                 ),
-              )),
+              ),
+            ),
     );
   }
 }

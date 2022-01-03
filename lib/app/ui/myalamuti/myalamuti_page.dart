@@ -3,7 +3,6 @@ import 'package:alamuti/app/data/storage/cachemanager.dart';
 import 'package:alamuti/app/ui/home/home_page.dart';
 import 'package:alamuti/app/ui/myalamuti/myadvertisement.dart';
 import 'package:alamuti/app/ui/widgets/alamuti_appbar.dart';
-import 'package:alamuti/app/ui/widgets/alamuti_button.dart';
 import 'package:alamuti/app/ui/widgets/bottom_navbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -85,7 +84,7 @@ class MyAlamutiPage extends StatelessWidget with CacheManager {
                       ),
                       GestureDetector(
                         onTap: () {
-                          Get.to(MyAdvertisement());
+                          Get.toNamed('/myads');
                         },
                         child: Container(
                           child: Column(

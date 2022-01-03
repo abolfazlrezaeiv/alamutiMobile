@@ -87,7 +87,7 @@ class AdvertisementProvider {
     return myads;
   }
 
-  Future<List<Advertisement>> getAll([String? adstype = null]) async {
+  Future<void> getAll([String? adstype = null]) async {
     var response;
     if (adstype == null || adstype.isEmpty == true) {
       response = await tokenProvider.api.get(
@@ -123,8 +123,6 @@ class AdvertisementProvider {
     );
 
     listAdvertisementController.adsList.value = myads;
-
-    return myads;
   }
 
   postAdvertisement(

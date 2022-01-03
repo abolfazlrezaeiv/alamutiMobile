@@ -1,3 +1,4 @@
+import 'package:alamuti/app/ui/theme.dart';
 import 'package:flutter/material.dart';
 
 class SubmitButton extends StatelessWidget {
@@ -12,7 +13,7 @@ class SubmitButton extends StatelessWidget {
           height: 47,
           child: TextButton(
             style: ElevatedButton.styleFrom(
-              primary: Color.fromRGBO(10, 210, 71, 0.5),
+              primary: alamutPrimaryColor,
             ),
             onPressed: () {},
             child: Text(

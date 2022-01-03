@@ -1,3 +1,4 @@
+import 'package:alamuti/app/ui/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -5,11 +6,9 @@ class AlamutiTextField extends StatelessWidget {
   final TextEditingController textEditingController;
 
   final bool isNumber;
-  AlamutiTextField({
-    Key? key,
-    required this.textEditingController,
-    required this.isNumber,
-  }) : super(key: key);
+  AlamutiTextField(
+      {Key? key, required this.textEditingController, required this.isNumber})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -29,11 +28,11 @@ class AlamutiTextField extends StatelessWidget {
         style: TextStyle(
             backgroundColor: Colors.white,
             fontSize: Get.width / 27,
-            fontFamily: 'IRANSansXFaNum',
+            fontFamily: persianNumber,
             fontWeight: FontWeight.w300),
         decoration: InputDecoration(
           contentPadding: EdgeInsets.all(
-            8, // HERE THE IMPORTANT PART
+            8,
           ),
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(color: Colors.greenAccent, width: 2.0),

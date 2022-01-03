@@ -1,4 +1,4 @@
-import 'package:alamuti/app/ui/post_ads_category/submit_ads_category.dart';
+import 'package:alamuti/app/ui/theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -27,16 +27,20 @@ class AlamutiAppBar extends StatelessWidget implements PreferredSizeWidget {
               fontWeight: FontWeight.w400,
               color: Colors.white.withOpacity(0.9)),
         ),
-        backgroundColor: Color.fromRGBO(8, 212, 76, 0.5),
         automaticallyImplyLeading: false,
         centerTitle: true,
         leading: hasBackButton
             ? GestureDetector(
-                onTap: () => Get.to(this.backwidget,
+                onTap: () => Get.to(() => this.backwidget,
                     transition: Transition.noTransition),
-                child: Icon(
-                  CupertinoIcons.chevron_back,
-                  size: 30,
+                child: Container(
+                  width: 100,
+                  height: 100,
+                  color: alamutPrimaryColor.withOpacity(0.0),
+                  child: Icon(
+                    CupertinoIcons.chevron_back,
+                    size: 30,
+                  ),
                 ),
               )
             : null,

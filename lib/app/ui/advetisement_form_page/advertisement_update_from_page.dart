@@ -7,6 +7,7 @@ import 'package:alamuti/app/controller/update_image_advertisement.dart';
 import 'package:alamuti/app/data/model/Advertisement.dart';
 import 'package:alamuti/app/data/provider/advertisement_provider.dart';
 import 'package:alamuti/app/ui/post_ads_category/submit_ads_category.dart';
+import 'package:alamuti/app/ui/theme.dart';
 import 'package:alamuti/app/ui/widgets/add_ads_photo_card.dart';
 import 'package:alamuti/app/ui/widgets/alamuti_appbar.dart';
 import 'package:alamuti/app/ui/widgets/alamuti_textfield.dart';
@@ -204,7 +205,7 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
                   padding: EdgeInsets.only(right: Get.width / 2),
                   child: TextButton(
                     style: ElevatedButton.styleFrom(
-                      primary: Color.fromRGBO(10, 210, 71, 0.5),
+                      primary: alamutPrimaryColor,
                       minimumSize: Size(88, 36),
                     ),
                     onPressed: () async {

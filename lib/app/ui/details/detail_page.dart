@@ -4,6 +4,7 @@ import 'package:alamuti/app/controller/chat_target_controller.dart';
 import 'package:alamuti/app/ui/chat/newchat.dart';
 import 'package:alamuti/app/ui/details/fullscreen_image.dart';
 import 'package:alamuti/app/ui/home/home_page.dart';
+import 'package:alamuti/app/ui/theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
@@ -71,7 +72,7 @@ class AdsDetail extends StatelessWidget {
                         sendedDate,
                         style: TextStyle(
                             fontWeight: FontWeight.w300,
-                            fontFamily: 'IRANSansXFaNum',
+                            fontFamily: persianNumber,
                             fontSize: Get.width / 31),
                         textDirection: TextDirection.rtl,
                       ),
@@ -89,7 +90,7 @@ class AdsDetail extends StatelessWidget {
                               textDirection: TextDirection.ltr,
                               style: TextStyle(
                                   fontSize: Get.width / 26,
-                                  fontFamily: 'IRANSansXFaNum',
+                                  fontFamily: persianNumber,
                                   fontWeight: FontWeight.w400),
                             ),
                             Text(
@@ -244,8 +245,7 @@ class AdsDetail extends StatelessWidget {
         height: Get.height / 3,
         alignment: Alignment.topLeft,
         child: GestureDetector(
-          onTap: () =>
-              Get.to(() => HomePage(), transition: Transition.noTransition),
+          onTap: () => Get.toNamed('/home'),
           child: Row(
             children: [
               Icon(
@@ -291,8 +291,7 @@ class AdsDetail extends StatelessWidget {
                 height: Get.height / 2.5,
                 alignment: Alignment.topLeft,
                 child: GestureDetector(
-                  onTap: () => Get.to(() => HomePage(),
-                      transition: Transition.noTransition),
+                  onTap: () => Get.toNamed('/home'),
                   child: Row(
                     children: [
                       Icon(
@@ -324,8 +323,7 @@ class AdsDetail extends StatelessWidget {
         child: Opacity(
           opacity: 0.5,
           child: GestureDetector(
-            onTap: () =>
-                Get.to(() => HomePage(), transition: Transition.noTransition),
+            onTap: () => Get.toNamed('/home'),
             child: Row(
               children: [
                 Icon(
@@ -354,8 +352,7 @@ class AdsDetail extends StatelessWidget {
       child: Opacity(
         opacity: 0.7,
         child: GestureDetector(
-          onTap: () =>
-              Get.to(() => HomePage(), transition: Transition.noTransition),
+          onTap: () => Get.toNamed('/home'),
           child: Container(
             width: Get.width / 4,
             child: Row(
