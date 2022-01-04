@@ -4,7 +4,6 @@ var themes = ThemeData(
   fontFamily: 'IRANSansX',
   appBarTheme: AppBarTheme(
     backgroundColor: Color.fromRGBO(8, 212, 76, 0.5),
-    shadowColor: Color.fromRGBO(8, 212, 76, 0.5),
   ),
   bottomNavigationBarTheme: BottomNavigationBarThemeData(
       elevation: 0,

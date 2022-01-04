@@ -50,7 +50,7 @@ class AdsDetail extends StatelessWidget {
                   : getImageOrEmpty(),
               Padding(
                 padding: EdgeInsets.symmetric(
-                  horizontal: Get.width / 50,
+                  horizontal: Get.width / 20,
                 ),
                 child: Container(
                   child: Column(
@@ -111,7 +111,7 @@ class AdsDetail extends StatelessWidget {
               Divider(),
               Padding(
                 padding: EdgeInsets.symmetric(
-                    horizontal: Get.width / 30, vertical: Get.height / 55),
+                    horizontal: Get.width / 20, vertical: Get.height / 55),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [

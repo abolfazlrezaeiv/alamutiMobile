@@ -201,16 +201,24 @@ class _HomePageState extends State<HomePage> {
       body: (!connectionController.isConnected.value)
           ? RefreshIndicator(
               onRefresh: () async {
+                print('hi');
                 connectionController.checkConnectionStatus();
                 return await ap.getAll();
               },
               child: Center(
-                child: Text('لطفا اتصال به اینترنت همراه خود را بررسی کنید'),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(CupertinoIcons.wifi_slash),
+                    Text('لطفا اتصال به اینترنت همراه خود را بررسی کنید'),
+                  ],
+                ),
               ),
             )
           : Obx(
               () => RefreshIndicator(
                 onRefresh: () async {
+                  connectionController.checkConnectionStatus();
                   return await ap.getAll();
                 },
                 child: ListView.builder(
