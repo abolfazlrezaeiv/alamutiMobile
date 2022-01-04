@@ -11,7 +11,6 @@ import 'package:alamuti/app/data/provider/signalr_helper.dart';
 import 'package:alamuti/app/data/storage/cachemanager.dart';
 import 'package:alamuti/app/ui/details/detail_page.dart';
 import 'package:alamuti/app/ui/theme.dart';
-import 'package:alamuti/app/ui/widgets/imgaebase64.dart';
 import 'package:alamuti/app/ui/widgets/bottom_navbar.dart';
 import 'package:chips_choice_null_safety/chips_choice_null_safety.dart';
 import 'package:flutter/cupertino.dart';
@@ -30,7 +29,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   var isTyping = false;
 
-  var _textEditingController = TextEditingController();
+  var _searchTextEditingController = TextEditingController();
 
   var ap = AdvertisementProvider();
 
@@ -55,6 +54,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    ap.getAll();
   }
 
   int tag = 0;
@@ -67,7 +67,6 @@ class _HomePageState extends State<HomePage> {
     );
     getChatMessageGroups();
     mp.getGroups();
-    ap.getAll();
 
     connectionController.checkConnectionStatus();
     bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom == 0;
@@ -105,23 +104,16 @@ class _HomePageState extends State<HomePage> {
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: TextField(
-                          controller: _textEditingController,
+                          controller: _searchTextEditingController,
                           style: TextStyle(
                               backgroundColor: Colors.white,
                               fontSize: Get.width / 27,
                               fontFamily: persianNumber,
                               fontWeight: FontWeight.w300),
-                          onTap: () {
-                            setState(() {
-                              isTyping = true;
-                            });
-                          },
-                          onSubmitted: (value) {
-                            if (value == '') {
-                              setState(() {
-                                isTyping = false;
-                              });
-                            }
+                          onSubmitted: (value) async {
+                            FocusScope.of(context).unfocus();
+
+                            await ap.findAll(_searchTextEditingController.text);
                           },
                           textAlign: TextAlign.end,
                           decoration: InputDecoration(
@@ -166,27 +158,10 @@ class _HomePageState extends State<HomePage> {
                                 size: 30,
                                 color: Color.fromRGBO(8, 212, 76, 0.5),
                               ),
-                              onPressed: () {
+                              onPressed: () async {
                                 FocusScope.of(context).unfocus();
-                                if (_textEditingController.text.isNotEmpty) {
-                                  ap.findAll(_textEditingController.text)
-                                    ..then((value) {
-                                      if (value.length == 0) {
-                                        Get.rawSnackbar(
-                                            messageText: Text(
-                                              'چیزی پیدا نشد',
-                                              style: TextStyle(
-                                                  color: Colors.white),
-                                              textDirection: TextDirection.rtl,
-                                            ),
-                                            backgroundColor: Colors.black);
-                                      } else {
-                                        setState(() {
-                                          adsList = value;
-                                        });
-                                      }
-                                    });
-                                }
+                                await ap
+                                    .findAll(_searchTextEditingController.text);
                               },
                             ),
                             enabledBorder: const OutlineInputBorder(
@@ -244,27 +219,31 @@ class _HomePageState extends State<HomePage> {
                     return Container(
                       height: Get.height / 5,
                       child: GestureDetector(
-                        onTap: () => Get.to(
-                            () => AdsDetail(
-                                  byteImage1: listAdvertisementController
-                                      .adsList[index].photo1,
-                                  byteImage2: listAdvertisementController
-                                      .adsList[index].photo2,
-                                  price: listAdvertisementController
-                                      .adsList[index].price
-                                      .toString(),
-                                  phoneNumber: listAdvertisementController
-                                      .adsList[index].phoneNumber,
-                                  sendedDate: listAdvertisementController
-                                      .adsList[index].datePosted,
-                                  title: listAdvertisementController
-                                      .adsList[index].title,
-                                  userId: listAdvertisementController
-                                      .adsList[index].userId,
-                                  description: listAdvertisementController
-                                      .adsList[index].description,
-                                ),
-                            transition: Transition.noTransition),
+                        onTap: () {
+                          FocusScope.of(context).unfocus();
+
+                          Get.to(
+                              () => AdsDetail(
+                                    byteImage1: listAdvertisementController
+                                        .adsList[index].photo1,
+                                    byteImage2: listAdvertisementController
+                                        .adsList[index].photo2,
+                                    price: listAdvertisementController
+                                        .adsList[index].price
+                                        .toString(),
+                                    phoneNumber: listAdvertisementController
+                                        .adsList[index].phoneNumber,
+                                    sendedDate: listAdvertisementController
+                                        .adsList[index].datePosted,
+                                    title: listAdvertisementController
+                                        .adsList[index].title,
+                                    userId: listAdvertisementController
+                                        .adsList[index].userId,
+                                    description: listAdvertisementController
+                                        .adsList[index].description,
+                                  ),
+                              transition: Transition.noTransition);
+                        },
                         child: Obx(
                           () => Container(
                             decoration: BoxDecoration(

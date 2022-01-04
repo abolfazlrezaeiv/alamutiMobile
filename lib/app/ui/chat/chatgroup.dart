@@ -168,7 +168,9 @@ class _ChatGroupsState extends State<ChatGroups> with CacheManager {
                       );
                     },
                     onTap: () async {
-                      if (await getUserId() != await sender()) {
+                      if (await getUserId() !=
+                          chatGroupController
+                              .groupList.value[index].lastMessage.sender) {
                         mp.updateGroupStatus(
                             name:
                                 chatGroupController.groupList.value[index].name,
@@ -308,7 +310,7 @@ class _ChatGroupsState extends State<ChatGroups> with CacheManager {
                                       false &&
                                   chatGroupController.groupList[index]
                                           .lastMessage.sender !=
-                                      getUserId())
+                                      (getUserId()))
                               ? Padding(
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 20.0, vertical: 40),

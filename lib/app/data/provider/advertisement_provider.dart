@@ -5,7 +5,9 @@ import 'package:alamuti/app/data/model/Advertisement.dart';
 import 'package:alamuti/app/data/provider/token_provider.dart';
 import 'package:alamuti/app/data/provider/base_url.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
+import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/utils.dart';
 
 class AdvertisementProvider {
@@ -34,56 +36,65 @@ class AdvertisementProvider {
 
     var myMap = response.data;
     List<Advertisement> myads = [];
-    myMap.forEach((element) {
-      myads.add(Advertisement(
-          id: element['id'],
-          title: element['title'],
-          description: element['description'],
-          datePosted: element['daySended'],
-          price: element['price'].toString(),
-          photo1: element['photo1'],
-          photo2: element['photo2'],
-          area: element['area'].toString(),
-          userId: element['userId'],
-          published: element['published'],
-          phoneNumber: element['phoneNumber'],
-          adsType: element['adsType']));
-    });
+    myMap.forEach(
+      (element) {
+        myads.add(Advertisement(
+            id: element['id'],
+            title: element['title'],
+            description: element['description'],
+            datePosted: element['daySended'],
+            price: element['price'].toString(),
+            photo1: element['photo1'],
+            photo2: element['photo2'],
+            area: element['area'].toString(),
+            userId: element['userId'],
+            published: element['published'],
+            phoneNumber: element['phoneNumber'],
+            adsType: element['adsType']));
+      },
+    );
     myAdvertisementController.adsList.value = myads;
     return myads;
   }
 
-  Future<List<Advertisement>> findAll([String? searchInput]) async {
-    var response;
-    if (searchInput == null) {
-      response = await tokenProvider.api.get(
-        baseUrl + 'Advertisement',
-      );
-    } else {
-      response = await tokenProvider.api.get(
-        baseUrl + 'Advertisement/search/$searchInput',
-      );
-    }
+  Future<List<Advertisement>> findAll(String searchInput) async {
+    var response = await tokenProvider.api
+        .get(baseUrl + 'Advertisement/search/$searchInput');
 
     var myMap = response.data;
     List<Advertisement> myads = [];
-    myMap.forEach((element) {
-      myads.add(Advertisement(
-        id: element['id'],
-        title: element['title'],
-        description: element['description'],
-        datePosted: element['daySended'],
-        price: element['price'].toString(),
-        photo1: element['photo1'],
-        photo2: element['photo2'],
-        area: element['area'].toString(),
-        userId: element['userId'],
-        adsType: element['adsType'],
-        published: element['published'],
-        phoneNumber: element['phoneNumber'],
-      ));
-    });
 
+    myMap.forEach(
+      (element) {
+        myads.add(
+          Advertisement(
+            id: element['id'],
+            title: element['title'],
+            description: element['description'],
+            datePosted: element['daySended'],
+            price: element['price'].toString(),
+            photo1: element['photo1'],
+            photo2: element['photo2'],
+            area: element['area'].toString(),
+            userId: element['userId'],
+            published: element['published'],
+            phoneNumber: element['phoneNumber'],
+            adsType: element['adsType'],
+          ),
+        );
+      },
+    );
+    listAdvertisementController.adsList.value = myads;
+    if (myads.length == 0) {
+      Get.rawSnackbar(
+          messageText: Text(
+            'چیزی پیدا نشد',
+            style: TextStyle(color: Colors.white),
+            textDirection: TextDirection.rtl,
+          ),
+          backgroundColor: Colors.black);
+      return myads;
+    }
     return myads;
   }
 
