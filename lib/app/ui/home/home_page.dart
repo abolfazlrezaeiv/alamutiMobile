@@ -113,7 +113,7 @@ class _HomePageState extends State<HomePage> {
                           onSubmitted: (value) async {
                             FocusScope.of(context).unfocus();
 
-                            await ap.findAll(_searchTextEditingController.text);
+                            await ap.search(_searchTextEditingController.text);
                           },
                           textAlign: TextAlign.end,
                           decoration: InputDecoration(
@@ -161,7 +161,7 @@ class _HomePageState extends State<HomePage> {
                               onPressed: () async {
                                 FocusScope.of(context).unfocus();
                                 await ap
-                                    .findAll(_searchTextEditingController.text);
+                                    .search(_searchTextEditingController.text);
                               },
                             ),
                             enabledBorder: const OutlineInputBorder(
@@ -298,13 +298,16 @@ class _HomePageState extends State<HomePage> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.end,
                                         children: [
-                                          Text(
-                                            listAdvertisementController
-                                                .adsList[index].title,
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w400,
-                                                fontSize: 15),
-                                            textDirection: TextDirection.rtl,
+                                          Flexible(
+                                            child: Text(
+                                              listAdvertisementController
+                                                  .adsList[index].title,
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w400,
+                                                  fontSize: 15),
+                                              textDirection: TextDirection.rtl,
+                                              overflow: TextOverflow.visible,
+                                            ),
                                           ),
                                           SizedBox(
                                             height: Get.height / 18,

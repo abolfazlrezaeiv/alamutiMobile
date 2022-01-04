@@ -66,6 +66,7 @@ class AdsDetail extends StatelessWidget {
                               fontWeight: FontWeight.w500,
                               fontSize: Get.width / 24),
                           textDirection: TextDirection.rtl,
+                          overflow: TextOverflow.visible,
                         ),
                       ),
                       Text(

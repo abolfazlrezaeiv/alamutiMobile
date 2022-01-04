@@ -37,6 +37,8 @@ class _NewChatState extends State<NewChat> {
 
   var chatTargetUserController = Get.put(ChatTargetUserController());
 
+  final GlobalKey<FormState> _formKey = GlobalKey();
+
   var chatMessageController = Get.put(ChatMessageController());
 
   var mp = MessageProvider();
@@ -175,52 +177,62 @@ class _NewChatState extends State<NewChat> {
                   },
                 ),
               ),
-              Container(
-                color: Colors.grey.withOpacity(0.1),
-                height: 60,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                          child: AlamutiTextField(
-                        textEditingController: textEditingController,
-                        isNumber: false,
-                      )),
-                      TextButton(
-                          onPressed: () {
-                            signalHelper.sendMessage(
-                              receiverId: chatTargetUserController.userId.value,
-                              grouptitle: widget.groupTitle,
-                              senderId: storage.read(
-                                CacheManagerKey.USERID.toString(),
-                              ),
-                              message: textEditingController.text,
-                              groupname: null,
-                              groupImage: widget.groupImage,
-                            );
+              Form(
+                key: _formKey,
+                child: Container(
+                  color: Colors.grey.withOpacity(0.1),
+                  // height: 60,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                            child: AlamutiTextField(
+                          textEditingController: textEditingController,
+                          hasCharacterLimitation: false,
+                          isChatTextField: true,
+                          isNumber: false,
+                        )),
+                        TextButton(
+                            onPressed: () {
+                              if (_formKey.currentState!.validate()) {
+                                signalHelper.sendMessage(
+                                  receiverId:
+                                      chatTargetUserController.userId.value,
+                                  grouptitle: widget.groupTitle,
+                                  senderId: storage.read(
+                                    CacheManagerKey.USERID.toString(),
+                                  ),
+                                  message: textEditingController.text,
+                                  groupname: null,
+                                  groupImage: widget.groupImage,
+                                );
 
-                            chatMessageController.addMessage(ChatMessage(
-                                id: 44,
-                                sender: storage.read(
-                                  CacheManagerKey.USERID.toString(),
-                                ),
-                                message: textEditingController.text,
-                                reciever: chatTargetUserController.userId.value,
-                                daySended: ''));
+                                chatMessageController.addMessage(ChatMessage(
+                                    id: 44,
+                                    sender: storage.read(
+                                      CacheManagerKey.USERID.toString(),
+                                    ),
+                                    message: textEditingController.text,
+                                    reciever:
+                                        chatTargetUserController.userId.value,
+                                    daySended: ''));
 
-                            WidgetsBinding.instance?.addPostFrameCallback((_) {
-                              if (_scrollcontroller.hasClients) {
-                                _scrollcontroller.jumpTo(
-                                    _scrollcontroller.position.maxScrollExtent);
+                                WidgetsBinding.instance
+                                    ?.addPostFrameCallback((_) {
+                                  if (_scrollcontroller.hasClients) {
+                                    _scrollcontroller.jumpTo(_scrollcontroller
+                                        .position.maxScrollExtent);
+                                  }
+                                });
                               }
-                            });
-                          },
-                          child: Text(
-                            'ارسال',
-                            style: TextStyle(color: Colors.greenAccent),
-                          ))
-                    ],
+                            },
+                            child: Text(
+                              'ارسال',
+                              style: TextStyle(color: Colors.greenAccent),
+                            ))
+                      ],
+                    ),
                   ),
                 ),
               )

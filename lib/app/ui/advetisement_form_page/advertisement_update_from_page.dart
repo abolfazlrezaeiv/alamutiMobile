@@ -35,7 +35,7 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
 
   var updateUploadImageController = Get.put(UpdateUploadImageController());
 
-  final GlobalKey<FormState> formKey = GlobalKey();
+  final GlobalKey<FormState> _formKey = GlobalKey();
 
   var advertisementProvider = AdvertisementProvider();
 
@@ -84,6 +84,7 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: Get.width / 40),
         child: Form(
+          key: _formKey,
           child: ListView(
             children: [
               Padding(
@@ -153,6 +154,8 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
                   AlamutiTextField(
                     textEditingController: titleTextFieldController,
                     isNumber: false,
+                    isChatTextField: false,
+                    hasCharacterLimitation: true,
                   ),
                 ],
               ),
@@ -168,6 +171,8 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
                   ),
                   AlamutiTextField(
                     textEditingController: priceTextFieldController,
+                    hasCharacterLimitation: true,
+                    isChatTextField: false,
                     isNumber: true,
                   ),
                 ],
@@ -209,22 +214,24 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
                       minimumSize: Size(88, 36),
                     ),
                     onPressed: () async {
-                      await advertisementProvider.updateAdvertisement(
-                        area: areaTextFieldController.text.isEmpty
-                            ? 0
-                            : int.parse(areaTextFieldController.text),
-                        description: descriptionTextFieldController.text,
-                        photo1:
-                            updateUploadImageController.leftImagebyteCode.value,
-                        photo2: updateUploadImageController
-                            .rightImagebyteCode.value,
-                        price: int.parse(priceTextFieldController.text
-                            .replaceAll(RegExp(r','), '')),
-                        title: titleTextFieldController.text,
-                        id: widget.ads.id,
-                      );
+                      if (_formKey.currentState!.validate()) {
+                        await advertisementProvider.updateAdvertisement(
+                          area: areaTextFieldController.text.isEmpty
+                              ? 0
+                              : int.parse(areaTextFieldController.text),
+                          description: descriptionTextFieldController.text,
+                          photo1: updateUploadImageController
+                              .leftImagebyteCode.value,
+                          photo2: updateUploadImageController
+                              .rightImagebyteCode.value,
+                          price: int.parse(priceTextFieldController.text
+                              .replaceAll(RegExp(r','), '')),
+                          title: titleTextFieldController.text,
+                          id: widget.ads.id,
+                        );
 
-                      Get.toNamed('/home');
+                        Get.toNamed('/home');
+                      }
                     },
                     child: Text(
                       'ثبت',
@@ -260,6 +267,8 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
               ),
               AlamutiTextField(
                 textEditingController: textEditingController,
+                hasCharacterLimitation: true,
+                isChatTextField: false,
                 isNumber: true,
               ),
             ],

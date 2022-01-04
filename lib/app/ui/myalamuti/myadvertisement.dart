@@ -140,13 +140,16 @@ class _MyAdvertisementState extends State<MyAdvertisement> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.end,
                                       children: [
-                                        Text(
-                                          myAdvertisementController
-                                              .adsList[index].title,
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.w400,
-                                              fontSize: 14),
-                                          textDirection: TextDirection.rtl,
+                                        Flexible(
+                                          child: Text(
+                                            myAdvertisementController
+                                                .adsList[index].title,
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w400,
+                                                fontSize: 14),
+                                            textDirection: TextDirection.rtl,
+                                            overflow: TextOverflow.visible,
+                                          ),
                                         ),
                                         SizedBox(
                                           height: Get.height / 18,

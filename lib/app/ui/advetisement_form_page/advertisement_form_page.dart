@@ -28,7 +28,7 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
 
   var uploadImageController = Get.put(UploadImageController());
 
-  final GlobalKey<FormState> formKey = GlobalKey();
+  final GlobalKey<FormState> _formKey = GlobalKey();
 
   var priceTextFieldController = TextEditingController();
 
@@ -56,6 +56,7 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: Get.width / 40),
         child: Form(
+          key: _formKey,
           child: ListView(
             children: [
               Padding(
@@ -121,6 +122,8 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
                   AlamutiTextField(
                     textEditingController: titleTextFieldController,
                     isNumber: false,
+                    isChatTextField: false,
+                    hasCharacterLimitation: true,
                   ),
                 ],
               ),
@@ -135,6 +138,8 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
                   AlamutiTextField(
                     textEditingController: priceTextFieldController,
                     isNumber: true,
+                    isChatTextField: false,
+                    hasCharacterLimitation: true,
                   ),
                 ],
               ),
@@ -170,18 +175,21 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
                       minimumSize: Size(88, 36),
                     ),
                     onPressed: () async {
-                      await advertisementProvider.postAdvertisement(
-                        area: areaTextFieldController.text.isEmpty
-                            ? 0
-                            : int.parse(areaTextFieldController.text),
-                        description: descriptionTextFieldController.text,
-                        photo1: uploadImageController.leftImagebyteCode.value,
-                        photo2: uploadImageController.rightImagebyteCode.value,
-                        price: int.parse(priceTextFieldController.text),
-                        title: titleTextFieldController.text,
-                      );
+                      if (_formKey.currentState!.validate()) {
+                        await advertisementProvider.postAdvertisement(
+                          area: areaTextFieldController.text.isEmpty
+                              ? 0
+                              : int.parse(areaTextFieldController.text),
+                          description: descriptionTextFieldController.text,
+                          photo1: uploadImageController.leftImagebyteCode.value,
+                          photo2:
+                              uploadImageController.rightImagebyteCode.value,
+                          price: int.parse(priceTextFieldController.text),
+                          title: titleTextFieldController.text,
+                        );
 
-                      Get.toNamed('/home');
+                        Get.toNamed('/home');
+                      }
                     },
                     child: Text(
                       'ثبت',
@@ -218,6 +226,8 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
               AlamutiTextField(
                 textEditingController: areaTextFieldController,
                 isNumber: true,
+                isChatTextField: false,
+                hasCharacterLimitation: true,
               ),
             ],
           )

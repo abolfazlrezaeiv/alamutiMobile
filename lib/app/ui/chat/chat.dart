@@ -42,6 +42,8 @@ class _ChatState extends State<Chat> {
 
   var chatTargetUserController = Get.put(ChatTargetUserController());
 
+  final GlobalKey<FormState> _formKey = GlobalKey();
+
   var chatMessageController = Get.put(ChatMessageController());
 
   var chatGroupController = Get.put(ChatGroupController());
@@ -193,50 +195,58 @@ class _ChatState extends State<Chat> {
                     },
                   )),
             ),
-            Container(
-              color: Colors.grey.withOpacity(0.1),
-              height: 60,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    Expanded(
-                        child: AlamutiTextField(
-                      textEditingController: textEditingController,
-                      isNumber: false,
-                    )),
-                    TextButton(
-                        onPressed: () {
-                          var target = widget.groupname
-                              .replaceAll(
-                                  storage.read(
+            Form(
+              key: _formKey,
+              child: Container(
+                color: Colors.grey.withOpacity(0.1),
+                // height: 60,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      Expanded(
+                          child: AlamutiTextField(
+                        textEditingController: textEditingController,
+                        isNumber: false,
+                        isChatTextField: true,
+                        hasCharacterLimitation: false,
+                      )),
+                      TextButton(
+                          onPressed: () {
+                            if (_formKey.currentState!.validate()) {
+                              var target = widget.groupname
+                                  .replaceAll(
+                                      storage.read(
+                                        CacheManagerKey.USERID.toString(),
+                                      ),
+                                      '')
+                                  .trimRight();
+
+                              signalHelper.sendMessage(
+                                  receiverId: target,
+                                  senderId: storage.read(
                                     CacheManagerKey.USERID.toString(),
                                   ),
-                                  '')
-                              .trimRight();
+                                  message: textEditingController.text,
+                                  groupname: widget.groupname,
+                                  groupImage: widget.groupImage,
+                                  grouptitle: widget.groupTitle);
 
-                          signalHelper.sendMessage(
-                              receiverId: target,
-                              senderId: storage.read(
-                                CacheManagerKey.USERID.toString(),
-                              ),
-                              message: textEditingController.text,
-                              groupname: widget.groupname,
-                              groupImage: widget.groupImage,
-                              grouptitle: widget.groupTitle);
-
-                          WidgetsBinding.instance?.addPostFrameCallback((_) {
-                            if (_scrollcontroller.hasClients) {
-                              _scrollcontroller.jumpTo(
-                                  _scrollcontroller.position.maxScrollExtent);
+                              WidgetsBinding.instance
+                                  ?.addPostFrameCallback((_) {
+                                if (_scrollcontroller.hasClients) {
+                                  _scrollcontroller.jumpTo(_scrollcontroller
+                                      .position.maxScrollExtent);
+                                }
+                              });
                             }
-                          });
-                        },
-                        child: Text(
-                          'ارسال',
-                          style: TextStyle(color: Colors.greenAccent),
-                        ))
-                  ],
+                          },
+                          child: Text(
+                            'ارسال',
+                            style: TextStyle(color: Colors.greenAccent),
+                          ))
+                    ],
+                  ),
                 ),
               ),
             )

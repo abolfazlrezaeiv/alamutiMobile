@@ -13,23 +13,53 @@ class DescriptionTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      controller: textEditingController,
+    return Directionality(
       textDirection: TextDirection.rtl,
-      keyboardType: TextInputType.multiline,
-      maxLines: 6,
-      textAlign: TextAlign.start,
-      style: TextStyle(
-          backgroundColor: Colors.white,
-          fontSize: Get.width / 27,
-          fontWeight: FontWeight.w300),
-      decoration: InputDecoration(
-        contentPadding: EdgeInsets.all(8),
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.greenAccent, width: 2.0),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.black, width: 0.6),
+      child: TextFormField(
+        controller: textEditingController,
+        textDirection: TextDirection.rtl,
+        keyboardType: TextInputType.multiline,
+        validator: (value) {
+          if (value == null || value.isEmpty || value.length < 0) {
+            return 'این مورد را کامل کنید';
+          }
+
+          if (textEditingController.text.length > 330) {
+            var aditionalCahracter = textEditingController.text.length - 330;
+            return 'طول متن $aditionalCahracter حرف بیشتر از حد مجاز';
+          }
+
+          return null;
+        },
+        maxLines: 6,
+        textAlign: TextAlign.start,
+        style: TextStyle(
+            backgroundColor: Colors.white,
+            fontSize: Get.width / 27,
+            fontWeight: FontWeight.w300),
+        decoration: InputDecoration(
+          errorStyle: const TextStyle(fontSize: 13),
+          focusedErrorBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.red, width: 0.6),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide(
+              color: Colors.red,
+              width: 0.6,
+              style: BorderStyle.solid,
+            ),
+          ),
+          contentPadding:
+              EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide(color: Colors.greenAccent, width: 2.0),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide(color: Colors.black, width: 0.6),
+          ),
         ),
       ),
     );

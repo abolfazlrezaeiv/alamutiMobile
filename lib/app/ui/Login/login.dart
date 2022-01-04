@@ -1,10 +1,9 @@
 import 'package:alamuti/app/controller/login_view_model.dart';
-import 'package:alamuti/app/data/model/login_response_model.dart';
 import 'package:alamuti/app/data/storage/cachemanager.dart';
+import 'package:alamuti/app/ui/theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_countdown_timer/countdown.dart';
 import 'package:flutter_countdown_timer/countdown_timer_controller.dart';
 import 'package:flutter_countdown_timer/current_remaining_time.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
@@ -76,9 +75,7 @@ class _LoginState extends State<Login> {
                   children: [
                     Padding(
                       padding: EdgeInsets.only(
-                          top: MediaQuery.of(context).size.height / 14,
-                          right: 20,
-                          bottom: 15),
+                          top: Get.height / 14, right: 20, bottom: 15),
                       child: TextButton.icon(
                         icon: Icon(
                           CupertinoIcons.back,
@@ -96,7 +93,7 @@ class _LoginState extends State<Login> {
                     ),
                     Padding(
                       padding: EdgeInsets.only(
-                        top: MediaQuery.of(context).size.height / 14,
+                        top: Get.height / 14,
                         right: 20,
                         bottom: 15,
                       ),
@@ -104,7 +101,7 @@ class _LoginState extends State<Login> {
                         opacity: 0.6,
                         child: Image.asset(
                           'assets/logo/logo.png',
-                          height: MediaQuery.of(context).size.height / 19,
+                          height: Get.height / 19,
                         ),
                       ),
                     ),
@@ -113,7 +110,7 @@ class _LoginState extends State<Login> {
               ),
               isKeyboardOpen
                   ? SizedBox(
-                      height: MediaQuery.of(context).size.height / 6,
+                      height: Get.height / 6,
                     )
                   : SizedBox(
                       height: 30,
@@ -179,11 +176,11 @@ class _LoginState extends State<Login> {
                     ),
                   ),
                   SizedBox(
-                    height: MediaQuery.of(context).size.height / 180,
+                    height: Get.height / 180,
                   ),
                   Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height / 11,
+                    width: Get.width,
+                    height: Get.height / 11,
                     padding: EdgeInsets.symmetric(horizontal: 8),
                     child: TextButton(
                       style: ElevatedButton.styleFrom(
@@ -224,8 +221,8 @@ class _LoginState extends State<Login> {
                   ),
                   canRequestAgain
                       ? Container(
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height / 11,
+                          width: Get.width,
+                          height: Get.height / 11,
                           padding: EdgeInsets.symmetric(horizontal: 8),
                           child: TextButton(
                             style: ElevatedButton.styleFrom(
@@ -266,7 +263,7 @@ class _LoginState extends State<Login> {
                                   Text(
                                     '${time.min ?? 0} : ${time.sec}',
                                     style: TextStyle(
-                                        fontFamily: 'IRANSansXFaNum',
+                                        fontFamily: persianNumber,
                                         fontWeight: FontWeight.w300,
                                         fontSize: 20),
                                   ),

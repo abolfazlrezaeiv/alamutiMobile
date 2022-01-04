@@ -53,11 +53,12 @@ class AdvertisementProvider {
             adsType: element['adsType']));
       },
     );
+
     myAdvertisementController.adsList.value = myads;
     return myads;
   }
 
-  Future<List<Advertisement>> findAll(String searchInput) async {
+  Future<List<Advertisement>> search(String searchInput) async {
     var response = await tokenProvider.api
         .get(baseUrl + 'Advertisement/search/$searchInput');
 
@@ -84,7 +85,7 @@ class AdvertisementProvider {
         );
       },
     );
-    listAdvertisementController.adsList.value = myads;
+
     if (myads.length == 0) {
       Get.rawSnackbar(
           messageText: Text(
@@ -95,6 +96,7 @@ class AdvertisementProvider {
           backgroundColor: Colors.black);
       return myads;
     }
+    listAdvertisementController.adsList.value = myads;
     return myads;
   }
 
