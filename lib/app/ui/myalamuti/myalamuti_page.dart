@@ -113,17 +113,22 @@ class MyAlamutiPage extends StatelessWidget with CacheManager {
                 Container(
                   child: Column(
                     children: [
-                      ListTile(
-                        leading: Icon(CupertinoIcons.back),
-                        title: Text(
-                          'درباره الموتی',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w400,
+                      GestureDetector(
+                        onTap: () {
+                          Get.toNamed('/about');
+                        },
+                        child: ListTile(
+                          leading: Icon(CupertinoIcons.back),
+                          title: Text(
+                            'درباره الموتی',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w400,
+                            ),
+                            textDirection: TextDirection.rtl,
                           ),
-                          textDirection: TextDirection.rtl,
+                          trailing: Icon(CupertinoIcons.info_circle),
                         ),
-                        trailing: Icon(CupertinoIcons.house),
                       ),
                       Divider(),
                     ],

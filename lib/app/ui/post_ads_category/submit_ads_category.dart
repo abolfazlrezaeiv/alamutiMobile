@@ -55,7 +55,9 @@ class _SubmitAdsCategoryState extends State<SubmitAdsCategory> {
             child: Container(
               child: Column(
                 children: [
-                  Divider(),
+                  Divider(
+                    color: Colors.transparent,
+                  ),
                   ListTile(
                     leading: Icon(CupertinoIcons.back),
                     title: Text(

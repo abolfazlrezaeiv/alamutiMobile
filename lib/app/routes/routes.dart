@@ -2,6 +2,7 @@ import 'package:alamuti/app/ui/Login/register.dart';
 import 'package:alamuti/app/ui/advetisement_form_page/advertisement_form_page.dart';
 import 'package:alamuti/app/ui/chat/chatgroup.dart';
 import 'package:alamuti/app/ui/home/home_page.dart';
+import 'package:alamuti/app/ui/myalamuti/about_alamuti.dart';
 import 'package:alamuti/app/ui/myalamuti/myadvertisement.dart';
 import 'package:alamuti/app/ui/myalamuti/myalamuti_page.dart';
 import 'package:alamuti/app/ui/post_ads_category/submit_ads_category.dart';
@@ -41,6 +42,11 @@ var routes = [
   GetPage(
     name: "/myalamuti",
     page: () => MyAlamutiPage(),
+    transition: trans.Transition.noTransition,
+  ),
+  GetPage(
+    name: "/about",
+    page: () => AboutAlamuti(),
     transition: trans.Transition.noTransition,
   ),
   GetPage(
