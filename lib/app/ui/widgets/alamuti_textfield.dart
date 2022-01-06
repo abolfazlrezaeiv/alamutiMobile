@@ -2,6 +2,7 @@ import 'package:alamuti/app/ui/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+// ignore: must_be_immutable
 class AlamutiTextField extends StatelessWidget {
   final TextEditingController textEditingController;
   final bool hasCharacterLimitation;

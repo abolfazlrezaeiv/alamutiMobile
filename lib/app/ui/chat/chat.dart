@@ -102,8 +102,7 @@ class _ChatState extends State<Chat> {
                     controller: _scrollcontroller,
                     itemCount: chatMessageController.messageList.length,
                     itemBuilder: (context, index) {
-                      if (chatMessageController
-                              .messageList.value[index].sender ==
+                      if (chatMessageController.messageList[index].sender ==
                           storage.read(CacheManagerKey.USERID.toString())) {
                         return ChatBubble(
                           clipper:
@@ -120,7 +119,7 @@ class _ChatState extends State<Chat> {
                               children: [
                                 Text(
                                   chatMessageController
-                                      .messageList.value[index].message,
+                                      .messageList[index].message,
                                   textDirection: TextDirection.rtl,
                                   style: TextStyle(color: Colors.white),
                                 ),
@@ -135,7 +134,7 @@ class _ChatState extends State<Chat> {
                                     ),
                                     Text(
                                       chatMessageController
-                                          .messageList.value[index].daySended,
+                                          .messageList[index].daySended,
                                       style: TextStyle(
                                           fontWeight: FontWeight.w200,
                                           fontFamily: persianNumber,
@@ -163,7 +162,7 @@ class _ChatState extends State<Chat> {
                               children: [
                                 Text(
                                   chatMessageController
-                                      .messageList.value[index].message,
+                                      .messageList[index].message,
                                   textDirection: TextDirection.rtl,
                                   style: TextStyle(color: Colors.black),
                                 ),
@@ -178,7 +177,7 @@ class _ChatState extends State<Chat> {
                                     ),
                                     Text(
                                       chatMessageController
-                                          .messageList.value[index].daySended,
+                                          .messageList[index].daySended,
                                       style: TextStyle(
                                           fontWeight: FontWeight.w200,
                                           fontFamily: persianNumber,

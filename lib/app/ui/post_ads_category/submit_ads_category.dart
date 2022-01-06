@@ -1,6 +1,4 @@
 import 'package:alamuti/app/controller/adsFormController.dart';
-import 'package:alamuti/app/controller/upload_image_controller.dart';
-import 'package:alamuti/app/ui/advetisement_form_page/advertisement_form_page.dart';
 import 'package:alamuti/app/ui/home/home_page.dart';
 import 'package:alamuti/app/ui/widgets/alamuti_appbar.dart';
 import 'package:alamuti/app/ui/widgets/bottom_navbar.dart';
@@ -24,18 +22,6 @@ class _SubmitAdsCategoryState extends State<SubmitAdsCategory> {
 
   @override
   Widget build(BuildContext context) {
-    var filterType = [
-      '',
-      AdsFormState.FOOD.toString(),
-      AdsFormState.JOB.toString(),
-      AdsFormState.REALSTATE.toString()
-    ];
-    List<String> options = [
-      'میوه و مواد غذایی',
-      'مشاغل',
-      'املاک',
-    ];
-
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AlamutiAppBar(

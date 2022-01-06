@@ -1,9 +1,6 @@
 import 'package:alamuti/app/data/model/login_request_model.dart';
-import 'package:alamuti/app/data/model/login_response_model.dart';
 import 'package:alamuti/app/data/model/register_request_model.dart';
 import 'package:alamuti/app/data/provider/login_provider.dart';
-import 'package:alamuti/app/ui/home/home_page.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'authentication_manager.dart';

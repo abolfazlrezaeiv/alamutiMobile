@@ -106,7 +106,7 @@ class MessageProvider with CacheManager {
     );
 
     chatGroupController.groupList.value = mygroups;
-    for (var i = 0; i < chatGroupController.groupList.value.length; i++) {
+    for (var i = 0; i < chatGroupController.groupList.length; i++) {
       if ((chatGroupController.groupList[i].isChecked == false &&
           chatGroupController.groupList[i].lastMessage.sender != getUserId())) {
         newMessageController.haveNewMessage.value = true;
@@ -154,7 +154,7 @@ class MessageProvider with CacheManager {
   deleteMessageGroup({
     required String groupName,
   }) async {
-    for (var i = 0; i < chatGroupController.groupList.value.length; i++) {
+    for (var i = 0; i < chatGroupController.groupList.length; i++) {
       if (chatGroupController.groupList[i].name == groupName) {
         chatGroupController.groupList.removeAt(i);
         break;

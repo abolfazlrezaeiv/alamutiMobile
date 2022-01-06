@@ -107,16 +107,15 @@ class _ChatGroupsState extends State<ChatGroups> with CacheManager {
                 controller: _scrollcontroller,
                 itemCount: chatGroupController.groupList.length,
                 itemBuilder: (context, index) {
-                  Future<String> sender() async {
-                    return await mp.getLastItemOfGroup(
-                        chatGroupController.groupList[index].name);
-                  }
+                  // Future<String> sender() async {
+                  //   return await mp.getLastItemOfGroup(
+                  //       chatGroupController.groupList[index].name);
+                  // }
 
                   indexGroupList.changeIndex(index);
 
                   return GestureDetector(
                     onLongPress: () {
-                      print(chatGroupController.groupList[index].name);
                       Get.defaultDialog(
                         radius: 5,
                         title: 'از حذف چت مطمئن هستید ؟ ',
@@ -152,8 +151,8 @@ class _ChatGroupsState extends State<ChatGroups> with CacheManager {
                           child: TextButton(
                               onPressed: () async {
                                 await mp.deleteMessageGroup(
-                                  groupName: chatGroupController
-                                      .groupList.value[index].name,
+                                  groupName:
+                                      chatGroupController.groupList[index].name,
                                 );
                                 Get.back();
                               },
@@ -170,10 +169,9 @@ class _ChatGroupsState extends State<ChatGroups> with CacheManager {
                     onTap: () async {
                       if (await getUserId() !=
                           chatGroupController
-                              .groupList.value[index].lastMessage.sender) {
+                              .groupList[index].lastMessage.sender) {
                         mp.updateGroupStatus(
-                            name:
-                                chatGroupController.groupList.value[index].name,
+                            name: chatGroupController.groupList[index].name,
                             id: chatGroupController.groupList[index].id,
                             title: chatGroupController.groupList[index].title,
                             isChecked: true);
@@ -211,8 +209,8 @@ class _ChatGroupsState extends State<ChatGroups> with CacheManager {
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
                                     Text(
-                                      chatGroupController.groupList.value[index]
-                                          .lastMessage.message,
+                                      chatGroupController
+                                          .groupList[index].lastMessage.message,
                                       textDirection: TextDirection.rtl,
                                       style: TextStyle(
                                           fontWeight: (chatGroupController

@@ -100,7 +100,7 @@ class AdvertisementProvider {
     return myads;
   }
 
-  Future<void> getAll([String? adstype = null]) async {
+  Future<void> getAll([String? adstype]) async {
     var response;
     if (adstype == null || adstype.isEmpty == true) {
       response = await tokenProvider.api.get(

@@ -7,7 +7,6 @@ import 'package:alamuti/app/data/provider/chat_message_provider.dart';
 import 'package:alamuti/app/data/storage/cachemanager.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:signalr_core/signalr_core.dart';
 
 class SignalRHelper with CacheManager {
@@ -43,24 +42,13 @@ class SignalRHelper with CacheManager {
       print('on recive signal');
 
       chatTargetUserController.userId.value = arguments![1];
-      var storage = GetStorage();
 
       MessageProvider mp = MessageProvider();
       await mp.getGroupMessages(arguments[3]);
 
-      // if (arguments[0] == storage.read(CacheManagerKey.USERID.toString())) {
-      //   chatMessageController.addMessage(ChatMessage(
-      //       id: 2,
-      //       sender: arguments.toString(),
-      //       message: arguments[2].toString(),
-      //       reciever: arguments.toString()));
-      // }
-
-      // await connection
-      //     .invoke('CreatenewGroup', args: [arguments[0], arguments[1]]);
       await connection
           .invoke('CreatenewGroup', args: [arguments[3], arguments[4]]);
-      if (arguments[0] == getUserId()) {
+      if (arguments[1] != getUserId()) {
         newMessageController.haveNewMessage.value = true;
       }
       await mp.getGroups();

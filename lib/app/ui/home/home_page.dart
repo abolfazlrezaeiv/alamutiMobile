@@ -199,19 +199,27 @@ class _HomePageState extends State<HomePage> {
       ),
       bottomNavigationBar: AlamutBottomNavBar(),
       body: (!connectionController.isConnected.value)
-          ? RefreshIndicator(
-              onRefresh: () async {
-                print('hi');
+          ? GestureDetector(
+              onVerticalDragStart: (details) async {
                 connectionController.checkConnectionStatus();
-                return await ap.getAll();
+                await ap.getAll();
               },
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(CupertinoIcons.wifi_slash),
-                    Text('لطفا اتصال به اینترنت همراه خود را بررسی کنید'),
-                  ],
+              onTap: () async {
+                connectionController.checkConnectionStatus();
+                await ap.getAll();
+              },
+              child: Container(
+                color: Colors.transparent,
+                width: Get.width,
+                height: Get.height,
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(CupertinoIcons.wifi_slash),
+                      Text('لطفا اتصال به اینترنت همراه خود را بررسی کنید'),
+                    ],
+                  ),
                 ),
               ),
             )

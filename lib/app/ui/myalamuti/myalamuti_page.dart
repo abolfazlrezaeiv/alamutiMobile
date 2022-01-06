@@ -1,7 +1,6 @@
 import 'package:alamuti/app/controller/authentication_manager.dart';
 import 'package:alamuti/app/data/storage/cachemanager.dart';
 import 'package:alamuti/app/ui/home/home_page.dart';
-import 'package:alamuti/app/ui/myalamuti/myadvertisement.dart';
 import 'package:alamuti/app/ui/widgets/alamuti_appbar.dart';
 import 'package:alamuti/app/ui/widgets/bottom_navbar.dart';
 import 'package:flutter/cupertino.dart';

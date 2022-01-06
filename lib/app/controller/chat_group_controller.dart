@@ -1,4 +1,3 @@
-import 'package:alamuti/app/data/model/chatMessage.dart';
 import 'package:alamuti/app/data/model/chatgroup.dart';
 import 'package:get/get.dart';
 
