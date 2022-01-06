@@ -1,6 +1,7 @@
 import 'package:alamuti/app/controller/adsFormController.dart';
 import 'package:alamuti/app/controller/advertisementController.dart';
 import 'package:alamuti/app/controller/myAdvertisementController.dart';
+import 'package:alamuti/app/controller/search_keyword.dart';
 import 'package:alamuti/app/data/model/Advertisement.dart';
 import 'package:alamuti/app/data/provider/token_provider.dart';
 import 'package:alamuti/app/data/provider/base_url.dart';
@@ -18,6 +19,8 @@ class AdvertisementProvider {
   var listAdvertisementController = Get.put(ListAdvertisementController());
 
   var myAdvertisementController = Get.put(MyAdvertisementController());
+
+  var searchKeywordController = Get.put(SearchKeywordController());
 
   Future<void> deleteAds(int id) async {
     for (var i = 0; i < myAdvertisementController.adsList.length; i++) {
@@ -89,7 +92,7 @@ class AdvertisementProvider {
     if (myads.length == 0) {
       Get.rawSnackbar(
           messageText: Text(
-            'چیزی پیدا نشد',
+            'موردی یافت نشد',
             style: TextStyle(color: Colors.white),
             textDirection: TextDirection.rtl,
           ),
@@ -97,6 +100,7 @@ class AdvertisementProvider {
       return myads;
     }
     listAdvertisementController.adsList.value = myads;
+    searchKeywordController.keyword.value = searchInput;
     return myads;
   }
 

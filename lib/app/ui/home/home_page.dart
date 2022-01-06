@@ -2,8 +2,13 @@ import 'dart:convert';
 import 'package:alamuti/app/controller/ConnectionController.dart';
 import 'package:alamuti/app/controller/adsFormController.dart';
 import 'package:alamuti/app/controller/advertisementController.dart';
+import 'package:alamuti/app/controller/category_tag_selected_item.dart';
 import 'package:alamuti/app/controller/new_message_controller.dart';
+import 'package:alamuti/app/controller/scroll_position.dart';
+import 'package:alamuti/app/controller/search_avoid_update.dart';
+import 'package:alamuti/app/controller/search_keyword.dart';
 import 'package:alamuti/app/controller/selectedTapController.dart';
+import 'package:alamuti/app/controller/selected_category_filter.dart';
 import 'package:alamuti/app/data/model/Advertisement.dart';
 import 'package:alamuti/app/data/provider/advertisement_provider.dart';
 import 'package:alamuti/app/data/provider/chat_message_provider.dart';
@@ -39,25 +44,47 @@ class _HomePageState extends State<HomePage> {
 
   var screenController = Get.put(ScreenController());
 
+  var categorySelectedChips = Get.put(CategorySelectedChipsController());
+
+  var categorySelectedFilter = Get.put(CategorySelectedFilterController());
+
+  var checkIsSearchController = Get.put(CheckIsSearchedController());
+
   var listAdvertisementController = Get.put(ListAdvertisementController());
 
   var newMessageController = Get.put(NewMessageController());
 
+  var homeScrollController = Get.put(HomeScrollController());
+
   var signalHelper = SignalRHelper();
 
+  var searchKeywordController = Get.put(SearchKeywordController());
+
   var mp = MessageProvider();
+
   var storage = GetStorage();
+
   getChatMessageGroups() async {
     return await mp.getGroups();
+  }
+
+  double listviewPosition = 0.0;
+
+  ScrollController _listControl = new ScrollController();
+  void _scrollListener() {
+    homeScrollController.scrollPosition.value = _listControl.position.pixels;
   }
 
   @override
   void initState() {
     super.initState();
-    ap.getAll();
+
+    if (checkIsSearchController.isSearchResult.value == false) {
+      ap.getAll(categorySelectedFilter.selected.value);
+    }
+    _listControl.addListener(_scrollListener);
   }
 
-  int tag = 0;
   @override
   Widget build(BuildContext context) {
     signalHelper.initiateConnection();
@@ -82,7 +109,11 @@ class _HomePageState extends State<HomePage> {
       'مشاغل',
       'املاک',
     ];
-
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      if (_listControl.hasClients) {
+        _listControl.jumpTo(homeScrollController.scrollPosition.value);
+      }
+    });
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: PreferredSize(
@@ -114,6 +145,12 @@ class _HomePageState extends State<HomePage> {
                             FocusScope.of(context).unfocus();
 
                             await ap.search(_searchTextEditingController.text);
+
+                            checkIsSearchController.isSearchResult.value = true;
+
+                            categorySelectedChips.selected.value = 0;
+
+                            _searchTextEditingController.text = '';
                           },
                           textAlign: TextAlign.end,
                           decoration: InputDecoration(
@@ -121,28 +158,72 @@ class _HomePageState extends State<HomePage> {
                               8,
                             ),
                             prefixIcon: isKeyboardOpen
-                                ? Opacity(
-                                    opacity: 0.5,
-                                    child: Padding(
-                                      padding: EdgeInsets.only(
-                                          left: Get.width / 2.3),
-                                      child: Row(
-                                        children: [
-                                          Image.asset(
-                                            'assets/logo/logo.png',
-                                            width: 60,
-                                          ),
-                                          Text(
-                                            'جستجو در',
-                                            style: TextStyle(
-                                                color: Colors.black,
-                                                fontWeight: FontWeight.w400,
-                                                fontSize: 17),
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                  )
+                                ? Obx(() => Opacity(
+                                      opacity: 0.5,
+                                      child: checkIsSearchController
+                                              .isSearchResult.value
+                                          ? Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  vertical: Get.width / 40),
+                                              child: Container(
+                                                width: Get.width,
+                                                padding: EdgeInsets.only(
+                                                    right: Get.width / 10.8),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.end,
+                                                  children: [
+                                                    Flexible(
+                                                      child: Text(
+                                                        searchKeywordController
+                                                            .keyword.value,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        style: TextStyle(
+                                                            color: Colors.black,
+                                                            fontWeight:
+                                                                FontWeight.w400,
+                                                            fontSize: 17),
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      'نتایج جستجو برای ',
+                                                      style: TextStyle(
+                                                          color: Colors.black,
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          fontSize: 17),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            )
+                                          : Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  vertical: Get.width / 40),
+                                              child: Container(
+                                                width: Get.width,
+                                                padding: EdgeInsets.only(
+                                                    left: Get.width / 1.9),
+                                                child: Row(
+                                                  children: [
+                                                    Image.asset(
+                                                      'assets/logo/logo.png',
+                                                      width: 60,
+                                                    ),
+                                                    Text(
+                                                      'جستجو در',
+                                                      style: TextStyle(
+                                                          color: Colors.black,
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          fontSize: 17),
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                    ))
                                 : Text(''),
                             focusedBorder: const OutlineInputBorder(
                               borderRadius:
@@ -160,8 +241,16 @@ class _HomePageState extends State<HomePage> {
                               ),
                               onPressed: () async {
                                 FocusScope.of(context).unfocus();
+
                                 await ap
                                     .search(_searchTextEditingController.text);
+
+                                checkIsSearchController.isSearchResult.value =
+                                    true;
+
+                                categorySelectedChips.selected.value = 0;
+
+                                _searchTextEditingController.text = '';
                               },
                             ),
                             enabledBorder: const OutlineInputBorder(
@@ -176,20 +265,31 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                     ),
-                    ChipsChoice<int>.single(
-                      value: tag,
-                      onChanged: (val) {
-                        ap.getAll(filterType[val]);
-                        setState(() => tag = val);
-                      },
-                      choiceItems: C2Choice.listFrom<int, String>(
-                        source: options,
-                        value: (i, v) => i,
-                        label: (i, v) => v,
-                      ),
-                      choiceStyle:
-                          C2ChoiceStyle(color: Color.fromRGBO(8, 212, 76, 1)),
-                    )
+                    Obx(() => ChipsChoice<int>.single(
+                          value: categorySelectedChips.selected.value,
+                          onChanged: (val) {
+                            categorySelectedFilter.selected.value =
+                                filterType[val];
+                            ap.getAll(categorySelectedFilter.selected.value);
+                            categorySelectedChips.selected.value = val;
+                            homeScrollController.scrollPosition.value = 0.0;
+                            checkIsSearchController.isSearchResult.value =
+                                false;
+                            WidgetsBinding.instance?.addPostFrameCallback((_) {
+                              if (_listControl.hasClients) {
+                                _listControl.jumpTo(
+                                    homeScrollController.scrollPosition.value);
+                              }
+                            });
+                          },
+                          choiceItems: C2Choice.listFrom<int, String>(
+                            source: options,
+                            value: (i, v) => i,
+                            label: (i, v) => v,
+                          ),
+                          choiceStyle: C2ChoiceStyle(
+                              color: Color.fromRGBO(8, 212, 76, 1)),
+                        ))
                   ],
                 ),
               ),
@@ -230,6 +330,7 @@ class _HomePageState extends State<HomePage> {
                   return await ap.getAll();
                 },
                 child: ListView.builder(
+                  controller: _listControl,
                   itemCount: listAdvertisementController.adsList.length,
                   itemBuilder: (BuildContext context, int index) {
                     return Container(
@@ -253,8 +354,12 @@ class _HomePageState extends State<HomePage> {
                                         .adsList[index].datePosted,
                                     title: listAdvertisementController
                                         .adsList[index].title,
+                                    adsType: listAdvertisementController
+                                        .adsList[index].adsType,
                                     userId: listAdvertisementController
                                         .adsList[index].userId,
+                                    area: listAdvertisementController
+                                        .adsList[index].area,
                                     description: listAdvertisementController
                                         .adsList[index].description,
                                   ),

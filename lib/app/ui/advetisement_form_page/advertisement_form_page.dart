@@ -6,6 +6,7 @@ import 'package:alamuti/app/controller/selectedTapController.dart';
 import 'package:alamuti/app/controller/upload_image_controller.dart';
 import 'package:alamuti/app/data/provider/advertisement_provider.dart';
 import 'package:alamuti/app/ui/post_ads_category/submit_ads_category.dart';
+import 'package:alamuti/app/ui/theme.dart';
 import 'package:alamuti/app/ui/widgets/add_ads_photo_card.dart';
 import 'package:alamuti/app/ui/widgets/alamuti_appbar.dart';
 import 'package:alamuti/app/ui/widgets/alamuti_textfield.dart';
@@ -141,6 +142,7 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
                     isChatTextField: false,
                     hasCharacterLimitation: true,
                   ),
+                  getPersianPriceHint(priceTextFieldController.text),
                 ],
               ),
               SizedBox(height: Get.height / 40),
@@ -232,6 +234,39 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
             ],
           )
         : Container();
+  }
+
+  Widget getPersianPriceHint(String price) {
+    var commaAddedPrice = price
+        .split('')
+        .reversed
+        .join()
+        .replaceAllMapped(RegExp(r".{3}"), (match) => "${match.group(0)},")
+        .split('')
+        .reversed
+        .join();
+    if (commaAddedPrice.startsWith(',')) {
+      commaAddedPrice = commaAddedPrice.substring(1, commaAddedPrice.length);
+    }
+    if (commaAddedPrice.endsWith(',')) {
+      commaAddedPrice =
+          commaAddedPrice.substring(0, commaAddedPrice.length - 1);
+    }
+
+    var result = commaAddedPrice;
+
+    return Padding(
+      padding: EdgeInsets.symmetric(
+          horizontal: Get.width / 60, vertical: Get.width / 70),
+      child: Text(
+        price.isNotEmpty ? 'تومان $result' : '',
+        style: TextStyle(
+            fontSize: Get.width / 35,
+            fontWeight: FontWeight.w300,
+            fontFamily: persianNumber),
+        textDirection: TextDirection.rtl,
+      ),
+    );
   }
 
   chooseImage() async {

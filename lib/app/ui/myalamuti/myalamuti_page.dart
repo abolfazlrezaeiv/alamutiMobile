@@ -43,7 +43,8 @@ class MyAlamutiPage extends StatelessWidget with CacheManager {
                                 auth.logOut();
                               },
                               child: Padding(
-                                padding: const EdgeInsets.all(2.0),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: Get.width / 120),
                                 child: Text(
                                   'خروج ازحساب',
                                   style: TextStyle(
@@ -127,6 +128,30 @@ class MyAlamutiPage extends StatelessWidget with CacheManager {
                             textDirection: TextDirection.rtl,
                           ),
                           trailing: Icon(CupertinoIcons.info_circle),
+                        ),
+                      ),
+                      Divider(),
+                    ],
+                  ),
+                ),
+                Container(
+                  child: Column(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          Get.toNamed('/contact');
+                        },
+                        child: ListTile(
+                          leading: Icon(CupertinoIcons.back),
+                          title: Text(
+                            'ارتباط با ما',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w400,
+                            ),
+                            textDirection: TextDirection.rtl,
+                          ),
+                          trailing: Icon(CupertinoIcons.question),
                         ),
                       ),
                       Divider(),

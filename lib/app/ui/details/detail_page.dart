@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:alamuti/app/controller/adsFormController.dart';
 import 'package:alamuti/app/controller/chat_message_controller.dart';
 import 'package:alamuti/app/controller/chat_target_controller.dart';
 import 'package:alamuti/app/ui/chat/newchat.dart';
@@ -22,7 +23,8 @@ class AdsDetail extends StatelessWidget {
   final String sendedDate;
   final String userId;
   final String description;
-
+  final String adsType;
+  final String area;
   AdsDetail(
       {Key? key,
       required this.byteImage1,
@@ -32,6 +34,8 @@ class AdsDetail extends StatelessWidget {
       required this.description,
       required this.userId,
       required this.sendedDate,
+      required this.adsType,
+      required this.area,
       required this.phoneNumber})
       : super(key: key);
 
@@ -94,7 +98,7 @@ class AdsDetail extends StatelessWidget {
                                   fontWeight: FontWeight.w400),
                             ),
                             Text(
-                              'قیمت',
+                              getPriceTitle(),
                               textDirection: TextDirection.rtl,
                               style: TextStyle(
                                   fontWeight: FontWeight.w300,
@@ -102,7 +106,9 @@ class AdsDetail extends StatelessWidget {
                             )
                           ],
                         ),
-                      )
+                      ),
+                      Divider(),
+                      getAreaRealState(),
                     ],
                   ),
                 ),
@@ -313,6 +319,46 @@ class AdsDetail extends StatelessWidget {
             ]),
           )
         : getAppbarWithBack();
+  }
+
+  String getPriceTitle() {
+    if (adsType == AdsFormState.FOOD.toString().toLowerCase()) {
+      return 'قیمت';
+    }
+    if (adsType == AdsFormState.JOB.toString().toLowerCase()) {
+      return 'حقوق ماهیانه';
+    }
+
+    return 'قیمت کل';
+  }
+
+  Widget getAreaRealState() {
+    return (adsType == AdsFormState.REALSTATE.toString().toLowerCase())
+        ? Padding(
+            padding: EdgeInsets.symmetric(vertical: Get.width / 55),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  '$area متر',
+                  textDirection: TextDirection.ltr,
+                  style: TextStyle(
+                      fontSize: Get.width / 26,
+                      fontFamily: persianNumber,
+                      fontWeight: FontWeight.w400),
+                ),
+                Text(
+                  "متراژ",
+                  textDirection: TextDirection.rtl,
+                  style: TextStyle(
+                      fontWeight: FontWeight.w300,
+                      fontSize: Get.width / 27,
+                      fontFamily: persianNumber),
+                )
+              ],
+            ),
+          )
+        : Container();
   }
 
   Widget getAppbarWithBack() {
