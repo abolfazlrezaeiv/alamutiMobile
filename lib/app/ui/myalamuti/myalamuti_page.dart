@@ -1,9 +1,7 @@
 import 'package:alamuti/app/controller/authentication_manager.dart';
 import 'package:alamuti/app/data/storage/cachemanager.dart';
 import 'package:alamuti/app/ui/home/home_page.dart';
-import 'package:alamuti/app/ui/myalamuti/myadvertisement.dart';
 import 'package:alamuti/app/ui/widgets/alamuti_appbar.dart';
-import 'package:alamuti/app/ui/widgets/alamuti_button.dart';
 import 'package:alamuti/app/ui/widgets/bottom_navbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -14,8 +12,7 @@ class MyAlamutiPage extends StatelessWidget with CacheManager {
 
   @override
   Widget build(BuildContext context) {
-    var mq = MediaQuery.of(context).size;
-    final AuthenticationManager auth = Get.put(AuthenticationManager());
+    var auth = Get.put(AuthenticationManager());
     return Scaffold(
       appBar: AlamutiAppBar(
         appBar: AppBar(),
@@ -86,7 +83,7 @@ class MyAlamutiPage extends StatelessWidget with CacheManager {
                       ),
                       GestureDetector(
                         onTap: () {
-                          Get.to(MyAdvertisement());
+                          Get.toNamed('/myads');
                         },
                         child: Container(
                           child: Column(
@@ -115,17 +112,22 @@ class MyAlamutiPage extends StatelessWidget with CacheManager {
                 Container(
                   child: Column(
                     children: [
-                      ListTile(
-                        leading: Icon(CupertinoIcons.back),
-                        title: Text(
-                          'درباره الموتی',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w400,
+                      GestureDetector(
+                        onTap: () {
+                          Get.toNamed('/about');
+                        },
+                        child: ListTile(
+                          leading: Icon(CupertinoIcons.back),
+                          title: Text(
+                            'درباره الموتی',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w400,
+                            ),
+                            textDirection: TextDirection.rtl,
                           ),
-                          textDirection: TextDirection.rtl,
+                          trailing: Icon(CupertinoIcons.info_circle),
                         ),
-                        trailing: Icon(CupertinoIcons.house),
                       ),
                       Divider(),
                     ],

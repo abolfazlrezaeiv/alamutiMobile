@@ -67,7 +67,7 @@ class TokenProvider extends GetxController with CacheManager {
                     return handler.resolve(cloneReq);
                   }
                   return handler.next(e);
-                } catch (e, st) {}
+                } catch (e, _) {}
               }
             },
           ),

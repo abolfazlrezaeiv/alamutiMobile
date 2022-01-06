@@ -1,16 +1,15 @@
 import 'dart:convert';
 import 'package:alamuti/app/controller/update_image_advertisement.dart';
-import 'package:alamuti/app/controller/upload_image_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+// ignore: must_be_immutable
 class UpdateRightPhotoCard extends StatelessWidget {
-  UpdateRightPhotoCard({
-    Key? key,
-  }) : super(key: key);
-  UpdateUploadImageController updateUploadImageController =
-      Get.put(UpdateUploadImageController());
+  UpdateRightPhotoCard({Key? key}) : super(key: key);
+
+  var updateUploadImageController = Get.put(UpdateUploadImageController());
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -20,7 +19,6 @@ class UpdateRightPhotoCard extends StatelessWidget {
         () => Card(
           elevation: 3,
           clipBehavior: Clip.antiAliasWithSaveLayer,
-          // color: Colors.grey[100],
           child: (updateUploadImageController.rightImagebyteCode.value.length >
                   2)
               ? Stack(
@@ -44,8 +42,7 @@ class UpdateRightPhotoCard extends StatelessWidget {
                   fit: StackFit.expand,
                 )
               : Padding(
-                  padding:
-                      EdgeInsets.all(MediaQuery.of(context).size.width / 14),
+                  padding: EdgeInsets.all(Get.width / 14),
                   child: Icon(
                     Icons.photo_outlined,
                     size: 50,

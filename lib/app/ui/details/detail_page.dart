@@ -1,30 +1,28 @@
 import 'dart:convert';
-
 import 'package:alamuti/app/controller/chat_message_controller.dart';
 import 'package:alamuti/app/controller/chat_target_controller.dart';
 import 'package:alamuti/app/ui/chat/newchat.dart';
 import 'package:alamuti/app/ui/details/fullscreen_image.dart';
+import 'package:alamuti/app/ui/theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-import '../home/home_page.dart';
-
+// ignore: must_be_immutable
 class AdsDetail extends StatelessWidget {
-  ChatMessageController chatMessageController =
-      Get.put(ChatMessageController());
+  var chatMessageController = Get.put(ChatMessageController());
 
   final String? byteImage1;
   final String? byteImage2;
-
+  final String phoneNumber;
   final String title;
-
   final String price;
   final String sendedDate;
   final String userId;
-
   final String description;
+
   AdsDetail(
       {Key? key,
       required this.byteImage1,
@@ -33,14 +31,13 @@ class AdsDetail extends StatelessWidget {
       required this.price,
       required this.description,
       required this.userId,
-      required this.sendedDate})
+      required this.sendedDate,
+      required this.phoneNumber})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    ChatTargetUserController chatTargetUserController =
-        Get.put(ChatTargetUserController());
-    var mq = MediaQuery.of(context).size;
+    var chatTargetUserController = Get.put(ChatTargetUserController());
     return Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -50,19 +47,9 @@ class AdsDetail extends StatelessWidget {
               ((byteImage1 != null) && (byteImage2 != null))
                   ? getImageSlider()
                   : getImageOrEmpty(),
-
-              // (Stack(
-              //   children: [
-              //     getImageOrEmpty(),
-              //     (byteImage1 != null)
-              //         ? getStackedBackButton()
-              //         : getAppbarWithBack()
-              //   ],
-              //   alignment: Alignment.topLeft,
-              // )),
               Padding(
                 padding: EdgeInsets.symmetric(
-                  horizontal: Get.width / 50,
+                  horizontal: Get.width / 20,
                 ),
                 child: Container(
                   child: Column(
@@ -78,13 +65,14 @@ class AdsDetail extends StatelessWidget {
                               fontWeight: FontWeight.w500,
                               fontSize: Get.width / 24),
                           textDirection: TextDirection.rtl,
+                          overflow: TextOverflow.visible,
                         ),
                       ),
                       Text(
                         sendedDate,
                         style: TextStyle(
                             fontWeight: FontWeight.w300,
-                            fontFamily: 'IRANSansXFaNum',
+                            fontFamily: persianNumber,
                             fontSize: Get.width / 31),
                         textDirection: TextDirection.rtl,
                       ),
@@ -101,9 +89,8 @@ class AdsDetail extends StatelessWidget {
                               '$price   تومان',
                               textDirection: TextDirection.ltr,
                               style: TextStyle(
-                                  fontSize:
-                                      MediaQuery.of(context).size.width / 26,
-                                  fontFamily: 'IRANSansXFaNum',
+                                  fontSize: Get.width / 26,
+                                  fontFamily: persianNumber,
                                   fontWeight: FontWeight.w400),
                             ),
                             Text(
@@ -111,8 +98,7 @@ class AdsDetail extends StatelessWidget {
                               textDirection: TextDirection.rtl,
                               style: TextStyle(
                                   fontWeight: FontWeight.w300,
-                                  fontSize:
-                                      MediaQuery.of(context).size.width / 27),
+                                  fontSize: Get.width / 27),
                             )
                           ],
                         ),
@@ -122,10 +108,9 @@ class AdsDetail extends StatelessWidget {
                 ),
               ),
               Divider(),
-
               Padding(
                 padding: EdgeInsets.symmetric(
-                    horizontal: Get.width / 30, vertical: Get.height / 55),
+                    horizontal: Get.width / 20, vertical: Get.height / 55),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
@@ -133,7 +118,7 @@ class AdsDetail extends StatelessWidget {
                       'توضیحات',
                       style: TextStyle(
                           fontWeight: FontWeight.w500,
-                          fontSize: MediaQuery.of(context).size.width / 24),
+                          fontSize: Get.width / 24),
                     ),
                     SizedBox(
                       height: Get.height / 55,
@@ -147,7 +132,7 @@ class AdsDetail extends StatelessWidget {
                         textDirection: TextDirection.rtl,
                         style: TextStyle(
                           fontWeight: FontWeight.w300,
-                          fontSize: MediaQuery.of(context).size.width / 28,
+                          fontSize: Get.width / 28,
                         ),
                       ),
                     ),
@@ -168,12 +153,14 @@ class AdsDetail extends StatelessWidget {
                   minWidth: Get.width / 2.2,
                   elevation: 0,
                   color: Color.fromRGBO(255, 0, 0, 0.4),
-                  onPressed: () => null,
+                  onPressed: () async {
+                    _makePhoneCall(this.phoneNumber);
+                  },
                   child: Text(
                     'تماس تلفنی',
                     style: TextStyle(
                       fontWeight: FontWeight.w500,
-                      fontSize: MediaQuery.of(context).size.width / 26,
+                      fontSize: Get.width / 26,
                     ),
                   ),
                 ),
@@ -197,7 +184,7 @@ class AdsDetail extends StatelessWidget {
                     'چت',
                     style: TextStyle(
                       fontWeight: FontWeight.w500,
-                      fontSize: MediaQuery.of(context).size.width / 26,
+                      fontSize: Get.width / 26,
                     ),
                   ),
                 ),
@@ -207,6 +194,14 @@ class AdsDetail extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Future<void> _makePhoneCall(String phoneNumber) async {
+    final Uri launchUri = Uri(
+      scheme: 'tel',
+      path: phoneNumber,
+    );
+    await launch(launchUri.toString());
   }
 
   Widget getImageSlider() {
@@ -250,8 +245,7 @@ class AdsDetail extends StatelessWidget {
         height: Get.height / 3,
         alignment: Alignment.topLeft,
         child: GestureDetector(
-          onTap: () =>
-              Get.to(() => HomePage(), transition: Transition.noTransition),
+          onTap: () => Get.toNamed('/home'),
           child: Row(
             children: [
               Icon(
@@ -270,30 +264,6 @@ class AdsDetail extends StatelessWidget {
           ),
         ),
       ),
-      // Container(
-      //   width: Get.width,
-      //   height: Get.height / 2.3,
-      //   alignment: Alignment.centerLeft,
-      //   child: Opacity(
-      //     opacity: 0.3,
-      //     child: Icon(
-      //       CupertinoIcons.back,
-      //       size: Get.height / 4,
-      //     ),
-      //   ),
-      // ),
-      // Container(
-      //   width: Get.width,
-      //   height: Get.height / 2.3,
-      //   alignment: Alignment.centerRight,
-      //   child: Opacity(
-      //     opacity: 0.3,
-      //     child: Icon(
-      //       CupertinoIcons.chevron_forward,
-      //       size: Get.height / 4,
-      //     ),
-      //   ),
-      // ),
     ]);
   }
 
@@ -321,8 +291,7 @@ class AdsDetail extends StatelessWidget {
                 height: Get.height / 2.5,
                 alignment: Alignment.topLeft,
                 child: GestureDetector(
-                  onTap: () => Get.to(() => HomePage(),
-                      transition: Transition.noTransition),
+                  onTap: () => Get.toNamed('/home'),
                   child: Row(
                     children: [
                       Icon(
@@ -354,8 +323,7 @@ class AdsDetail extends StatelessWidget {
         child: Opacity(
           opacity: 0.5,
           child: GestureDetector(
-            onTap: () =>
-                Get.to(() => HomePage(), transition: Transition.noTransition),
+            onTap: () => Get.toNamed('/home'),
             child: Row(
               children: [
                 Icon(
@@ -384,8 +352,7 @@ class AdsDetail extends StatelessWidget {
       child: Opacity(
         opacity: 0.7,
         child: GestureDetector(
-          onTap: () =>
-              Get.to(() => HomePage(), transition: Transition.noTransition),
+          onTap: () => Get.toNamed('/home'),
           child: Container(
             width: Get.width / 4,
             child: Row(

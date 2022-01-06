@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_navigation/src/extension_navigation.dart';
+import 'package:get/utils.dart';
 
 class AddPhotoWidget extends StatelessWidget {
-  const AddPhotoWidget({
-    Key? key,
-  }) : super(key: key);
+  const AddPhotoWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height / 5.5,
-      width: MediaQuery.of(context).size.width / 3.8,
+      height: Get.height / 5.5,
+      width: Get.width / 3.8,
       child: Padding(
-        padding: EdgeInsets.all(MediaQuery.of(context).size.width / 14),
+        padding: EdgeInsets.all(Get.width / 20),
         child: Column(
           children: [
             Icon(
@@ -19,11 +19,13 @@ class AddPhotoWidget extends StatelessWidget {
               size: 50,
               color: Colors.grey,
             ),
+            SizedBox(
+              height: 4,
+            ),
             Text(
               'افزودن عکس',
               style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  fontSize: MediaQuery.of(context).size.width / 40),
+                  fontWeight: FontWeight.w400, fontSize: Get.width / 40),
             )
           ],
         ),

@@ -1,7 +1,4 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 Scaffold errorView(AsyncSnapshot<Object?> snapshot) {
   return Scaffold(body: Center(child: Text('Error: ${snapshot.error}')));

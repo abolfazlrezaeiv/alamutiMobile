@@ -4,18 +4,20 @@ import 'package:alamuti/app/controller/myAdvertisementController.dart';
 import 'package:alamuti/app/data/model/Advertisement.dart';
 import 'package:alamuti/app/data/provider/token_provider.dart';
 import 'package:alamuti/app/data/provider/base_url.dart';
-import 'package:alamuti/app/ui/myalamuti/myadvertisement.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
+import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/utils.dart';
 
 class AdvertisementProvider {
-  TokenProvider tokenProvider = Get.put(TokenProvider());
-  AdsFormController adsFormController = Get.put(AdsFormController());
-  ListAdvertisementController listAdvertisementController =
-      Get.put(ListAdvertisementController());
-  MyAdvertisementController myAdvertisementController =
-      Get.put(MyAdvertisementController());
+  var tokenProvider = Get.put(TokenProvider());
+
+  var adsFormController = Get.put(AdsFormController());
+
+  var listAdvertisementController = Get.put(ListAdvertisementController());
+
+  var myAdvertisementController = Get.put(MyAdvertisementController());
 
   Future<void> deleteAds(int id) async {
     for (var i = 0; i < myAdvertisementController.adsList.length; i++) {
@@ -25,8 +27,7 @@ class AdvertisementProvider {
       }
     }
 
-    var response =
-        await tokenProvider.api.delete(baseUrl + 'Advertisement/${id}');
+    await tokenProvider.api.delete(baseUrl + 'Advertisement/$id');
   }
 
   Future<List<Advertisement>> getMyAds() async {
@@ -35,58 +36,71 @@ class AdvertisementProvider {
 
     var myMap = response.data;
     List<Advertisement> myads = [];
-    myMap.forEach((element) {
-      myads.add(Advertisement(
-          id: element['id'],
-          title: element['title'],
-          description: element['description'],
-          datePosted: element['daySended'],
-          price: element['price'].toString(),
-          photo1: element['photo1'],
-          photo2: element['photo2'],
-          area: element['area'].toString(),
-          userId: element['userId'],
-          published: element['published'],
-          adsType: element['adsType']));
-    });
+    myMap.forEach(
+      (element) {
+        myads.add(Advertisement(
+            id: element['id'],
+            title: element['title'],
+            description: element['description'],
+            datePosted: element['daySended'],
+            price: element['price'].toString(),
+            photo1: element['photo1'],
+            photo2: element['photo2'],
+            area: element['area'].toString(),
+            userId: element['userId'],
+            published: element['published'],
+            phoneNumber: element['phoneNumber'],
+            adsType: element['adsType']));
+      },
+    );
+
     myAdvertisementController.adsList.value = myads;
     return myads;
   }
 
-  Future<List<Advertisement>> findAll([String? searchInput = null]) async {
-    var response;
-    if (searchInput == null) {
-      response = await tokenProvider.api.get(
-        baseUrl + 'Advertisement',
-      );
-    } else {
-      response = await tokenProvider.api.get(
-        baseUrl + 'Advertisement/find/${searchInput}',
-      );
-    }
+  Future<List<Advertisement>> search(String searchInput) async {
+    var response = await tokenProvider.api
+        .get(baseUrl + 'Advertisement/search/$searchInput');
 
     var myMap = response.data;
     List<Advertisement> myads = [];
-    myMap.forEach((element) {
-      myads.add(Advertisement(
-        id: element['id'],
-        title: element['title'],
-        description: element['description'],
-        datePosted: element['daySended'],
-        price: element['price'].toString(),
-        photo1: element['photo1'],
-        photo2: element['photo2'],
-        area: element['area'].toString(),
-        userId: element['userId'],
-        adsType: element['adsType'],
-        published: element['published'],
-      ));
-    });
 
+    myMap.forEach(
+      (element) {
+        myads.add(
+          Advertisement(
+            id: element['id'],
+            title: element['title'],
+            description: element['description'],
+            datePosted: element['daySended'],
+            price: element['price'].toString(),
+            photo1: element['photo1'],
+            photo2: element['photo2'],
+            area: element['area'].toString(),
+            userId: element['userId'],
+            published: element['published'],
+            phoneNumber: element['phoneNumber'],
+            adsType: element['adsType'],
+          ),
+        );
+      },
+    );
+
+    if (myads.length == 0) {
+      Get.rawSnackbar(
+          messageText: Text(
+            'چیزی پیدا نشد',
+            style: TextStyle(color: Colors.white),
+            textDirection: TextDirection.rtl,
+          ),
+          backgroundColor: Colors.black);
+      return myads;
+    }
+    listAdvertisementController.adsList.value = myads;
     return myads;
   }
 
-  Future<List<Advertisement>> getAll([String? adstype]) async {
+  Future<void> getAll([String? adstype]) async {
     var response;
     if (adstype == null || adstype.isEmpty == true) {
       response = await tokenProvider.api.get(
@@ -114,6 +128,7 @@ class AdvertisementProvider {
             area: element['area'].toString(),
             userId: element['userId'],
             adsType: element['adsType'],
+            phoneNumber: element['phoneNumber'],
             published: element['published'],
           ),
         );
@@ -121,8 +136,6 @@ class AdvertisementProvider {
     );
 
     listAdvertisementController.adsList.value = myads;
-
-    return myads;
   }
 
   postAdvertisement(
@@ -141,7 +154,8 @@ class AdvertisementProvider {
       'area': area,
       'adsType': adsFormController.formState.value.toString().toLowerCase(),
     });
-    var response = await tokenProvider.api.post(
+
+    await tokenProvider.api.post(
       baseUrl + 'Advertisement',
       data: formData,
     );
@@ -165,7 +179,7 @@ class AdvertisementProvider {
       'area': area,
       'adsType': adsFormController.formState.value.toString().toLowerCase(),
     });
-    var response = await tokenProvider.api.put(
+    await tokenProvider.api.put(
       baseUrl + 'Advertisement',
       data: formData,
     );

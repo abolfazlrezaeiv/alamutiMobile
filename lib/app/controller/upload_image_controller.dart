@@ -20,18 +20,4 @@ class UploadImageController extends GetxController {
       }
     }
   }
-
-  // getRightImage() {
-  //   return rightImagebyteCode;
-  // }
-
-  // getLeftImage() {
-  //   return leftImagebyteCode;
-  // }
-
-  // void resetImageCounter() {
-  //   imageCounter.value = 0;
-  //   rightImagebyteCode.value = '';
-  //   leftImagebyteCode.value = '';
-  // }
 }

@@ -1,24 +1,20 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
-
 import 'package:alamuti/app/controller/adsFormController.dart';
 import 'package:alamuti/app/controller/selectedTapController.dart';
 import 'package:alamuti/app/controller/upload_image_controller.dart';
 import 'package:alamuti/app/data/provider/advertisement_provider.dart';
-import 'package:alamuti/app/ui/home/home_page.dart';
-import 'package:alamuti/app/ui/imgaebase64.dart';
 import 'package:alamuti/app/ui/post_ads_category/submit_ads_category.dart';
+import 'package:alamuti/app/ui/widgets/add_ads_photo_card.dart';
+import 'package:alamuti/app/ui/widgets/alamuti_appbar.dart';
+import 'package:alamuti/app/ui/widgets/alamuti_textfield.dart';
+import 'package:alamuti/app/ui/widgets/description_textfield.dart';
 import 'package:alamuti/app/ui/widgets/photo_card_left.dart';
-import 'package:file_picker/file_picker.dart';
+import 'package:alamuti/app/ui/widgets/photo_card_right.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import '../widgets/add_ads_photo_card.dart';
-import '../widgets/alamuti_appbar.dart';
-import '../widgets/alamuti_textfield.dart';
-import '../widgets/description_textfield.dart';
-import '../widgets/photo_card_right.dart';
 
 class AdvertisementForm extends StatefulWidget {
   @override
@@ -26,31 +22,26 @@ class AdvertisementForm extends StatefulWidget {
 }
 
 class _AdvertisementFormState extends State<AdvertisementForm> {
-  AdsFormController adsFormController = Get.put(AdsFormController());
+  var adsFormController = Get.put(AdsFormController());
 
-  ScreenController screenController = Get.put(ScreenController());
+  var screenController = Get.put(ScreenController());
 
-  UploadImageController uploadImageController =
-      Get.put(UploadImageController());
-  final GlobalKey<FormState> formKey = GlobalKey();
+  var uploadImageController = Get.put(UploadImageController());
 
-  TextEditingController priceTextFieldController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey();
 
-  TextEditingController titleTextFieldController = TextEditingController();
+  var priceTextFieldController = TextEditingController();
 
-  TextEditingController areaTextFieldController = TextEditingController();
+  var titleTextFieldController = TextEditingController();
 
-  TextEditingController descriptionTextFieldController =
-      TextEditingController();
+  var areaTextFieldController = TextEditingController();
 
-  AdvertisementProvider advertisementProvider = AdvertisementProvider();
+  var descriptionTextFieldController = TextEditingController();
+
+  var advertisementProvider = AdvertisementProvider();
 
   Uint8List? logoBase64;
   var pickedFile;
-
-  var _image;
-
-  String? _image64;
 
   @override
   Widget build(BuildContext context) {
@@ -63,9 +54,9 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
         backwidget: SubmitAdsCategory(),
       ),
       body: Padding(
-        padding: EdgeInsets.symmetric(
-            horizontal: MediaQuery.of(context).size.width / 40),
+        padding: EdgeInsets.symmetric(horizontal: Get.width / 40),
         child: Form(
+          key: _formKey,
           child: ListView(
             children: [
               Padding(
@@ -104,9 +95,7 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Padding(
-                    padding: EdgeInsets.only(
-                        top: MediaQuery.of(context).size.width / 40.0,
-                        bottom: 3),
+                    padding: EdgeInsets.only(top: Get.width / 40.0, bottom: 3),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.end,
@@ -118,9 +107,7 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
                               fontWeight: FontWeight.w400),
                           textDirection: TextDirection.rtl,
                         ),
-                        SizedBox(
-                          height: Get.height / 65,
-                        ),
+                        SizedBox(height: Get.height / 65),
                         Text(
                           'در عنوان آگهی به موارد مهم و چشمگیر اشاره کنید',
                           style: TextStyle(
@@ -131,17 +118,16 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
                       ],
                     ),
                   ),
-                  SizedBox(
-                    height: Get.height / 80,
-                  ),
+                  SizedBox(height: Get.height / 80),
                   AlamutiTextField(
                     textEditingController: titleTextFieldController,
+                    isNumber: false,
+                    isChatTextField: false,
+                    hasCharacterLimitation: true,
                   ),
                 ],
               ),
-              SizedBox(
-                height: Get.height / 40,
-              ),
+              SizedBox(height: Get.height / 40),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
@@ -151,12 +137,13 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
                   ),
                   AlamutiTextField(
                     textEditingController: priceTextFieldController,
+                    isNumber: true,
+                    isChatTextField: false,
+                    hasCharacterLimitation: true,
                   ),
                 ],
               ),
-              SizedBox(
-                height: Get.height / 40,
-              ),
+              SizedBox(height: Get.height / 40),
               getAreaTextField(),
               SizedBox(
                 height: Get.height / 40,
@@ -167,18 +154,14 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
                     fontSize: Get.width / 25, fontWeight: FontWeight.w400),
                 textDirection: TextDirection.rtl,
               ),
-              SizedBox(
-                height: Get.height / 65,
-              ),
+              SizedBox(height: Get.height / 65),
               Text(
                 'جزئیات و نکات قابل توجه آگهی خود را کامل و دقیق بنویسید',
                 style: TextStyle(
                     fontSize: Get.width / 31, fontWeight: FontWeight.w300),
                 textDirection: TextDirection.rtl,
               ),
-              SizedBox(
-                height: Get.height / 80,
-              ),
+              SizedBox(height: Get.height / 80),
               DescriptionTextField(
                   textEditingController: descriptionTextFieldController),
               Padding(
@@ -192,26 +175,28 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
                       minimumSize: Size(88, 36),
                     ),
                     onPressed: () async {
-                      var response =
-                          await advertisementProvider.postAdvertisement(
-                        area: areaTextFieldController.text.isEmpty
-                            ? 0
-                            : int.parse(areaTextFieldController.text),
-                        description: descriptionTextFieldController.text,
-                        photo1: uploadImageController.leftImagebyteCode.value,
-                        photo2: uploadImageController.rightImagebyteCode.value,
-                        price: int.parse(priceTextFieldController.text),
-                        title: titleTextFieldController.text,
-                      );
+                      if (_formKey.currentState!.validate()) {
+                        await advertisementProvider.postAdvertisement(
+                          area: areaTextFieldController.text.isEmpty
+                              ? 0
+                              : int.parse(areaTextFieldController.text),
+                          description: descriptionTextFieldController.text,
+                          photo1: uploadImageController.leftImagebyteCode.value,
+                          photo2:
+                              uploadImageController.rightImagebyteCode.value,
+                          price: int.parse(priceTextFieldController.text),
+                          title: titleTextFieldController.text,
+                        );
 
-                      Get.toNamed('/home');
+                        Get.toNamed('/home');
+                      }
                     },
                     child: Text(
                       'ثبت',
                       style: TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.w400,
-                        fontSize: MediaQuery.of(context).size.width / 25,
+                        fontSize: Get.width / 25,
                       ),
                     ),
                   ),
@@ -225,22 +210,25 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
   }
 
   Widget getAreaTextField() {
-    return adsFormController.formState == AdsFormState.REALSTATE
+    return adsFormController.formState.value == AdsFormState.REALSTATE
         ? Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Padding(
-                padding: EdgeInsets.only(
-                    top: MediaQuery.of(context).size.width / 40.0, bottom: 3),
+                padding: EdgeInsets.only(top: Get.width / 40.0, bottom: 3),
                 child: Text(
                   "متراژ",
                   style: TextStyle(
-                      fontSize: MediaQuery.of(context).size.width / 25,
-                      fontWeight: FontWeight.w400),
+                      fontSize: Get.width / 25, fontWeight: FontWeight.w400),
                   textDirection: TextDirection.rtl,
                 ),
               ),
-              AlamutiTextField(textEditingController: areaTextFieldController),
+              AlamutiTextField(
+                textEditingController: areaTextFieldController,
+                isNumber: true,
+                isChatTextField: false,
+                hasCharacterLimitation: true,
+              ),
             ],
           )
         : Container();
@@ -251,20 +239,11 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
       source: ImageSource.gallery,
     );
     if (image != null) {
-      print('its not null');
-      if (image != null) {
-        setState(() {
-          _image = File(image.path);
-        });
+      final bytes = File(image.path).readAsBytesSync();
 
-        final bytes = File(image.path).readAsBytesSync();
+      String img64 = base64Encode(bytes);
 
-        String img64 = base64Encode(bytes);
-        setState(() {
-          _image64 = img64;
-        });
-        uploadImageController.getImage(img64);
-      }
+      uploadImageController.getImage(img64);
     } else {
       print('picked image is null');
     }
@@ -272,18 +251,17 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
 
   Widget getPriceTextFieldTitle() {
     var title;
-    if (adsFormController.formState == AdsFormState.FOOD) {
+    if (adsFormController.formState.value == AdsFormState.FOOD) {
       title = 'قیمت (به تومان)';
     }
-    if (adsFormController.formState == AdsFormState.JOB) {
+    if (adsFormController.formState.value == AdsFormState.JOB) {
       title = 'حقوق ماهیانه';
     }
-    if (adsFormController.formState == AdsFormState.REALSTATE) {
+    if (adsFormController.formState.value == AdsFormState.REALSTATE) {
       title = 'قیمت کل';
     }
     return Padding(
-      padding: EdgeInsets.only(
-          top: MediaQuery.of(context).size.width / 35.0, bottom: 3),
+      padding: EdgeInsets.only(top: Get.width / 35.0, bottom: 3),
       child: Text(
         title,
         style: TextStyle(fontSize: Get.width / 25, fontWeight: FontWeight.w400),
