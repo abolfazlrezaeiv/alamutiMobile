@@ -6,8 +6,7 @@ import 'package:alamuti/app/controller/selectedTapController.dart';
 import 'package:alamuti/app/controller/update_image_advertisement.dart';
 import 'package:alamuti/app/data/model/Advertisement.dart';
 import 'package:alamuti/app/data/provider/advertisement_provider.dart';
-import 'package:alamuti/app/ui/post_ads_category/submit_ads_category.dart';
-import 'package:alamuti/app/ui/theme.dart';
+import 'package:alamuti/app/ui/myalamuti/myadvertisement.dart';
 import 'package:alamuti/app/ui/widgets/add_ads_photo_card.dart';
 import 'package:alamuti/app/ui/widgets/alamuti_appbar.dart';
 import 'package:alamuti/app/ui/widgets/alamuti_textfield.dart';
@@ -43,6 +42,8 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
 
   late TextEditingController priceTextFieldController;
 
+  late TextEditingController vilageNameTextFieldController;
+
   late TextEditingController areaTextFieldController;
 
   late TextEditingController descriptionTextFieldController;
@@ -57,7 +58,8 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
         TextEditingController(text: widget.ads.price.toString());
 
     areaTextFieldController = TextEditingController(text: widget.ads.area);
-
+    vilageNameTextFieldController =
+        TextEditingController(text: widget.ads.village);
     descriptionTextFieldController =
         TextEditingController(text: widget.ads.description);
   }
@@ -79,197 +81,245 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
         title: 'ثبت آگهی',
         hasBackButton: true,
         appBar: AppBar(),
-        backwidget: SubmitAdsCategory(),
+        backwidget: MyAdvertisement(),
       ),
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: Get.width / 40),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 15.0),
-                child: Column(
+      body: Form(
+        key: _formKey,
+        child: ListView(
+          children: [
+            Column(
+              children: [
+                SizedBox(
+                  height: Get.height / 45,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Container(
-                      padding: EdgeInsets.all(Get.height / 60),
-                      alignment: Alignment.centerRight,
-                      child: Text(
-                        'عکس آگهی',
-                        style: TextStyle(
-                          fontSize: Get.width / 25,
-                          fontWeight: FontWeight.w400,
-                        ),
-                        textDirection: TextDirection.rtl,
-                      ),
-                    ),
-                    Container(),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        UpdateLeftPhotoCard(),
-                        UpdateRightPhotoCard(),
-                        GestureDetector(
-                            onTap: () {
-                              chooseImage();
-                            },
-                            child: AddPhotoWidget()),
-                      ],
-                    ),
+                    UpdateLeftPhotoCard(),
+                    UpdateRightPhotoCard(),
+                    GestureDetector(
+                        onTap: () {
+                          chooseImage();
+                        },
+                        child: AddPhotoWidget()),
                   ],
                 ),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(top: Get.width / 40.0, bottom: 3),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          'عنوان آگهی',
-                          style: TextStyle(
-                              fontSize: Get.width / 25,
-                              fontWeight: FontWeight.w400),
-                          textDirection: TextDirection.rtl,
-                        ),
-                        SizedBox(
-                          height: Get.height / 65,
-                        ),
-                        Text(
-                          'در عنوان آگهی به موارد مهم و چشمگیر اشاره کنید',
-                          style: TextStyle(
-                              fontSize: Get.width / 31,
-                              fontWeight: FontWeight.w300),
-                          textDirection: TextDirection.rtl,
-                        ),
-                      ],
-                    ),
+              ],
+            ),
+            SizedBox(
+              height: Get.height / 45,
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: Get.width / 25),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        'عنوان آگهی',
+                        style: TextStyle(
+                            fontSize: Get.width / 28,
+                            fontWeight: FontWeight.w400),
+                        textDirection: TextDirection.rtl,
+                      ),
+                      SizedBox(height: Get.height / 65),
+                      Text(
+                        'در عنوان آگهی به موارد مهم و چشمگیر اشاره کنید',
+                        style: TextStyle(
+                            fontSize: Get.width / 31,
+                            fontWeight: FontWeight.w300),
+                        textDirection: TextDirection.rtl,
+                      ),
+                    ],
                   ),
-                  SizedBox(
-                    height: Get.height / 80,
-                  ),
-                  AlamutiTextField(
+                ),
+                SizedBox(height: Get.height / 80),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: Get.width / 35),
+                  child: AlamutiTextField(
                     textEditingController: titleTextFieldController,
                     isNumber: false,
                     isChatTextField: false,
+                    isPrice: false,
                     hasCharacterLimitation: true,
+                    prefix: titleTextfiledPrefix(),
                   ),
-                ],
-              ),
-              SizedBox(
-                height: Get.height / 40,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  getPriceTextFieldTitle(),
-                  SizedBox(
-                    height: Get.height / 80,
-                  ),
-                  AlamutiTextField(
+                ),
+              ],
+            ),
+            SizedBox(height: Get.height / 40),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: Get.width / 25),
+                  child: getPriceTextFieldTitle(),
+                ),
+                SizedBox(
+                  height: Get.height / 80,
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: Get.width / 35),
+                  child: AlamutiTextField(
                     textEditingController: priceTextFieldController,
-                    hasCharacterLimitation: true,
-                    isChatTextField: false,
                     isNumber: true,
+                    isPrice: true,
+                    isChatTextField: false,
+                    hasCharacterLimitation: true,
+                    prefix: 'تومان',
                   ),
-                ],
-              ),
-              SizedBox(
-                height: Get.height / 40,
-              ),
-              getAreaTextField(areaTextFieldController),
-              SizedBox(
-                height: Get.height / 40,
-              ),
-              Text(
-                ' توضیحات آگهی',
-                style: TextStyle(
-                    fontSize: Get.width / 25, fontWeight: FontWeight.w400),
-                textDirection: TextDirection.rtl,
-              ),
-              SizedBox(
-                height: Get.height / 65,
-              ),
-              Text(
-                'جزئیات و نکات قابل توجه آگهی خود را کامل و دقیق بنویسید',
-                style: TextStyle(
-                    fontSize: Get.width / 31, fontWeight: FontWeight.w300),
-                textDirection: TextDirection.rtl,
-              ),
-              SizedBox(
-                height: Get.height / 80,
-              ),
-              DescriptionTextField(
-                  textEditingController: descriptionTextFieldController),
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: Get.height / 35.0),
-                child: Container(
-                  padding: EdgeInsets.only(right: Get.width / 2),
-                  child: TextButton(
-                    style: ElevatedButton.styleFrom(
-                      primary: alamutPrimaryColor,
-                      minimumSize: Size(88, 36),
-                    ),
-                    onPressed: () async {
-                      if (_formKey.currentState!.validate()) {
-                        await advertisementProvider.updateAdvertisement(
-                          area: areaTextFieldController.text.isEmpty
-                              ? 0
-                              : int.parse(areaTextFieldController.text),
-                          description: descriptionTextFieldController.text,
-                          photo1: updateUploadImageController
-                              .leftImagebyteCode.value,
-                          photo2: updateUploadImageController
-                              .rightImagebyteCode.value,
-                          price: int.parse(priceTextFieldController.text
-                              .replaceAll(RegExp(r','), '')),
-                          title: titleTextFieldController.text,
-                          id: widget.ads.id,
-                        );
-
-                        Get.toNamed('/home');
-                      }
-                    },
-                    child: Text(
-                      'ثبت',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w400,
-                        fontSize: Get.width / 25,
+                ),
+              ],
+            ),
+            getAreaTextField(),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                SizedBox(height: Get.height / 40),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: Get.width / 25),
+                  child: Text(
+                    'نام روستا',
+                    style: TextStyle(
+                        fontSize: Get.width / 28, fontWeight: FontWeight.w400),
+                    textDirection: TextDirection.rtl,
+                  ),
+                ),
+                SizedBox(
+                  height: Get.height / 80,
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: Get.width / 35),
+                  child: AlamutiTextField(
+                    textEditingController: vilageNameTextFieldController,
+                    isNumber: false,
+                    isPrice: false,
+                    isChatTextField: false,
+                    hasCharacterLimitation: true,
+                    prefix: 'مثال : وناش بالا',
+                  ),
+                ),
+              ],
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                SizedBox(
+                  height: Get.height / 20,
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: Get.width / 25),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        'توضیحات آگهی',
+                        style: TextStyle(
+                            fontSize: Get.width / 28,
+                            fontWeight: FontWeight.w400),
+                        textDirection: TextDirection.rtl,
                       ),
-                    ),
+                      SizedBox(height: Get.height / 65),
+                      Text(
+                        'جزئیات و نکات قابل توجه آگهی خود را کامل و دقیق بنویسید',
+                        style: TextStyle(
+                            fontSize: Get.width / 31,
+                            fontWeight: FontWeight.w300),
+                        textDirection: TextDirection.rtl,
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: Get.height / 80),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: Get.width / 35),
+                  child: DescriptionTextField(
+                      textEditingController: descriptionTextFieldController),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: Get.height / 80,
+            ),
+            Container(
+              padding: EdgeInsets.only(
+                  right: Get.width / 2,
+                  left: Get.width / 35,
+                  bottom: Get.width / 35),
+              child: TextButton(
+                style: ElevatedButton.styleFrom(
+                  primary: Color.fromRGBO(10, 210, 71, 0.5),
+                  minimumSize: Size(88, 36),
+                ),
+                onPressed: () async {
+                  if (_formKey.currentState!.validate()) {
+                    await advertisementProvider.updateAdvertisement(
+                      area: areaTextFieldController.text.isEmpty
+                          ? 0
+                          : int.parse(areaTextFieldController.text),
+                      description: descriptionTextFieldController.text,
+                      photo1:
+                          updateUploadImageController.leftImagebyteCode.value,
+                      photo2:
+                          updateUploadImageController.rightImagebyteCode.value,
+                      price: int.parse(priceTextFieldController.text
+                          .replaceAll(RegExp(r','), '')),
+                      village: vilageNameTextFieldController.text,
+                      title: titleTextFieldController.text,
+                      id: widget.ads.id,
+                    );
+
+                    Get.toNamed('/myads');
+                  }
+                },
+                child: Text(
+                  'ثبت',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w400,
+                    fontSize: Get.width / 25,
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Widget getAreaTextField(TextEditingController textEditingController) {
-    return adsFormController.formState.value == AdsFormState.REALSTATE
+  Widget getAreaTextField() {
+    return widget.ads.adsType == AdsFormState.REALSTATE.toString().toLowerCase()
         ? Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
+              SizedBox(height: Get.height / 40),
               Padding(
-                padding: EdgeInsets.only(top: Get.width / 40.0, bottom: 3),
+                padding: EdgeInsets.symmetric(horizontal: Get.width / 28),
                 child: Text(
                   "متراژ",
                   style: TextStyle(
-                      fontSize: Get.width / 27, fontWeight: FontWeight.w300),
+                      fontSize: Get.width / 28, fontWeight: FontWeight.w400),
                   textDirection: TextDirection.rtl,
                 ),
               ),
-              AlamutiTextField(
-                textEditingController: textEditingController,
-                hasCharacterLimitation: true,
-                isChatTextField: false,
-                isNumber: true,
+              SizedBox(
+                height: Get.height / 80,
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: Get.width / 35),
+                child: AlamutiTextField(
+                  textEditingController: areaTextFieldController,
+                  isNumber: true,
+                  isPrice: false,
+                  isChatTextField: false,
+                  hasCharacterLimitation: true,
+                  prefix: 'متر',
+                ),
               ),
             ],
           )
@@ -278,8 +328,10 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
 
   chooseImage() async {
     var image = await ImagePicker().pickImage(
-      source: ImageSource.gallery,
-    );
+        source: ImageSource.gallery,
+        imageQuality: 50,
+        maxHeight: 700,
+        maxWidth: 700);
     if (image != null) {
       final bytes = File(image.path).readAsBytesSync();
 
@@ -291,24 +343,35 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
     }
   }
 
+  String titleTextfiledPrefix() {
+    var prifix;
+    if (widget.ads.adsType == AdsFormState.FOOD.toString().toLowerCase()) {
+      prifix = 'مثال : "گیلاس آتان"';
+    }
+    if (widget.ads.adsType == AdsFormState.JOB.toString().toLowerCase()) {
+      prifix = 'مثال : "راننده با ماشین"';
+    }
+    if (widget.ads.adsType == AdsFormState.REALSTATE.toString().toLowerCase()) {
+      prifix = 'مثال : "زمین کشاورزی"';
+    }
+    return prifix;
+  }
+
   Widget getPriceTextFieldTitle() {
     var title;
-    if (adsFormController.formState.value == AdsFormState.FOOD) {
+    if (widget.ads.adsType == AdsFormState.FOOD.toString().toLowerCase()) {
       title = 'قیمت (به تومان)';
     }
-    if (adsFormController.formState.value == AdsFormState.JOB) {
+    if (widget.ads.adsType == AdsFormState.JOB.toString().toLowerCase()) {
       title = 'حقوق ماهیانه';
     }
-    if (adsFormController.formState.value == AdsFormState.REALSTATE) {
+    if (widget.ads.adsType == AdsFormState.REALSTATE.toString().toLowerCase()) {
       title = 'قیمت کل';
     }
-    return Padding(
-      padding: EdgeInsets.only(top: Get.width / 35.0, bottom: 3),
-      child: Text(
-        title,
-        style: TextStyle(fontSize: Get.width / 25, fontWeight: FontWeight.w400),
-        textDirection: TextDirection.rtl,
-      ),
+    return Text(
+      title,
+      style: TextStyle(fontSize: Get.width / 28, fontWeight: FontWeight.w400),
+      textDirection: TextDirection.rtl,
     );
   }
 }

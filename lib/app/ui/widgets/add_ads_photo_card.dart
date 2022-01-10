@@ -8,11 +8,12 @@ class AddPhotoWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: Get.height / 5.5,
-      width: Get.width / 3.8,
+      // height: Get.height / 5.5,
+      // width: Get.width / 3.8,
       child: Padding(
-        padding: EdgeInsets.all(Get.width / 20),
+        padding: EdgeInsets.all(Get.width / 13),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
               Icons.add_a_photo,

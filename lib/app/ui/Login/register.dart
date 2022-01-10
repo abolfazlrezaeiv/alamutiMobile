@@ -177,7 +177,7 @@ class _RegisterationState extends State<Registeration> {
                                   () => Login(
                                         phonenumber: phoneNumberCtr.text,
                                       ),
-                                  transition: Transition.noTransition);
+                                  transition: Transition.fadeIn);
                             } else {
                               setState(() {
                                 succesed = false;
@@ -203,6 +203,142 @@ class _RegisterationState extends State<Registeration> {
                               ),
                       ),
                     ),
+                    SizedBox(
+                      height: Get.height / 50,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Text(
+                            'را مطالعه کردم و با آن موافقم',
+                            textDirection: TextDirection.rtl,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w200,
+                              fontSize: Get.width / 30,
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                        contentPadding: EdgeInsets.only(
+                                            left: 25, right: 25),
+                                        title: Center(
+                                            child: Text(
+                                          "حفظ حریم خصوصی",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w300,
+                                            fontSize: Get.width / 25,
+                                          ),
+                                        )),
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(20.0))),
+                                        content: Container(
+                                          height: 200,
+                                          width: 300,
+                                          child: SingleChildScrollView(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.stretch,
+                                              children: <Widget>[
+                                                SizedBox(
+                                                  height: 20,
+                                                ),
+                                                Text(
+                                                  'الموتی ضمن احترام  به حریم خصوصی کاربران برای ارائه خدمات بهتر و استفاده بهینه  و مفیدتر در زمان ثبت نام یا ارسال آگهی اطلاعاتی مانند شماره موبایل کاربر و منطقه(روستا) ارسال آگهی را دریافت می کند',
+                                                  textDirection:
+                                                      TextDirection.rtl,
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.w200,
+                                                    fontSize: 15,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  'موارد استفاده از اطلاعات کاربر :',
+                                                  textDirection:
+                                                      TextDirection.rtl,
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.w400,
+                                                    fontSize: 15,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  'از شماره موبایل جهت احراز هویت کاربر و ارتباط دیگر کاربران با ثبت کننده آگهی در همین حال اگر کاربران آگهی منتشر نکنند قادر به دیدن شماره یکدیگر نیستند.',
+                                                  textDirection:
+                                                      TextDirection.rtl,
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.w200,
+                                                    fontSize: 15,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  'منطقه یا نام روستا به دلیل دسته بندی آگهی ها و قابلیت جستجو بر اساس مناطق از کاربر ثبت کننده آگهی دریافت می شود.',
+                                                  textDirection:
+                                                      TextDirection.rtl,
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.w200,
+                                                    fontSize: 15,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  'امنیت اطلاعات شخصی',
+                                                  textDirection:
+                                                      TextDirection.rtl,
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.w400,
+                                                    fontSize: 15,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  'الموتی موظف است در این راستا تکنولوژی مورد نیاز برای هرچه امن تر شدن استفاده شما از برنامه را توسعه دهد.',
+                                                  textDirection:
+                                                      TextDirection.rtl,
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.w200,
+                                                    fontSize: 15,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  'برای هربار ورود به الموتی از رمز عبور یکبار مصرف استفاده می شود که دسترسی به آن تنها از طریق شماره همراهی که هنگام ورود به الموتی از ان استفاده کرده اید امکان پذیر است.',
+                                                  textDirection:
+                                                      TextDirection.rtl,
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.w200,
+                                                    fontSize: 15,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  'کلیه اطلاعات دریافت شده از کاربران تنها در دسترس کارکنان الموتی می باشد و در اختیار اشخاص خارج از مجموعه قرار نخواهد گرفت.',
+                                                  textDirection:
+                                                      TextDirection.rtl,
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.w200,
+                                                    fontSize: 15,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ));
+                                  });
+                            },
+                            child: Text(
+                              'قوانین مربوط به حفظ حریم خصوصی ',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w200,
+                                  fontSize: Get.width / 30,
+                                  color: Colors.blue),
+                              textDirection: TextDirection.rtl,
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
                   ],
                 )
               ],

@@ -42,18 +42,20 @@ class AdvertisementProvider {
     myMap.forEach(
       (element) {
         myads.add(Advertisement(
-            id: element['id'],
-            title: element['title'],
-            description: element['description'],
-            datePosted: element['daySended'],
-            price: element['price'].toString(),
-            photo1: element['photo1'],
-            photo2: element['photo2'],
-            area: element['area'].toString(),
-            userId: element['userId'],
-            published: element['published'],
-            phoneNumber: element['phoneNumber'],
-            adsType: element['adsType']));
+          id: element['id'],
+          title: element['title'],
+          description: element['description'],
+          datePosted: element['daySended'],
+          price: element['price'].toString(),
+          photo1: element['photo1'],
+          photo2: element['photo2'],
+          area: element['area'].toString(),
+          userId: element['userId'],
+          published: element['published'],
+          phoneNumber: element['phoneNumber'],
+          adsType: element['adsType'],
+          village: element['village'],
+        ));
       },
     );
 
@@ -83,6 +85,7 @@ class AdvertisementProvider {
             userId: element['userId'],
             published: element['published'],
             phoneNumber: element['phoneNumber'],
+            village: element['village'],
             adsType: element['adsType'],
           ),
         );
@@ -133,6 +136,7 @@ class AdvertisementProvider {
             userId: element['userId'],
             adsType: element['adsType'],
             phoneNumber: element['phoneNumber'],
+            village: element['village'],
             published: element['published'],
           ),
         );
@@ -142,12 +146,13 @@ class AdvertisementProvider {
     listAdvertisementController.adsList.value = myads;
   }
 
-  postAdvertisement(
+  Future<void> postAdvertisement(
       {required String title,
       required String description,
       required int price,
       required int area,
       required String photo1,
+      required String village,
       required String photo2}) async {
     var formData = FormData.fromMap({
       'title': title,
@@ -156,6 +161,7 @@ class AdvertisementProvider {
       'photo1': photo1,
       'photo2': photo2,
       'area': area,
+      'village': village,
       'adsType': adsFormController.formState.value.toString().toLowerCase(),
     });
 
@@ -172,6 +178,7 @@ class AdvertisementProvider {
       required int price,
       required int area,
       required String photo1,
+      required String village,
       required String photo2}) async {
     var formData = FormData.fromMap({
       'id': id,
@@ -181,6 +188,7 @@ class AdvertisementProvider {
       'photo1': photo1,
       'photo2': photo2,
       'area': area,
+      'village': village,
       'adsType': adsFormController.formState.value.toString().toLowerCase(),
     });
     await tokenProvider.api.put(

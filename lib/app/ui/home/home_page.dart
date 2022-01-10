@@ -187,7 +187,7 @@ class _HomePageState extends State<HomePage> {
                                                       ),
                                                     ),
                                                     Text(
-                                                      'نتایج جستجو برای ',
+                                                      ' نتایج جستجو برای ',
                                                       style: TextStyle(
                                                           color: Colors.black,
                                                           fontWeight:
@@ -204,7 +204,7 @@ class _HomePageState extends State<HomePage> {
                                               child: Container(
                                                 width: Get.width,
                                                 padding: EdgeInsets.only(
-                                                    left: Get.width / 1.9),
+                                                    left: Get.width / 2.1),
                                                 child: Row(
                                                   children: [
                                                     Image.asset(
@@ -360,10 +360,12 @@ class _HomePageState extends State<HomePage> {
                                         .adsList[index].userId,
                                     area: listAdvertisementController
                                         .adsList[index].area,
+                                    village: listAdvertisementController
+                                        .adsList[index].village,
                                     description: listAdvertisementController
                                         .adsList[index].description,
                                   ),
-                              transition: Transition.noTransition);
+                              transition: Transition.fadeIn);
                         },
                         child: Obx(
                           () => Container(
@@ -410,17 +412,17 @@ class _HomePageState extends State<HomePage> {
                                               ),
                                       ),
                                     ),
-                                    Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          vertical: Get.height / 70),
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.end,
-                                        children: [
-                                          Flexible(
-                                            child: Text(
+                                    Flexible(
+                                      child: Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            vertical: Get.height / 70),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
+                                          children: [
+                                            Text(
                                               listAdvertisementController
                                                   .adsList[index].title,
                                               style: TextStyle(
@@ -429,27 +431,47 @@ class _HomePageState extends State<HomePage> {
                                               textDirection: TextDirection.rtl,
                                               overflow: TextOverflow.visible,
                                             ),
-                                          ),
-                                          SizedBox(
-                                            height: Get.height / 18,
-                                          ),
-                                          Text(
-                                            '${listAdvertisementController.adsList[index].price.toString()}  تومان',
-                                            style: TextStyle(
-                                                fontFamily: persianNumber,
-                                                fontWeight: FontWeight.w300),
-                                            textDirection: TextDirection.rtl,
-                                          ),
-                                          Text(
-                                            listAdvertisementController
-                                                .adsList[index].datePosted,
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w200,
-                                                fontFamily: persianNumber,
-                                                fontSize: 13),
-                                            textDirection: TextDirection.rtl,
-                                          ),
-                                        ],
+                                            SizedBox(
+                                              height: Get.height / 18,
+                                            ),
+                                            Text(
+                                              'تومان ${listAdvertisementController.adsList[index].price.toString()}',
+                                              style: TextStyle(
+                                                  fontFamily: persianNumber,
+                                                  fontWeight: FontWeight.w300),
+                                              textDirection: TextDirection.rtl,
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
+                                              children: [
+                                                Text(
+                                                  listAdvertisementController
+                                                      .adsList[index]
+                                                      .datePosted,
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w200,
+                                                      fontFamily: persianNumber,
+                                                      fontSize: 13),
+                                                  textDirection:
+                                                      TextDirection.rtl,
+                                                ),
+                                                Text(
+                                                  listAdvertisementController
+                                                      .adsList[index].village,
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w200,
+                                                      fontFamily: persianNumber,
+                                                      fontSize: 13),
+                                                  textDirection:
+                                                      TextDirection.rtl,
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     )
                                   ],

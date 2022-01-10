@@ -191,7 +191,9 @@ class _NewChatState extends State<NewChat> {
                           textEditingController: textEditingController,
                           hasCharacterLimitation: false,
                           isChatTextField: true,
+                          isPrice: false,
                           isNumber: false,
+                          prefix: '',
                         )),
                         TextButton(
                             onPressed: () {

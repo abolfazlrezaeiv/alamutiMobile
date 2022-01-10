@@ -25,6 +25,7 @@ class AdsDetail extends StatelessWidget {
   final String description;
   final String adsType;
   final String area;
+  final String village;
   AdsDetail(
       {Key? key,
       required this.byteImage1,
@@ -36,6 +37,7 @@ class AdsDetail extends StatelessWidget {
       required this.sendedDate,
       required this.adsType,
       required this.area,
+      required this.village,
       required this.phoneNumber})
       : super(key: key);
 
@@ -90,7 +92,7 @@ class AdsDetail extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              '$price   تومان',
+                              '$price تومان',
                               textDirection: TextDirection.ltr,
                               style: TextStyle(
                                   fontSize: Get.width / 26,
@@ -108,12 +110,35 @@ class AdsDetail extends StatelessWidget {
                         ),
                       ),
                       Divider(),
+                      Padding(
+                        padding: EdgeInsets.symmetric(vertical: Get.width / 55),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              village,
+                              textDirection: TextDirection.ltr,
+                              style: TextStyle(
+                                  fontSize: Get.width / 26,
+                                  fontFamily: persianNumber,
+                                  fontWeight: FontWeight.w400),
+                            ),
+                            Text(
+                              'روستا',
+                              textDirection: TextDirection.rtl,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w300,
+                                  fontSize: Get.width / 27),
+                            )
+                          ],
+                        ),
+                      ),
+                      Divider(),
                       getAreaRealState(),
                     ],
                   ),
                 ),
               ),
-              Divider(),
               Padding(
                 padding: EdgeInsets.symmetric(
                     horizontal: Get.width / 20, vertical: Get.height / 55),
@@ -184,7 +209,7 @@ class AdsDetail extends StatelessWidget {
                             receiverId: chatTargetUserController.userId.value,
                             groupImage: this.byteImage1,
                             groupTitle: this.title),
-                        transition: Transition.noTransition);
+                        transition: Transition.fadeIn);
                   },
                   child: Text(
                     'چت',
@@ -334,29 +359,36 @@ class AdsDetail extends StatelessWidget {
 
   Widget getAreaRealState() {
     return (adsType == AdsFormState.REALSTATE.toString().toLowerCase())
-        ? Padding(
-            padding: EdgeInsets.symmetric(vertical: Get.width / 55),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  '$area متر',
-                  textDirection: TextDirection.ltr,
-                  style: TextStyle(
-                      fontSize: Get.width / 26,
-                      fontFamily: persianNumber,
-                      fontWeight: FontWeight.w400),
+        ? Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: Get.width / 55),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      '$area متر',
+                      textDirection: TextDirection.ltr,
+                      style: TextStyle(
+                          fontSize: Get.width / 26,
+                          fontFamily: persianNumber,
+                          fontWeight: FontWeight.w400),
+                    ),
+                    Text(
+                      "متراژ",
+                      textDirection: TextDirection.rtl,
+                      style: TextStyle(
+                          fontWeight: FontWeight.w300,
+                          fontSize: Get.width / 27,
+                          fontFamily: persianNumber),
+                    )
+                  ],
                 ),
-                Text(
-                  "متراژ",
-                  textDirection: TextDirection.rtl,
-                  style: TextStyle(
-                      fontWeight: FontWeight.w300,
-                      fontSize: Get.width / 27,
-                      fontFamily: persianNumber),
-                )
-              ],
-            ),
+              ),
+              Divider(),
+            ],
           )
         : Container();
   }

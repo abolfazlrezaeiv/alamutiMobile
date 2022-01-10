@@ -15,49 +15,49 @@ var routes = [
   GetPage(
       name: '/',
       page: () => SplashScreen(),
-      transition: trans.Transition.noTransition),
+      transition: trans.Transition.fadeIn),
   GetPage(
       name: '/home',
       page: () => HomePage(),
-      transition: trans.Transition.noTransition),
+      transition: trans.Transition.fadeIn),
   GetPage(
     name: '/add_ads',
     page: () => SubmitAdsCategory(),
-    transition: trans.Transition.noTransition,
+    transition: trans.Transition.fadeIn,
   ),
   GetPage(
     name: "/chat",
     page: () => ChatGroups(),
-    transition: trans.Transition.noTransition,
+    transition: trans.Transition.fadeIn,
   ),
   GetPage(
     name: "/myads",
     page: () => MyAdvertisement(),
-    transition: trans.Transition.noTransition,
+    transition: trans.Transition.fadeIn,
   ),
   GetPage(
     name: "/ads_form",
     page: () => AdvertisementForm(),
-    transition: trans.Transition.noTransition,
+    transition: trans.Transition.fadeIn,
   ),
   GetPage(
     name: "/myalamuti",
     page: () => MyAlamutiPage(),
-    transition: trans.Transition.noTransition,
+    transition: trans.Transition.fadeIn,
   ),
   GetPage(
     name: "/about",
     page: () => AboutAlamuti(),
-    transition: trans.Transition.noTransition,
+    transition: trans.Transition.fadeIn,
   ),
   GetPage(
     name: "/contact",
     page: () => ContactPage(),
-    transition: trans.Transition.noTransition,
+    transition: trans.Transition.fadeIn,
   ),
   GetPage(
     name: "/register",
     page: () => Registeration(),
-    transition: trans.Transition.noTransition,
+    transition: trans.Transition.fadeIn,
   ),
 ];

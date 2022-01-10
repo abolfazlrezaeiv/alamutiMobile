@@ -1,3 +1,4 @@
+import 'package:alamuti/app/controller/price_with_symbol.dart';
 import 'package:alamuti/app/ui/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -8,18 +9,22 @@ class AlamutiTextField extends StatelessWidget {
   final bool hasCharacterLimitation;
   final bool isNumber;
   late bool isChatTextField;
+  var priceController = Get.put(PriceController());
+  bool isPrice = false;
+  final String prefix;
   AlamutiTextField(
       {Key? key,
       required this.textEditingController,
       required this.isNumber,
       required this.hasCharacterLimitation,
-      required this.isChatTextField})
+      required this.isChatTextField,
+      required this.isPrice,
+      required this.prefix})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      // height: Get.height / 15,
       child: Directionality(
         textDirection: TextDirection.rtl,
         child: TextFormField(
@@ -27,6 +32,19 @@ class AlamutiTextField extends StatelessWidget {
             FocusScope.of(context).unfocus();
           },
           controller: textEditingController,
+          onChanged: (text) {
+            if (isPrice) {
+              priceController.price.value = text;
+              textEditingController.text = getPersianPriceHint(text);
+              textEditingController.value =
+                  textEditingController.value.copyWith(
+                selection: TextSelection(
+                    baseOffset: getPersianPriceHint(text).length,
+                    extentOffset: getPersianPriceHint(text).length),
+                composing: TextRange.empty,
+              );
+            }
+          },
           validator: (value) {
             if (value == null || value.isEmpty || value.length < 0) {
               return 'این مورد را کامل کنید';
@@ -50,6 +68,14 @@ class AlamutiTextField extends StatelessWidget {
               fontFamily: persianNumber,
               fontWeight: FontWeight.w300),
           decoration: InputDecoration(
+            label: Text(
+              prefix,
+              style: TextStyle(
+                  backgroundColor: Colors.white.withOpacity(0.5),
+                  fontSize: Get.width / 30,
+                  fontFamily: persianNumber,
+                  fontWeight: FontWeight.w300),
+            ),
             errorStyle: isChatTextField
                 ? TextStyle(height: 0, fontSize: 0, fontFamily: persianNumber)
                 : TextStyle(fontSize: 13, fontFamily: persianNumber),
@@ -78,5 +104,28 @@ class AlamutiTextField extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String getPersianPriceHint(String text) {
+    var commaAddedPrice = priceController.price.value
+        .split('')
+        .reversed
+        .join()
+        .replaceAll(',', '')
+        .replaceAllMapped(RegExp(r".{3}"), (match) => "${match.group(0)},")
+        .split('')
+        .reversed
+        .join();
+    if (commaAddedPrice.startsWith(',')) {
+      commaAddedPrice = commaAddedPrice.substring(1, commaAddedPrice.length);
+    }
+    if (commaAddedPrice.endsWith(',')) {
+      commaAddedPrice =
+          commaAddedPrice.substring(0, commaAddedPrice.length - 1);
+    }
+
+    var result = commaAddedPrice;
+
+    return result;
   }
 }

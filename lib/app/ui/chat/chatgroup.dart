@@ -107,11 +107,6 @@ class _ChatGroupsState extends State<ChatGroups> with CacheManager {
                 controller: _scrollcontroller,
                 itemCount: chatGroupController.groupList.length,
                 itemBuilder: (context, index) {
-                  // Future<String> sender() async {
-                  //   return await mp.getLastItemOfGroup(
-                  //       chatGroupController.groupList[index].name);
-                  // }
-
                   indexGroupList.changeIndex(index);
 
                   return GestureDetector(
@@ -194,7 +189,7 @@ class _ChatGroupsState extends State<ChatGroups> with CacheManager {
                                 groupImage: chatGroupController
                                     .groupList[index].groupImage,
                               ),
-                          transition: Transition.noTransition);
+                          transition: Transition.fadeIn);
                     },
                     child: Obx(
                       () => Stack(

@@ -32,7 +32,7 @@ class AlamutiAppBar extends StatelessWidget implements PreferredSizeWidget {
         leading: hasBackButton
             ? GestureDetector(
                 onTap: () => Get.to(() => this.backwidget,
-                    transition: Transition.noTransition),
+                    transition: Transition.fadeIn),
                 child: Container(
                   width: 100,
                   height: 100,

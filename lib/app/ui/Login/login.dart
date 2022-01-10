@@ -25,7 +25,7 @@ class _LoginState extends State<Login> {
 
   TextEditingController passwordCtr = TextEditingController();
   bool isPinCode = false;
-  int endTime = DateTime.now().millisecondsSinceEpoch + 1000 * 20;
+  int endTime = DateTime.now().millisecondsSinceEpoch + 1000 * 150;
   bool succesed = true;
 
   late CountdownTimerController timercontroller;
@@ -232,7 +232,7 @@ class _LoginState extends State<Login> {
                               await _viewModel.registerUser(widget.phonenumber);
                               var newEndTime =
                                   DateTime.now().millisecondsSinceEpoch +
-                                      1000 * 20;
+                                      1000 * 150;
                               setState(() {
                                 canRequestAgain = false;
                                 endTime = newEndTime;

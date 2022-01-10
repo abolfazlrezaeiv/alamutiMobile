@@ -207,8 +207,10 @@ class _ChatState extends State<Chat> {
                           child: AlamutiTextField(
                         textEditingController: textEditingController,
                         isNumber: false,
+                        isPrice: false,
                         isChatTextField: true,
                         hasCharacterLimitation: false,
+                        prefix: '',
                       )),
                       TextButton(
                           onPressed: () {
