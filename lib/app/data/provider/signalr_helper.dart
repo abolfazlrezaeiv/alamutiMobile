@@ -11,11 +11,15 @@ import 'package:signalr_core/signalr_core.dart';
 
 class SignalRHelper with CacheManager {
   late HubConnection connection;
+
   ChatTargetUserController chatTargetUserController =
       Get.put(ChatTargetUserController());
+
   ChatMessageController chatMessageController =
       Get.put(ChatMessageController());
+
   ChatGroupController chatGroupController = Get.put(ChatGroupController());
+
   NewMessageController newMessageController = Get.put(NewMessageController());
 
   var mp = MessageProvider();

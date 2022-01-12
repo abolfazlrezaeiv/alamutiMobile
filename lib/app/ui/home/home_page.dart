@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:alamuti/app/binding/detail_binding.dart';
 import 'package:alamuti/app/controller/ads_form_controller.dart';
 import 'package:alamuti/app/controller/advertisement_controller.dart';
 import 'package:alamuti/app/controller/category_tag_selected_item_controller.dart';
@@ -306,6 +307,7 @@ class _HomePageState extends State<HomePage> {
                               description: listAdvertisementController
                                   .adsList[index].description,
                             ),
+                        binding: DetailPageBinding(),
                         transition: Transition.fadeIn);
                   },
                   child: Obx(
@@ -332,7 +334,7 @@ class _HomePageState extends State<HomePage> {
                                               .adsList[index].photo1 ==
                                           null)
                                       ? Opacity(
-                                          opacity: 0.6,
+                                          opacity: 0.2,
                                           child: Image.asset(
                                             'assets/logo/no-image.png',
                                             fit: BoxFit.cover,

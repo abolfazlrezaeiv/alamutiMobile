@@ -11,13 +11,10 @@ import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-// ignore: must_be_immutable
 class AdsDetail extends StatelessWidget {
-  ChatTargetUserController chatTargetUserController =
-      Get.put(ChatTargetUserController());
+  final ChatTargetUserController chatTargetUserController = Get.find();
 
-  ChatMessageController chatMessageController =
-      Get.put(ChatMessageController());
+  final ChatMessageController chatMessageController = Get.find();
 
   final double width = Get.width;
 
@@ -82,7 +79,7 @@ class AdsDetail extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        sendedDate,
+                        village + ' ' + sendedDate.trim(),
                         style: TextStyle(
                             fontWeight: FontWeight.w300,
                             fontFamily: persianNumber,
@@ -117,38 +114,13 @@ class AdsDetail extends StatelessWidget {
                         ),
                       ),
                       Divider(),
-                      Padding(
-                        padding: EdgeInsets.symmetric(vertical: width / 55),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              village,
-                              textDirection: TextDirection.ltr,
-                              style: TextStyle(
-                                  fontSize: width / 26,
-                                  fontFamily: persianNumber,
-                                  fontWeight: FontWeight.w400),
-                            ),
-                            Text(
-                              'روستا',
-                              textDirection: TextDirection.rtl,
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w300,
-                                  fontSize: width / 27),
-                            )
-                          ],
-                        ),
-                      ),
-                      Divider(),
                       getAreaRealState(),
                     ],
                   ),
                 ),
               ),
               Padding(
-                padding: EdgeInsets.symmetric(
-                    horizontal: width / 20, vertical: height / 55),
+                padding: EdgeInsets.symmetric(horizontal: width / 20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
@@ -185,27 +157,32 @@ class AdsDetail extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                MaterialButton(
-                  height: width / 9,
-                  minWidth: width / 2.2,
-                  elevation: 0,
-                  color: Color.fromRGBO(250, 0, 0, 0.3),
+                TextButton(
                   onPressed: () async {
                     _makePhoneCall(this.phoneNumber);
                   },
-                  child: Text(
-                    'تماس تلفنی',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w400,
-                      fontSize: width / 26,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: Get.width / 5.6),
+                    child: Text(
+                      'تماس',
+                      style: TextStyle(
+                        color: Colors.black.withOpacity(0.8),
+                        fontWeight: FontWeight.w200,
+                      ),
+                    ),
+                  ),
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(
+                      Color.fromRGBO(10, 210, 71, 0.3),
+                    ),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5),
+                      ),
                     ),
                   ),
                 ),
-                MaterialButton(
-                  height: width / 9,
-                  minWidth: width / 2.2,
-                  elevation: 0,
-                  color: Color.fromRGBO(255, 0, 0, 0.3),
+                TextButton(
                   onPressed: () {
                     chatTargetUserController.saveUserId(userId);
                     chatMessageController.messageList.clear();
@@ -216,11 +193,24 @@ class AdsDetail extends StatelessWidget {
                             groupTitle: this.title),
                         transition: Transition.fadeIn);
                   },
-                  child: Text(
-                    'چت',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w400,
-                      fontSize: width / 26,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: Get.width / 5.6),
+                    child: Text(
+                      'چت',
+                      style: TextStyle(
+                        color: Colors.black.withOpacity(0.8),
+                        fontWeight: FontWeight.w200,
+                      ),
+                    ),
+                  ),
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(
+                      Color.fromRGBO(10, 210, 71, 0.3),
+                    ),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5),
+                      ),
                     ),
                   ),
                 ),
@@ -255,9 +245,18 @@ class AdsDetail extends StatelessWidget {
                 () => FullscreenImage(image: byteImage1!),
               );
             },
-            child: Image.memory(
-              base64Decode(byteImage1!),
-              fit: BoxFit.cover,
+            child: ShaderMask(
+              shaderCallback: (rect) {
+                return RadialGradient(
+                  colors: [Colors.transparent, Colors.white],
+                ).createShader(
+                    Rect.fromLTRB(-200, -200, Get.width / 2, Get.width / 2));
+              },
+              blendMode: BlendMode.dstIn,
+              child: Image.memory(
+                base64Decode(byteImage1!),
+                fit: BoxFit.cover,
+              ),
             ),
           ),
           GestureDetector(
@@ -266,9 +265,18 @@ class AdsDetail extends StatelessWidget {
                 () => FullscreenImage(image: byteImage2!),
               );
             },
-            child: Image.memory(
-              base64Decode(byteImage2!),
-              fit: BoxFit.cover,
+            child: ShaderMask(
+              shaderCallback: (rect) {
+                return RadialGradient(
+                  colors: [Colors.transparent, Colors.white],
+                ).createShader(
+                    Rect.fromLTRB(-200, -200, Get.width / 2, Get.width / 2));
+              },
+              blendMode: BlendMode.dstIn,
+              child: Image.memory(
+                base64Decode(byteImage2!),
+                fit: BoxFit.cover,
+              ),
             ),
           ),
         ],
@@ -282,21 +290,25 @@ class AdsDetail extends StatelessWidget {
         alignment: Alignment.topLeft,
         child: GestureDetector(
           onTap: () => Get.toNamed('/home'),
-          child: Row(
-            children: [
-              Icon(
-                CupertinoIcons.back,
-                size: 25,
-                color: Colors.black,
-              ),
-              Text(
-                'بازگشت',
-                style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 16),
-              )
-            ],
+          child: Container(
+            width: Get.width / 5,
+            color: Colors.transparent,
+            child: Row(
+              children: [
+                Icon(
+                  CupertinoIcons.back,
+                  size: 25,
+                  color: Colors.black,
+                ),
+                Text(
+                  'بازگشت',
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 16),
+                )
+              ],
+            ),
           ),
         ),
       ),

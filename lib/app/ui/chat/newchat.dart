@@ -31,7 +31,7 @@ class NewChat extends StatelessWidget with CacheManager {
 
   final double height = Get.height;
 
-  MessageProvider messageProvider = MessageProvider();
+  final MessageProvider messageProvider = MessageProvider();
 
   @override
   Widget build(BuildContext context) {

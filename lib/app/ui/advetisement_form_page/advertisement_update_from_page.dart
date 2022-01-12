@@ -47,7 +47,13 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
 
   @override
   initState() {
-    super.initState();
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      updateUploadImageController.leftImagebyteCode.value =
+          widget.ads.photo1 ?? '';
+
+      updateUploadImageController.rightImagebyteCode.value =
+          widget.ads.photo2 ?? '';
+    });
 
     titleTextFieldController = TextEditingController(text: widget.ads.title);
     priceTextFieldController =
@@ -58,6 +64,8 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
         TextEditingController(text: widget.ads.village);
     descriptionTextFieldController =
         TextEditingController(text: widget.ads.description);
+
+    super.initState();
   }
 
   @override
