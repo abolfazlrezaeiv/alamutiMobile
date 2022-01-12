@@ -13,8 +13,6 @@ import 'package:url_launcher/url_launcher.dart';
 
 // ignore: must_be_immutable
 class AdsDetail extends StatelessWidget {
-  var chatMessageController = Get.put(ChatMessageController());
-
   final String? byteImage1;
   final String? byteImage2;
   final String phoneNumber;
@@ -44,6 +42,8 @@ class AdsDetail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var chatTargetUserController = Get.put(ChatTargetUserController());
+    var chatMessageController = Get.put(ChatMessageController());
+
     return Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

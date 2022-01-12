@@ -1,7 +1,6 @@
 import 'package:alamuti/app/controller/chat_message_controller.dart';
 import 'package:alamuti/app/controller/chat_target_controller.dart';
 import 'package:alamuti/app/data/model/chatMessage.dart';
-import 'package:alamuti/app/data/provider/chat_message_provider.dart';
 import 'package:alamuti/app/data/provider/signalr_helper.dart';
 import 'package:alamuti/app/data/storage/cachemanager.dart';
 import 'package:alamuti/app/ui/chat/chatgroup.dart';
@@ -15,11 +14,11 @@ import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_9.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
-class NewChat extends StatefulWidget with CacheManager {
+class NewChat extends StatelessWidget with CacheManager {
   final String receiverId;
   final String? groupImage;
   final String groupTitle;
-  const NewChat(
+  NewChat(
       {Key? key,
       required this.groupTitle,
       required this.receiverId,
@@ -27,34 +26,20 @@ class NewChat extends StatefulWidget with CacheManager {
       : super(key: key);
 
   @override
-  State<NewChat> createState() => _NewChatState();
-}
+  Widget build(BuildContext context) {
+    TextEditingController textEditingController = TextEditingController();
+    late SignalRHelper signalHelper;
+    var _scrollcontroller = ScrollController();
 
-class _NewChatState extends State<NewChat> {
-  TextEditingController textEditingController = TextEditingController();
-  late SignalRHelper signalHelper;
-  var _scrollcontroller = ScrollController();
+    final GlobalKey<FormState> _formKey = GlobalKey();
 
-  var chatTargetUserController = Get.put(ChatTargetUserController());
+    var storage = GetStorage();
 
-  final GlobalKey<FormState> _formKey = GlobalKey();
-
-  var chatMessageController = Get.put(ChatMessageController());
-
-  var mp = MessageProvider();
-
-  var storage = GetStorage();
-
-  @override
-  void initState() {
-    super.initState();
     signalHelper = SignalRHelper();
     signalHelper.initiateConnection();
     signalHelper.reciveMessage();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+    var chatTargetUserController = Get.put(ChatTargetUserController());
+    var chatMessageController = Get.put(ChatMessageController());
     chatMessageController.messageList.listen((p0) {
       WidgetsBinding.instance?.addPostFrameCallback((_) {
         if (_scrollcontroller.hasClients) {
@@ -201,13 +186,13 @@ class _NewChatState extends State<NewChat> {
                                 signalHelper.sendMessage(
                                   receiverId:
                                       chatTargetUserController.userId.value,
-                                  grouptitle: widget.groupTitle,
+                                  grouptitle: groupTitle,
                                   senderId: storage.read(
                                     CacheManagerKey.USERID.toString(),
                                   ),
                                   message: textEditingController.text,
                                   groupname: null,
-                                  groupImage: widget.groupImage,
+                                  groupImage: groupImage,
                                 );
 
                                 chatMessageController.addMessage(ChatMessage(
@@ -227,6 +212,7 @@ class _NewChatState extends State<NewChat> {
                                         .position.maxScrollExtent);
                                   }
                                 });
+                                textEditingController.text = '';
                               }
                             },
                             child: Text(

@@ -13,6 +13,7 @@ class MyAlamutiPage extends StatelessWidget with CacheManager {
   @override
   Widget build(BuildContext context) {
     var auth = Get.put(AuthenticationManager());
+
     return Scaffold(
       appBar: AlamutiAppBar(
         appBar: AppBar(),

@@ -8,10 +8,9 @@ import 'package:get/get.dart';
 class UpdateRightPhotoCard extends StatelessWidget {
   UpdateRightPhotoCard({Key? key}) : super(key: key);
 
-  var updateUploadImageController = Get.put(UpdateUploadImageController());
-
   @override
   Widget build(BuildContext context) {
+    var updateUploadImageController = Get.put(UpdateUploadImageController());
     return Container(
       height: Get.width / 3,
       width: Get.width / 3,

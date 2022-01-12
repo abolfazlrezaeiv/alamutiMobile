@@ -6,22 +6,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class SubmitAdsCategory extends StatefulWidget {
+class SubmitAdsCategory extends StatelessWidget {
   SubmitAdsCategory({Key? key}) : super(key: key);
 
   @override
-  State<SubmitAdsCategory> createState() => _SubmitAdsCategoryState();
-}
-
-class _SubmitAdsCategoryState extends State<SubmitAdsCategory> {
-  AdsFormController adsFormController = Get.put(AdsFormController());
-
-  AdsFormState? adsItems = AdsFormState.FOOD;
-
-  String? dropDownChoice = 'میوه و مواد غذایی';
-
-  @override
   Widget build(BuildContext context) {
+    AdsFormController adsFormController = Get.put(AdsFormController());
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AlamutiAppBar(

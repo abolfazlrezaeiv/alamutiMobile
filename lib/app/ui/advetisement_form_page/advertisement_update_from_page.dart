@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:alamuti/app/controller/adsFormController.dart';
-import 'package:alamuti/app/controller/selectedTapController.dart';
 import 'package:alamuti/app/controller/update_image_advertisement.dart';
 import 'package:alamuti/app/data/model/Advertisement.dart';
 import 'package:alamuti/app/data/provider/advertisement_provider.dart';
@@ -28,12 +27,6 @@ class AdvertisementUpdateForm extends StatefulWidget {
 }
 
 class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
-  var adsFormController = Get.put(AdsFormController());
-
-  var screenController = Get.put(ScreenController());
-
-  var updateUploadImageController = Get.put(UpdateUploadImageController());
-
   final GlobalKey<FormState> _formKey = GlobalKey();
 
   var advertisementProvider = AdvertisementProvider();
@@ -68,13 +61,8 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
   var pickedFile;
 
   @override
-  void dispose() {
-    super.dispose();
-    updateUploadImageController.resetImageCounter();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    var updateUploadImageController = Get.put(UpdateUploadImageController());
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AlamutiAppBar(
@@ -256,8 +244,10 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
                   minimumSize: Size(88, 36),
                 ),
                 onPressed: () async {
+                  FocusScope.of(context).unfocus();
                   if (_formKey.currentState!.validate()) {
                     await advertisementProvider.updateAdvertisement(
+                      context: context,
                       area: areaTextFieldController.text.isEmpty
                           ? 0
                           : int.parse(areaTextFieldController.text),
@@ -272,8 +262,6 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
                       title: titleTextFieldController.text,
                       id: widget.ads.id,
                     );
-
-                    Get.toNamed('/myads');
                   }
                 },
                 child: Text(
@@ -327,6 +315,8 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
   }
 
   chooseImage() async {
+    var updateUploadImageController = Get.put(UpdateUploadImageController());
+
     var image = await ImagePicker().pickImage(
         source: ImageSource.gallery,
         imageQuality: 50,

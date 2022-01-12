@@ -16,6 +16,12 @@ class LoginViewModel extends GetxController {
     _authManager = Get.find();
   }
 
+  @override
+  void dispose() {
+    Get.delete<LoginProvider>();
+    super.dispose();
+  }
+
   Future<bool> loginUser(String password) async {
     final response =
         await _loginProvider.fetchLogin(LoginRequestModel(password: password));

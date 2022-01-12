@@ -1,9 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:alamuti/app/controller/adsFormController.dart';
 import 'package:alamuti/app/controller/price_with_symbol.dart';
-import 'package:alamuti/app/controller/selectedTapController.dart';
 import 'package:alamuti/app/controller/upload_image_controller.dart';
 import 'package:alamuti/app/data/provider/advertisement_provider.dart';
 import 'package:alamuti/app/ui/post_ads_category/submit_ads_category.dart';
@@ -18,39 +16,24 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
-class AdvertisementForm extends StatefulWidget {
-  @override
-  State<AdvertisementForm> createState() => _AdvertisementFormState();
-}
-
-class _AdvertisementFormState extends State<AdvertisementForm> {
-  var adsFormController = Get.put(AdsFormController());
-
-  var screenController = Get.put(ScreenController());
-
-  var uploadImageController = Get.put(UploadImageController());
-
-  var priceController = Get.put(PriceController());
-
-  final GlobalKey<FormState> _formKey = GlobalKey();
-
-  var priceTextFieldController = TextEditingController();
-
-  var titleTextFieldController = TextEditingController();
-
-  var vilageNameTextFieldController = TextEditingController();
-
-  var areaTextFieldController = TextEditingController();
-
-  var descriptionTextFieldController = TextEditingController();
-
-  var advertisementProvider = AdvertisementProvider();
-
-  Uint8List? logoBase64;
-  var pickedFile;
+class AdvertisementForm extends StatelessWidget {
+  final areaTextFieldController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    final GlobalKey<FormState> _formKey = GlobalKey();
+
+    var priceTextFieldController = TextEditingController();
+
+    var titleTextFieldController = TextEditingController();
+
+    var vilageNameTextFieldController = TextEditingController();
+
+    var descriptionTextFieldController = TextEditingController();
+
+    var advertisementProvider = AdvertisementProvider();
+    var uploadImageController = Get.put(UploadImageController());
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AlamutiAppBar(
@@ -232,8 +215,10 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
                   minimumSize: Size(88, 36),
                 ),
                 onPressed: () async {
+                  FocusScope.of(context).unfocus();
                   if (_formKey.currentState!.validate()) {
                     await advertisementProvider.postAdvertisement(
+                      context: context,
                       area: areaTextFieldController.text.isEmpty
                           ? 0
                           : int.parse(areaTextFieldController.text),
@@ -241,11 +226,10 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
                       description: descriptionTextFieldController.text,
                       photo1: uploadImageController.leftImagebyteCode.value,
                       photo2: uploadImageController.rightImagebyteCode.value,
-                      price: int.parse(priceTextFieldController.text),
+                      price: int.parse(
+                          priceTextFieldController.text.replaceAll(',', '')),
                       title: titleTextFieldController.text,
                     );
-                    screenController.selectedIndex.value = 0;
-                    Get.toNamed('/myads');
                   }
                 },
                 child: Text(
@@ -265,6 +249,8 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
   }
 
   Widget getAreaTextField() {
+    var adsFormController = Get.put(AdsFormController());
+
     return adsFormController.formState.value.toString() ==
             AdsFormState.REALSTATE.toString()
         ? Column(
@@ -300,6 +286,7 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
   }
 
   Widget getPersianPriceHint() {
+    var priceController = Get.put(PriceController());
     var commaAddedPrice = priceController.price.value
         .split('')
         .reversed
@@ -329,6 +316,8 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
   }
 
   String titleTextfiledPrefix() {
+    var adsFormController = Get.put(AdsFormController());
+
     var prifix;
     if (adsFormController.formState.value == AdsFormState.FOOD) {
       prifix = 'مثال : "گیلاس آتان"';
@@ -343,11 +332,13 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
   }
 
   chooseImage() async {
+    var uploadImageController = Get.put(UploadImageController());
+
     var image = await ImagePicker().pickImage(
         source: ImageSource.gallery,
-        imageQuality: 50,
-        maxHeight: 700,
-        maxWidth: 700);
+        imageQuality: 40,
+        maxHeight: 600,
+        maxWidth: 600);
     if (image != null) {
       final bytes = File(image.path).readAsBytesSync();
 
@@ -360,6 +351,8 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
   }
 
   Widget getPriceTextFieldTitle() {
+    var adsFormController = Get.put(AdsFormController());
+
     var title;
     if (adsFormController.formState.value == AdsFormState.FOOD) {
       title = 'قیمت';

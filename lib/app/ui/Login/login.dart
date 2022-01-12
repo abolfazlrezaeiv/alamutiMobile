@@ -21,7 +21,6 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   final GlobalKey<FormState> formKey = GlobalKey();
-  LoginViewModel _viewModel = Get.put(LoginViewModel());
 
   TextEditingController passwordCtr = TextEditingController();
   bool isPinCode = false;
@@ -57,6 +56,7 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
+    LoginViewModel _viewModel = Get.put(LoginViewModel());
     bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom == 0;
 
     return Scaffold(

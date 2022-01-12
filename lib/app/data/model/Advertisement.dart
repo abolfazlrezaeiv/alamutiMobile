@@ -41,19 +41,20 @@ class Advertisement {
     this.price = value;
   }
 
-  Advertisement.fromJson(Map<String, dynamic> json) {
-    id = json["id"];
-    title = json["title"];
-    description = json["description"];
-    price = json["price"];
-    photo1 = json["photo1"];
-    photo2 = json["photo2"];
-    datePosted = json["DaySended"];
-    adsType = json['adsType'];
-    area = json['area'];
-    userId = json['userId'];
-    phoneNumber = json['phoneNumber'];
-    published = json['published'];
-    village = json['village'];
+  factory Advertisement.fromJson(Map<String, dynamic> json) {
+    return Advertisement(
+        id: json["id"],
+        title: json["title"],
+        description: json["description"],
+        price: json["price"].toString(),
+        photo1: json["photo1"],
+        photo2: json["photo2"],
+        datePosted: json["daySended"],
+        adsType: json['adsType'],
+        area: json['area'].toString(),
+        userId: json['userId'],
+        phoneNumber: json['phoneNumber'],
+        published: json['published'],
+        village: json['village']);
   }
 }

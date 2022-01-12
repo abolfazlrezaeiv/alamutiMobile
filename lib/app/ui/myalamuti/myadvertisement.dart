@@ -2,9 +2,7 @@ import 'dart:convert';
 import 'package:alamuti/app/controller/ConnectionController.dart';
 import 'package:alamuti/app/controller/adsFormController.dart';
 import 'package:alamuti/app/controller/myAdvertisementController.dart';
-import 'package:alamuti/app/controller/selectedTapController.dart';
 import 'package:alamuti/app/controller/update_image_advertisement.dart';
-import 'package:alamuti/app/data/model/Advertisement.dart';
 import 'package:alamuti/app/data/provider/advertisement_provider.dart';
 import 'package:alamuti/app/ui/advetisement_form_page/advertisement_update_from_page.dart';
 import 'package:alamuti/app/ui/myalamuti/myalamuti_page.dart';
@@ -16,45 +14,28 @@ import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 
-class MyAdvertisement extends StatefulWidget {
-  const MyAdvertisement({
+class MyAdvertisement extends StatelessWidget {
+  MyAdvertisement({
     Key? key,
   }) : super(key: key);
-  @override
-  State<MyAdvertisement> createState() => _MyAdvertisementState();
-}
-
-class _MyAdvertisementState extends State<MyAdvertisement> {
-  var ap = AdvertisementProvider();
-
-  List<Advertisement> adsList = [];
-
-  var connectionController = Get.put(ConnectionController());
-
-  var screenController = Get.put(ScreenController());
-
-  var advertisementProvider = AdvertisementProvider();
-
-  var adsFormController = AdsFormController();
-
-  var myAdvertisementController = Get.put(MyAdvertisementController());
-
-  var updateUploadImageController = Get.put(UpdateUploadImageController());
-
-  @override
-  void initState() {
-    super.initState();
-    ap.getMyAds().then((value) {
-      setState(() {
-        adsList = value;
-      });
-    });
-
-    connectionController.checkConnectionStatus();
-  }
 
   @override
   Widget build(BuildContext context) {
+    var connectionController = Get.put(ConnectionController());
+
+    var ap = AdvertisementProvider();
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      ap.getUserAds(context);
+    });
+
+    var adsFormController = AdsFormController();
+
+    connectionController.checkConnectionStatus();
+
+    var myAdvertisementController = Get.put(MyAdvertisementController());
+
+    var updateUploadImageController = Get.put(UpdateUploadImageController());
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AlamutiAppBar(
@@ -71,15 +52,7 @@ class _MyAdvertisementState extends State<MyAdvertisement> {
           : Obx(
               () => RefreshIndicator(
                 onRefresh: () {
-                  return ap.getMyAds().then(
-                    (value) {
-                      setState(
-                        () {
-                          adsList = value;
-                        },
-                      );
-                    },
-                  );
+                  return ap.getUserAds(context);
                 },
                 child: ListView.builder(
                   itemCount: myAdvertisementController.adsList.length,
@@ -204,12 +177,19 @@ class _MyAdvertisementState extends State<MyAdvertisement> {
                                                           FontWeight.w300,
                                                       fontSize: 16,
                                                     ),
-                                                    content: Text(
-                                                      'آگهی به طور کامل حذف میشود و قابل بازگشت نیست',
-                                                      style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.w200,
-                                                        fontSize: 14,
+                                                    content: Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child: Text(
+                                                        'آگهی به طور کامل حذف میشود و قابل بازگشت نیست',
+                                                        textDirection:
+                                                            TextDirection.rtl,
+                                                        style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w200,
+                                                          fontSize: 14,
+                                                        ),
                                                       ),
                                                     ),
                                                     cancel: Padding(
@@ -238,14 +218,14 @@ class _MyAdvertisementState extends State<MyAdvertisement> {
                                                               5.0),
                                                       child: TextButton(
                                                           onPressed: () async {
-                                                            await advertisementProvider
-                                                                .deleteAds(
-                                                                    myAdvertisementController
-                                                                        .adsList[
-                                                                            index]
-                                                                        .id);
-
                                                             Get.back();
+                                                            await ap.deleteAds(
+                                                                id: myAdvertisementController
+                                                                    .adsList[
+                                                                        index]
+                                                                    .id,
+                                                                context:
+                                                                    context);
                                                           },
                                                           child: Text(
                                                             'حذف',

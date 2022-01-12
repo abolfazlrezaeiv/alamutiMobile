@@ -24,18 +24,15 @@ dependencies:
   flutter:
     sdk: flutter
   get_storage: ^2.0.3
-  equatable: ^2.0.3
-  file_picker: ^4.2.7
   image_picker: ^0.8.4+4
   signalr_core: ^1.1.1
   flutter_chat_bubble: ^2.0.0
   chips_choice_null_safety: ^2.0.4
   url_launcher: ^6.0.17
-  flutter_image_slideshow: any
+  flutter_image_slideshow: ^0.1.2
   connectivity: ^3.0.6
-  shared_preferences: ^2.0.8
-  flutter_sfsymbols: ^2.0.0
-  get: ^4.3.8
+  shared_preferences: ^2.0.11
+  get: ^4.6.1
   dio: ^4.0.4
 
   flutter_countdown_timer: ^4.1.0
@@ -120,9 +117,7 @@ flutter:
           weight: 800
         - asset: assets/fonts/IRANSansXFaNum-Black.ttf
           weight: 900
-    - family: sficonsets
-      fonts:
-        - asset: packages/flutter_sfsymbols/fonts/sficonsets.ttf
+    
   # fonts:
   #   - family: Schyler
   #     fonts:

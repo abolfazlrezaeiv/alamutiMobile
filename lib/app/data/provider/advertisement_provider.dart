@@ -1,6 +1,7 @@
 import 'package:alamuti/app/controller/adsFormController.dart';
 import 'package:alamuti/app/controller/advertisementController.dart';
 import 'package:alamuti/app/controller/myAdvertisementController.dart';
+import 'package:alamuti/app/controller/search_avoid_update.dart';
 import 'package:alamuti/app/controller/search_keyword.dart';
 import 'package:alamuti/app/data/model/Advertisement.dart';
 import 'package:alamuti/app/data/provider/token_provider.dart';
@@ -13,86 +14,40 @@ import 'package:get/utils.dart';
 
 class AdvertisementProvider {
   var tokenProvider = Get.put(TokenProvider());
+  List<Advertisement> advertisementFromApi = [];
 
-  var adsFormController = Get.put(AdsFormController());
+  Future<void> getUserAds(BuildContext context) async {
+    advertisementFromApi = [];
+    var myAdvertisementController = Get.put(MyAdvertisementController());
 
-  var listAdvertisementController = Get.put(ListAdvertisementController());
+    showLoaderDialog(context);
 
-  var myAdvertisementController = Get.put(MyAdvertisementController());
-
-  var searchKeywordController = Get.put(SearchKeywordController());
-
-  Future<void> deleteAds(int id) async {
-    for (var i = 0; i < myAdvertisementController.adsList.length; i++) {
-      if (myAdvertisementController.adsList[i].id == id) {
-        myAdvertisementController.adsList.removeAt(i);
-        break;
-      }
-    }
-
-    await tokenProvider.api.delete(baseUrl + 'Advertisement/$id');
-  }
-
-  Future<List<Advertisement>> getMyAds() async {
-    var response =
-        await tokenProvider.api.get(baseUrl + 'Advertisement/myalamuti/myAds');
-
-    var myMap = response.data;
-    List<Advertisement> myads = [];
-    myMap.forEach(
-      (element) {
-        myads.add(Advertisement(
-          id: element['id'],
-          title: element['title'],
-          description: element['description'],
-          datePosted: element['daySended'],
-          price: element['price'].toString(),
-          photo1: element['photo1'],
-          photo2: element['photo2'],
-          area: element['area'].toString(),
-          userId: element['userId'],
-          published: element['published'],
-          phoneNumber: element['phoneNumber'],
-          adsType: element['adsType'],
-          village: element['village'],
-        ));
-      },
-    );
-
-    myAdvertisementController.adsList.value = myads;
-    return myads;
-  }
-
-  Future<List<Advertisement>> search(String searchInput) async {
     var response = await tokenProvider.api
-        .get(baseUrl + 'Advertisement/search/$searchInput');
+        .get(baseUrl + 'Advertisement/myalamuti/myAds')
+        .whenComplete(() => Get.back());
 
-    var myMap = response.data;
-    List<Advertisement> myads = [];
+    if (response.statusCode == 200) {
+      response.data.forEach(
+        (element) {
+          advertisementFromApi.add(Advertisement.fromJson(element));
+        },
+      );
+      myAdvertisementController.adsList.value = advertisementFromApi;
+    } else {
+      var message =
+          'متاسفانه ارتباط ناموفق بود لطفا دوباره تلاش کنید یا ارتباط خود با اینترنت را بررسی کنید';
+      showStatusDialog(context: context, message: message);
+    }
+  }
 
-    myMap.forEach(
-      (element) {
-        myads.add(
-          Advertisement(
-            id: element['id'],
-            title: element['title'],
-            description: element['description'],
-            datePosted: element['daySended'],
-            price: element['price'].toString(),
-            photo1: element['photo1'],
-            photo2: element['photo2'],
-            area: element['area'].toString(),
-            userId: element['userId'],
-            published: element['published'],
-            phoneNumber: element['phoneNumber'],
-            village: element['village'],
-            adsType: element['adsType'],
-          ),
-        );
-      },
-    );
+  Future<void> search(
+      {required BuildContext context, required String searchInput}) async {
+    advertisementFromApi = [];
+    var searchKeywordController = Get.put(SearchKeywordController());
 
-    if (myads.length == 0) {
+    var listAdvertisementController = Get.put(ListAdvertisementController());
+
+    if (searchInput.length == 1 || searchInput.isEmpty) {
       Get.rawSnackbar(
           messageText: Text(
             'موردی یافت نشد',
@@ -100,60 +55,128 @@ class AdvertisementProvider {
             textDirection: TextDirection.rtl,
           ),
           backgroundColor: Colors.black);
-      return myads;
+      return;
     }
-    listAdvertisementController.adsList.value = myads;
-    searchKeywordController.keyword.value = searchInput;
-    return myads;
-  }
+    showLoaderDialog(context);
+    var response = await tokenProvider.api
+        .get(baseUrl + 'Advertisement/search/$searchInput')
+        .whenComplete(() => Get.back());
 
-  Future<void> getAll([String? adstype]) async {
-    var response;
-    if (adstype == null || adstype.isEmpty == true) {
-      response = await tokenProvider.api.get(
-        baseUrl + 'Advertisement',
+    if (response.statusCode == 200) {
+      response.data.forEach(
+        (element) {
+          advertisementFromApi.add(Advertisement.fromJson(element));
+        },
       );
     } else {
-      response = await tokenProvider.api.get(
-        baseUrl + 'Advertisement/filter/$adstype',
+      Get.defaultDialog(
+        radius: 5,
+        title: 'ارتباط برقرار نشد',
+        barrierDismissible: true,
+        titlePadding: EdgeInsets.all(20),
+        titleStyle: TextStyle(
+          fontWeight: FontWeight.w300,
+          fontSize: 16,
+        ),
+        content: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            'مشکلی در دریافت اطلاعات به وجود آمده لطفا دوباره تلاش کنید',
+            textDirection: TextDirection.rtl,
+            style: TextStyle(
+              fontWeight: FontWeight.w200,
+              fontSize: 14,
+            ),
+          ),
+        ),
       );
     }
 
-    var myMap = response.data;
-    List<Advertisement> myads = [];
-    myMap.forEach(
-      (element) {
-        myads.add(
-          Advertisement(
-            id: element['id'],
-            title: element['title'],
-            description: element['description'],
-            datePosted: element['daySended'],
-            price: element['price'].toString(),
-            photo1: element['photo1'],
-            photo2: element['photo2'],
-            area: element['area'].toString(),
-            userId: element['userId'],
-            adsType: element['adsType'],
-            phoneNumber: element['phoneNumber'],
-            village: element['village'],
-            published: element['published'],
+    if (advertisementFromApi.length == 0) {
+      Get.rawSnackbar(
+          messageText: Text(
+            'موردی یافت نشد',
+            style: TextStyle(color: Colors.white),
+            textDirection: TextDirection.rtl,
           ),
-        );
-      },
-    );
+          backgroundColor: Colors.black);
+      return;
+    }
+    listAdvertisementController.adsList.value = advertisementFromApi;
+    searchKeywordController.keyword.value = searchInput;
+  }
 
-    listAdvertisementController.adsList.value = myads;
+  Future<void> getAll({required BuildContext context, String? adstype}) async {
+    advertisementFromApi = [];
+    var listAdvertisementController = Get.put(ListAdvertisementController());
+
+    var checkIsSearchController = Get.put(CheckIsSearchedController());
+
+    if (checkIsSearchController.isSearchResult.value == true) {
+      return;
+    }
+
+    Response response;
+
+    showLoaderDialog(context);
+
+    if (adstype == null || adstype.isEmpty == true) {
+      response = await tokenProvider.api
+          .get(
+            baseUrl + 'Advertisement',
+          )
+          .whenComplete(() => Get.back());
+    } else {
+      response = await tokenProvider.api
+          .get(
+            baseUrl + 'Advertisement/filter/$adstype',
+          )
+          .whenComplete(() => Get.back());
+    }
+    if (response.statusCode == 200) {
+      response.data.forEach(
+        (element) {
+          advertisementFromApi.add(Advertisement.fromJson(element));
+        },
+      );
+    } else {
+      Get.defaultDialog(
+        radius: 5,
+        title: 'ارتباط برقرار نشد',
+        barrierDismissible: true,
+        titlePadding: EdgeInsets.all(20),
+        titleStyle: TextStyle(
+          fontWeight: FontWeight.w300,
+          fontSize: 16,
+        ),
+        content: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            'مشکلی در دریافت اطلاعات به وجود آمده لطفا دوباره تلاش کنید',
+            textDirection: TextDirection.rtl,
+            style: TextStyle(
+              fontWeight: FontWeight.w200,
+              fontSize: 14,
+            ),
+          ),
+        ),
+      );
+    }
+
+    listAdvertisementController.adsList.value = advertisementFromApi;
   }
 
   Future<void> postAdvertisement(
-      {required String title,
+      {required BuildContext context,
+      required String title,
       required String description,
       required int price,
       required int area,
       required String photo1,
       required String village,
       required String photo2}) async {
+    var adsFormController = Get.put(AdsFormController());
+
     var formData = FormData.fromMap({
       'title': title,
       'description': description,
@@ -164,15 +187,53 @@ class AdvertisementProvider {
       'village': village,
       'adsType': adsFormController.formState.value.toString().toLowerCase(),
     });
+    showLoaderDialog(context);
+    var response = await tokenProvider.api
+        .post(
+          baseUrl + 'Advertisement',
+          data: formData,
+        )
+        .whenComplete(() => Get.back());
 
-    await tokenProvider.api.post(
-      baseUrl + 'Advertisement',
-      data: formData,
-    );
+    if (response.statusCode == 200) {
+      Get.toNamed('/myads');
+
+      var message = 'آگهی شما با موفقیت ارسال شد و پس از تایید منتشر میشود';
+      showStatusDialog(context: context, message: message);
+    } else {
+      var message =
+          'متاسفانه ارسال ناموفق بود لطفا دوباره تلاش کنید یا ارتباط خود با اینترنت را بررسی کنید';
+      showStatusDialog(context: context, message: message);
+    }
   }
 
-  updateAdvertisement(
-      {required String title,
+  Future<void> deleteAds(
+      {required BuildContext context, required int id}) async {
+    var myAdvertisementController = Get.put(MyAdvertisementController());
+
+    for (int i = 0; i < myAdvertisementController.adsList.length; i++) {
+      if (myAdvertisementController.adsList[i].id == id) {
+        myAdvertisementController.adsList.removeAt(i);
+        break;
+      }
+    }
+    showLoaderDialog(context);
+    Response response = await tokenProvider.api
+        .delete(baseUrl + 'Advertisement/$id')
+        .whenComplete(() => Get.back());
+
+    if (response.statusCode == 200) {
+      var message = 'آگهی با موفقیت حذف شد';
+      showStatusDialog(context: context, message: message);
+    } else {
+      var message = 'حذف آگهی ناموفق بود لطفا دوباره تلاش کنید';
+      showStatusDialog(context: context, message: message);
+    }
+  }
+
+  Future<void> updateAdvertisement(
+      {required BuildContext context,
+      required String title,
       required int id,
       required String description,
       required int price,
@@ -180,6 +241,8 @@ class AdvertisementProvider {
       required String photo1,
       required String village,
       required String photo2}) async {
+    var adsFormController = Get.put(AdsFormController());
+
     var formData = FormData.fromMap({
       'id': id,
       'title': title,
@@ -191,9 +254,88 @@ class AdvertisementProvider {
       'village': village,
       'adsType': adsFormController.formState.value.toString().toLowerCase(),
     });
-    await tokenProvider.api.put(
-      baseUrl + 'Advertisement',
-      data: formData,
+
+    showLoaderDialog(context);
+
+    var response = await tokenProvider.api
+        .put(
+          baseUrl + 'Advertisement',
+          data: formData,
+        )
+        .whenComplete(() => Get.back());
+
+    if (response.statusCode == 200) {
+      Get.toNamed('/myads');
+
+      var message =
+          'تغییرات شما با موفقیت ذخیره شدند و آگهی شما پس از بررسی مجدد منتشر میشود.';
+      showStatusDialog(context: context, message: message);
+    } else {
+      var message =
+          'متاسفانه ارسال ناموفق بود لطفا دوباره تلاش کنید یا ارتباط خود با اینترنت را بررسی کنید';
+      showStatusDialog(context: context, message: message);
+    }
+  }
+
+  showLoaderDialog(context) {
+    AlertDialog alert = AlertDialog(
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      content: new Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          CircularProgressIndicator(
+            color: Colors.greenAccent,
+          ),
+        ],
+      ),
+    );
+    showDialog(
+      barrierColor: Colors.transparent,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return alert;
+      },
+      context: context,
+    );
+  }
+
+  showStatusDialog({required context, required String message}) {
+    AlertDialog alert = AlertDialog(
+      backgroundColor: Colors.white,
+      elevation: 0,
+      content: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Text(
+          message,
+          textDirection: TextDirection.rtl,
+          style: TextStyle(
+            fontWeight: FontWeight.w300,
+            fontSize: 15,
+          ),
+        ),
+      ),
+      actions: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: TextButton(
+              onPressed: () {
+                Get.back(closeOverlays: true);
+              },
+              child: Text(
+                'ادامه',
+                style: TextStyle(color: Colors.greenAccent),
+              )),
+        )
+      ],
+    );
+    showDialog(
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return alert;
+      },
+      context: context,
     );
   }
 }

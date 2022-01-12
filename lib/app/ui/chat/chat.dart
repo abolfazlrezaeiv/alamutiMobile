@@ -1,6 +1,4 @@
-import 'package:alamuti/app/controller/chat_group_controller.dart';
 import 'package:alamuti/app/controller/chat_message_controller.dart';
-import 'package:alamuti/app/controller/chat_target_controller.dart';
 import 'package:alamuti/app/data/provider/chat_message_provider.dart';
 import 'package:alamuti/app/data/provider/signalr_helper.dart';
 import 'package:alamuti/app/data/storage/cachemanager.dart';
@@ -15,7 +13,7 @@ import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_9.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
-class Chat extends StatefulWidget with CacheManager {
+class Chat extends StatelessWidget with CacheManager {
   final String groupname;
 
   final String groupTitle;
@@ -30,48 +28,25 @@ class Chat extends StatefulWidget with CacheManager {
   }) : super(key: key);
 
   @override
-  State<Chat> createState() => _ChatState();
-}
-
-class _ChatState extends State<Chat> {
-  var textEditingController = TextEditingController();
-
-  var signalHelper = SignalRHelper();
-
-  var _scrollcontroller = ScrollController();
-
-  var chatTargetUserController = Get.put(ChatTargetUserController());
-
-  final GlobalKey<FormState> _formKey = GlobalKey();
-
-  var chatMessageController = Get.put(ChatMessageController());
-
-  var chatGroupController = Get.put(ChatGroupController());
-
-  var mp = MessageProvider();
-
-  var storage = GetStorage();
-
-  bool isResponse = false;
-
-  @override
-  void initState() {
-    super.initState();
-    signalHelper.initiateConnection();
-    signalHelper.reciveMessage();
-    signalHelper.createGroup(
-      widget.groupname,
-    );
-
-    mp.getGroupMessages(widget.groupname);
-  }
-
-  @override
   Widget build(BuildContext context) {
+    var textEditingController = TextEditingController();
+
+    var signalHelper = SignalRHelper();
+
+    var _scrollcontroller = ScrollController();
+
+    final GlobalKey<FormState> _formKey = GlobalKey();
+
+    var mp = MessageProvider();
+    mp.getGroupMessages(groupname);
+    var storage = GetStorage();
+    var isAlamutiMessage = groupTitle == 'الموتی';
+    var chatMessageController = Get.put(ChatMessageController());
+
     signalHelper.initiateConnection();
     signalHelper.reciveMessage();
     signalHelper.createGroup(
-      widget.groupname,
+      groupname,
     );
 
     chatMessageController.messageList.listen((p0) {
@@ -194,63 +169,66 @@ class _ChatState extends State<Chat> {
                     },
                   )),
             ),
-            Form(
-              key: _formKey,
-              child: Container(
-                color: Colors.grey.withOpacity(0.1),
-                // height: 60,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                          child: AlamutiTextField(
-                        textEditingController: textEditingController,
-                        isNumber: false,
-                        isPrice: false,
-                        isChatTextField: true,
-                        hasCharacterLimitation: false,
-                        prefix: '',
-                      )),
-                      TextButton(
-                          onPressed: () {
-                            if (_formKey.currentState!.validate()) {
-                              var target = widget.groupname
-                                  .replaceAll(
-                                      storage.read(
-                                        CacheManagerKey.USERID.toString(),
-                                      ),
-                                      '')
-                                  .trimRight();
+            isAlamutiMessage
+                ? Container()
+                : Form(
+                    key: _formKey,
+                    child: Container(
+                      color: Colors.grey.withOpacity(0.1),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          children: [
+                            Expanded(
+                                child: AlamutiTextField(
+                              textEditingController: textEditingController,
+                              isNumber: false,
+                              isPrice: false,
+                              isChatTextField: true,
+                              hasCharacterLimitation: false,
+                              prefix: '',
+                            )),
+                            TextButton(
+                                onPressed: () {
+                                  if (_formKey.currentState!.validate()) {
+                                    var target = groupname
+                                        .replaceAll(
+                                            storage.read(
+                                              CacheManagerKey.USERID.toString(),
+                                            ),
+                                            '')
+                                        .trimRight();
 
-                              signalHelper.sendMessage(
-                                  receiverId: target,
-                                  senderId: storage.read(
-                                    CacheManagerKey.USERID.toString(),
-                                  ),
-                                  message: textEditingController.text,
-                                  groupname: widget.groupname,
-                                  groupImage: widget.groupImage,
-                                  grouptitle: widget.groupTitle);
+                                    signalHelper.sendMessage(
+                                        receiverId: target,
+                                        senderId: storage.read(
+                                          CacheManagerKey.USERID.toString(),
+                                        ),
+                                        message: textEditingController.text,
+                                        groupname: groupname,
+                                        groupImage: groupImage,
+                                        grouptitle: groupTitle);
 
-                              WidgetsBinding.instance
-                                  ?.addPostFrameCallback((_) {
-                                if (_scrollcontroller.hasClients) {
-                                  _scrollcontroller.jumpTo(_scrollcontroller
-                                      .position.maxScrollExtent);
-                                }
-                              });
-                            }
-                          },
-                          child: Text(
-                            'ارسال',
-                            style: TextStyle(color: Colors.greenAccent),
-                          ))
-                    ],
-                  ),
-                ),
-              ),
-            )
+                                    WidgetsBinding.instance
+                                        ?.addPostFrameCallback((_) {
+                                      if (_scrollcontroller.hasClients) {
+                                        _scrollcontroller.jumpTo(
+                                            _scrollcontroller
+                                                .position.maxScrollExtent);
+                                      }
+                                    });
+                                    textEditingController.text = '';
+                                  }
+                                },
+                                child: Text(
+                                  'ارسال',
+                                  style: TextStyle(color: Colors.greenAccent),
+                                ))
+                          ],
+                        ),
+                      ),
+                    ),
+                  )
           ],
         ),
       ),

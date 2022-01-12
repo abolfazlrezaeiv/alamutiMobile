@@ -1,11 +1,8 @@
 import 'dart:convert';
 import 'package:alamuti/app/controller/chat_group_controller.dart';
-import 'package:alamuti/app/controller/chat_message_controller.dart';
-import 'package:alamuti/app/controller/chat_target_controller.dart';
 import 'package:alamuti/app/controller/group_list_index.dart';
-import 'package:alamuti/app/controller/last_message_sender_controller.dart';
 import 'package:alamuti/app/controller/new_message_controller.dart';
-import 'package:alamuti/app/controller/senderController.dart';
+import 'package:alamuti/app/controller/selectedTapController.dart';
 import 'package:alamuti/app/data/model/chatgroup.dart';
 import 'package:alamuti/app/data/provider/chat_message_provider.dart';
 import 'package:alamuti/app/data/provider/signalr_helper.dart';
@@ -19,72 +16,29 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
-class ChatGroups extends StatefulWidget with CacheManager {
-  const ChatGroups({Key? key}) : super(key: key);
-
-  @override
-  State<ChatGroups> createState() => _ChatGroupsState();
-}
-
-class _ChatGroupsState extends State<ChatGroups> with CacheManager {
-  var textEditingController = TextEditingController();
-  late SignalRHelper signalHelper;
-  var _scrollcontroller = ScrollController();
-
-  var chatTargetUserController = Get.put(ChatTargetUserController());
-
-  var chatMessageController = Get.put(ChatMessageController());
-
-  var chatGroupController = Get.put(ChatGroupController());
-
+class ChatGroups extends StatelessWidget with CacheManager {
+  ChatGroups({Key? key}) : super(key: key);
   var newMessageController = Get.put(NewMessageController());
-
-  var senderController = Get.put(SenderController());
-
-  var lastMessageSenderIDController = Get.put(LastMessageSenderIDController());
-
   var indexGroupList = Get.put(IndexGroupList());
+  var chatGroupController = Get.put(ChatGroupController());
+  var screenController = Get.put(ScreenController());
 
-  var storage = GetStorage();
-  var groupIndex = 0;
-
+  SignalRHelper signalHelper = SignalRHelper();
   var mp = MessageProvider();
-
-  List<ChatGroup> groupList = [];
-
-  getGroups() async {
-    return await mp.getGroups();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    signalHelper = SignalRHelper();
-    signalHelper.initiateConnection();
-    signalHelper.reciveMessage();
-  }
-
+  var storage = GetStorage();
   @override
   Widget build(BuildContext context) {
+    signalHelper.initiateConnection();
+    signalHelper.reciveMessage();
+    var _scrollcontroller = ScrollController();
+
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      screenController.selectedIndex.value = 1;
+    });
+
     signalHelper.createGroup(
       storage.read(CacheManagerKey.USERID.toString()),
     );
-    chatMessageController.messageList.listen((p0) {
-      WidgetsBinding.instance?.addPostFrameCallback((_) {
-        if (_scrollcontroller.hasClients) {
-          _scrollcontroller.jumpTo(_scrollcontroller.position.maxScrollExtent);
-        }
-      });
-    });
-
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
-      signalHelper.createGroup(
-        storage.read(CacheManagerKey.USERID.toString()),
-      );
-      if (_scrollcontroller.hasClients) {
-        _scrollcontroller.jumpTo(_scrollcontroller.position.maxScrollExtent);
-      }
-    });
 
     return Scaffold(
       appBar: AlamutiAppBar(
@@ -95,11 +49,13 @@ class _ChatGroupsState extends State<ChatGroups> with CacheManager {
       ),
       bottomNavigationBar: AlamutBottomNavBar(),
       body: FutureBuilder(
-        future: getGroups(),
+        future: mp.getGroups(),
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
           if (!snapshot.hasData) {
             return Center(
-              child: CircularProgressIndicator(),
+              child: CircularProgressIndicator(
+                color: Colors.greenAccent,
+              ),
             );
           } else {
             return Obx(
@@ -120,26 +76,30 @@ class _ChatGroupsState extends State<ChatGroups> with CacheManager {
                           fontWeight: FontWeight.w300,
                           fontSize: 16,
                         ),
-                        content: Text(
-                          'پیامهای مربوط به این کاربر حذف میشوند',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w200,
-                            fontSize: 14,
+                        content: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            'پیامهای مربوط به این کاربر حذف میشوند',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w200,
+                              fontSize: 14,
+                            ),
                           ),
                         ),
                         cancel: Padding(
                           padding: const EdgeInsets.all(5.0),
                           child: TextButton(
-                              onPressed: () {
-                                Get.back();
-                              },
-                              child: Text(
-                                'انصراف',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w300,
-                                    fontSize: 14,
-                                    color: Colors.green),
-                              )),
+                            onPressed: () {
+                              Get.back();
+                            },
+                            child: Text(
+                              'انصراف',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w300,
+                                  fontSize: 14,
+                                  color: Colors.green),
+                            ),
+                          ),
                         ),
                         confirm: Padding(
                           padding: const EdgeInsets.all(5.0),
@@ -255,6 +215,8 @@ class _ChatGroupsState extends State<ChatGroups> with CacheManager {
                                                         chatGroupController
                                                             .groupList[index]
                                                             .groupImage),
+                                                    filterQuality:
+                                                        FilterQuality.low,
                                                     fit: BoxFit.cover,
                                                     width: Get.width / 7,
                                                     height: Get.width / 7,
@@ -307,21 +269,45 @@ class _ChatGroupsState extends State<ChatGroups> with CacheManager {
                               ? Padding(
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 20.0, vertical: 40),
-                                  child: Container(
-                                    width: 18,
-                                    height: 18,
-                                    decoration: BoxDecoration(
-                                      color: Colors.green.withOpacity(0.25),
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: Padding(
-                                      padding: EdgeInsets.all(2),
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: Colors.red,
+                                  child: Obx(
+                                    () => Container(
+                                      width: 18,
+                                      height: 18,
+                                      decoration: BoxDecoration(
+                                        color: (chatGroupController
+                                                        .groupList[index]
+                                                        .isChecked ==
+                                                    false &&
+                                                chatGroupController
+                                                        .groupList[index]
+                                                        .lastMessage
+                                                        .sender !=
+                                                    (getUserId()))
+                                            ? Colors.green.withOpacity(0.25)
+                                            : Colors.transparent,
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: Padding(
+                                        padding: EdgeInsets.all(2),
+                                        child: Obx(
+                                          () => Container(
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: (chatGroupController
+                                                              .groupList[index]
+                                                              .isChecked ==
+                                                          false &&
+                                                      chatGroupController
+                                                              .groupList[index]
+                                                              .lastMessage
+                                                              .sender !=
+                                                          (getUserId()))
+                                                  ? Colors.red
+                                                  : Colors.transparent,
+                                            ),
+                                            child: Container(),
+                                          ),
                                         ),
-                                        child: Container(),
                                       ),
                                     ),
                                   ),

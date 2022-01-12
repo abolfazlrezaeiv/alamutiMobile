@@ -3,16 +3,11 @@ import 'package:alamuti/app/ui/onboard/onboard.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class SplashScreen extends StatefulWidget {
+class SplashScreen extends StatelessWidget {
   const SplashScreen({Key? key}) : super(key: key);
 
-  @override
-  State<SplashScreen> createState() => _SplashScreenState();
-}
-
-class _SplashScreenState extends State<SplashScreen> {
   Future<void> initializeSettings() async {
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(Duration(seconds: 3));
   }
 
   @override
@@ -41,10 +36,10 @@ Scaffold errorView(AsyncSnapshot<Object?> snapshot) {
 // ignore: must_be_immutable
 class WaitingSplashScreen extends StatelessWidget {
   WaitingSplashScreen({Key? key}) : super(key: key);
-  ConnectionController connectionController = Get.put(ConnectionController());
 
   @override
   Widget build(BuildContext context) {
+    ConnectionController connectionController = Get.put(ConnectionController());
     connectionController.checkConnectionStatus();
     return Scaffold(
         body: Stack(

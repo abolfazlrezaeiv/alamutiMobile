@@ -9,7 +9,7 @@ class AlamutiTextField extends StatelessWidget {
   final bool hasCharacterLimitation;
   final bool isNumber;
   late bool isChatTextField;
-  var priceController = Get.put(PriceController());
+
   bool isPrice = false;
   final String prefix;
   AlamutiTextField(
@@ -24,6 +24,7 @@ class AlamutiTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var priceController = Get.put(PriceController());
     return Container(
       child: Directionality(
         textDirection: TextDirection.rtl,
@@ -63,7 +64,7 @@ class AlamutiTextField extends StatelessWidget {
           keyboardType: isNumber ? TextInputType.number : TextInputType.name,
           textAlign: TextAlign.start,
           style: TextStyle(
-              backgroundColor: Colors.white,
+              backgroundColor: Colors.transparent,
               fontSize: Get.width / 27,
               fontFamily: persianNumber,
               fontWeight: FontWeight.w300),
@@ -107,6 +108,8 @@ class AlamutiTextField extends StatelessWidget {
   }
 
   String getPersianPriceHint(String text) {
+    var priceController = Get.put(PriceController());
+
     var commaAddedPrice = priceController.price.value
         .split('')
         .reversed
