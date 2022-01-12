@@ -3,7 +3,7 @@ import 'package:alamuti/app/data/model/register_request_model.dart';
 import 'package:alamuti/app/data/provider/login_provider.dart';
 import 'package:get/get.dart';
 
-import 'authentication_manager.dart';
+import 'authentication_manager_controller.dart';
 
 class LoginViewModel extends GetxController {
   late final LoginProvider _loginProvider;
@@ -14,12 +14,6 @@ class LoginViewModel extends GetxController {
     super.onInit();
     _loginProvider = Get.put(LoginProvider());
     _authManager = Get.find();
-  }
-
-  @override
-  void dispose() {
-    Get.delete<LoginProvider>();
-    super.dispose();
   }
 
   Future<bool> loginUser(String password) async {

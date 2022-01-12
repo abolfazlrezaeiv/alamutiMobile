@@ -1,14 +1,12 @@
 import 'dart:convert';
 import 'package:alamuti/app/controller/chat_group_controller.dart';
-import 'package:alamuti/app/controller/group_list_index.dart';
 import 'package:alamuti/app/controller/new_message_controller.dart';
-import 'package:alamuti/app/controller/selectedTapController.dart';
+import 'package:alamuti/app/controller/selected_tap_controller.dart';
 import 'package:alamuti/app/data/model/chatgroup.dart';
 import 'package:alamuti/app/data/provider/chat_message_provider.dart';
 import 'package:alamuti/app/data/provider/signalr_helper.dart';
-import 'package:alamuti/app/data/storage/cachemanager.dart';
+import 'package:alamuti/app/data/storage/cache_manager.dart';
 import 'package:alamuti/app/ui/chat/chat.dart';
-import 'package:alamuti/app/ui/home/home_page.dart';
 import 'package:alamuti/app/ui/theme.dart';
 import 'package:alamuti/app/ui/widgets/alamuti_appbar.dart';
 import 'package:alamuti/app/ui/widgets/bottom_navbar.dart';
@@ -18,38 +16,51 @@ import 'package:get_storage/get_storage.dart';
 
 class ChatGroups extends StatelessWidget with CacheManager {
   ChatGroups({Key? key}) : super(key: key);
-  var newMessageController = Get.put(NewMessageController());
-  var indexGroupList = Get.put(IndexGroupList());
-  var chatGroupController = Get.put(ChatGroupController());
-  var screenController = Get.put(ScreenController());
 
-  SignalRHelper signalHelper = SignalRHelper();
-  var mp = MessageProvider();
-  var storage = GetStorage();
+  final NewMessageController newMessageController = Get.find();
+
+  final ChatGroupController chatGroupController = Get.find();
+
+  final ScreenController screenController = Get.find();
+
+  final SignalRHelper signalHelper = SignalRHelper();
+
+  final MessageProvider messageProvider = MessageProvider();
+
+  final GetStorage storage = GetStorage();
+
+  final ScrollController _scrollcontroller = ScrollController();
+
+  final double width = Get.width;
+
+  final double height = Get.height;
+
   @override
   Widget build(BuildContext context) {
-    signalHelper.initiateConnection();
-    signalHelper.reciveMessage();
-    var _scrollcontroller = ScrollController();
-
     WidgetsBinding.instance?.addPostFrameCallback((_) {
       screenController.selectedIndex.value = 1;
     });
-
+    signalHelper.initiateConnection();
+    signalHelper.reciveMessage();
     signalHelper.createGroup(
       storage.read(CacheManagerKey.USERID.toString()),
     );
+
+    chatGroupController.groupList.value.forEach((element) {
+      signalHelper.createGroup(
+        element.name,
+      );
+    });
 
     return Scaffold(
       appBar: AlamutiAppBar(
         appBar: AppBar(),
         title: 'چت الموتی',
-        backwidget: HomePage(),
         hasBackButton: false,
       ),
       bottomNavigationBar: AlamutBottomNavBar(),
       body: FutureBuilder(
-        future: mp.getGroups(),
+        future: messageProvider.getGroups(),
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
           if (!snapshot.hasData) {
             return Center(
@@ -63,8 +74,6 @@ class ChatGroups extends StatelessWidget with CacheManager {
                 controller: _scrollcontroller,
                 itemCount: chatGroupController.groupList.length,
                 itemBuilder: (context, index) {
-                  indexGroupList.changeIndex(index);
-
                   return GestureDetector(
                     onLongPress: () {
                       Get.defaultDialog(
@@ -105,7 +114,7 @@ class ChatGroups extends StatelessWidget with CacheManager {
                           padding: const EdgeInsets.all(5.0),
                           child: TextButton(
                               onPressed: () async {
-                                await mp.deleteMessageGroup(
+                                await messageProvider.deleteMessageGroup(
                                   groupName:
                                       chatGroupController.groupList[index].name,
                                 );
@@ -122,17 +131,16 @@ class ChatGroups extends StatelessWidget with CacheManager {
                       );
                     },
                     onTap: () async {
+                      newMessageController.haveNewMessage.value = false;
                       if (await getUserId() !=
                           chatGroupController
                               .groupList[index].lastMessage.sender) {
-                        mp.updateGroupStatus(
+                        messageProvider.updateGroupStatus(
                             name: chatGroupController.groupList[index].name,
                             id: chatGroupController.groupList[index].id,
                             title: chatGroupController.groupList[index].title,
                             isChecked: true);
                       }
-
-                      newMessageController.haveNewMessage.value = false;
 
                       chatGroupController.groupList.forEach(
                         (element) {
@@ -141,15 +149,15 @@ class ChatGroups extends StatelessWidget with CacheManager {
                       );
 
                       Get.to(
-                          () => Chat(
-                                groupname:
-                                    chatGroupController.groupList[index].name,
-                                groupTitle:
-                                    chatGroupController.groupList[index].title,
-                                groupImage: chatGroupController
-                                    .groupList[index].groupImage,
-                              ),
-                          transition: Transition.fadeIn);
+                        () => Chat(
+                          groupname: chatGroupController.groupList[index].name,
+                          groupTitle:
+                              chatGroupController.groupList[index].title,
+                          groupImage:
+                              chatGroupController.groupList[index].groupImage,
+                        ),
+                        transition: Transition.fadeIn,
+                      );
                     },
                     child: Obx(
                       () => Stack(
@@ -159,7 +167,7 @@ class ChatGroups extends StatelessWidget with CacheManager {
                             () => Card(
                               color: Colors.white,
                               child: Padding(
-                                padding: EdgeInsets.all(Get.height / 50),
+                                padding: EdgeInsets.all(height / 50),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
@@ -184,7 +192,7 @@ class ChatGroups extends StatelessWidget with CacheManager {
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                     SizedBox(
-                                      height: Get.height / 80,
+                                      height: height / 80,
                                     ),
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.end,
@@ -199,7 +207,7 @@ class ChatGroups extends StatelessWidget with CacheManager {
                                               fontSize: 12),
                                         ),
                                         SizedBox(
-                                          width: Get.width / 30,
+                                          width: width / 30,
                                         ),
                                         FittedBox(
                                           fit: BoxFit.fill,
@@ -218,8 +226,8 @@ class ChatGroups extends StatelessWidget with CacheManager {
                                                     filterQuality:
                                                         FilterQuality.low,
                                                     fit: BoxFit.cover,
-                                                    width: Get.width / 7,
-                                                    height: Get.width / 7,
+                                                    width: width / 7,
+                                                    height: width / 7,
                                                   )
                                                 : (chatGroupController
                                                             .groupList[index]
@@ -228,14 +236,14 @@ class ChatGroups extends StatelessWidget with CacheManager {
                                                     ? Image.asset(
                                                         'assets/logo/logo.png',
                                                         fit: BoxFit.fitWidth,
-                                                        width: Get.width / 7,
-                                                        height: Get.width / 7,
+                                                        width: width / 7,
+                                                        height: width / 7,
                                                       )
                                                     : Image.asset(
                                                         'assets/logo/no-image.png',
                                                         fit: BoxFit.cover,
-                                                        width: Get.width / 7,
-                                                        height: Get.width / 7,
+                                                        width: width / 7,
+                                                        height: width / 7,
                                                       )),
                                           ),
                                         )

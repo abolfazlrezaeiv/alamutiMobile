@@ -1,22 +1,20 @@
-import 'package:alamuti/app/controller/adsFormController.dart';
-import 'package:alamuti/app/ui/home/home_page.dart';
+import 'package:alamuti/app/controller/ads_form_controller.dart';
 import 'package:alamuti/app/ui/widgets/alamuti_appbar.dart';
 import 'package:alamuti/app/ui/widgets/bottom_navbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class SubmitAdsCategory extends StatelessWidget {
-  SubmitAdsCategory({Key? key}) : super(key: key);
+class CategorySubmitAds extends StatelessWidget {
+  CategorySubmitAds({Key? key}) : super(key: key);
+  final AdvertisementTypeController advertisementTypeController = Get.find();
 
   @override
   Widget build(BuildContext context) {
-    AdsFormController adsFormController = Get.put(AdsFormController());
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AlamutiAppBar(
         appBar: AppBar(),
-        backwidget: HomePage(),
         title: 'انتخاب دسته بندی',
         hasBackButton: false,
       ),
@@ -25,7 +23,7 @@ class SubmitAdsCategory extends StatelessWidget {
         children: [
           GestureDetector(
             onTap: () {
-              adsFormController.formState.value = AdsFormState.FOOD;
+              advertisementTypeController.formState.value = AdsFormState.FOOD;
               Get.toNamed('/ads_form');
             },
             child: Container(
@@ -53,7 +51,7 @@ class SubmitAdsCategory extends StatelessWidget {
           ),
           GestureDetector(
             onTap: () {
-              adsFormController.formState.value = AdsFormState.JOB;
+              advertisementTypeController.formState.value = AdsFormState.JOB;
               Get.toNamed('/ads_form');
             },
             child: Container(
@@ -77,7 +75,8 @@ class SubmitAdsCategory extends StatelessWidget {
           ),
           GestureDetector(
             onTap: () {
-              adsFormController.formState.value = AdsFormState.REALSTATE;
+              advertisementTypeController.formState.value =
+                  AdsFormState.REALSTATE;
               Get.toNamed('/ads_form');
             },
             child: Container(

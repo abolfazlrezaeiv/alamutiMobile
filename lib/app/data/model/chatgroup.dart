@@ -1,4 +1,4 @@
-import 'package:alamuti/app/data/model/chatMessage.dart';
+import 'package:alamuti/app/data/model/chat_message.dart';
 
 class ChatGroup {
   final int id;

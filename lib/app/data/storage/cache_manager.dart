@@ -55,10 +55,10 @@ mixin CacheManager {
     return UserInfo(phone, pass);
   }
 
-  bool isLoggedIn() {
+  Future<bool> isLoggedIn() async {
     final box = GetStorage();
 
-    var status = box.read(CacheManagerKey.ISLOGGEDIN.toString());
+    var status = await box.read(CacheManagerKey.ISLOGGEDIN.toString());
     if (status == null) {
       return false;
     }

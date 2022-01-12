@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
 
-class MyAdvertisementController extends GetxController {
+class UserAdvertisementController extends GetxController {
   final adsList = [].obs;
 }

@@ -1,8 +1,7 @@
 import 'package:alamuti/app/controller/chat_message_controller.dart';
 import 'package:alamuti/app/data/provider/chat_message_provider.dart';
 import 'package:alamuti/app/data/provider/signalr_helper.dart';
-import 'package:alamuti/app/data/storage/cachemanager.dart';
-import 'package:alamuti/app/ui/chat/chatgroup.dart';
+import 'package:alamuti/app/data/storage/cache_manager.dart';
 import 'package:alamuti/app/ui/theme.dart';
 import 'package:alamuti/app/ui/widgets/alamuti_appbar.dart';
 import 'package:alamuti/app/ui/widgets/alamuti_textfield.dart';
@@ -13,7 +12,7 @@ import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_9.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
-class Chat extends StatelessWidget with CacheManager {
+class Chat extends GetView<ChatMessageController> with CacheManager {
   final String groupname;
 
   final String groupTitle;
@@ -27,57 +26,61 @@ class Chat extends StatelessWidget with CacheManager {
     required this.groupImage,
   }) : super(key: key);
 
+  final TextEditingController textEditingController = TextEditingController();
+
+  final SignalRHelper signalHelper = SignalRHelper();
+
+  final ScrollController _scrollcontroller = ScrollController();
+
+  final GlobalKey<FormState> _formKey = GlobalKey();
+
+  final MessageProvider messageProvider = MessageProvider();
+
+  final GetStorage storage = GetStorage();
+
+  final double width = Get.width;
+
+  final double height = Get.height;
+
   @override
   Widget build(BuildContext context) {
-    var textEditingController = TextEditingController();
-
-    var signalHelper = SignalRHelper();
-
-    var _scrollcontroller = ScrollController();
-
-    final GlobalKey<FormState> _formKey = GlobalKey();
-
-    var mp = MessageProvider();
-    mp.getGroupMessages(groupname);
-    var storage = GetStorage();
-    var isAlamutiMessage = groupTitle == 'الموتی';
-    var chatMessageController = Get.put(ChatMessageController());
-
+    messageProvider.getGroupMessages(groupname);
+    final isAlamutiMessage = groupTitle == 'الموتی';
     signalHelper.initiateConnection();
     signalHelper.reciveMessage();
     signalHelper.createGroup(
       groupname,
     );
 
-    chatMessageController.messageList.listen((p0) {
+    controller.messageList.listen((p0) {
       WidgetsBinding.instance?.addPostFrameCallback((_) {
         if (_scrollcontroller.hasClients) {
           _scrollcontroller.jumpTo(_scrollcontroller.position.maxScrollExtent);
         }
       });
     });
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
-      if (_scrollcontroller.hasClients) {
-        _scrollcontroller.jumpTo(_scrollcontroller.position.maxScrollExtent);
-      }
-    });
+    // WidgetsBinding.instance?.addPostFrameCallback((_) {
+    //   if (_scrollcontroller.hasClients) {
+    //     _scrollcontroller.jumpTo(_scrollcontroller.position.maxScrollExtent);
+    //   }
+    // });
     return Scaffold(
       appBar: AlamutiAppBar(
         appBar: AppBar(),
         title: 'پیامها',
         hasBackButton: true,
-        backwidget: ChatGroups(),
+        backwidget: "/chat",
       ),
       body: Container(
-        width: Get.width,
+        width: width,
         child: Column(
           children: [
             Expanded(
               child: Obx(() => ListView.builder(
                     controller: _scrollcontroller,
-                    itemCount: chatMessageController.messageList.length,
+                    itemCount: controller.messageList.length,
                     itemBuilder: (context, index) {
-                      if (chatMessageController.messageList[index].sender ==
+                      if (controller.messageList[index].sender ==
                           storage.read(CacheManagerKey.USERID.toString())) {
                         return ChatBubble(
                           clipper:
@@ -87,14 +90,13 @@ class Chat extends StatelessWidget with CacheManager {
                           backGroundColor: Color.fromRGBO(8, 212, 76, 0.5),
                           child: Container(
                             constraints: BoxConstraints(
-                              maxWidth: Get.width * 0.7,
+                              maxWidth: width * 0.7,
                             ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 Text(
-                                  chatMessageController
-                                      .messageList[index].message,
+                                  controller.messageList[index].message,
                                   textDirection: TextDirection.rtl,
                                   style: TextStyle(color: Colors.white),
                                 ),
@@ -108,8 +110,7 @@ class Chat extends StatelessWidget with CacheManager {
                                       style: TextStyle(color: Colors.black),
                                     ),
                                     Text(
-                                      chatMessageController
-                                          .messageList[index].daySended,
+                                      controller.messageList[index].daySended,
                                       style: TextStyle(
                                           fontWeight: FontWeight.w200,
                                           fontFamily: persianNumber,
@@ -130,14 +131,13 @@ class Chat extends StatelessWidget with CacheManager {
                           margin: EdgeInsets.only(top: 20),
                           child: Container(
                             constraints: BoxConstraints(
-                              maxWidth: Get.width * 0.7,
+                              maxWidth: width * 0.7,
                             ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 Text(
-                                  chatMessageController
-                                      .messageList[index].message,
+                                  controller.messageList[index].message,
                                   textDirection: TextDirection.rtl,
                                   style: TextStyle(color: Colors.black),
                                 ),
@@ -151,8 +151,7 @@ class Chat extends StatelessWidget with CacheManager {
                                       style: TextStyle(color: Colors.black),
                                     ),
                                     Text(
-                                      chatMessageController
-                                          .messageList[index].daySended,
+                                      controller.messageList[index].daySended,
                                       style: TextStyle(
                                           fontWeight: FontWeight.w200,
                                           fontFamily: persianNumber,

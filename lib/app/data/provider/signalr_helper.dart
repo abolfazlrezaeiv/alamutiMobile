@@ -4,7 +4,7 @@ import 'package:alamuti/app/controller/chat_target_controller.dart';
 import 'package:alamuti/app/controller/new_message_controller.dart';
 import 'package:alamuti/app/data/provider/base_url.dart';
 import 'package:alamuti/app/data/provider/chat_message_provider.dart';
-import 'package:alamuti/app/data/storage/cachemanager.dart';
+import 'package:alamuti/app/data/storage/cache_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:signalr_core/signalr_core.dart';
@@ -25,7 +25,6 @@ class SignalRHelper with CacheManager {
         .withUrl(
           baseLoginUrl + 'chat',
           HttpConnectionOptions(
-            // logging: (level, message) => print(message),
             skipNegotiation: true,
             transport: HttpTransportType.webSockets,
           ),
@@ -37,10 +36,8 @@ class SignalRHelper with CacheManager {
     await connection.start();
   }
 
-  reciveMessage() {
+  reciveMessage() async {
     connection.on("ReceiveMessage", (arguments) async {
-      print('on recive signal');
-
       chatTargetUserController.userId.value = arguments![1];
 
       MessageProvider mp = MessageProvider();
@@ -75,12 +72,10 @@ class SignalRHelper with CacheManager {
 
   createGroup(String userId) async {
     await connection.invoke('CreateMyGroup', args: [userId]);
-    print('joined the group');
   }
 
   leaveGroup(String groupname) async {
     await connection.invoke('LeaveGroup', args: [groupname]);
-    print('left the group');
   }
 
   closeConnection(BuildContext context) async {

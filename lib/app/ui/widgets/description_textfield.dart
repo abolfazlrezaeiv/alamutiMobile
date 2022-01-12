@@ -7,6 +7,10 @@ class DescriptionTextField extends StatelessWidget {
 
   final TextEditingController textEditingController;
 
+  final double width = Get.width;
+
+  final double height = Get.height;
+
   DescriptionTextField(
       {Key? key, required this.textEditingController, this.initialvalue})
       : super(key: key);
@@ -35,7 +39,7 @@ class DescriptionTextField extends StatelessWidget {
         textAlign: TextAlign.start,
         style: TextStyle(
             backgroundColor: Colors.white,
-            fontSize: Get.width / 27,
+            fontSize: width / 27,
             fontWeight: FontWeight.w300),
         decoration: InputDecoration(
           errorStyle: const TextStyle(fontSize: 13),

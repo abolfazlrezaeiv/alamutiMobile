@@ -7,13 +7,13 @@ class AlamutiAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final AppBar appBar;
   final bool hasBackButton;
+  final String? backwidget;
 
-  final Widget backwidget;
   const AlamutiAppBar(
       {Key? key,
       required this.title,
       required this.appBar,
-      required this.backwidget,
+      this.backwidget,
       required this.hasBackButton})
       : super(key: key);
 
@@ -31,8 +31,7 @@ class AlamutiAppBar extends StatelessWidget implements PreferredSizeWidget {
         centerTitle: true,
         leading: hasBackButton
             ? GestureDetector(
-                onTap: () => Get.to(() => this.backwidget,
-                    transition: Transition.fadeIn),
+                onTap: () => Get.toNamed(backwidget!),
                 child: Container(
                   width: 100,
                   height: 100,

@@ -1,5 +1,5 @@
-import 'package:alamuti/app/controller/login_view_model.dart';
-import 'package:alamuti/app/data/storage/cachemanager.dart';
+import 'package:alamuti/app/controller/login_controller.dart';
+import 'package:alamuti/app/data/storage/cache_manager.dart';
 import 'package:alamuti/app/ui/Login/login.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -13,15 +13,20 @@ class Registeration extends StatefulWidget {
 class _RegisterationState extends State<Registeration> {
   final GlobalKey<FormState> formKey = GlobalKey();
 
-  var _viewModel = Get.put(LoginViewModel());
+  LoginViewModel loginViewModel = Get.put(LoginViewModel());
 
-  var phoneNumberCtr = TextEditingController();
+  TextEditingController phoneNumberCtr = TextEditingController();
 
-  var isPhoneNumber = false;
+  bool isPhoneNumber = false;
 
-  var succesed = true;
+  bool succesed = true;
 
-  var isSendingSms = false;
+  bool isSendingSms = false;
+
+  final double width = Get.width;
+
+  final double height = Get.height;
+
   @override
   void initState() {
     super.initState();
@@ -64,7 +69,7 @@ class _RegisterationState extends State<Registeration> {
                   color: Color.fromRGBO(71, 68, 68, 0.1),
                   child: Padding(
                     padding: EdgeInsets.only(
-                      top: Get.height / 14,
+                      top: height / 14,
                       right: 20,
                       bottom: 15,
                     ),
@@ -72,13 +77,13 @@ class _RegisterationState extends State<Registeration> {
                       opacity: 0.6,
                       child: Image.asset(
                         'assets/logo/logo.png',
-                        height: Get.height / 19,
+                        height: height / 19,
                       ),
                     ),
                   ),
                 ),
                 SizedBox(
-                  height: Get.height / 60,
+                  height: height / 60,
                 ),
                 Container(
                   alignment: Alignment.centerRight,
@@ -97,7 +102,7 @@ class _RegisterationState extends State<Registeration> {
                 ),
                 isKeyboardOpen
                     ? SizedBox(
-                        height: Get.height / 6,
+                        height: height / 6,
                       )
                     : SizedBox(
                         height: 30,
@@ -143,8 +148,8 @@ class _RegisterationState extends State<Registeration> {
                       height: 12,
                     ),
                     Container(
-                      width: Get.width,
-                      height: Get.height / 11,
+                      width: width,
+                      height: height / 11,
                       padding: EdgeInsets.symmetric(horizontal: 8),
                       child: TextButton(
                         style: ElevatedButton.styleFrom(
@@ -161,7 +166,7 @@ class _RegisterationState extends State<Registeration> {
                             setState(() {
                               isSendingSms = true;
                             });
-                            var result = await _viewModel
+                            var result = await loginViewModel
                                 .registerUser(phoneNumberCtr.text);
 
                             if (result == true) {
@@ -204,7 +209,7 @@ class _RegisterationState extends State<Registeration> {
                       ),
                     ),
                     SizedBox(
-                      height: Get.height / 50,
+                      height: height / 50,
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -216,7 +221,7 @@ class _RegisterationState extends State<Registeration> {
                             textDirection: TextDirection.rtl,
                             style: TextStyle(
                               fontWeight: FontWeight.w200,
-                              fontSize: Get.width / 30,
+                              fontSize: width / 30,
                             ),
                           ),
                           GestureDetector(
@@ -232,7 +237,7 @@ class _RegisterationState extends State<Registeration> {
                                           "حفظ حریم خصوصی",
                                           style: TextStyle(
                                             fontWeight: FontWeight.w300,
-                                            fontSize: Get.width / 25,
+                                            fontSize: width / 25,
                                           ),
                                         )),
                                         shape: RoundedRectangleBorder(
@@ -331,7 +336,7 @@ class _RegisterationState extends State<Registeration> {
                               'قوانین مربوط به حفظ حریم خصوصی ',
                               style: TextStyle(
                                   fontWeight: FontWeight.w200,
-                                  fontSize: Get.width / 30,
+                                  fontSize: width / 30,
                                   color: Colors.blue),
                               textDirection: TextDirection.rtl,
                             ),

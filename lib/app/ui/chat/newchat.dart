@@ -1,9 +1,11 @@
+import 'package:alamuti/app/controller/chat_group_controller.dart';
 import 'package:alamuti/app/controller/chat_message_controller.dart';
 import 'package:alamuti/app/controller/chat_target_controller.dart';
-import 'package:alamuti/app/data/model/chatMessage.dart';
+import 'package:alamuti/app/data/model/chat_message.dart';
+import 'package:alamuti/app/data/provider/chat_message_provider.dart';
 import 'package:alamuti/app/data/provider/signalr_helper.dart';
-import 'package:alamuti/app/data/storage/cachemanager.dart';
-import 'package:alamuti/app/ui/chat/chatgroup.dart';
+import 'package:alamuti/app/data/storage/cache_manager.dart';
+import 'package:alamuti/app/ui/chat/chat.dart';
 import 'package:alamuti/app/ui/theme.dart';
 import 'package:alamuti/app/ui/widgets/alamuti_appbar.dart';
 import 'package:alamuti/app/ui/widgets/alamuti_textfield.dart';
@@ -25,21 +27,28 @@ class NewChat extends StatelessWidget with CacheManager {
       required this.groupImage})
       : super(key: key);
 
+  final double width = Get.width;
+
+  final double height = Get.height;
+
+  MessageProvider messageProvider = MessageProvider();
+
   @override
   Widget build(BuildContext context) {
     TextEditingController textEditingController = TextEditingController();
     late SignalRHelper signalHelper;
-    var _scrollcontroller = ScrollController();
+    final _scrollcontroller = ScrollController();
 
     final GlobalKey<FormState> _formKey = GlobalKey();
 
-    var storage = GetStorage();
+    final storage = GetStorage();
 
     signalHelper = SignalRHelper();
     signalHelper.initiateConnection();
     signalHelper.reciveMessage();
-    var chatTargetUserController = Get.put(ChatTargetUserController());
-    var chatMessageController = Get.put(ChatMessageController());
+    final chatTargetUserController = Get.put(ChatTargetUserController());
+    final chatMessageController = Get.put(ChatMessageController());
+
     chatMessageController.messageList.listen((p0) {
       WidgetsBinding.instance?.addPostFrameCallback((_) {
         if (_scrollcontroller.hasClients) {
@@ -57,10 +66,10 @@ class NewChat extends StatelessWidget with CacheManager {
         appBar: AppBar(),
         title: 'ارسال پیام',
         hasBackButton: true,
-        backwidget: ChatGroups(),
+        backwidget: "/chat",
       ),
       body: Container(
-        width: Get.width,
+        width: width,
         child: Obx(
           () => Column(
             children: [
@@ -80,7 +89,7 @@ class NewChat extends StatelessWidget with CacheManager {
                         backGroundColor: alamutPrimaryColor,
                         child: Container(
                           constraints: BoxConstraints(
-                            maxWidth: Get.width * 0.7,
+                            maxWidth: width * 0.7,
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.end,
@@ -123,7 +132,7 @@ class NewChat extends StatelessWidget with CacheManager {
                         margin: EdgeInsets.only(top: 20),
                         child: Container(
                           constraints: BoxConstraints(
-                            maxWidth: Get.width * 0.7,
+                            maxWidth: width * 0.7,
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.end,
@@ -181,9 +190,19 @@ class NewChat extends StatelessWidget with CacheManager {
                           prefix: '',
                         )),
                         TextButton(
-                            onPressed: () {
+                            onPressed: () async {
                               if (_formKey.currentState!.validate()) {
-                                signalHelper.sendMessage(
+                                chatMessageController.addMessage(ChatMessage(
+                                    id: 44,
+                                    sender: storage.read(
+                                      CacheManagerKey.USERID.toString(),
+                                    ),
+                                    message: textEditingController.text,
+                                    reciever:
+                                        chatTargetUserController.userId.value,
+                                    daySended: ''));
+
+                                await signalHelper.sendMessage(
                                   receiverId:
                                       chatTargetUserController.userId.value,
                                   grouptitle: groupTitle,
@@ -195,16 +214,14 @@ class NewChat extends StatelessWidget with CacheManager {
                                   groupImage: groupImage,
                                 );
 
-                                chatMessageController.addMessage(ChatMessage(
-                                    id: 44,
-                                    sender: storage.read(
-                                      CacheManagerKey.USERID.toString(),
-                                    ),
-                                    message: textEditingController.text,
-                                    reciever:
-                                        chatTargetUserController.userId.value,
-                                    daySended: ''));
-
+                                await messageProvider.getGroups();
+                                final ChatGroupController chatGroupController =
+                                    Get.put(ChatGroupController());
+                                Get.to(Chat(
+                                    groupname:
+                                        chatGroupController.groupList.last.name,
+                                    groupTitle: groupTitle,
+                                    groupImage: groupImage));
                                 WidgetsBinding.instance
                                     ?.addPostFrameCallback((_) {
                                   if (_scrollcontroller.hasClients) {

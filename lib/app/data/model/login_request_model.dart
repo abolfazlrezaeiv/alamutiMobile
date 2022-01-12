@@ -1,4 +1,4 @@
-import 'package:alamuti/app/data/storage/cachemanager.dart';
+import 'package:alamuti/app/data/storage/cache_manager.dart';
 import 'package:get_storage/get_storage.dart';
 
 class LoginRequestModel {

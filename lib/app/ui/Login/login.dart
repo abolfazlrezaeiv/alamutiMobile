@@ -1,5 +1,7 @@
-import 'package:alamuti/app/controller/login_view_model.dart';
-import 'package:alamuti/app/data/storage/cachemanager.dart';
+import 'package:alamuti/app/binding/home_binding.dart';
+import 'package:alamuti/app/controller/login_controller.dart';
+import 'package:alamuti/app/data/storage/cache_manager.dart';
+import 'package:alamuti/app/ui/home/home_page.dart';
 import 'package:alamuti/app/ui/theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -22,9 +24,16 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   final GlobalKey<FormState> formKey = GlobalKey();
 
+  final double width = Get.width;
+
+  final double height = Get.height;
+
   TextEditingController passwordCtr = TextEditingController();
+
   bool isPinCode = false;
+
   int endTime = DateTime.now().millisecondsSinceEpoch + 1000 * 150;
+
   bool succesed = true;
 
   late CountdownTimerController timercontroller;
@@ -75,7 +84,7 @@ class _LoginState extends State<Login> {
                   children: [
                     Padding(
                       padding: EdgeInsets.only(
-                          top: Get.height / 14, right: 20, bottom: 15),
+                          top: height / 14, right: 20, bottom: 15),
                       child: TextButton.icon(
                         icon: Icon(
                           CupertinoIcons.back,
@@ -93,7 +102,7 @@ class _LoginState extends State<Login> {
                     ),
                     Padding(
                       padding: EdgeInsets.only(
-                        top: Get.height / 14,
+                        top: height / 14,
                         right: 20,
                         bottom: 15,
                       ),
@@ -101,7 +110,7 @@ class _LoginState extends State<Login> {
                         opacity: 0.6,
                         child: Image.asset(
                           'assets/logo/logo.png',
-                          height: Get.height / 19,
+                          height: height / 19,
                         ),
                       ),
                     ),
@@ -110,7 +119,7 @@ class _LoginState extends State<Login> {
               ),
               isKeyboardOpen
                   ? SizedBox(
-                      height: Get.height / 6,
+                      height: height / 6,
                     )
                   : SizedBox(
                       height: 30,
@@ -176,11 +185,11 @@ class _LoginState extends State<Login> {
                     ),
                   ),
                   SizedBox(
-                    height: Get.height / 180,
+                    height: height / 180,
                   ),
                   Container(
-                    width: Get.width,
-                    height: Get.height / 11,
+                    width: width,
+                    height: height / 11,
                     padding: EdgeInsets.symmetric(horizontal: 8),
                     child: TextButton(
                       style: ElevatedButton.styleFrom(
@@ -196,7 +205,10 @@ class _LoginState extends State<Login> {
                             setState(() {
                               succesed = true;
                             });
-                            Get.toNamed('/home');
+
+                            Get.offAll(() => HomePage(),
+                                binding: HomeBinding(),
+                                transition: Transition.noTransition);
                           } else {
                             setState(() {
                               succesed = false;
@@ -221,8 +233,8 @@ class _LoginState extends State<Login> {
                   ),
                   canRequestAgain
                       ? Container(
-                          width: Get.width,
-                          height: Get.height / 11,
+                          width: width,
+                          height: height / 11,
                           padding: EdgeInsets.symmetric(horizontal: 8),
                           child: TextButton(
                             style: ElevatedButton.styleFrom(

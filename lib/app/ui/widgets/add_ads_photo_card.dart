@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:get/get_navigation/src/extension_navigation.dart';
-import 'package:get/utils.dart';
+import 'package:get/get.dart';
 
 class AddPhotoWidget extends StatelessWidget {
-  const AddPhotoWidget({Key? key}) : super(key: key);
+  AddPhotoWidget({Key? key}) : super(key: key);
+
+  final double width = Get.width;
+
+  final double height = Get.height;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      // height: Get.height / 5.5,
-      // width: Get.width / 3.8,
       child: Padding(
-        padding: EdgeInsets.all(Get.width / 13),
+        padding: EdgeInsets.all(width / 13),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -25,8 +26,8 @@ class AddPhotoWidget extends StatelessWidget {
             ),
             Text(
               'افزودن عکس',
-              style: TextStyle(
-                  fontWeight: FontWeight.w400, fontSize: Get.width / 40),
+              style:
+                  TextStyle(fontWeight: FontWeight.w400, fontSize: width / 40),
             )
           ],
         ),

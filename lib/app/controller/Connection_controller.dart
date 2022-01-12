@@ -8,7 +8,6 @@ class ConnectionController extends GetxController {
     try {
       final result = await InternetAddress.lookup('example.com');
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-        print('connected');
         isConnected.value = true;
       }
     } on SocketException catch (_) {

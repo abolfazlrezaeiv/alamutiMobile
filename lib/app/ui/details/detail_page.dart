@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:alamuti/app/controller/adsFormController.dart';
+import 'package:alamuti/app/controller/ads_form_controller.dart';
 import 'package:alamuti/app/controller/chat_message_controller.dart';
 import 'package:alamuti/app/controller/chat_target_controller.dart';
 import 'package:alamuti/app/ui/chat/newchat.dart';
@@ -13,6 +13,16 @@ import 'package:url_launcher/url_launcher.dart';
 
 // ignore: must_be_immutable
 class AdsDetail extends StatelessWidget {
+  ChatTargetUserController chatTargetUserController =
+      Get.put(ChatTargetUserController());
+
+  ChatMessageController chatMessageController =
+      Get.put(ChatMessageController());
+
+  final double width = Get.width;
+
+  final double height = Get.height;
+
   final String? byteImage1;
   final String? byteImage2;
   final String phoneNumber;
@@ -41,9 +51,6 @@ class AdsDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var chatTargetUserController = Get.put(ChatTargetUserController());
-    var chatMessageController = Get.put(ChatMessageController());
-
     return Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -55,7 +62,7 @@ class AdsDetail extends StatelessWidget {
                   : getImageOrEmpty(),
               Padding(
                 padding: EdgeInsets.symmetric(
-                  horizontal: Get.width / 20,
+                  horizontal: width / 20,
                 ),
                 child: Container(
                   child: Column(
@@ -63,13 +70,13 @@ class AdsDetail extends StatelessWidget {
                     children: [
                       Padding(
                         padding: EdgeInsets.symmetric(
-                          vertical: Get.height / 55,
+                          vertical: height / 55,
                         ),
                         child: Text(
                           title,
                           style: TextStyle(
                               fontWeight: FontWeight.w500,
-                              fontSize: Get.width / 24),
+                              fontSize: width / 24),
                           textDirection: TextDirection.rtl,
                           overflow: TextOverflow.visible,
                         ),
@@ -79,15 +86,15 @@ class AdsDetail extends StatelessWidget {
                         style: TextStyle(
                             fontWeight: FontWeight.w300,
                             fontFamily: persianNumber,
-                            fontSize: Get.width / 31),
+                            fontSize: width / 31),
                         textDirection: TextDirection.rtl,
                       ),
                       SizedBox(
-                        height: Get.height / 55,
+                        height: height / 55,
                       ),
                       Divider(),
                       Padding(
-                        padding: EdgeInsets.symmetric(vertical: Get.width / 55),
+                        padding: EdgeInsets.symmetric(vertical: width / 55),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -95,7 +102,7 @@ class AdsDetail extends StatelessWidget {
                               '$price تومان',
                               textDirection: TextDirection.ltr,
                               style: TextStyle(
-                                  fontSize: Get.width / 26,
+                                  fontSize: width / 26,
                                   fontFamily: persianNumber,
                                   fontWeight: FontWeight.w400),
                             ),
@@ -104,14 +111,14 @@ class AdsDetail extends StatelessWidget {
                               textDirection: TextDirection.rtl,
                               style: TextStyle(
                                   fontWeight: FontWeight.w300,
-                                  fontSize: Get.width / 27),
+                                  fontSize: width / 27),
                             )
                           ],
                         ),
                       ),
                       Divider(),
                       Padding(
-                        padding: EdgeInsets.symmetric(vertical: Get.width / 55),
+                        padding: EdgeInsets.symmetric(vertical: width / 55),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -119,7 +126,7 @@ class AdsDetail extends StatelessWidget {
                               village,
                               textDirection: TextDirection.ltr,
                               style: TextStyle(
-                                  fontSize: Get.width / 26,
+                                  fontSize: width / 26,
                                   fontFamily: persianNumber,
                                   fontWeight: FontWeight.w400),
                             ),
@@ -128,7 +135,7 @@ class AdsDetail extends StatelessWidget {
                               textDirection: TextDirection.rtl,
                               style: TextStyle(
                                   fontWeight: FontWeight.w300,
-                                  fontSize: Get.width / 27),
+                                  fontSize: width / 27),
                             )
                           ],
                         ),
@@ -141,18 +148,17 @@ class AdsDetail extends StatelessWidget {
               ),
               Padding(
                 padding: EdgeInsets.symmetric(
-                    horizontal: Get.width / 20, vertical: Get.height / 55),
+                    horizontal: width / 20, vertical: height / 55),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
                       'توضیحات',
                       style: TextStyle(
-                          fontWeight: FontWeight.w500,
-                          fontSize: Get.width / 24),
+                          fontWeight: FontWeight.w500, fontSize: width / 24),
                     ),
                     SizedBox(
-                      height: Get.height / 55,
+                      height: height / 55,
                     ),
                     Container(
                       alignment: Alignment.centerRight,
@@ -163,7 +169,7 @@ class AdsDetail extends StatelessWidget {
                         textDirection: TextDirection.rtl,
                         style: TextStyle(
                           fontWeight: FontWeight.w300,
-                          fontSize: Get.width / 28,
+                          fontSize: width / 28,
                         ),
                       ),
                     ),
@@ -173,36 +179,35 @@ class AdsDetail extends StatelessWidget {
             ],
           ),
           Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: 8.0, vertical: Get.height / 50),
+            padding:
+                EdgeInsets.symmetric(horizontal: 8.0, vertical: height / 50),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 MaterialButton(
-                  height: Get.width / 9,
-                  minWidth: Get.width / 2.2,
+                  height: width / 9,
+                  minWidth: width / 2.2,
                   elevation: 0,
-                  color: Color.fromRGBO(255, 0, 0, 0.4),
+                  color: Color.fromRGBO(250, 0, 0, 0.3),
                   onPressed: () async {
                     _makePhoneCall(this.phoneNumber);
                   },
                   child: Text(
                     'تماس تلفنی',
                     style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: Get.width / 26,
+                      fontWeight: FontWeight.w400,
+                      fontSize: width / 26,
                     ),
                   ),
                 ),
                 MaterialButton(
-                  height: Get.width / 9,
-                  minWidth: Get.width / 2.2,
+                  height: width / 9,
+                  minWidth: width / 2.2,
                   elevation: 0,
-                  color: Color.fromRGBO(255, 0, 0, 0.4),
+                  color: Color.fromRGBO(255, 0, 0, 0.3),
                   onPressed: () {
                     chatTargetUserController.saveUserId(userId);
-                    print(chatTargetUserController.userId.value);
                     chatMessageController.messageList.clear();
                     Get.to(
                         () => NewChat(
@@ -214,8 +219,8 @@ class AdsDetail extends StatelessWidget {
                   child: Text(
                     'چت',
                     style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: Get.width / 26,
+                      fontWeight: FontWeight.w400,
+                      fontSize: width / 26,
                     ),
                   ),
                 ),
@@ -239,7 +244,7 @@ class AdsDetail extends StatelessWidget {
     return Stack(children: [
       ImageSlideshow(
         width: double.infinity,
-        height: Get.height / 3,
+        height: height / 3,
         initialPage: 0,
         indicatorColor: Colors.greenAccent,
         indicatorBackgroundColor: Colors.white,
@@ -271,9 +276,9 @@ class AdsDetail extends StatelessWidget {
         isLoop: true,
       ),
       Container(
-        padding: EdgeInsets.only(top: Get.width / 12, left: Get.width / 45),
-        width: Get.width,
-        height: Get.height / 3,
+        padding: EdgeInsets.only(top: width / 12, left: width / 45),
+        width: width,
+        height: height / 3,
         alignment: Alignment.topLeft,
         child: GestureDetector(
           onTap: () => Get.toNamed('/home'),
@@ -308,18 +313,17 @@ class AdsDetail extends StatelessWidget {
             },
             child: Stack(children: [
               Container(
-                height: Get.height / 2.5,
-                width: Get.width,
+                height: height / 2.5,
+                width: width,
                 child: Image.memory(
                   base64Decode(byteImage1!),
                   fit: BoxFit.cover,
                 ),
               ),
               Container(
-                padding:
-                    EdgeInsets.only(top: Get.width / 12, left: Get.width / 45),
-                width: Get.width,
-                height: Get.height / 2.5,
+                padding: EdgeInsets.only(top: width / 12, left: width / 45),
+                width: width,
+                height: height / 2.5,
                 alignment: Alignment.topLeft,
                 child: GestureDetector(
                   onTap: () => Get.toNamed('/home'),
@@ -363,7 +367,7 @@ class AdsDetail extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Padding(
-                padding: EdgeInsets.symmetric(vertical: Get.width / 55),
+                padding: EdgeInsets.symmetric(vertical: width / 55),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -372,7 +376,7 @@ class AdsDetail extends StatelessWidget {
                       '$area متر',
                       textDirection: TextDirection.ltr,
                       style: TextStyle(
-                          fontSize: Get.width / 26,
+                          fontSize: width / 26,
                           fontFamily: persianNumber,
                           fontWeight: FontWeight.w400),
                     ),
@@ -381,7 +385,7 @@ class AdsDetail extends StatelessWidget {
                       textDirection: TextDirection.rtl,
                       style: TextStyle(
                           fontWeight: FontWeight.w300,
-                          fontSize: Get.width / 27,
+                          fontSize: width / 27,
                           fontFamily: persianNumber),
                     )
                   ],
@@ -432,7 +436,7 @@ class AdsDetail extends StatelessWidget {
         child: GestureDetector(
           onTap: () => Get.toNamed('/home'),
           child: Container(
-            width: Get.width / 4,
+            width: width / 4,
             child: Row(
               children: [
                 Icon(

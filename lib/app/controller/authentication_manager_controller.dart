@@ -1,4 +1,4 @@
-import 'package:alamuti/app/data/storage/cachemanager.dart';
+import 'package:alamuti/app/data/storage/cache_manager.dart';
 import 'package:get/get.dart';
 
 class AuthenticationManager extends GetxController with CacheManager {
@@ -17,8 +17,8 @@ class AuthenticationManager extends GetxController with CacheManager {
     await saveLogin();
   }
 
-  checkLoginStatus() {
-    var loginStatus = isLoggedIn();
+  checkLoginStatus() async {
+    var loginStatus = await isLoggedIn();
     return loginStatus;
   }
 }

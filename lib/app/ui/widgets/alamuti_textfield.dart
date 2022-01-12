@@ -3,15 +3,23 @@ import 'package:alamuti/app/ui/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-// ignore: must_be_immutable
 class AlamutiTextField extends StatelessWidget {
   final TextEditingController textEditingController;
-  final bool hasCharacterLimitation;
-  final bool isNumber;
-  late bool isChatTextField;
 
-  bool isPrice = false;
+  final bool hasCharacterLimitation;
+
+  final bool isNumber;
+
+  final bool isChatTextField;
+
+  final bool isPrice;
+
   final String prefix;
+
+  final double width = Get.width;
+
+  final double height = Get.height;
+
   AlamutiTextField(
       {Key? key,
       required this.textEditingController,
@@ -22,9 +30,10 @@ class AlamutiTextField extends StatelessWidget {
       required this.prefix})
       : super(key: key);
 
+  PriceController priceController = Get.put(PriceController());
+
   @override
   Widget build(BuildContext context) {
-    var priceController = Get.put(PriceController());
     return Container(
       child: Directionality(
         textDirection: TextDirection.rtl,
@@ -65,7 +74,7 @@ class AlamutiTextField extends StatelessWidget {
           textAlign: TextAlign.start,
           style: TextStyle(
               backgroundColor: Colors.transparent,
-              fontSize: Get.width / 27,
+              fontSize: width / 27,
               fontFamily: persianNumber,
               fontWeight: FontWeight.w300),
           decoration: InputDecoration(
@@ -73,7 +82,7 @@ class AlamutiTextField extends StatelessWidget {
               prefix,
               style: TextStyle(
                   backgroundColor: Colors.white.withOpacity(0.5),
-                  fontSize: Get.width / 30,
+                  fontSize: width / 30,
                   fontFamily: persianNumber,
                   fontWeight: FontWeight.w300),
             ),

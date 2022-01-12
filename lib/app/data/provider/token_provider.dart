@@ -1,5 +1,5 @@
 import 'package:alamuti/app/data/provider/base_url.dart';
-import 'package:alamuti/app/data/storage/cachemanager.dart';
+import 'package:alamuti/app/data/storage/cache_manager.dart';
 import 'package:dio/dio.dart';
 import 'package:get/get_connect/http/src/status/http_status.dart';
 import 'package:get/state_manager.dart';

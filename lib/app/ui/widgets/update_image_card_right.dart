@@ -1,30 +1,30 @@
 import 'dart:convert';
-import 'package:alamuti/app/controller/update_image_advertisement.dart';
+import 'package:alamuti/app/controller/update_image_advertisement_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-// ignore: must_be_immutable
-class UpdateRightPhotoCard extends StatelessWidget {
+class UpdateRightPhotoCard extends GetView<UpdateUploadImageController> {
   UpdateRightPhotoCard({Key? key}) : super(key: key);
+
+  final double width = Get.width;
+
+  final double height = Get.height;
 
   @override
   Widget build(BuildContext context) {
-    var updateUploadImageController = Get.put(UpdateUploadImageController());
     return Container(
-      height: Get.width / 3,
-      width: Get.width / 3,
+      height: width / 3,
+      width: width / 3,
       child: Obx(
         () => Card(
           elevation: 3,
           clipBehavior: Clip.antiAliasWithSaveLayer,
-          child: (updateUploadImageController.rightImagebyteCode.value.length >
-                  2)
+          child: (controller.rightImagebyteCode.value.length > 2)
               ? Stack(
                   children: [
                     Image.memory(
-                      base64Decode(
-                          updateUploadImageController.rightImagebyteCode.value),
+                      base64Decode(controller.rightImagebyteCode.value),
                       fit: BoxFit.cover,
                     ),
                     IconButton(
@@ -33,15 +33,14 @@ class UpdateRightPhotoCard extends StatelessWidget {
                         color: Colors.white,
                       ),
                       onPressed: () {
-                        updateUploadImageController.rightImagebyteCode.value =
-                            '';
+                        controller.rightImagebyteCode.value = '';
                       },
                     )
                   ],
                   fit: StackFit.expand,
                 )
               : Padding(
-                  padding: EdgeInsets.all(Get.width / 14),
+                  padding: EdgeInsets.all(width / 14),
                   child: Icon(
                     Icons.photo_outlined,
                     size: 50,

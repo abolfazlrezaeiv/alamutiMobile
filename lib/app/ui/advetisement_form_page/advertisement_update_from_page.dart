@@ -1,11 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
-import 'package:alamuti/app/controller/adsFormController.dart';
-import 'package:alamuti/app/controller/update_image_advertisement.dart';
-import 'package:alamuti/app/data/model/Advertisement.dart';
+import 'package:alamuti/app/controller/ads_form_controller.dart';
+import 'package:alamuti/app/controller/update_image_advertisement_controller.dart';
+import 'package:alamuti/app/data/model/advertisement.dart';
 import 'package:alamuti/app/data/provider/advertisement_provider.dart';
-import 'package:alamuti/app/ui/myalamuti/myadvertisement.dart';
 import 'package:alamuti/app/ui/widgets/add_ads_photo_card.dart';
 import 'package:alamuti/app/ui/widgets/alamuti_appbar.dart';
 import 'package:alamuti/app/ui/widgets/alamuti_textfield.dart';
@@ -29,7 +27,9 @@ class AdvertisementUpdateForm extends StatefulWidget {
 class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
   final GlobalKey<FormState> _formKey = GlobalKey();
 
-  var advertisementProvider = AdvertisementProvider();
+  final UpdateUploadImageController updateUploadImageController = Get.find();
+
+  final AdvertisementProvider advertisementProvider = AdvertisementProvider();
 
   late TextEditingController titleTextFieldController;
 
@@ -40,8 +40,11 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
   late TextEditingController areaTextFieldController;
 
   late TextEditingController descriptionTextFieldController;
-  var photo1;
-  var photo2;
+
+  final double width = Get.width;
+
+  final double height = Get.height;
+
   @override
   initState() {
     super.initState();
@@ -57,19 +60,15 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
         TextEditingController(text: widget.ads.description);
   }
 
-  Uint8List? logoBase64;
-  var pickedFile;
-
   @override
   Widget build(BuildContext context) {
-    var updateUploadImageController = Get.put(UpdateUploadImageController());
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AlamutiAppBar(
-        title: 'ثبت آگهی',
+        title: 'ویرایش آگهی',
         hasBackButton: true,
         appBar: AppBar(),
-        backwidget: MyAdvertisement(),
+        backwidget: "/myads",
       ),
       body: Form(
         key: _formKey,
@@ -78,7 +77,7 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
             Column(
               children: [
                 SizedBox(
-                  height: Get.height / 45,
+                  height: height / 45,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -96,13 +95,13 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
               ],
             ),
             SizedBox(
-              height: Get.height / 45,
+              height: height / 45,
             ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: Get.width / 25),
+                  padding: EdgeInsets.symmetric(horizontal: width / 25),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.end,
@@ -110,24 +109,22 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
                       Text(
                         'عنوان آگهی',
                         style: TextStyle(
-                            fontSize: Get.width / 28,
-                            fontWeight: FontWeight.w400),
+                            fontSize: width / 28, fontWeight: FontWeight.w400),
                         textDirection: TextDirection.rtl,
                       ),
-                      SizedBox(height: Get.height / 65),
+                      SizedBox(height: height / 65),
                       Text(
                         'در عنوان آگهی به موارد مهم و چشمگیر اشاره کنید',
                         style: TextStyle(
-                            fontSize: Get.width / 31,
-                            fontWeight: FontWeight.w300),
+                            fontSize: width / 31, fontWeight: FontWeight.w300),
                         textDirection: TextDirection.rtl,
                       ),
                     ],
                   ),
                 ),
-                SizedBox(height: Get.height / 80),
+                SizedBox(height: height / 80),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: Get.width / 35),
+                  padding: EdgeInsets.symmetric(horizontal: width / 35),
                   child: AlamutiTextField(
                     textEditingController: titleTextFieldController,
                     isNumber: false,
@@ -139,19 +136,19 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
                 ),
               ],
             ),
-            SizedBox(height: Get.height / 40),
+            SizedBox(height: height / 40),
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: Get.width / 25),
+                  padding: EdgeInsets.symmetric(horizontal: width / 25),
                   child: getPriceTextFieldTitle(),
                 ),
                 SizedBox(
-                  height: Get.height / 80,
+                  height: height / 80,
                 ),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: Get.width / 35),
+                  padding: EdgeInsets.symmetric(horizontal: width / 35),
                   child: AlamutiTextField(
                     textEditingController: priceTextFieldController,
                     isNumber: true,
@@ -167,21 +164,21 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                SizedBox(height: Get.height / 40),
+                SizedBox(height: height / 40),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: Get.width / 25),
+                  padding: EdgeInsets.symmetric(horizontal: width / 25),
                   child: Text(
                     'نام روستا',
                     style: TextStyle(
-                        fontSize: Get.width / 28, fontWeight: FontWeight.w400),
+                        fontSize: width / 28, fontWeight: FontWeight.w400),
                     textDirection: TextDirection.rtl,
                   ),
                 ),
                 SizedBox(
-                  height: Get.height / 80,
+                  height: height / 80,
                 ),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: Get.width / 35),
+                  padding: EdgeInsets.symmetric(horizontal: width / 35),
                   child: AlamutiTextField(
                     textEditingController: vilageNameTextFieldController,
                     isNumber: false,
@@ -197,47 +194,43 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 SizedBox(
-                  height: Get.height / 20,
+                  height: height / 20,
                 ),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: Get.width / 25),
+                  padding: EdgeInsets.symmetric(horizontal: width / 25),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text(
                         'توضیحات آگهی',
                         style: TextStyle(
-                            fontSize: Get.width / 28,
-                            fontWeight: FontWeight.w400),
+                            fontSize: width / 28, fontWeight: FontWeight.w400),
                         textDirection: TextDirection.rtl,
                       ),
-                      SizedBox(height: Get.height / 65),
+                      SizedBox(height: height / 65),
                       Text(
                         'جزئیات و نکات قابل توجه آگهی خود را کامل و دقیق بنویسید',
                         style: TextStyle(
-                            fontSize: Get.width / 31,
-                            fontWeight: FontWeight.w300),
+                            fontSize: width / 31, fontWeight: FontWeight.w300),
                         textDirection: TextDirection.rtl,
                       ),
                     ],
                   ),
                 ),
-                SizedBox(height: Get.height / 80),
+                SizedBox(height: height / 80),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: Get.width / 35),
+                  padding: EdgeInsets.symmetric(horizontal: width / 35),
                   child: DescriptionTextField(
                       textEditingController: descriptionTextFieldController),
                 ),
               ],
             ),
             SizedBox(
-              height: Get.height / 80,
+              height: height / 80,
             ),
             Container(
               padding: EdgeInsets.only(
-                  right: Get.width / 2,
-                  left: Get.width / 35,
-                  bottom: Get.width / 35),
+                  right: width / 2, left: width / 35, bottom: width / 35),
               child: TextButton(
                 style: ElevatedButton.styleFrom(
                   primary: Color.fromRGBO(10, 210, 71, 0.5),
@@ -269,7 +262,7 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
                   style: TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.w400,
-                    fontSize: Get.width / 25,
+                    fontSize: width / 25,
                   ),
                 ),
               ),
@@ -285,21 +278,21 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
         ? Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              SizedBox(height: Get.height / 40),
+              SizedBox(height: height / 40),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: Get.width / 28),
+                padding: EdgeInsets.symmetric(horizontal: width / 28),
                 child: Text(
                   "متراژ",
                   style: TextStyle(
-                      fontSize: Get.width / 28, fontWeight: FontWeight.w400),
+                      fontSize: width / 28, fontWeight: FontWeight.w400),
                   textDirection: TextDirection.rtl,
                 ),
               ),
               SizedBox(
-                height: Get.height / 80,
+                height: height / 80,
               ),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: Get.width / 35),
+                padding: EdgeInsets.symmetric(horizontal: width / 35),
                 child: AlamutiTextField(
                   textEditingController: areaTextFieldController,
                   isNumber: true,
@@ -319,9 +312,9 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
 
     var image = await ImagePicker().pickImage(
         source: ImageSource.gallery,
-        imageQuality: 50,
-        maxHeight: 700,
-        maxWidth: 700);
+        imageQuality: 40,
+        maxHeight: 600,
+        maxWidth: 600);
     if (image != null) {
       final bytes = File(image.path).readAsBytesSync();
 
@@ -360,7 +353,7 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
     }
     return Text(
       title,
-      style: TextStyle(fontSize: Get.width / 28, fontWeight: FontWeight.w400),
+      style: TextStyle(fontSize: width / 28, fontWeight: FontWeight.w400),
       textDirection: TextDirection.rtl,
     );
   }

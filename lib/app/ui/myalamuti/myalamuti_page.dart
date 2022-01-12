@@ -1,25 +1,26 @@
-import 'package:alamuti/app/controller/authentication_manager.dart';
-import 'package:alamuti/app/data/storage/cachemanager.dart';
-import 'package:alamuti/app/ui/home/home_page.dart';
+import 'package:alamuti/app/controller/authentication_manager_controller.dart';
+import 'package:alamuti/app/data/storage/cache_manager.dart';
 import 'package:alamuti/app/ui/widgets/alamuti_appbar.dart';
 import 'package:alamuti/app/ui/widgets/bottom_navbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+// ignore: must_be_immutable
 class MyAlamutiPage extends StatelessWidget with CacheManager {
-  const MyAlamutiPage({Key? key}) : super(key: key);
+  MyAlamutiPage({Key? key}) : super(key: key);
+  AuthenticationManager auth = Get.put(AuthenticationManager());
+
+  final double width = Get.width;
+  final double height = Get.height;
 
   @override
   Widget build(BuildContext context) {
-    var auth = Get.put(AuthenticationManager());
-
     return Scaffold(
       appBar: AlamutiAppBar(
         appBar: AppBar(),
         title: 'الموتی من',
         hasBackButton: false,
-        backwidget: HomePage(),
       ),
       bottomNavigationBar: AlamutBottomNavBar(),
       body: Padding(
@@ -33,8 +34,7 @@ class MyAlamutiPage extends StatelessWidget with CacheManager {
                     children: [
                       Container(
                         alignment: Alignment.center,
-                        padding:
-                            EdgeInsets.symmetric(horizontal: Get.width / 30),
+                        padding: EdgeInsets.symmetric(horizontal: width / 30),
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.end,
@@ -45,13 +45,13 @@ class MyAlamutiPage extends StatelessWidget with CacheManager {
                               },
                               child: Padding(
                                 padding: EdgeInsets.symmetric(
-                                    horizontal: Get.width / 120),
+                                    horizontal: width / 120),
                                 child: Text(
                                   'خروج ازحساب',
                                   style: TextStyle(
                                       color: Colors.black.withOpacity(1),
                                       fontWeight: FontWeight.w300,
-                                      fontSize: Get.width / 33),
+                                      fontSize: width / 33),
                                 ),
                               ),
                               style: ButtonStyle(
@@ -70,13 +70,13 @@ class MyAlamutiPage extends StatelessWidget with CacheManager {
                               ),
                             ),
                             SizedBox(
-                              width: Get.width / 40,
+                              width: width / 40,
                             ),
                             Text(
                               'شما با شماره موبایل ${getPhonenNumber()} وارد شده اید',
                               textDirection: TextDirection.rtl,
                               style: TextStyle(
-                                  fontSize: Get.width / 29,
+                                  fontSize: width / 29,
                                   fontFamily: 'IRANSansXFaNum',
                                   fontWeight: FontWeight.w300),
                             ),

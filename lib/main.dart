@@ -18,6 +18,7 @@ class Application extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       initialRoute: '/',
       getPages: routes,
+      smartManagement: SmartManagement.full,
       theme: themes,
     );
   }

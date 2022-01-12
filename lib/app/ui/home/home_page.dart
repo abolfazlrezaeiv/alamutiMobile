@@ -1,29 +1,25 @@
 import 'dart:convert';
-import 'package:alamuti/app/controller/ConnectionController.dart';
-import 'package:alamuti/app/controller/adsFormController.dart';
-import 'package:alamuti/app/controller/advertisementController.dart';
-import 'package:alamuti/app/controller/category_tag_selected_item.dart';
-import 'package:alamuti/app/controller/homeLoadingController.dart';
+import 'package:alamuti/app/controller/ads_form_controller.dart';
+import 'package:alamuti/app/controller/advertisement_controller.dart';
+import 'package:alamuti/app/controller/category_tag_selected_item_controller.dart';
 import 'package:alamuti/app/controller/scroll_position.dart';
 import 'package:alamuti/app/controller/search_avoid_update.dart';
-import 'package:alamuti/app/controller/selected_category_filter.dart';
+import 'package:alamuti/app/controller/selected_category_filter_controller.dart';
 import 'package:alamuti/app/data/provider/advertisement_provider.dart';
 import 'package:alamuti/app/data/provider/chat_message_provider.dart';
 import 'package:alamuti/app/data/provider/signalr_helper.dart';
-import 'package:alamuti/app/data/storage/cachemanager.dart';
+import 'package:alamuti/app/data/storage/cache_manager.dart';
 import 'package:alamuti/app/ui/details/detail_page.dart';
 import 'package:alamuti/app/ui/theme.dart';
 import 'package:alamuti/app/ui/widgets/bottom_navbar.dart';
 import 'package:chips_choice_null_safety/chips_choice_null_safety.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
 class HomePage extends StatefulWidget {
-  final String? adstype;
-  HomePage({Key? key, this.adstype}) : super(key: key);
+  HomePage({Key? key}) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -42,24 +38,15 @@ class _HomePageState extends State<HomePage> {
 
   GetStorage storage = GetStorage();
 
-  HomeScrollController homeScrollController = Get.put(HomeScrollController());
+  HomeScrollController homeScrollController = Get.find();
 
-  HomeLoadingController homeLoadingController =
-      Get.put(HomeLoadingController());
+  CategorySelectedFilterController categorySelectedFilter = Get.find();
 
-  CategorySelectedFilterController categorySelectedFilter =
-      Get.put(CategorySelectedFilterController());
+  CategorySelectedChipsController categorySelectedChips = Get.find();
 
-  ConnectionController connectionController = Get.put(ConnectionController());
+  ListAdvertisementController listAdvertisementController = Get.find();
 
-  CategorySelectedChipsController categorySelectedChips =
-      Get.put(CategorySelectedChipsController());
-
-  ListAdvertisementController listAdvertisementController =
-      Get.put(ListAdvertisementController());
-
-  CheckIsSearchedController checkIsSearchController =
-      Get.put(CheckIsSearchedController());
+  CheckIsSearchedController checkIsSearchController = Get.find();
 
   List<String> filterType = [
     '',
@@ -67,6 +54,7 @@ class _HomePageState extends State<HomePage> {
     AdsFormState.JOB.toString(),
     AdsFormState.REALSTATE.toString()
   ];
+
   List<String> options = [
     'همه',
     'میوه و مواد غذایی',
@@ -74,18 +62,16 @@ class _HomePageState extends State<HomePage> {
     'املاک',
   ];
 
-  @override
-  void initState() {
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
-      advertisementProvider.getAll(context: context);
-    });
-    super.initState();
-  }
+  final double width = Get.width;
+
+  final double height = Get.height;
 
   @override
-  void dispose() {
-    Get.delete();
-    super.dispose();
+  void initState() {
+    WidgetsBinding.instance?.addPostFrameCallback((duration) {
+      advertisementProvider.getAll(context: context, adstype: null);
+    });
+    super.initState();
   }
 
   @override
@@ -104,7 +90,6 @@ class _HomePageState extends State<HomePage> {
       return await messageProvider.getGroups();
     }
 
-    homeLoadingController.isFilterTapped.value = false;
     signalHelper.initiateConnection();
     signalHelper.reciveMessage();
     signalHelper.createGroup(
@@ -112,11 +97,10 @@ class _HomePageState extends State<HomePage> {
     );
     getChatMessageGroups();
     messageProvider.getGroups();
-    connectionController.checkConnectionStatus();
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(Get.height / 5.7),
+        preferredSize: Size.fromHeight(height / 5.7),
         child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.only(top: 8.0),
@@ -139,7 +123,7 @@ class _HomePageState extends State<HomePage> {
                             controller: searchTextEditingController,
                             style: TextStyle(
                                 backgroundColor: Colors.white,
-                                fontSize: Get.width / 27,
+                                fontSize: width / 27,
                                 fontFamily: persianNumber,
                                 fontWeight: FontWeight.w300),
                             onSubmitted: (value) async {
@@ -163,9 +147,9 @@ class _HomePageState extends State<HomePage> {
                                   backgroundColor: Colors.transparent,
                                   color: Colors.black,
                                   fontWeight: FontWeight.w200,
-                                  fontSize: Get.width / 31),
+                                  fontSize: width / 31),
                               label: SizedBox(
-                                width: Get.width / 3,
+                                width: width / 3,
                                 child: Opacity(
                                   opacity: 0.5,
                                   child: Row(
@@ -177,11 +161,11 @@ class _HomePageState extends State<HomePage> {
                                             backgroundColor: Colors.transparent,
                                             color: Colors.black,
                                             fontWeight: FontWeight.w400,
-                                            fontSize: Get.width / 28),
+                                            fontSize: width / 28),
                                       ),
                                       Image.asset(
                                         'assets/logo/logo.png',
-                                        width: Get.width / 8,
+                                        width: width / 8,
                                       ),
                                     ],
                                   ),
@@ -250,8 +234,6 @@ class _HomePageState extends State<HomePage> {
                             categorySelectedFilter.selected.value =
                                 filterType[val];
 
-                            homeLoadingController.isFilterTapped.value = true;
-                            // showLoaderDialog(context);
                             advertisementProvider.getAll(
                                 context: context,
                                 adstype: categorySelectedFilter.selected.value);
@@ -282,170 +264,158 @@ class _HomePageState extends State<HomePage> {
       ),
       bottomNavigationBar: AlamutBottomNavBar(),
       body: Obx(
-        () => WillPopScope(
-          onWillPop: () async {
-            SystemNavigator.pop();
+        () => RefreshIndicator(
+          onRefresh: () async {
+            searchTextEditingController.text = '';
 
-            return false;
+            return advertisementProvider.getAll(context: context);
           },
-          child: RefreshIndicator(
-            onRefresh: () async {
-              connectionController.checkConnectionStatus();
-              searchTextEditingController.text = '';
+          child: ListView.builder(
+            controller: listControl,
+            itemCount: listAdvertisementController.adsList.length,
+            itemBuilder: (BuildContext context, int index) {
+              return Container(
+                height: height / 5,
+                child: GestureDetector(
+                  onTap: () {
+                    FocusScope.of(context).unfocus();
 
-              return advertisementProvider.getAll(
-                context: context,
-              );
-            },
-            child: ListView.builder(
-              controller: listControl,
-              itemCount: listAdvertisementController.adsList.length,
-              itemBuilder: (BuildContext context, int index) {
-                return Container(
-                  height: Get.height / 5,
-                  child: GestureDetector(
-                    onTap: () {
-                      FocusScope.of(context).unfocus();
-
-                      Get.to(
-                          () => AdsDetail(
-                                byteImage1: listAdvertisementController
-                                    .adsList[index].photo1,
-                                byteImage2: listAdvertisementController
-                                    .adsList[index].photo2,
-                                price: listAdvertisementController
-                                    .adsList[index].price
-                                    .toString(),
-                                phoneNumber: listAdvertisementController
-                                    .adsList[index].phoneNumber,
-                                sendedDate: listAdvertisementController
-                                    .adsList[index].datePosted,
-                                title: listAdvertisementController
-                                    .adsList[index].title,
-                                adsType: listAdvertisementController
-                                    .adsList[index].adsType,
-                                userId: listAdvertisementController
-                                    .adsList[index].userId,
-                                area: listAdvertisementController
-                                    .adsList[index].area,
-                                village: listAdvertisementController
-                                    .adsList[index].village,
-                                description: listAdvertisementController
-                                    .adsList[index].description,
-                              ),
-                          transition: Transition.fadeIn);
-                    },
-                    child: Obx(
-                      () => Container(
-                        decoration: BoxDecoration(
-                          border: Border(
-                            bottom: BorderSide(
-                              color: Colors.grey.withOpacity(0.3),
+                    Get.to(
+                        () => AdsDetail(
+                              byteImage1: listAdvertisementController
+                                  .adsList[index].photo1,
+                              byteImage2: listAdvertisementController
+                                  .adsList[index].photo2,
+                              price: listAdvertisementController
+                                  .adsList[index].price
+                                  .toString(),
+                              phoneNumber: listAdvertisementController
+                                  .adsList[index].phoneNumber,
+                              sendedDate: listAdvertisementController
+                                  .adsList[index].datePosted,
+                              title: listAdvertisementController
+                                  .adsList[index].title,
+                              adsType: listAdvertisementController
+                                  .adsList[index].adsType,
+                              userId: listAdvertisementController
+                                  .adsList[index].userId,
+                              area: listAdvertisementController
+                                  .adsList[index].area,
+                              village: listAdvertisementController
+                                  .adsList[index].village,
+                              description: listAdvertisementController
+                                  .adsList[index].description,
                             ),
+                        transition: Transition.fadeIn);
+                  },
+                  child: Obx(
+                    () => Container(
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                            color: Colors.grey.withOpacity(0.3),
                           ),
                         ),
-                        child: Center(
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: Get.width / 50),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                FittedBox(
-                                  fit: BoxFit.cover,
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(8),
-                                    child: (listAdvertisementController
-                                                .adsList[index].photo1 ==
-                                            null)
-                                        ? Opacity(
-                                            opacity: 0.6,
-                                            child: Image.asset(
-                                              'assets/logo/no-image.png',
-                                              fit: BoxFit.cover,
-                                              height: Get.height / 6,
-                                              width: Get.height / 6,
-                                            ),
-                                          )
-                                        : Image.memory(
-                                            base64Decode(
-                                              listAdvertisementController
-                                                  .adsList[index].photo1,
-                                            ),
+                      ),
+                      child: Center(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: width / 50),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              FittedBox(
+                                fit: BoxFit.cover,
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(8),
+                                  child: (listAdvertisementController
+                                              .adsList[index].photo1 ==
+                                          null)
+                                      ? Opacity(
+                                          opacity: 0.6,
+                                          child: Image.asset(
+                                            'assets/logo/no-image.png',
                                             fit: BoxFit.cover,
-                                            height: Get.height / 6,
-                                            width: Get.height / 6,
+                                            height: height / 6,
+                                            width: height / 6,
                                           ),
+                                        )
+                                      : Image.memory(
+                                          base64Decode(
+                                            listAdvertisementController
+                                                .adsList[index].photo1,
+                                          ),
+                                          fit: BoxFit.cover,
+                                          height: height / 6,
+                                          width: height / 6,
+                                        ),
+                                ),
+                              ),
+                              Flexible(
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: height / 70),
+                                  child: Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Text(
+                                        listAdvertisementController
+                                            .adsList[index].title,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 15),
+                                        textDirection: TextDirection.rtl,
+                                        overflow: TextOverflow.visible,
+                                      ),
+                                      SizedBox(
+                                        height: height / 18,
+                                      ),
+                                      Text(
+                                        'تومان ${listAdvertisementController.adsList[index].price.toString()}',
+                                        style: TextStyle(
+                                            fontFamily: persianNumber,
+                                            fontWeight: FontWeight.w300),
+                                        textDirection: TextDirection.rtl,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          Text(
+                                            listAdvertisementController
+                                                .adsList[index].datePosted,
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w200,
+                                                fontFamily: persianNumber,
+                                                fontSize: 13),
+                                            textDirection: TextDirection.rtl,
+                                          ),
+                                          Text(
+                                            listAdvertisementController
+                                                .adsList[index].village,
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w200,
+                                                fontFamily: persianNumber,
+                                                fontSize: 13),
+                                            textDirection: TextDirection.rtl,
+                                          ),
+                                        ],
+                                      ),
+                                    ],
                                   ),
                                 ),
-                                Flexible(
-                                  child: Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: Get.height / 70),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.end,
-                                      children: [
-                                        Text(
-                                          listAdvertisementController
-                                              .adsList[index].title,
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.w400,
-                                              fontSize: 15),
-                                          textDirection: TextDirection.rtl,
-                                          overflow: TextOverflow.visible,
-                                        ),
-                                        SizedBox(
-                                          height: Get.height / 18,
-                                        ),
-                                        Text(
-                                          'تومان ${listAdvertisementController.adsList[index].price.toString()}',
-                                          style: TextStyle(
-                                              fontFamily: persianNumber,
-                                              fontWeight: FontWeight.w300),
-                                          textDirection: TextDirection.rtl,
-                                        ),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.end,
-                                          children: [
-                                            Text(
-                                              listAdvertisementController
-                                                  .adsList[index].datePosted,
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.w200,
-                                                  fontFamily: persianNumber,
-                                                  fontSize: 13),
-                                              textDirection: TextDirection.rtl,
-                                            ),
-                                            Text(
-                                              listAdvertisementController
-                                                  .adsList[index].village,
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.w200,
-                                                  fontFamily: persianNumber,
-                                                  fontSize: 13),
-                                              textDirection: TextDirection.rtl,
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                )
-                              ],
-                            ),
+                              )
+                            ],
                           ),
                         ),
                       ),
                     ),
                   ),
-                );
-              },
-            ),
+                ),
+              );
+            },
           ),
         ),
       ),

@@ -1,11 +1,11 @@
 import 'dart:convert';
-import 'package:alamuti/app/controller/ConnectionController.dart';
-import 'package:alamuti/app/controller/adsFormController.dart';
-import 'package:alamuti/app/controller/myAdvertisementController.dart';
-import 'package:alamuti/app/controller/update_image_advertisement.dart';
+import 'package:alamuti/app/binding/advertisement_update_binding.dart';
+import 'package:alamuti/app/controller/Connection_controller.dart';
+import 'package:alamuti/app/controller/ads_form_controller.dart';
+import 'package:alamuti/app/controller/user_advertisement_controller.dart';
+import 'package:alamuti/app/controller/update_image_advertisement_controller.dart';
 import 'package:alamuti/app/data/provider/advertisement_provider.dart';
 import 'package:alamuti/app/ui/advetisement_form_page/advertisement_update_from_page.dart';
-import 'package:alamuti/app/ui/myalamuti/myalamuti_page.dart';
 import 'package:alamuti/app/ui/widgets/alamuti_appbar.dart';
 import 'package:alamuti/app/ui/widgets/bottom_navbar.dart';
 import 'package:flutter/material.dart';
@@ -14,25 +14,28 @@ import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 
-class MyAdvertisement extends StatelessWidget {
-  MyAdvertisement({
+class UserAdvertisement extends StatelessWidget {
+  UserAdvertisement({
     Key? key,
   }) : super(key: key);
 
+  final double width = Get.width;
+  final double height = Get.height;
+
   @override
   Widget build(BuildContext context) {
-    var connectionController = Get.put(ConnectionController());
+    ConnectionController connectionController = Get.put(ConnectionController());
 
-    var ap = AdvertisementProvider();
+    var advertisementProvider = AdvertisementProvider();
     WidgetsBinding.instance?.addPostFrameCallback((_) {
-      ap.getUserAds(context);
+      advertisementProvider.getUserAds(context);
     });
 
-    var adsFormController = AdsFormController();
+    var advertisementTypeController = AdvertisementTypeController();
 
     connectionController.checkConnectionStatus();
 
-    var myAdvertisementController = Get.put(MyAdvertisementController());
+    var myAdvertisementController = Get.put(UserAdvertisementController());
 
     var updateUploadImageController = Get.put(UpdateUploadImageController());
 
@@ -41,7 +44,7 @@ class MyAdvertisement extends StatelessWidget {
       appBar: AlamutiAppBar(
         appBar: AppBar(),
         title: 'آگهی های من',
-        backwidget: MyAlamutiPage(),
+        backwidget: "/myalamuti",
         hasBackButton: true,
       ),
       bottomNavigationBar: AlamutBottomNavBar(),
@@ -52,13 +55,13 @@ class MyAdvertisement extends StatelessWidget {
           : Obx(
               () => RefreshIndicator(
                 onRefresh: () {
-                  return ap.getUserAds(context);
+                  return advertisementProvider.getUserAds(context);
                 },
                 child: ListView.builder(
                   itemCount: myAdvertisementController.adsList.length,
                   itemBuilder: (BuildContext context, int index) {
                     return Container(
-                      height: Get.height / 5,
+                      height: height / 5,
                       decoration: BoxDecoration(
                         border: Border(
                           bottom: BorderSide(
@@ -68,8 +71,7 @@ class MyAdvertisement extends StatelessWidget {
                       ),
                       child: Center(
                         child: Padding(
-                          padding:
-                              EdgeInsets.symmetric(horizontal: Get.width / 50),
+                          padding: EdgeInsets.symmetric(horizontal: width / 50),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -86,8 +88,8 @@ class MyAdvertisement extends StatelessWidget {
                                           child: Image.asset(
                                             'assets/logo/no-image.png',
                                             fit: BoxFit.cover,
-                                            height: Get.height / 6,
-                                            width: Get.height / 6,
+                                            height: height / 6,
+                                            width: height / 6,
                                           ),
                                         )
                                       : Image.memory(
@@ -96,15 +98,15 @@ class MyAdvertisement extends StatelessWidget {
                                                 .adsList[index].photo1!,
                                           ),
                                           fit: BoxFit.cover,
-                                          height: Get.height / 6,
-                                          width: Get.height / 6,
+                                          height: height / 6,
+                                          width: height / 6,
                                         ),
                                 ),
                               ),
                               Flexible(
                                 child: Padding(
                                   padding: EdgeInsets.symmetric(
-                                      vertical: Get.height / 70),
+                                      vertical: height / 70),
                                   child: Column(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
@@ -120,7 +122,7 @@ class MyAdvertisement extends StatelessWidget {
                                         overflow: TextOverflow.visible,
                                       ),
                                       SizedBox(
-                                        height: Get.height / 18,
+                                        height: height / 18,
                                       ),
                                       Row(
                                         mainAxisAlignment:
@@ -141,8 +143,7 @@ class MyAdvertisement extends StatelessWidget {
                                                       style: TextStyle(
                                                           fontWeight:
                                                               FontWeight.w300,
-                                                          fontSize:
-                                                              Get.width / 28,
+                                                          fontSize: width / 28,
                                                           color: Colors.grey),
                                                     ),
                                                   ),
@@ -159,7 +160,7 @@ class MyAdvertisement extends StatelessWidget {
                                                 )
                                               : Container(),
                                           SizedBox(
-                                            width: Get.width / 45,
+                                            width: width / 45,
                                           ),
                                           Row(
                                             children: [
@@ -219,13 +220,14 @@ class MyAdvertisement extends StatelessWidget {
                                                       child: TextButton(
                                                           onPressed: () async {
                                                             Get.back();
-                                                            await ap.deleteAds(
-                                                                id: myAdvertisementController
-                                                                    .adsList[
-                                                                        index]
-                                                                    .id,
-                                                                context:
-                                                                    context);
+                                                            await advertisementProvider
+                                                                .deleteAds(
+                                                                    id: myAdvertisementController
+                                                                        .adsList[
+                                                                            index]
+                                                                        .id,
+                                                                    context:
+                                                                        context);
                                                           },
                                                           child: Text(
                                                             'حذف',
@@ -275,7 +277,7 @@ class MyAdvertisement extends StatelessWidget {
                                                           .adsType ==
                                                       AdsFormState.FOOD
                                                           .toString()) {
-                                                    adsFormController
+                                                    advertisementTypeController
                                                             .formState.value =
                                                         AdsFormState.FOOD;
                                                   }
@@ -284,7 +286,7 @@ class MyAdvertisement extends StatelessWidget {
                                                           .adsType ==
                                                       AdsFormState.JOB
                                                           .toString()) {
-                                                    adsFormController
+                                                    advertisementTypeController
                                                             .formState.value =
                                                         AdsFormState.JOB;
                                                   }
@@ -293,7 +295,7 @@ class MyAdvertisement extends StatelessWidget {
                                                           .adsType ==
                                                       AdsFormState.REALSTATE
                                                           .toString()) {
-                                                    adsFormController
+                                                    advertisementTypeController
                                                             .formState.value =
                                                         AdsFormState.REALSTATE;
                                                   }
@@ -317,6 +319,8 @@ class MyAdvertisement extends StatelessWidget {
                                                               myAdvertisementController
                                                                       .adsList[
                                                                   index]),
+                                                      binding:
+                                                          AdvertisementUpdateFormBinding(),
                                                       transition:
                                                           Transition.fadeIn);
                                                 },

@@ -4,26 +4,27 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class LeftPhotoCard extends StatelessWidget {
+class LeftPhotoCard extends GetView<UploadImageController> {
   LeftPhotoCard({Key? key}) : super(key: key);
+
+  final double width = Get.width;
+
+  final double height = Get.height;
 
   @override
   Widget build(BuildContext context) {
-    var uploadImageController = Get.put(UploadImageController());
-
     return Container(
-      height: Get.width / 3,
-      width: Get.width / 3,
+      height: width / 3,
+      width: width / 3,
       child: Obx(
         () => Card(
           elevation: 3,
           clipBehavior: Clip.antiAliasWithSaveLayer,
-          child: (uploadImageController.leftImagebyteCode.value.length > 2)
+          child: (controller.leftImagebyteCode.value.length > 2)
               ? Stack(
                   children: [
                     Image.memory(
-                      base64Decode(
-                          uploadImageController.leftImagebyteCode.value),
+                      base64Decode(controller.leftImagebyteCode.value),
                       fit: BoxFit.cover,
                     ),
                     IconButton(
@@ -32,14 +33,14 @@ class LeftPhotoCard extends StatelessWidget {
                         color: Colors.white,
                       ),
                       onPressed: () {
-                        uploadImageController.leftImagebyteCode.value = '';
+                        controller.leftImagebyteCode.value = '';
                       },
                     )
                   ],
                   fit: StackFit.expand,
                 )
               : Padding(
-                  padding: EdgeInsets.all(Get.width / 14),
+                  padding: EdgeInsets.all(width / 14),
                   child: Icon(
                     Icons.photo_outlined,
                     size: 50,

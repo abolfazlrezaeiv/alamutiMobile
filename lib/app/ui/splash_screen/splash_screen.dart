@@ -1,39 +1,43 @@
-import 'package:alamuti/app/controller/ConnectionController.dart';
-import 'package:alamuti/app/ui/onboard/onboard.dart';
+import 'package:alamuti/app/controller/Connection_controller.dart';
+import 'package:alamuti/app/controller/authentication_manager_controller.dart';
+import 'package:alamuti/app/data/provider/token_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class SplashScreen extends StatelessWidget {
-  const SplashScreen({Key? key}) : super(key: key);
+class SplashScreen extends StatefulWidget {
+  SplashScreen({Key? key}) : super(key: key);
 
-  Future<void> initializeSettings() async {
-    await Future.delayed(Duration(seconds: 3));
+  @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  AuthenticationManager _authManager = Get.find();
+
+  TokenProvider tokenProviderController = Get.find();
+
+  Future<void> initializeApp() async {
+    // await Future.delayed(Duration(seconds: 1));
+    if (await _authManager.checkLoginStatus()) {
+      await tokenProviderController.refreshToken();
+      Get.toNamed('/home');
+    } else {
+      Get.toNamed('/register');
+    }
+  }
+
+  @override
+  void initState() {
+    initializeApp();
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: initializeSettings(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return WaitingSplashScreen();
-        } else {
-          if (snapshot.hasError)
-            return errorView(snapshot);
-          else {
-            return OnBoard();
-          }
-        }
-      },
-    );
+    return WaitingSplashScreen();
   }
 }
 
-Scaffold errorView(AsyncSnapshot<Object?> snapshot) {
-  return Scaffold(body: Center(child: Text('Error: ${snapshot.error}')));
-}
-
-// ignore: must_be_immutable
 class WaitingSplashScreen extends StatelessWidget {
   WaitingSplashScreen({Key? key}) : super(key: key);
 
@@ -66,7 +70,7 @@ class WaitingSplashScreen extends StatelessWidget {
                 connectionController.isConnected.value
                     ? CircularProgressIndicator(
                         strokeWidth: 2,
-                        color: Color.fromRGBO(189, 121, 97, 1),
+                        color: Colors.greenAccent[700],
                       )
                     : Text('لطفا ارتباط با اینترنت همراه خود را بررسی کنید')
               ],

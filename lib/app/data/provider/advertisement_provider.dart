@@ -1,9 +1,8 @@
-import 'package:alamuti/app/controller/adsFormController.dart';
-import 'package:alamuti/app/controller/advertisementController.dart';
-import 'package:alamuti/app/controller/myAdvertisementController.dart';
+import 'package:alamuti/app/controller/ads_form_controller.dart';
+import 'package:alamuti/app/controller/advertisement_controller.dart';
 import 'package:alamuti/app/controller/search_avoid_update.dart';
-import 'package:alamuti/app/controller/search_keyword.dart';
-import 'package:alamuti/app/data/model/Advertisement.dart';
+import 'package:alamuti/app/controller/user_advertisement_controller.dart';
+import 'package:alamuti/app/data/model/advertisement.dart';
 import 'package:alamuti/app/data/provider/token_provider.dart';
 import 'package:alamuti/app/data/provider/base_url.dart';
 import 'package:dio/dio.dart';
@@ -18,7 +17,7 @@ class AdvertisementProvider {
 
   Future<void> getUserAds(BuildContext context) async {
     advertisementFromApi = [];
-    var myAdvertisementController = Get.put(MyAdvertisementController());
+    var myAdvertisementController = Get.put(UserAdvertisementController());
 
     showLoaderDialog(context);
 
@@ -43,7 +42,6 @@ class AdvertisementProvider {
   Future<void> search(
       {required BuildContext context, required String searchInput}) async {
     advertisementFromApi = [];
-    var searchKeywordController = Get.put(SearchKeywordController());
 
     var listAdvertisementController = Get.put(ListAdvertisementController());
 
@@ -103,7 +101,6 @@ class AdvertisementProvider {
       return;
     }
     listAdvertisementController.adsList.value = advertisementFromApi;
-    searchKeywordController.keyword.value = searchInput;
   }
 
   Future<void> getAll({required BuildContext context, String? adstype}) async {
@@ -139,6 +136,7 @@ class AdvertisementProvider {
           advertisementFromApi.add(Advertisement.fromJson(element));
         },
       );
+      listAdvertisementController.adsList.value = advertisementFromApi;
     } else {
       Get.defaultDialog(
         radius: 5,
@@ -162,8 +160,6 @@ class AdvertisementProvider {
         ),
       );
     }
-
-    listAdvertisementController.adsList.value = advertisementFromApi;
   }
 
   Future<void> postAdvertisement(
@@ -175,7 +171,7 @@ class AdvertisementProvider {
       required String photo1,
       required String village,
       required String photo2}) async {
-    var adsFormController = Get.put(AdsFormController());
+    var advertisementTypeController = Get.put(AdvertisementTypeController());
 
     var formData = FormData.fromMap({
       'title': title,
@@ -185,7 +181,8 @@ class AdvertisementProvider {
       'photo2': photo2,
       'area': area,
       'village': village,
-      'adsType': adsFormController.formState.value.toString().toLowerCase(),
+      'adsType':
+          advertisementTypeController.formState.value.toString().toLowerCase(),
     });
     showLoaderDialog(context);
     var response = await tokenProvider.api
@@ -209,7 +206,7 @@ class AdvertisementProvider {
 
   Future<void> deleteAds(
       {required BuildContext context, required int id}) async {
-    var myAdvertisementController = Get.put(MyAdvertisementController());
+    var myAdvertisementController = Get.put(UserAdvertisementController());
 
     for (int i = 0; i < myAdvertisementController.adsList.length; i++) {
       if (myAdvertisementController.adsList[i].id == id) {
@@ -241,7 +238,7 @@ class AdvertisementProvider {
       required String photo1,
       required String village,
       required String photo2}) async {
-    var adsFormController = Get.put(AdsFormController());
+    var advertisementTypeController = Get.put(AdvertisementTypeController());
 
     var formData = FormData.fromMap({
       'id': id,
@@ -252,7 +249,8 @@ class AdvertisementProvider {
       'photo2': photo2,
       'area': area,
       'village': village,
-      'adsType': adsFormController.formState.value.toString().toLowerCase(),
+      'adsType':
+          advertisementTypeController.formState.value.toString().toLowerCase(),
     });
 
     showLoaderDialog(context);
