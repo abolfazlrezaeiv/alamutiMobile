@@ -119,32 +119,36 @@ class UserAdvertisement extends StatelessWidget {
                                   height: height / 18,
                                 ),
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     userAdvertisementController
                                                 .adsList[index].published ==
                                             false
-                                        ? Container(
-                                            child: Padding(
+                                        ? Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Container(
                                               padding:
                                                   const EdgeInsets.symmetric(
                                                       horizontal: 5.0,
                                                       vertical: 8),
                                               child: Text(
                                                 'در صف انتشار',
+                                                textDirection:
+                                                    TextDirection.rtl,
                                                 style: TextStyle(
                                                     fontWeight: FontWeight.w300,
                                                     fontSize: width / 28,
                                                     color: Colors.grey),
                                               ),
-                                            ),
-                                            decoration: BoxDecoration(
-                                              border: Border.all(
-                                                color: Colors.greenAccent,
-                                                width: 0.7,
-                                              ),
-                                              borderRadius: BorderRadius.all(
-                                                Radius.circular(5),
+                                              decoration: BoxDecoration(
+                                                border: Border.all(
+                                                  color: Colors.greenAccent,
+                                                  width: 0.7,
+                                                ),
+                                                borderRadius: BorderRadius.all(
+                                                  Radius.circular(5),
+                                                ),
                                               ),
                                             ),
                                           )
@@ -211,6 +215,8 @@ class UserAdvertisement extends StatelessWidget {
                                                     },
                                                     child: Text(
                                                       'حذف',
+                                                      textDirection:
+                                                          TextDirection.rtl,
                                                       style: TextStyle(
                                                           fontWeight:
                                                               FontWeight.w300,
@@ -222,10 +228,11 @@ class UserAdvertisement extends StatelessWidget {
                                           },
                                           child: Text(
                                             'حذف',
+                                            textDirection: TextDirection.rtl,
                                             style: TextStyle(
                                               color:
-                                                  Colors.white.withOpacity(0.8),
-                                              fontWeight: FontWeight.w300,
+                                                  Colors.black.withOpacity(0.8),
+                                              fontWeight: FontWeight.w200,
                                             ),
                                           ),
                                           style: ButtonStyle(
@@ -243,7 +250,7 @@ class UserAdvertisement extends StatelessWidget {
                                           ),
                                         ),
                                         SizedBox(
-                                          width: 3,
+                                          width: 5,
                                         ),
                                         TextButton(
                                           onPressed: () {
@@ -258,10 +265,11 @@ class UserAdvertisement extends StatelessWidget {
                                           },
                                           child: Text(
                                             'ویرایش',
+                                            textDirection: TextDirection.rtl,
                                             style: TextStyle(
                                               color:
                                                   Colors.black.withOpacity(0.8),
-                                              fontWeight: FontWeight.w200,
+                                              fontWeight: FontWeight.w300,
                                             ),
                                           ),
                                           style: ButtonStyle(

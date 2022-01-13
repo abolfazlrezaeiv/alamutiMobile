@@ -162,18 +162,19 @@ class AdsDetail extends StatelessWidget {
                     _makePhoneCall(this.phoneNumber);
                   },
                   child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: Get.width / 5.6),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: Get.width / 5.6, vertical: Get.width / 90),
                     child: Text(
                       'تماس',
                       style: TextStyle(
-                        color: Colors.black.withOpacity(0.8),
-                        fontWeight: FontWeight.w200,
+                        color: Colors.black,
+                        fontWeight: FontWeight.w400,
                       ),
                     ),
                   ),
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(
-                      Color.fromRGBO(10, 210, 71, 0.3),
+                      Color.fromRGBO(10, 210, 71, 0.4),
                     ),
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
@@ -194,18 +195,19 @@ class AdsDetail extends StatelessWidget {
                         transition: Transition.fadeIn);
                   },
                   child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: Get.width / 5.6),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: Get.width / 5.6, vertical: Get.width / 90),
                     child: Text(
                       'چت',
                       style: TextStyle(
-                        color: Colors.black.withOpacity(0.8),
-                        fontWeight: FontWeight.w200,
+                        color: Colors.black,
+                        fontWeight: FontWeight.w400,
                       ),
                     ),
                   ),
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(
-                      Color.fromRGBO(10, 210, 71, 0.3),
+                      Color.fromRGBO(10, 210, 71, 0.4),
                     ),
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
