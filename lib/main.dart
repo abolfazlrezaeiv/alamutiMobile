@@ -9,13 +9,16 @@ import 'package:get_storage/get_storage.dart';
 
 Future<void> main() async {
   await GetStorage.init();
-  GetStorage storage = GetStorage();
-  final SignalRHelper signalHelper = SignalRHelper();
-  signalHelper.initiateConnection();
-  signalHelper.reciveMessage();
-  signalHelper.createGroup(
-    storage.read(CacheManagerKey.USERID.toString()),
-  );
+  var box = GetStorage();
+  if (await box.read(CacheManagerKey.ISLOGGEDIN.toString()) == true) {
+    final SignalRHelper signalHelper = SignalRHelper();
+    await signalHelper.initiateConnection();
+    await signalHelper.reciveMessage();
+    await signalHelper.createGroup(
+      await box.read(CacheManagerKey.USERID.toString()),
+    );
+  }
+
   runApp(Application());
 }
 

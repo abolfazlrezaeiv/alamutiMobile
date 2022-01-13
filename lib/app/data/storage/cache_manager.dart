@@ -42,7 +42,7 @@ mixin CacheManager {
     return true;
   }
 
-  getUserId() {
+  getUserId() async {
     final box = GetStorage();
     var id = box.read(CacheManagerKey.USERID.toString());
     return id;
