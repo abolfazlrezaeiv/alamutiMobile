@@ -7,6 +7,7 @@ import 'package:alamuti/app/data/provider/chat_message_provider.dart';
 import 'package:alamuti/app/data/storage/cache_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:signalr_core/signalr_core.dart';
 
 class SignalRHelper with CacheManager {
@@ -22,7 +23,9 @@ class SignalRHelper with CacheManager {
 
   NewMessageController newMessageController = Get.put(NewMessageController());
 
-  var mp = MessageProvider();
+  MessageProvider messageProvider = MessageProvider();
+
+  GetStorage storage = GetStorage();
 
   SignalRHelper() {
     connection = HubConnectionBuilder()
@@ -44,16 +47,20 @@ class SignalRHelper with CacheManager {
     connection.on("ReceiveMessage", (arguments) async {
       chatTargetUserController.userId.value = arguments![1];
 
-      MessageProvider mp = MessageProvider();
-      await mp.getGroupMessages(arguments[3]);
-
       await connection
           .invoke('CreatenewGroup', args: [arguments[3], arguments[4]]);
-      if (arguments[1] != getUserId()) {
+      // if (arguments[1] !=
+      //     await storage.read(CacheManagerKey.USERID.toString())) {
+      //   newMessageController.haveNewMessage.value = true;
+      // }
+      if (arguments[0] ==
+          await storage.read(CacheManagerKey.USERID.toString())) {
         newMessageController.haveNewMessage.value = true;
       }
-      await mp.getGroups();
-      await mp.getGroupMessages(arguments[3]);
+      print(
+          '${newMessageController.haveNewMessage.value}  from recive signalr');
+      await messageProvider.getGroupMessages(arguments[3]);
+      await messageProvider.getGroups();
     });
   }
 

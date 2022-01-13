@@ -20,6 +20,7 @@ class DescriptionTextField extends StatelessWidget {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: TextFormField(
+        textInputAction: TextInputAction.newline,
         controller: textEditingController,
         textDirection: TextDirection.rtl,
         keyboardType: TextInputType.multiline,

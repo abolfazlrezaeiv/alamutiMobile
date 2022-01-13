@@ -38,6 +38,8 @@ class AlamutiTextField extends StatelessWidget {
       child: Directionality(
         textDirection: TextDirection.rtl,
         child: TextFormField(
+          textInputAction:
+              isChatTextField ? TextInputAction.newline : TextInputAction.done,
           onFieldSubmitted: (value) {
             FocusScope.of(context).unfocus();
           },
@@ -55,6 +57,7 @@ class AlamutiTextField extends StatelessWidget {
               );
             }
           },
+          maxLines: null,
           validator: (value) {
             if (value == null || value.isEmpty || value.length < 0) {
               return 'این مورد را کامل کنید';

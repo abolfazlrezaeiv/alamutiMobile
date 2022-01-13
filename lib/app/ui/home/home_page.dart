@@ -3,6 +3,7 @@ import 'package:alamuti/app/binding/detail_binding.dart';
 import 'package:alamuti/app/controller/ads_form_controller.dart';
 import 'package:alamuti/app/controller/advertisement_controller.dart';
 import 'package:alamuti/app/controller/category_tag_selected_item_controller.dart';
+import 'package:alamuti/app/controller/chat_group_controller.dart';
 import 'package:alamuti/app/controller/scroll_position.dart';
 import 'package:alamuti/app/controller/search_avoid_update.dart';
 import 'package:alamuti/app/controller/selected_category_filter_controller.dart';
@@ -29,11 +30,11 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   AdvertisementProvider advertisementProvider = AdvertisementProvider();
 
-  SignalRHelper signalHelper = SignalRHelper();
+  // SignalRHelper signalHelper = SignalRHelper();
 
   TextEditingController searchTextEditingController = TextEditingController();
 
-  MessageProvider messageProvider = MessageProvider();
+  // MessageProvider messageProvider = MessageProvider();
 
   ScrollController listControl = ScrollController();
 
@@ -71,6 +72,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     WidgetsBinding.instance?.addPostFrameCallback((duration) {
       advertisementProvider.getAll(context: context, adstype: null);
+      getMessages();
     });
     super.initState();
   }
@@ -87,17 +89,17 @@ class _HomePageState extends State<HomePage> {
         listControl.jumpTo(homeScrollController.scrollPosition.value);
       }
     });
-    getChatMessageGroups() async {
-      return await messageProvider.getGroups();
-    }
+    // getChatMessageGroups() async {
+    //   return await messageProvider.getGroups();
+    // }
 
-    signalHelper.initiateConnection();
-    signalHelper.reciveMessage();
-    signalHelper.createGroup(
-      storage.read(CacheManagerKey.USERID.toString()),
-    );
-    getChatMessageGroups();
-    messageProvider.getGroups();
+    // signalHelper.initiateConnection();
+    // signalHelper.reciveMessage();
+    // signalHelper.createGroup(
+    //   storage.read(CacheManagerKey.USERID.toString()),
+    // );
+    // getChatMessageGroups();
+    // messageProvider.getGroups();
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: PreferredSize(
@@ -266,10 +268,12 @@ class _HomePageState extends State<HomePage> {
       bottomNavigationBar: AlamutBottomNavBar(),
       body: Obx(
         () => RefreshIndicator(
+          color: Colors.greenAccent,
           onRefresh: () async {
             searchTextEditingController.text = '';
 
-            return advertisementProvider.getAll(context: context);
+            return advertisementProvider.getAll(
+                context: context, isRefreshIndicator: true);
           },
           child: ListView.builder(
             controller: listControl,
@@ -422,5 +426,27 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
+  }
+
+  getMessages() async {
+    final ChatGroupController chatGroupController =
+        Get.put(ChatGroupController());
+
+    final SignalRHelper signalHelper = SignalRHelper();
+
+    final MessageProvider messageProvider = MessageProvider();
+    messageProvider.getGroups();
+    chatGroupController.groupList.listen((p0) {
+      WidgetsBinding.instance?.addPostFrameCallback((_) async {
+        await signalHelper.initiateConnection();
+
+        chatGroupController.groupList.forEach((element) {
+          signalHelper.createGroup(
+            element.name,
+          );
+        });
+        await signalHelper.reciveMessage();
+      });
+    });
   }
 }

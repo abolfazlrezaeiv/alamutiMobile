@@ -10,6 +10,7 @@ import 'package:alamuti/app/data/storage/cache_manager.dart';
 import 'package:dio/dio.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/route_manager.dart';
+import 'package:get_storage/get_storage.dart';
 
 class MessageProvider with CacheManager {
   var tokenProvider = Get.put(TokenProvider());
@@ -67,7 +68,7 @@ class MessageProvider with CacheManager {
     chatMessageController.messageList.value = mymessages;
   }
 
-  Future<String> getLastItemOfGroup(String groupname) async {
+  Future<void> getLastItemOfGroup(String groupname) async {
     var response = await tokenProvider.api.get(
       baseChatUrl + 'api/Chat/groups/$groupname',
     );
@@ -75,45 +76,46 @@ class MessageProvider with CacheManager {
     var sender = response.data['sender'];
     var message = response.data['message'];
 
-    print('$sender from messageprovider');
     lastMessageSenderIDController.lastMessage.add(message);
 
     lastMessageSenderIDController.lastsender.add(sender);
-    return sender;
   }
 
-  Future<List<ChatGroup>> getGroups() async {
+  Future<void> getGroups() async {
+    List<ChatGroup> mygroups = [];
     var response = await tokenProvider.api.get(
       baseChatUrl + 'api/Chat/groupswithmessages',
     );
+    if (response.statusCode == 200) {
+      response.data.forEach(
+        (element) {
+          mygroups.add(
+            ChatGroup(
+              name: element['name'],
+              id: element['id'],
+              title: element['title'],
+              isChecked: element['isChecked'],
+              lastMessage: ChatMessage.fromJson(element['lastMessage']),
+              groupImage: element['image'],
+            ),
+          );
+        },
+      );
+      GetStorage storage = GetStorage();
 
-    var myMap = response.data;
-
-    List<ChatGroup> mygroups = [];
-    myMap.forEach(
-      (element) {
-        mygroups.add(
-          ChatGroup(
-            name: element['name'],
-            id: element['id'],
-            title: element['title'],
-            isChecked: element['isChecked'],
-            lastMessage: ChatMessage.fromJson(element['lastMessage']),
-            groupImage: element['image'],
-          ),
-        );
-      },
-    );
-
-    chatGroupController.groupList.value = mygroups;
-    for (var i = 0; i < chatGroupController.groupList.length; i++) {
-      if ((chatGroupController.groupList[i].isChecked == false &&
-          chatGroupController.groupList[i].lastMessage.sender != getUserId())) {
-        newMessageController.haveNewMessage.value = true;
+      chatGroupController.groupList.value = mygroups;
+      for (var i = 0; i < chatGroupController.groupList.length; i++) {
+        if ((chatGroupController.groupList[i].isChecked == false &&
+            chatGroupController.groupList[i].lastMessage.reciever ==
+                await storage.read(CacheManagerKey.USERID.toString()))) {
+          newMessageController.haveNewMessage.value = true;
+        }
       }
+    } else {
+      Get.defaultDialog(
+          title: 'دریافت اطلاعات ناموفق بود',
+          textConfirm: 'لطفا دوباره تلاش کنید');
     }
-
-    return mygroups;
   }
 
   updateGroupStatus({

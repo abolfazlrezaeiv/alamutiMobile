@@ -126,7 +126,9 @@ class UserAdvertisement extends StatelessWidget {
                                                 .adsList[index].published ==
                                             false
                                         ? Padding(
-                                            padding: const EdgeInsets.all(8.0),
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: Get.width / 80,
+                                                vertical: Get.width / 80),
                                             child: Container(
                                               padding:
                                                   const EdgeInsets.symmetric(

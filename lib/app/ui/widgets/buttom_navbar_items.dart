@@ -10,18 +10,20 @@ var bottomTapItems = <BottomNavigationBarItem>[
     label: "الموتی من",
   ),
   BottomNavigationBarItem(
-      icon: Obx(() => Stack(
-            children: [
-              Icon(CupertinoIcons.chat_bubble),
-              newMessageController.haveNewMessage.value
-                  ? Icon(
-                      CupertinoIcons.circle_fill,
-                      color: Colors.red,
-                      size: 13,
-                    )
-                  : Icon(CupertinoIcons.chat_bubble),
-            ],
-          )),
+      icon: Obx(
+        () => Stack(
+          children: [
+            Icon(CupertinoIcons.chat_bubble),
+            newMessageController.haveNewMessage.value
+                ? Icon(
+                    CupertinoIcons.circle_fill,
+                    color: Colors.red,
+                    size: 13,
+                  )
+                : Icon(CupertinoIcons.chat_bubble),
+          ],
+        ),
+      ),
       label: "پیامها"),
   BottomNavigationBarItem(icon: Icon(CupertinoIcons.add), label: "ثبت آگهی"),
   BottomNavigationBarItem(icon: Icon(CupertinoIcons.home), label: "خانه"),

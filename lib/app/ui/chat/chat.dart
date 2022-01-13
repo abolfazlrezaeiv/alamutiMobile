@@ -44,21 +44,27 @@ class Chat extends GetView<ChatMessageController> with CacheManager {
 
   @override
   Widget build(BuildContext context) {
-    messageProvider.getGroupMessages(groupname);
     final isAlamutiMessage = groupTitle == 'الموتی';
-    signalHelper.initiateConnection();
-    signalHelper.reciveMessage();
-    signalHelper.createGroup(
-      groupname,
-    );
-
+    // signalHelper.initiateConnection();
+    // signalHelper.reciveMessage();
+    // signalHelper.createGroup(
+    //   groupname,
+    // );
+    messageProvider.getGroupMessages(groupname);
     controller.messageList.listen((p0) {
-      WidgetsBinding.instance?.addPostFrameCallback((_) {
+      WidgetsBinding.instance?.addPostFrameCallback((_) async {
         if (_scrollcontroller.hasClients) {
           _scrollcontroller.jumpTo(_scrollcontroller.position.maxScrollExtent);
         }
+        await signalHelper.initiateConnection();
+
+        await signalHelper.createGroup(
+          groupname,
+        );
+        await signalHelper.reciveMessage();
       });
     });
+
     // WidgetsBinding.instance?.addPostFrameCallback((_) {
     //   if (_scrollcontroller.hasClients) {
     //     _scrollcontroller.jumpTo(_scrollcontroller.position.maxScrollExtent);

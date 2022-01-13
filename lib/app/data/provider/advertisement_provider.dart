@@ -103,7 +103,11 @@ class AdvertisementProvider {
     listAdvertisementController.adsList.value = advertisementFromApi;
   }
 
-  Future<void> getAll({required BuildContext context, String? adstype}) async {
+  Future<void> getAll({
+    required BuildContext context,
+    String? adstype,
+    bool isRefreshIndicator = false,
+  }) async {
     advertisementFromApi = [];
     var listAdvertisementController = Get.put(ListAdvertisementController());
 
@@ -115,20 +119,20 @@ class AdvertisementProvider {
 
     Response response;
 
-    showLoaderDialog(context);
+    isRefreshIndicator ? Container() : showLoaderDialog(context);
 
     if (adstype == null || adstype.isEmpty == true) {
       response = await tokenProvider.api
           .get(
             baseUrl + 'Advertisement',
           )
-          .whenComplete(() => Get.back());
+          .whenComplete(() => isRefreshIndicator ? Get.width : Get.back());
     } else {
       response = await tokenProvider.api
           .get(
             baseUrl + 'Advertisement/filter/$adstype',
           )
-          .whenComplete(() => Get.back());
+          .whenComplete(() => isRefreshIndicator ? Get.width : Get.back());
     }
     if (response.statusCode == 200) {
       response.data.forEach(

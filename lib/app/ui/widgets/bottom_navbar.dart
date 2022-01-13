@@ -14,16 +14,18 @@ class AlamutBottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() => BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          currentIndex: selectedTapController.selectedIndex.value,
-          onTap: (value) {
-            selectedTapController.selectedIndex.value = value;
-            checkIsSearchController.isSearchResult.value = false;
-            Get.toNamed(
-                bottomNavBarScreens[selectedTapController.selectedIndex.value]);
-          },
-          items: bottomTapItems,
-        ));
+    return Obx(
+      () => BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        currentIndex: selectedTapController.selectedIndex.value,
+        onTap: (value) {
+          selectedTapController.selectedIndex.value = value;
+          checkIsSearchController.isSearchResult.value = false;
+          Get.toNamed(
+              bottomNavBarScreens[selectedTapController.selectedIndex.value]);
+        },
+        items: bottomTapItems,
+      ),
+    );
   }
 }

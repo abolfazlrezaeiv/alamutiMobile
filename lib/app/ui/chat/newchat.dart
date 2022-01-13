@@ -214,21 +214,6 @@ class NewChat extends StatelessWidget with CacheManager {
                                   groupImage: groupImage,
                                 );
 
-                                await messageProvider.getGroups();
-                                final ChatGroupController chatGroupController =
-                                    Get.put(ChatGroupController());
-                                Get.to(Chat(
-                                    groupname:
-                                        chatGroupController.groupList.last.name,
-                                    groupTitle: groupTitle,
-                                    groupImage: groupImage));
-                                WidgetsBinding.instance
-                                    ?.addPostFrameCallback((_) {
-                                  if (_scrollcontroller.hasClients) {
-                                    _scrollcontroller.jumpTo(_scrollcontroller
-                                        .position.maxScrollExtent);
-                                  }
-                                });
                                 textEditingController.text = '';
                               }
                             },
