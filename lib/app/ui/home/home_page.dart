@@ -10,7 +10,6 @@ import 'package:alamuti/app/controller/selected_category_filter_controller.dart'
 import 'package:alamuti/app/data/provider/advertisement_provider.dart';
 import 'package:alamuti/app/data/provider/chat_message_provider.dart';
 import 'package:alamuti/app/data/provider/signalr_helper.dart';
-import 'package:alamuti/app/data/storage/cache_manager.dart';
 import 'package:alamuti/app/ui/details/detail_page.dart';
 import 'package:alamuti/app/ui/theme.dart';
 import 'package:alamuti/app/ui/widgets/bottom_navbar.dart';

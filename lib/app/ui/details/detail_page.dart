@@ -277,7 +277,7 @@ class AdsDetail extends StatelessWidget {
               blendMode: BlendMode.dstIn,
               child: Image.memory(
                 base64Decode(byteImage2!),
-                fit: BoxFit.cover,
+                fit: BoxFit.fitWidth,
               ),
             ),
           ),
@@ -331,7 +331,7 @@ class AdsDetail extends StatelessWidget {
                 width: width,
                 child: Image.memory(
                   base64Decode(byteImage1!),
-                  fit: BoxFit.cover,
+                  fit: BoxFit.contain,
                 ),
               ),
               Container(

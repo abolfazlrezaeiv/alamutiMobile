@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:alamuti/app/controller/ads_form_controller.dart';
 import 'package:alamuti/app/controller/upload_image_controller.dart';
 import 'package:alamuti/app/data/provider/advertisement_provider.dart';
@@ -10,6 +11,7 @@ import 'package:alamuti/app/ui/widgets/description_textfield.dart';
 import 'package:alamuti/app/ui/widgets/photo_card_left.dart';
 import 'package:alamuti/app/ui/widgets/photo_card_right.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -301,18 +303,31 @@ class AdvertisementForm extends GetView<UploadImageController> {
     return prifix;
   }
 
+  Future<Uint8List> testCompressFile(File file) async {
+    var result = await FlutterImageCompress.compressWithFile(
+      file.absolute.path,
+      minWidth: 2300,
+      minHeight: 1500,
+      quality: 25,
+      rotate: 0,
+    );
+    print(file.lengthSync());
+    print(result!.length);
+    return result;
+  }
+
   chooseImage() async {
     var uploadImageController = Get.put(UploadImageController());
 
     var image = await ImagePicker().pickImage(
         source: ImageSource.gallery,
-        imageQuality: 40,
-        maxHeight: 600,
-        maxWidth: 600);
+        imageQuality: 100,
+        maxHeight: 750,
+        maxWidth: 1334);
     if (image != null) {
-      final bytes = File(image.path).readAsBytesSync();
-
-      String img64 = base64Encode(bytes);
+      // final bytes = File(image.path).readAsBytesSync();
+      File file = File(image.path);
+      String img64 = base64Encode(await testCompressFile(file));
 
       uploadImageController.getImage(img64);
     } else {

@@ -121,19 +121,14 @@ class AdvertisementProvider {
 
     isRefreshIndicator ? Container() : showLoaderDialog(context);
 
-    if (adstype == null || adstype.isEmpty == true) {
-      response = await tokenProvider.api
-          .get(
-            baseUrl + 'Advertisement',
-          )
-          .whenComplete(() => isRefreshIndicator ? Get.width : Get.back());
-    } else {
-      response = await tokenProvider.api
-          .get(
-            baseUrl + 'Advertisement/filter/$adstype',
-          )
-          .whenComplete(() => isRefreshIndicator ? Get.width : Get.back());
-    }
+    var argument = (adstype == null || adstype.isEmpty) ? ' ' : adstype;
+
+    response = await tokenProvider.api
+        .get(
+          baseUrl + 'Advertisement/filter/$argument?pageNumber=5&pageSize=6',
+        )
+        .whenComplete(() => isRefreshIndicator ? Get.width : Get.back());
+
     if (response.statusCode == 200) {
       response.data.forEach(
         (element) {
@@ -326,7 +321,7 @@ class AdvertisementProvider {
                 Get.back(closeOverlays: true);
               },
               child: Text(
-                'ادامه',
+                'تایید',
                 style: TextStyle(color: Colors.greenAccent),
               )),
         )

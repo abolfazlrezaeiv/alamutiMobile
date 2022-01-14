@@ -57,7 +57,7 @@ class ChatGroups extends StatelessWidget with CacheManager {
     return Scaffold(
       appBar: AlamutiAppBar(
         appBar: AppBar(),
-        title: 'چت الموتی',
+        title: 'پیامها',
         hasBackButton: false,
       ),
       bottomNavigationBar: AlamutBottomNavBar(),

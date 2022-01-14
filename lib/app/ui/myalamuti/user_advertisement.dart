@@ -140,7 +140,7 @@ class UserAdvertisement extends StatelessWidget {
                                                     TextDirection.rtl,
                                                 style: TextStyle(
                                                     fontWeight: FontWeight.w300,
-                                                    fontSize: width / 28,
+                                                    fontSize: width / 36,
                                                     color: Colors.grey),
                                               ),
                                               decoration: BoxDecoration(

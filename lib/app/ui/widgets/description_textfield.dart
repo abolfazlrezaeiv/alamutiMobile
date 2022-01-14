@@ -63,7 +63,8 @@ class DescriptionTextField extends StatelessWidget {
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide(color: Colors.black, width: 0.6),
+            borderSide: BorderSide(
+                color: Color.fromRGBO(112, 112, 112, 0.2), width: 2.0),
           ),
         ),
       ),

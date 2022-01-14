@@ -27,7 +27,8 @@ class TokenProvider extends GetxController with CacheManager {
         response.data['token'] != null) {
       saveTokenRefreshToken(
           response.data['token'], response.data['refreshToken']);
-
+      print("access token" + response.data['token']);
+      print("refresh token" + response.data['refreshToken']);
       return response;
     } else {
       print(response.data['errors']);

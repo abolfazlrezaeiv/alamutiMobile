@@ -15,7 +15,7 @@ class FullscreenImage extends StatelessWidget {
       body: Center(
         child: Image.memory(
           base64Decode(image),
-          fit: BoxFit.cover,
+          fit: BoxFit.contain,
           width: double.infinity,
         ),
       ),

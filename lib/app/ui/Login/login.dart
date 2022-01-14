@@ -205,7 +205,7 @@ class _LoginState extends State<Login> {
                             setState(() {
                               succesed = true;
                             });
-                            // timercontroller.dispose();
+                            timercontroller.dispose();
                             Get.offAll(() => HomePage(),
                                 binding: HomeBinding(),
                                 transition: Transition.noTransition);
