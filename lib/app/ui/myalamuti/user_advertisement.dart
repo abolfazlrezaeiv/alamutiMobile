@@ -1,7 +1,8 @@
 import 'dart:convert';
 import 'package:alamuti/app/binding/advertisement_update_binding.dart';
 import 'package:alamuti/app/controller/ads_form_controller.dart';
-import 'package:alamuti/app/controller/user_advertisement_controller.dart';
+import 'package:alamuti/app/controller/advertisement_controller.dart';
+import 'package:alamuti/app/controller/advertisement_pagination_controller.dart';
 import 'package:alamuti/app/controller/update_image_advertisement_controller.dart';
 import 'package:alamuti/app/data/provider/advertisement_provider.dart';
 import 'package:alamuti/app/ui/advetisement_form_page/advertisement_update_from_page.dart';
@@ -20,9 +21,12 @@ class UserAdvertisement extends StatelessWidget {
 
   final AdvertisementTypeController advertisementTypeController = Get.find();
 
-  final UserAdvertisementController userAdvertisementController = Get.find();
+  final ListAdvertisementController listAdvertisementController = Get.find();
 
   final UpdateUploadImageController updateUploadImageController = Get.find();
+
+  final AdvertisementPaginationController advertisementPaginationController =
+      Get.find();
 
   final AdvertisementProvider advertisementProvider = AdvertisementProvider();
 
@@ -35,6 +39,7 @@ class UserAdvertisement extends StatelessWidget {
     WidgetsBinding.instance?.addPostFrameCallback((_) {
       advertisementProvider.getUserAds(context);
     });
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AlamutiAppBar(
@@ -50,7 +55,7 @@ class UserAdvertisement extends StatelessWidget {
             return advertisementProvider.getUserAds(context);
           },
           child: ListView.builder(
-            itemCount: userAdvertisementController.adsList.length,
+            itemCount: listAdvertisementController.adsList.length,
             itemBuilder: (BuildContext context, int index) {
               return Container(
                 height: height / 5,
@@ -72,7 +77,7 @@ class UserAdvertisement extends StatelessWidget {
                           fit: BoxFit.fill,
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(8),
-                            child: (userAdvertisementController
+                            child: (listAdvertisementController
                                         .adsList[index].photo1 ==
                                     null)
                                 ? Opacity(
@@ -89,7 +94,7 @@ class UserAdvertisement extends StatelessWidget {
                                   )
                                 : Image.memory(
                                     base64Decode(
-                                      userAdvertisementController
+                                      listAdvertisementController
                                           .adsList[index].photo1!,
                                     ),
                                     fit: BoxFit.cover,
@@ -107,7 +112,7 @@ class UserAdvertisement extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 Text(
-                                  userAdvertisementController
+                                  listAdvertisementController
                                       .adsList[index].title,
                                   style: TextStyle(
                                       fontWeight: FontWeight.w400,
@@ -122,7 +127,7 @@ class UserAdvertisement extends StatelessWidget {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    userAdvertisementController
+                                    listAdvertisementController
                                                 .adsList[index].published ==
                                             false
                                         ? Padding(
@@ -209,7 +214,7 @@ class UserAdvertisement extends StatelessWidget {
                                                       Get.back();
                                                       await advertisementProvider
                                                           .deleteAds(
-                                                              id: userAdvertisementController
+                                                              id: listAdvertisementController
                                                                   .adsList[
                                                                       index]
                                                                   .id,
@@ -259,7 +264,7 @@ class UserAdvertisement extends StatelessWidget {
                                             Get.to(
                                                 () => AdvertisementUpdateForm(
                                                     ads:
-                                                        userAdvertisementController
+                                                        listAdvertisementController
                                                             .adsList[index]),
                                                 binding:
                                                     AdvertisementUpdateFormBinding(),

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:alamuti/app/controller/ads_form_controller.dart';
 import 'package:alamuti/app/controller/update_image_advertisement_controller.dart';
 import 'package:alamuti/app/data/model/advertisement.dart';
@@ -11,6 +12,7 @@ import 'package:alamuti/app/ui/widgets/description_textfield.dart';
 import 'package:alamuti/app/ui/widgets/update_image_card_left.dart';
 import 'package:alamuti/app/ui/widgets/update_image_card_right.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -257,6 +259,7 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
                           updateUploadImageController.leftImagebyteCode.value,
                       photo2:
                           updateUploadImageController.rightImagebyteCode.value,
+                      listviewPhoto: await _getListviewImage(),
                       price: int.parse(priceTextFieldController.text
                           .replaceAll(RegExp(r','), '')),
                       village: vilageNameTextFieldController.text,
@@ -315,18 +318,57 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
         : Container();
   }
 
+  Future<String> _getListviewImage() async {
+    String imageForListView = '';
+    if (updateUploadImageController.rightImagebyteCode.value.length > 2) {
+      imageForListView = updateUploadImageController.rightImagebyteCode.value;
+    }
+    if (updateUploadImageController.leftImagebyteCode.value.length > 2) {
+      imageForListView = updateUploadImageController.leftImagebyteCode.value;
+    }
+    if (imageForListView.length > 2) {
+      imageForListView =
+          base64Encode(await _comporessList(base64Decode(imageForListView)));
+    }
+    return imageForListView;
+  }
+
+  Future<Uint8List> _comporessList(Uint8List list) async {
+    var result = await FlutterImageCompress.compressWithList(
+      list,
+      minWidth: 640,
+      minHeight: 480,
+      quality: 24,
+      rotate: 0,
+    );
+    return result;
+  }
+
+  Future<Uint8List> _compressFile(File file) async {
+    var result = await FlutterImageCompress.compressWithFile(
+      file.absolute.path,
+      minWidth: 1334,
+      minHeight: 750,
+      quality: 40,
+      rotate: 0,
+    );
+
+    return result!;
+  }
+
   chooseImage() async {
-    var updateUploadImageController = Get.put(UpdateUploadImageController());
+    UpdateUploadImageController updateUploadImageController =
+        Get.put(UpdateUploadImageController());
 
-    var image = await ImagePicker().pickImage(
+    XFile? image = await ImagePicker().pickImage(
         source: ImageSource.gallery,
-        imageQuality: 40,
-        maxHeight: 600,
-        maxWidth: 600);
+        imageQuality: 100,
+        maxHeight: 750,
+        maxWidth: 1334);
     if (image != null) {
-      final bytes = File(image.path).readAsBytesSync();
-
-      String img64 = base64Encode(bytes);
+      // final bytes = File(image.path).readAsBytesSync();
+      File file = File(image.path);
+      String img64 = base64Encode(await _compressFile(file));
 
       updateUploadImageController.getImage(img64);
     } else {

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:alamuti/app/binding/detail_binding.dart';
 import 'package:alamuti/app/controller/ads_form_controller.dart';
 import 'package:alamuti/app/controller/advertisement_controller.dart';
+import 'package:alamuti/app/controller/advertisement_pagination_controller.dart';
 import 'package:alamuti/app/controller/category_tag_selected_item_controller.dart';
 import 'package:alamuti/app/controller/chat_group_controller.dart';
 import 'package:alamuti/app/controller/scroll_position.dart';
@@ -35,7 +36,7 @@ class _HomePageState extends State<HomePage> {
 
   // MessageProvider messageProvider = MessageProvider();
 
-  ScrollController listControl = ScrollController();
+  ScrollController _scrollControl = ScrollController();
 
   GetStorage storage = GetStorage();
 
@@ -48,6 +49,9 @@ class _HomePageState extends State<HomePage> {
   ListAdvertisementController listAdvertisementController = Get.find();
 
   CheckIsSearchedController checkIsSearchController = Get.find();
+
+  AdvertisementPaginationController advertisementPaginationController =
+      Get.find();
 
   List<String> filterType = [
     '',
@@ -73,19 +77,22 @@ class _HomePageState extends State<HomePage> {
       advertisementProvider.getAll(context: context, adstype: null);
       getMessages();
     });
+    advertisementPaginationController.currentPage.value = 1;
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    _setupScrollController();
     void scrollListener() {
-      homeScrollController.scrollPosition.value = listControl.position.pixels;
+      homeScrollController.scrollPosition.value =
+          _scrollControl.position.pixels;
     }
 
-    listControl.addListener(scrollListener);
+    _scrollControl.addListener(scrollListener);
     WidgetsBinding.instance?.addPostFrameCallback((_) {
-      if (listControl.hasClients) {
-        listControl.jumpTo(homeScrollController.scrollPosition.value);
+      if (_scrollControl.hasClients) {
+        _scrollControl.jumpTo(homeScrollController.scrollPosition.value);
       }
     });
     // getChatMessageGroups() async {
@@ -231,6 +238,9 @@ class _HomePageState extends State<HomePage> {
                             FocusScope.of(context).unfocus();
                             searchTextEditingController.text = '';
 
+                            advertisementPaginationController
+                                .currentPage.value = 1;
+
                             checkIsSearchController.isSearchResult.value =
                                 false;
                             categorySelectedFilter.selected.value =
@@ -243,8 +253,8 @@ class _HomePageState extends State<HomePage> {
                             homeScrollController.scrollPosition.value = 0.0;
 
                             WidgetsBinding.instance?.addPostFrameCallback((_) {
-                              if (listControl.hasClients) {
-                                listControl.jumpTo(
+                              if (_scrollControl.hasClients) {
+                                _scrollControl.jumpTo(
                                     homeScrollController.scrollPosition.value);
                               }
                             });
@@ -275,40 +285,20 @@ class _HomePageState extends State<HomePage> {
                 context: context, isRefreshIndicator: true);
           },
           child: ListView.builder(
-            controller: listControl,
+            controller: _scrollControl,
             itemCount: listAdvertisementController.adsList.length,
             itemBuilder: (BuildContext context, int index) {
               return Container(
                 height: height / 5,
                 child: GestureDetector(
-                  onTap: () {
+                  onTap: () async {
                     FocusScope.of(context).unfocus();
-
+                    await advertisementProvider.getDetails(
+                        id: listAdvertisementController.adsList[index].id,
+                        context: context);
                     Get.to(
                         () => AdsDetail(
-                              byteImage1: listAdvertisementController
-                                  .adsList[index].photo1,
-                              byteImage2: listAdvertisementController
-                                  .adsList[index].photo2,
-                              price: listAdvertisementController
-                                  .adsList[index].price
-                                  .toString(),
-                              phoneNumber: listAdvertisementController
-                                  .adsList[index].phoneNumber,
-                              sendedDate: listAdvertisementController
-                                  .adsList[index].datePosted,
-                              title: listAdvertisementController
-                                  .adsList[index].title,
-                              adsType: listAdvertisementController
-                                  .adsList[index].adsType,
-                              userId: listAdvertisementController
-                                  .adsList[index].userId,
-                              area: listAdvertisementController
-                                  .adsList[index].area,
-                              village: listAdvertisementController
-                                  .adsList[index].village,
-                              description: listAdvertisementController
-                                  .adsList[index].description,
+                              id: listAdvertisementController.adsList[index].id,
                             ),
                         binding: DetailPageBinding(),
                         transition: Transition.fadeIn);
@@ -334,7 +324,7 @@ class _HomePageState extends State<HomePage> {
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(8),
                                   child: (listAdvertisementController
-                                              .adsList[index].photo1 ==
+                                              .adsList[index].listviewPhoto ==
                                           null)
                                       ? Opacity(
                                           opacity: 0.2,
@@ -348,7 +338,7 @@ class _HomePageState extends State<HomePage> {
                                       : Image.memory(
                                           base64Decode(
                                             listAdvertisementController
-                                                .adsList[index].photo1,
+                                                .adsList[index].listviewPhoto,
                                           ),
                                           fit: BoxFit.cover,
                                           height: height / 6,
@@ -425,6 +415,20 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
+  }
+
+  void _setupScrollController() {
+    _scrollControl.addListener(_scrollListener);
+  }
+
+  void _scrollListener() {
+    if (_scrollControl.offset >= _scrollControl.position.maxScrollExtent - 20) {
+      if (advertisementPaginationController.hasNext.value == true) {
+        advertisementPaginationController.currentPage.value =
+            advertisementPaginationController.currentPage.value + 1;
+        advertisementProvider.getAll(context: context).whenComplete(() {});
+      }
+    }
   }
 
   getMessages() async {

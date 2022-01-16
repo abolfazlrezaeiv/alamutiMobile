@@ -5,6 +5,7 @@ class Advertisement {
   late String price;
   late String? photo1;
   late String? photo2;
+  late String? listviewPhoto;
   late String datePosted;
   late String adsType;
   late String area;
@@ -19,6 +20,7 @@ class Advertisement {
       required String price,
       required this.photo1,
       required this.photo2,
+      required this.listviewPhoto,
       required this.adsType,
       required this.area,
       required this.userId,
@@ -49,6 +51,7 @@ class Advertisement {
         price: json["price"].toString(),
         photo1: json["photo1"],
         photo2: json["photo2"],
+        listviewPhoto: json['listviewPhoto'],
         datePosted: json["daySended"],
         adsType: json['adsType'],
         area: json['area'].toString(),

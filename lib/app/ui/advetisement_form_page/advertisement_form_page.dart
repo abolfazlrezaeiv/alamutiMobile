@@ -226,6 +226,7 @@ class AdvertisementForm extends GetView<UploadImageController> {
                       description: descriptionTextFieldController.text,
                       photo1: controller.leftImagebyteCode.value,
                       photo2: controller.rightImagebyteCode.value,
+                      listviewPhoto: await getListviewImage(),
                       price: int.parse(
                           priceTextFieldController.text.replaceAll(',', '')),
                       title: titleTextFieldController.text,
@@ -303,18 +304,54 @@ class AdvertisementForm extends GetView<UploadImageController> {
     return prifix;
   }
 
-  Future<Uint8List> testCompressFile(File file) async {
-    var result = await FlutterImageCompress.compressWithFile(
-      file.absolute.path,
-      minWidth: 2300,
-      minHeight: 1500,
-      quality: 25,
+  Future<String> getListviewImage() async {
+    String imageForListView = '';
+    if (controller.rightImagebyteCode.value.length > 2) {
+      imageForListView = controller.rightImagebyteCode.value;
+    }
+    if (controller.leftImagebyteCode.value.length > 2) {
+      imageForListView = controller.leftImagebyteCode.value;
+    }
+    if (imageForListView.length > 2) {
+      imageForListView =
+          base64Encode(await comporessList(base64Decode(imageForListView)));
+    }
+    return imageForListView;
+  }
+
+  Future<Uint8List> comporessList(Uint8List list) async {
+    var result = await FlutterImageCompress.compressWithList(
+      list,
+      minWidth: 640,
+      minHeight: 480,
+      quality: 24,
       rotate: 0,
     );
-    print(file.lengthSync());
-    print(result!.length);
+
     return result;
   }
+
+  Future<Uint8List> compressFile(File file) async {
+    var result = await FlutterImageCompress.compressWithFile(
+      file.absolute.path,
+      minWidth: 1334,
+      minHeight: 750,
+      quality: 40,
+      rotate: 0,
+    );
+
+    return result!;
+  }
+
+//for list view
+
+//  minWidth: 853,
+//       minHeight: 480,
+//       quality: 27,
+
+//   imageQuality: 100,
+//         maxHeight: 480,
+//         maxWidth: 853);
 
   chooseImage() async {
     var uploadImageController = Get.put(UploadImageController());
@@ -325,9 +362,8 @@ class AdvertisementForm extends GetView<UploadImageController> {
         maxHeight: 750,
         maxWidth: 1334);
     if (image != null) {
-      // final bytes = File(image.path).readAsBytesSync();
       File file = File(image.path);
-      String img64 = base64Encode(await testCompressFile(file));
+      String img64 = base64Encode(await compressFile(file));
 
       uploadImageController.getImage(img64);
     } else {

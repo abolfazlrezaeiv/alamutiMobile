@@ -1,7 +1,6 @@
 import 'package:alamuti/app/data/provider/base_url.dart';
 import 'package:alamuti/app/data/storage/cache_manager.dart';
 import 'package:dio/dio.dart';
-import 'package:get/get_connect/http/src/status/http_status.dart';
 import 'package:get/state_manager.dart';
 import 'package:get_storage/get_storage.dart';
 
@@ -22,13 +21,17 @@ class TokenProvider extends GetxController with CacheManager {
       'token': token.toString(),
       'refreshToken': refreshtoken.toString()
     });
+// &&
 
-    if (response.statusCode == HttpStatus.ok &&
-        response.data['token'] != null) {
-      saveTokenRefreshToken(
-          response.data['token'], response.data['refreshToken']);
-      print("access token" + response.data['token']);
-      print("refresh token" + response.data['refreshToken']);
+    if (response.statusCode == 200) {
+      if (response.data['token'] != null) {
+        saveTokenRefreshToken(
+            response.data['token'], response.data['refreshToken']);
+        print("access token" + response.data['token']);
+        print("refresh token" + response.data['refreshToken']);
+
+        return response;
+      }
       return response;
     } else {
       print(response.data['errors']);

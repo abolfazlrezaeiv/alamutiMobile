@@ -1,3 +1,4 @@
+import 'package:alamuti/app/ui/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -41,6 +42,7 @@ class DescriptionTextField extends StatelessWidget {
         style: TextStyle(
             backgroundColor: Colors.white,
             fontSize: width / 27,
+            fontFamily: persianNumber,
             fontWeight: FontWeight.w300),
         decoration: InputDecoration(
           errorStyle: const TextStyle(fontSize: 13),

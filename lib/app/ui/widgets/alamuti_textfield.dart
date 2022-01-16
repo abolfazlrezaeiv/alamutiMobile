@@ -3,7 +3,7 @@ import 'package:alamuti/app/ui/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class AlamutiTextField extends StatelessWidget {
+class AlamutiTextField extends GetView<PriceController> {
   final TextEditingController textEditingController;
 
   final bool hasCharacterLimitation;
@@ -30,8 +30,6 @@ class AlamutiTextField extends StatelessWidget {
       required this.prefix})
       : super(key: key);
 
-  PriceController priceController = Get.put(PriceController());
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -46,7 +44,7 @@ class AlamutiTextField extends StatelessWidget {
           controller: textEditingController,
           onChanged: (text) {
             if (isPrice) {
-              priceController.price.value = text;
+              controller.price.value = text;
               textEditingController.text = getPersianPriceHint(text);
               textEditingController.value =
                   textEditingController.value.copyWith(
@@ -57,7 +55,9 @@ class AlamutiTextField extends StatelessWidget {
               );
             }
           },
-          maxLines: null,
+          minLines: 1,
+          maxLines: isChatTextField ? 4 : 1,
+          // maxLength: 1000,
           validator: (value) {
             if (value == null || value.isEmpty || value.length < 0) {
               return 'این مورد را کامل کنید';
@@ -73,7 +73,8 @@ class AlamutiTextField extends StatelessWidget {
             return null;
           },
           textDirection: TextDirection.rtl,
-          keyboardType: isNumber ? TextInputType.number : TextInputType.name,
+          keyboardType:
+              isNumber ? TextInputType.number : TextInputType.multiline,
           textAlign: TextAlign.start,
           style: TextStyle(
               backgroundColor: Colors.transparent,

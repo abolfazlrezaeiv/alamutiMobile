@@ -1,4 +1,3 @@
-import 'package:alamuti/app/ui/myalamuti/myalamuti_page.dart';
 import 'package:alamuti/app/ui/theme.dart';
 import 'package:alamuti/app/ui/widgets/alamuti_appbar.dart';
 import 'package:alamuti/app/ui/widgets/bottom_navbar.dart';

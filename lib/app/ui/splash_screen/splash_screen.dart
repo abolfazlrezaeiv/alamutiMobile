@@ -19,7 +19,7 @@ class _SplashScreenState extends State<SplashScreen> {
   Future<void> initializeApp() async {
     // await Future.delayed(Duration(seconds: 1));
     if (await _authManager.checkLoginStatus()) {
-      await tokenProviderController.refreshToken();
+      // await tokenProviderController.refreshToken();
       Get.toNamed('/home');
     } else {
       Get.toNamed('/register');

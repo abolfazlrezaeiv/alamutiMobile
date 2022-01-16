@@ -57,8 +57,7 @@ class SignalRHelper with CacheManager {
           await storage.read(CacheManagerKey.USERID.toString())) {
         newMessageController.haveNewMessage.value = true;
       }
-      print(
-          '${newMessageController.haveNewMessage.value}  from recive signalr');
+
       await messageProvider.getGroupMessages(arguments[3]);
       await messageProvider.getGroups();
     });

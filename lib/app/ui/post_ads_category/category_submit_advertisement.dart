@@ -1,4 +1,5 @@
 import 'package:alamuti/app/controller/ads_form_controller.dart';
+import 'package:alamuti/app/controller/selected_tap_controller.dart';
 import 'package:alamuti/app/ui/widgets/alamuti_appbar.dart';
 import 'package:alamuti/app/ui/widgets/bottom_navbar.dart';
 import 'package:flutter/cupertino.dart';
@@ -19,88 +20,96 @@ class CategorySubmitAds extends StatelessWidget {
         hasBackButton: false,
       ),
       bottomNavigationBar: AlamutBottomNavBar(),
-      body: Column(
-        children: [
-          GestureDetector(
-            onTap: () {
-              advertisementTypeController.formState.value = AdsFormState.FOOD;
-              Get.toNamed('/ads_form');
-            },
-            child: Container(
-              child: Column(
-                children: [
-                  Divider(
-                    color: Colors.transparent,
-                  ),
-                  ListTile(
-                    leading: Icon(CupertinoIcons.back),
-                    title: Text(
-                      'موادغذایی',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400,
-                      ),
-                      textDirection: TextDirection.rtl,
+      body: WillPopScope(
+        onWillPop: () async {
+          Get.put(ScreenController()).selectedIndex.value = 3;
+          Get.toNamed('/home');
+
+          return false;
+        },
+        child: Column(
+          children: [
+            GestureDetector(
+              onTap: () {
+                advertisementTypeController.formState.value = AdsFormState.FOOD;
+                Get.toNamed('/ads_form');
+              },
+              child: Container(
+                child: Column(
+                  children: [
+                    Divider(
+                      color: Colors.transparent,
                     ),
-                    trailing: Icon(CupertinoIcons.bag),
-                  ),
-                  Divider(),
-                ],
+                    ListTile(
+                      leading: Icon(CupertinoIcons.back),
+                      title: Text(
+                        'موادغذایی',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400,
+                        ),
+                        textDirection: TextDirection.rtl,
+                      ),
+                      trailing: Icon(CupertinoIcons.bag),
+                    ),
+                    Divider(),
+                  ],
+                ),
               ),
             ),
-          ),
-          GestureDetector(
-            onTap: () {
-              advertisementTypeController.formState.value = AdsFormState.JOB;
-              Get.toNamed('/ads_form');
-            },
-            child: Container(
-              child: Column(
-                children: [
-                  ListTile(
-                    leading: Icon(CupertinoIcons.back),
-                    title: Text(
-                      'مشاغل',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400,
+            GestureDetector(
+              onTap: () {
+                advertisementTypeController.formState.value = AdsFormState.JOB;
+                Get.toNamed('/ads_form');
+              },
+              child: Container(
+                child: Column(
+                  children: [
+                    ListTile(
+                      leading: Icon(CupertinoIcons.back),
+                      title: Text(
+                        'مشاغل',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400,
+                        ),
+                        textDirection: TextDirection.rtl,
                       ),
-                      textDirection: TextDirection.rtl,
+                      trailing: Icon(CupertinoIcons.person_3_fill),
                     ),
-                    trailing: Icon(CupertinoIcons.person_3_fill),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-          GestureDetector(
-            onTap: () {
-              advertisementTypeController.formState.value =
-                  AdsFormState.REALSTATE;
-              Get.toNamed('/ads_form');
-            },
-            child: Container(
-              child: Column(
-                children: [
-                  Divider(),
-                  ListTile(
-                    leading: Icon(CupertinoIcons.back),
-                    title: Text(
-                      'املاک',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400,
+            GestureDetector(
+              onTap: () {
+                advertisementTypeController.formState.value =
+                    AdsFormState.REALSTATE;
+                Get.toNamed('/ads_form');
+              },
+              child: Container(
+                child: Column(
+                  children: [
+                    Divider(),
+                    ListTile(
+                      leading: Icon(CupertinoIcons.back),
+                      title: Text(
+                        'املاک',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400,
+                        ),
+                        textDirection: TextDirection.rtl,
                       ),
-                      textDirection: TextDirection.rtl,
+                      trailing: Icon(CupertinoIcons.house),
                     ),
-                    trailing: Icon(CupertinoIcons.house),
-                  ),
-                  Divider(),
-                ],
+                    Divider(),
+                  ],
+                ),
               ),
-            ),
-          )
-        ],
+            )
+          ],
+        ),
       ),
     );
   }
