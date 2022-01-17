@@ -20,7 +20,7 @@ class AlamutBottomNavBar extends StatelessWidget {
         currentIndex: selectedTapController.selectedIndex.value,
         onTap: (value) {
           selectedTapController.selectedIndex.value = value;
-          checkIsSearchController.isSearchResult.value = false;
+          // checkIsSearchController.isSearchResult.value = false;
           Get.toNamed(
               bottomNavBarScreens[selectedTapController.selectedIndex.value]);
         },

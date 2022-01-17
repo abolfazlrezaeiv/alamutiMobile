@@ -20,6 +20,9 @@ class AdvertisementProvider {
   AdvertisementPaginationController advertisementPaginationController =
       Get.put(AdvertisementPaginationController());
 
+  CheckIsSearchedController checkIsSearchController =
+      Get.put(CheckIsSearchedController());
+
   ListAdvertisementController listAdvertisementController =
       Get.put(ListAdvertisementController());
 
@@ -71,13 +74,10 @@ class AdvertisementProvider {
     bool isRefreshIndicator = false,
   }) async {
     advertisementFromApi = [];
-    var listAdvertisementController = Get.put(ListAdvertisementController());
 
-    var checkIsSearchController = Get.put(CheckIsSearchedController());
-
-    if (checkIsSearchController.isSearchResult.value == true) {
-      return;
-    }
+    // if (checkIsSearchController.isSearchResult.value) {
+    //   return;
+    // }
 
     Response response;
 
@@ -87,7 +87,7 @@ class AdvertisementProvider {
 
     response = await tokenProvider.api
         .get(baseUrl +
-            'Advertisement/filter/$argument?pageNumber=${advertisementPaginationController.currentPage.value}&pageSize=6')
+            'Advertisement/filter/$argument?pageNumber=${advertisementPaginationController.currentPage.value}&pageSize=10')
         .whenComplete(() => isRefreshIndicator ? Get.width : Get.back());
 
     var xPagination = jsonDecode(response.headers['X-Pagination']![0]);
@@ -162,8 +162,26 @@ class AdvertisementProvider {
     showLoaderDialog(context);
 
     var response = await tokenProvider.api
-        .get(baseUrl + 'Advertisement/search/$searchInput')
+        .get(baseUrl +
+            'Advertisement/search/$searchInput?pageNumber=${advertisementPaginationController.currentPage.value}&pageSize=10')
         .whenComplete(() => Get.back());
+
+    var xPagination = jsonDecode(response.headers['X-Pagination']![0]);
+    print(xPagination);
+
+    advertisementPaginationController.currentPage.value =
+        xPagination['CurrentPage'];
+
+    advertisementPaginationController.totalPages.value =
+        xPagination['TotalPages'];
+
+    advertisementPaginationController.totalAds.value =
+        xPagination['TotalCount'];
+
+    advertisementPaginationController.hasNext.value = xPagination['HasNext'];
+
+    advertisementPaginationController.hasBack.value =
+        xPagination['HasPrevious'];
 
     if (response.statusCode == 200) {
       response.data.forEach(
@@ -171,6 +189,23 @@ class AdvertisementProvider {
           advertisementFromApi.add(Advertisement.fromJson(element));
         },
       );
+
+      if (advertisementFromApi.length == 0) {
+        Get.rawSnackbar(
+            messageText: Text(
+              'موردی یافت نشد',
+              style: TextStyle(color: Colors.white),
+              textDirection: TextDirection.rtl,
+            ),
+            backgroundColor: Colors.black);
+        return;
+      }
+
+      if (advertisementPaginationController.currentPage.value == 1) {
+        listAdvertisementController.adsList.value = advertisementFromApi;
+      } else {
+        listAdvertisementController.adsList.addAll(advertisementFromApi);
+      }
     } else {
       Get.defaultDialog(
         radius: 5,
@@ -194,18 +229,6 @@ class AdvertisementProvider {
         ),
       );
     }
-
-    if (advertisementFromApi.length == 0) {
-      Get.rawSnackbar(
-          messageText: Text(
-            'موردی یافت نشد',
-            style: TextStyle(color: Colors.white),
-            textDirection: TextDirection.rtl,
-          ),
-          backgroundColor: Colors.black);
-      return;
-    }
-    listAdvertisementController.adsList.value = advertisementFromApi;
   }
 
   Future<void> getUserAds(BuildContext context) async {
@@ -214,7 +237,7 @@ class AdvertisementProvider {
     showLoaderDialog(context);
 
     var response = await tokenProvider.api
-        .get(baseUrl + 'Advertisement/myalamuti/myAds')
+        .get(baseUrl + 'Advertisement/myalamuti/useradvertisement')
         .whenComplete(() => Get.back());
 
     if (response.statusCode == 200) {

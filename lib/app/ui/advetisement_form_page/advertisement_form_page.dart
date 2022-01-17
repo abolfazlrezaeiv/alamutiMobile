@@ -324,7 +324,7 @@ class AdvertisementForm extends GetView<UploadImageController> {
       list,
       minWidth: 640,
       minHeight: 480,
-      quality: 24,
+      quality: 13,
       rotate: 0,
     );
 

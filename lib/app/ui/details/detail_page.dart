@@ -1,11 +1,13 @@
 import 'dart:convert';
 import 'package:alamuti/app/controller/ads_form_controller.dart';
+import 'package:alamuti/app/controller/advertisement_request_controller.dart';
 import 'package:alamuti/app/controller/chat_message_controller.dart';
 import 'package:alamuti/app/controller/chat_target_controller.dart';
 import 'package:alamuti/app/controller/detail_page_advertisement.dart';
 import 'package:alamuti/app/data/provider/advertisement_provider.dart';
 import 'package:alamuti/app/ui/chat/newchat.dart';
 import 'package:alamuti/app/ui/details/fullscreen_image.dart';
+import 'package:alamuti/app/ui/details/fullscreen_slider.dart';
 import 'package:alamuti/app/ui/theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -42,6 +44,9 @@ class _AdsDetailState extends State<AdsDetail> {
   final ChatMessageController chatMessageController = Get.find();
 
   final DetailPageController detailPageController = Get.find();
+
+  final AdvertisementRequestController advertisementRequestController =
+      Get.find();
 
   final double width = Get.width;
 
@@ -263,8 +268,10 @@ class _AdsDetailState extends State<AdsDetail> {
           GestureDetector(
             onTap: () {
               Get.to(
-                () => FullscreenImage(
-                    image: detailPageController.details[0].photo1!),
+                () => FullscreenImageSlider(
+                  image1: detailPageController.details[0].photo1!,
+                  image2: detailPageController.details[0].photo2!,
+                ),
               );
             },
             child: ShaderMask(
@@ -284,16 +291,17 @@ class _AdsDetailState extends State<AdsDetail> {
           GestureDetector(
             onTap: () {
               Get.to(
-                () => FullscreenImage(
-                    image: detailPageController.details[0].photo2!),
+                () => FullscreenImageSlider(
+                  image1: detailPageController.details[0].photo1!,
+                  image2: detailPageController.details[0].photo2!,
+                ),
               );
             },
             child: ShaderMask(
               shaderCallback: (rect) {
                 return RadialGradient(
                   colors: [Colors.transparent, Colors.white],
-                ).createShader(
-                    Rect.fromLTRB(-200, -200, Get.width / 2, Get.width / 2));
+                ).createShader(Rect.fromLTRB(-200, -200, width / 2, width / 2));
               },
               blendMode: BlendMode.dstIn,
               child: Image.memory(
@@ -312,9 +320,14 @@ class _AdsDetailState extends State<AdsDetail> {
         height: height / 3,
         alignment: Alignment.topLeft,
         child: GestureDetector(
-          onTap: () => Get.toNamed('/home'),
+          onTap: () {
+            advertisementRequestController.shouldSend.value = false;
+
+            Get.toNamed('/home');
+          },
           child: Container(
-            width: Get.width / 5,
+            width: width / 5,
+            height: width / 9,
             color: Colors.transparent,
             child: Row(
               children: [
@@ -382,22 +395,31 @@ class _AdsDetailState extends State<AdsDetail> {
               height: height / 2.5,
               alignment: Alignment.topLeft,
               child: GestureDetector(
-                onTap: () => Get.toNamed('/home'),
-                child: Row(
-                  children: [
-                    Icon(
-                      CupertinoIcons.back,
-                      size: 25,
-                      color: Colors.black,
-                    ),
-                    Text(
-                      'بازگشت',
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 16),
-                    )
-                  ],
+                onTap: () {
+                  advertisementRequestController.shouldSend.value = false;
+
+                  Get.toNamed('/home');
+                },
+                child: Container(
+                  width: width / 5,
+                  height: width / 9,
+                  color: Colors.transparent,
+                  child: Row(
+                    children: [
+                      Icon(
+                        CupertinoIcons.back,
+                        size: 25,
+                        color: Colors.black,
+                      ),
+                      Text(
+                        'بازگشت',
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16),
+                      )
+                    ],
+                  ),
                 ),
               ))
         ],
@@ -463,7 +485,10 @@ class _AdsDetailState extends State<AdsDetail> {
         child: Opacity(
           opacity: 0.5,
           child: GestureDetector(
-            onTap: () => Get.toNamed('/home'),
+            onTap: () {
+              advertisementRequestController.shouldSend.value = false;
+              Get.toNamed('/home');
+            },
             child: Row(
               children: [
                 Icon(

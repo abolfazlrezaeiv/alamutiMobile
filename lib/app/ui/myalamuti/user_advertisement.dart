@@ -78,7 +78,7 @@ class UserAdvertisement extends StatelessWidget {
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(8),
                             child: (listAdvertisementController
-                                        .adsList[index].photo1 ==
+                                        .adsList[index].listviewPhoto ==
                                     null)
                                 ? Opacity(
                                     opacity: 0.2,
@@ -95,7 +95,7 @@ class UserAdvertisement extends StatelessWidget {
                                 : Image.memory(
                                     base64Decode(
                                       listAdvertisementController
-                                          .adsList[index].photo1!,
+                                          .adsList[index].listviewPhoto,
                                     ),
                                     fit: BoxFit.cover,
                                     height: height / 6,

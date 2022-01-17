@@ -1,3 +1,4 @@
+import 'package:alamuti/app/controller/advertisement_request_controller.dart';
 import 'package:alamuti/app/controller/chat_message_controller.dart';
 import 'package:alamuti/app/controller/chat_target_controller.dart';
 import 'package:alamuti/app/controller/detail_page_advertisement.dart';
@@ -9,6 +10,9 @@ class DetailPageBinding implements Bindings {
     Get.lazyPut<ChatTargetUserController>(() => ChatTargetUserController());
 
     Get.lazyPut<ChatMessageController>(() => ChatMessageController());
+
+    Get.lazyPut<AdvertisementRequestController>(
+        () => AdvertisementRequestController());
 
     Get.put<DetailPageController>(DetailPageController());
   }

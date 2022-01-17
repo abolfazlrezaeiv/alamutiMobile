@@ -338,7 +338,7 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
       list,
       minWidth: 640,
       minHeight: 480,
-      quality: 24,
+      quality: 13,
       rotate: 0,
     );
     return result;

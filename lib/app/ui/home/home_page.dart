@@ -3,10 +3,12 @@ import 'package:alamuti/app/binding/detail_binding.dart';
 import 'package:alamuti/app/controller/ads_form_controller.dart';
 import 'package:alamuti/app/controller/advertisement_controller.dart';
 import 'package:alamuti/app/controller/advertisement_pagination_controller.dart';
+import 'package:alamuti/app/controller/advertisement_request_controller.dart';
 import 'package:alamuti/app/controller/category_tag_selected_item_controller.dart';
 import 'package:alamuti/app/controller/chat_group_controller.dart';
 import 'package:alamuti/app/controller/scroll_position.dart';
 import 'package:alamuti/app/controller/search_avoid_update.dart';
+import 'package:alamuti/app/controller/search_keyword_controller.dart';
 import 'package:alamuti/app/controller/selected_category_filter_controller.dart';
 import 'package:alamuti/app/data/provider/advertisement_provider.dart';
 import 'package:alamuti/app/data/provider/chat_message_provider.dart';
@@ -50,8 +52,12 @@ class _HomePageState extends State<HomePage> {
 
   CheckIsSearchedController checkIsSearchController = Get.find();
 
+  SearchKeywordController searchKeywordController = Get.find();
+
   AdvertisementPaginationController advertisementPaginationController =
       Get.find();
+
+  AdvertisementRequestController advertisementRequestController = Get.find();
 
   List<String> filterType = [
     '',
@@ -74,10 +80,20 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     WidgetsBinding.instance?.addPostFrameCallback((duration) {
-      advertisementProvider.getAll(context: context, adstype: null);
+      if (advertisementRequestController.shouldSend.value == true) {
+        // checkIsSearchController.isSearchResult.value = false;
+        checkIsSearchController.isSearchResult.value = false;
+
+        homeScrollController.scrollPosition.value = 0;
+
+        advertisementPaginationController.currentPage.value = 1;
+
+        advertisementProvider.getAll(context: context, adstype: null);
+      }
+      advertisementRequestController.shouldSend.value = true;
       getMessages();
     });
-    advertisementPaginationController.currentPage.value = 1;
+
     super.initState();
   }
 
@@ -95,17 +111,6 @@ class _HomePageState extends State<HomePage> {
         _scrollControl.jumpTo(homeScrollController.scrollPosition.value);
       }
     });
-    // getChatMessageGroups() async {
-    //   return await messageProvider.getGroups();
-    // }
-
-    // signalHelper.initiateConnection();
-    // signalHelper.reciveMessage();
-    // signalHelper.createGroup(
-    //   storage.read(CacheManagerKey.USERID.toString()),
-    // );
-    // getChatMessageGroups();
-    // messageProvider.getGroups();
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: PreferredSize(
@@ -145,11 +150,11 @@ class _HomePageState extends State<HomePage> {
                                   searchInput:
                                       searchTextEditingController.text);
 
-                              // _searchTextEditingController.text = '';
+                              searchKeywordController.keyword.value =
+                                  searchTextEditingController.text;
                             },
                             textAlign: TextAlign.right,
                             decoration: InputDecoration(
-                              // helperText: 'dddddd',
                               hintText:
                                   'نام منطقه یا محصول مورد نظرتان را وارد کنید',
                               hintStyle: TextStyle(
@@ -180,7 +185,6 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                 ),
                               ),
-
                               prefixIcon: IconButton(
                                 icon: Icon(
                                   CupertinoIcons.search,
@@ -195,8 +199,11 @@ class _HomePageState extends State<HomePage> {
                                       searchInput:
                                           searchTextEditingController.text);
 
-                                  checkIsSearchController.isSearchResult.value =
-                                      true;
+                                  searchKeywordController.keyword.value =
+                                      searchTextEditingController.text;
+
+                                  advertisementRequestController
+                                      .shouldSend.value = false;
 
                                   categorySelectedChips.selected.value = 0;
                                 },
@@ -422,11 +429,22 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _scrollListener() {
-    if (_scrollControl.offset >= _scrollControl.position.maxScrollExtent - 20) {
+    if (_scrollControl.offset >= _scrollControl.position.maxScrollExtent ||
+        checkIsSearchController.isSearchResult.value == false) {
       if (advertisementPaginationController.hasNext.value == true) {
         advertisementPaginationController.currentPage.value =
             advertisementPaginationController.currentPage.value + 1;
         advertisementProvider.getAll(context: context).whenComplete(() {});
+      }
+    } else {
+      if (advertisementPaginationController.hasNext.value == true) {
+        advertisementPaginationController.currentPage.value =
+            advertisementPaginationController.currentPage.value + 1;
+        advertisementProvider
+            .search(
+                context: context,
+                searchInput: searchKeywordController.keyword.value)
+            .whenComplete(() {});
       }
     }
   }
