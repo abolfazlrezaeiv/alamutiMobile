@@ -8,4 +8,4 @@ class AdvertisementTypeController extends GetxController {
   }
 }
 
-enum AdsFormState { REALSTATE, FOOD, JOB }
+enum AdsFormState { REALSTATE, FOOD, JOB, Trap }

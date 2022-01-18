@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 class SplashScreenBinding implements Bindings {
   @override
   void dependencies() {
-    Get.put<AuthenticationManager>(AuthenticationManager());
-    Get.put<TokenProvider>(TokenProvider());
+    Get.put<AuthenticationManager>(AuthenticationManager(), permanent: true);
+    Get.put<TokenProvider>(TokenProvider(), permanent: true);
   }
 }

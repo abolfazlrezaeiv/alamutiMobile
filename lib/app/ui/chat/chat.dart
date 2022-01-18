@@ -11,6 +11,7 @@ import 'package:flutter_chat_bubble/chat_bubble.dart';
 import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_9.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:signalr_core/signalr_core.dart';
 
 class Chat extends GetView<ChatMessageController> with CacheManager {
   final String groupname;
@@ -45,18 +46,17 @@ class Chat extends GetView<ChatMessageController> with CacheManager {
   @override
   Widget build(BuildContext context) {
     final isAlamutiMessage = groupTitle == 'الموتی';
-    // signalHelper.initiateConnection();
-    // signalHelper.reciveMessage();
-    // signalHelper.createGroup(
-    //   groupname,
-    // );
+
     messageProvider.getGroupMessages(groupname);
     controller.messageList.listen((p0) {
       WidgetsBinding.instance?.addPostFrameCallback((_) async {
         if (_scrollcontroller.hasClients) {
           _scrollcontroller.jumpTo(_scrollcontroller.position.maxScrollExtent);
         }
-        await signalHelper.initiateConnection();
+        if (signalHelper.getConnectionStatus() ==
+            HubConnectionState.disconnected) {
+          await signalHelper.initiateConnection();
+        }
 
         await signalHelper.createGroup(
           groupname,
@@ -65,11 +65,6 @@ class Chat extends GetView<ChatMessageController> with CacheManager {
       });
     });
 
-    // WidgetsBinding.instance?.addPostFrameCallback((_) {
-    //   if (_scrollcontroller.hasClients) {
-    //     _scrollcontroller.jumpTo(_scrollcontroller.position.maxScrollExtent);
-    //   }
-    // });
     return Scaffold(
       appBar: AlamutiAppBar(
         appBar: AppBar(),

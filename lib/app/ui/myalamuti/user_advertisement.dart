@@ -261,7 +261,7 @@ class UserAdvertisement extends StatelessWidget {
                                         ),
                                         TextButton(
                                           onPressed: () {
-                                            Get.to(
+                                            Get.offAll(
                                                 () => AdvertisementUpdateForm(
                                                     ads:
                                                         listAdvertisementController

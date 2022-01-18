@@ -11,7 +11,7 @@ class Advertisement {
   late String area;
   late String userId;
   late bool published;
-  late String phoneNumber;
+  late String? phoneNumber;
   late String village;
   Advertisement(
       {required this.id,
@@ -51,7 +51,7 @@ class Advertisement {
         price: json["price"].toString(),
         photo1: json["photo1"],
         photo2: json["photo2"],
-        listviewPhoto: json['listviewPhoto'],
+        listviewPhoto: json['listViewPhoto'],
         datePosted: json["daySended"],
         adsType: json['adsType'],
         area: json['area'].toString(),

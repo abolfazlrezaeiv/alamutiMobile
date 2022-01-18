@@ -13,6 +13,7 @@ import 'package:flutter_chat_bubble/chat_bubble.dart';
 import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_9.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:signalr_core/signalr_core.dart';
 
 class NewChat extends StatelessWidget with CacheManager {
   final String receiverId;
@@ -42,7 +43,9 @@ class NewChat extends StatelessWidget with CacheManager {
     final storage = GetStorage();
 
     signalHelper = SignalRHelper();
-    signalHelper.initiateConnection();
+    if (signalHelper.getConnectionStatus() == HubConnectionState.disconnected) {
+      signalHelper.initiateConnection();
+    }
     signalHelper.reciveMessage();
     final chatTargetUserController = Get.put(ChatTargetUserController());
     final chatMessageController = Get.put(ChatMessageController());

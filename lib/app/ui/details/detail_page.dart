@@ -207,7 +207,7 @@ class _AdsDetailState extends State<AdsDetail> {
                       chatTargetUserController
                           .saveUserId(detailPageController.details[0].userId);
                       chatMessageController.messageList.clear();
-                      Get.to(
+                      Get.offAll(
                           () => NewChat(
                               receiverId: chatTargetUserController.userId.value,
                               groupImage:

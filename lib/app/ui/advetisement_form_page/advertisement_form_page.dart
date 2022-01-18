@@ -295,6 +295,9 @@ class AdvertisementForm extends GetView<UploadImageController> {
     if (advertisementTypeController.formState.value == AdsFormState.FOOD) {
       prifix = 'مثال : "گیلاس آتان"';
     }
+    if (advertisementTypeController.formState.value == AdsFormState.Trap) {
+      prifix = 'مثال : "فروش 10 راس گوسفند"';
+    }
     if (advertisementTypeController.formState.value == AdsFormState.JOB) {
       prifix = 'مثال : "راننده با ماشین"';
     }
@@ -376,6 +379,9 @@ class AdvertisementForm extends GetView<UploadImageController> {
 
     var title;
     if (advertisementTypeController.formState.value == AdsFormState.FOOD) {
+      title = 'قیمت';
+    }
+    if (advertisementTypeController.formState.value == AdsFormState.Trap) {
       title = 'قیمت';
     }
     if (advertisementTypeController.formState.value == AdsFormState.JOB) {

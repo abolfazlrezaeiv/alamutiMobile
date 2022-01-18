@@ -3,7 +3,7 @@ import 'package:alamuti/app/ui/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class AlamutiTextField extends GetView<PriceController> {
+class AlamutiTextField extends StatelessWidget {
   final TextEditingController textEditingController;
 
   final bool hasCharacterLimitation;
@@ -19,6 +19,8 @@ class AlamutiTextField extends GetView<PriceController> {
   final double width = Get.width;
 
   final double height = Get.height;
+
+  final PriceController priceController = Get.put(PriceController());
 
   AlamutiTextField(
       {Key? key,
@@ -44,7 +46,7 @@ class AlamutiTextField extends GetView<PriceController> {
           controller: textEditingController,
           onChanged: (text) {
             if (isPrice) {
-              controller.price.value = text;
+              priceController.price.value = text;
               textEditingController.text = getPersianPriceHint(text);
               textEditingController.value =
                   textEditingController.value.copyWith(
@@ -57,7 +59,6 @@ class AlamutiTextField extends GetView<PriceController> {
           },
           minLines: 1,
           maxLines: isChatTextField ? 4 : 1,
-          // maxLength: 1000,
           validator: (value) {
             if (value == null || value.isEmpty || value.length < 0) {
               return 'این مورد را کامل کنید';
@@ -122,8 +123,6 @@ class AlamutiTextField extends GetView<PriceController> {
   }
 
   String getPersianPriceHint(String text) {
-    var priceController = Get.put(PriceController());
-
     var commaAddedPrice = priceController.price.value
         .split('')
         .reversed

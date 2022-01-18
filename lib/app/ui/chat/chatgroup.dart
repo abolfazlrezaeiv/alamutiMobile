@@ -13,13 +13,10 @@ import 'package:alamuti/app/ui/widgets/bottom_navbar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:signalr_core/signalr_core.dart';
 
 class ChatGroups extends StatelessWidget with CacheManager {
   ChatGroups({Key? key}) : super(key: key);
-
-  final NewMessageController newMessageController = Get.find();
-
-  final ChatGroupController chatGroupController = Get.find();
 
   final SignalRHelper signalHelper = SignalRHelper();
 
@@ -32,13 +29,18 @@ class ChatGroups extends StatelessWidget with CacheManager {
   final double width = Get.width;
 
   final double height = Get.height;
+  final NewMessageController newMessageController = Get.find();
 
+  final ChatGroupController chatGroupController = Get.find();
   @override
   Widget build(BuildContext context) {
     messageProvider.getGroups();
     chatGroupController.groupList.listen((p0) {
       WidgetsBinding.instance?.addPostFrameCallback((_) async {
-        await signalHelper.initiateConnection();
+        if (signalHelper.getConnectionStatus() ==
+            HubConnectionState.disconnected) {
+          await signalHelper.initiateConnection();
+        }
 
         chatGroupController.groupList.forEach((element) {
           signalHelper.createGroup(
@@ -142,7 +144,7 @@ class ChatGroups extends StatelessWidget with CacheManager {
                     },
                   );
 
-                  Get.to(
+                  Get.offAll(
                     () => Chat(
                       groupname: chatGroupController.groupList[index].name,
                       groupTitle: chatGroupController.groupList[index].title,

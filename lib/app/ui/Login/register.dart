@@ -177,7 +177,7 @@ class _RegisterationState extends State<Registeration> {
                                 succesed = true;
                                 isSendingSms = true;
                               });
-                              Get.to(
+                              Get.offAll(
                                   () => Login(
                                         phonenumber: phoneNumberCtr.text,
                                       ),
@@ -187,13 +187,13 @@ class _RegisterationState extends State<Registeration> {
                                 succesed = false;
                               });
                             }
-                            Future.delayed(Duration(seconds: 6), () {
-                              setState(() {
-                                succesed = false;
-                                isSendingSms = false;
-                              });
-                              formKey.currentState?.validate();
-                            });
+                            // Future.delayed(Duration(seconds: 6), () {
+                            //   setState(() {
+                            //     succesed = false;
+                            //     isSendingSms = false;
+                            //   });
+                            //   formKey.currentState?.validate();
+                            // });
                           }
                         },
                         child: isSendingSms

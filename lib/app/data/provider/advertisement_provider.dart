@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:alamuti/app/controller/ads_form_controller.dart';
 import 'package:alamuti/app/controller/advertisement_controller.dart';
@@ -38,7 +39,7 @@ class AdvertisementProvider {
     var response = await tokenProvider.api
         .get(baseUrl + 'Advertisement/$id')
         .whenComplete(() => Get.back());
-    print(response.data);
+
     if (response.statusCode == 200) {
       detailPageController.details.value = [
         Advertisement.fromJson(response.data)
@@ -75,79 +76,59 @@ class AdvertisementProvider {
   }) async {
     advertisementFromApi = [];
 
-    // if (checkIsSearchController.isSearchResult.value) {
-    //   return;
-    // }
-
     Response response;
 
     isRefreshIndicator ? Container() : showLoaderDialog(context);
 
     var argument = (adstype == null || adstype.isEmpty) ? ' ' : adstype;
 
-    response = await tokenProvider.api
-        .get(baseUrl +
-            'Advertisement/filter/$argument?pageNumber=${advertisementPaginationController.currentPage.value}&pageSize=10')
-        .whenComplete(() => isRefreshIndicator ? Get.width : Get.back());
+    try {
+      response = await tokenProvider.api
+          .get(baseUrl +
+              'Advertisement/filter/$argument?pageNumber=${advertisementPaginationController.currentPage.value}&pageSize=10')
+          .timeout(Duration(seconds: 4))
+          .whenComplete(() => isRefreshIndicator ? Get.width : Get.back());
 
-    var xPagination = jsonDecode(response.headers['X-Pagination']![0]);
-    print(xPagination);
+      var xPagination = jsonDecode(response.headers['X-Pagination']![0]);
+      print(xPagination);
+      advertisementPaginationController.currentPage.value =
+          xPagination['CurrentPage'];
 
-    advertisementPaginationController.currentPage.value =
-        xPagination['CurrentPage'];
+      advertisementPaginationController.totalPages.value =
+          xPagination['TotalPages'];
 
-    advertisementPaginationController.totalPages.value =
-        xPagination['TotalPages'];
+      advertisementPaginationController.totalAds.value =
+          xPagination['TotalCount'];
 
-    advertisementPaginationController.totalAds.value =
-        xPagination['TotalCount'];
+      advertisementPaginationController.hasNext.value = xPagination['HasNext'];
 
-    advertisementPaginationController.hasNext.value = xPagination['HasNext'];
+      advertisementPaginationController.hasBack.value =
+          xPagination['HasPrevious'];
 
-    advertisementPaginationController.hasBack.value =
-        xPagination['HasPrevious'];
-
-    if (response.statusCode == 200) {
-      response.data.forEach(
-        (element) {
-          advertisementFromApi.add(Advertisement.fromJson(element));
-        },
-      );
-      if (advertisementPaginationController.currentPage.value == 1) {
-        listAdvertisementController.adsList.value = advertisementFromApi;
+      if (response.statusCode == 200) {
+        response.data.forEach(
+          (element) {
+            advertisementFromApi.add(Advertisement.fromJson(element));
+          },
+        );
+        if (advertisementPaginationController.currentPage.value == 1) {
+          listAdvertisementController.adsList.value = advertisementFromApi;
+        } else {
+          listAdvertisementController.adsList.addAll(advertisementFromApi);
+        }
       } else {
-        listAdvertisementController.adsList.addAll(advertisementFromApi);
+        var message = 'متاسفانه ارتباط ناموفق بود لطفا دوباره امتحان کنید';
+        showStatusDialog(context: context, message: message);
       }
-    } else {
-      Get.defaultDialog(
-        radius: 5,
-        title: 'ارتباط برقرار نشد',
-        barrierDismissible: true,
-        titlePadding: EdgeInsets.all(20),
-        titleStyle: TextStyle(
-          fontWeight: FontWeight.w300,
-          fontSize: 16,
-        ),
-        content: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text(
-            'مشکلی در دریافت اطلاعات به وجود آمده لطفا دوباره تلاش کنید',
-            textDirection: TextDirection.rtl,
-            style: TextStyle(
-              fontWeight: FontWeight.w200,
-              fontSize: 14,
-            ),
-          ),
-        ),
-      );
+    } on TimeoutException catch (_) {
+      var message = 'متاسفانه ارتباط ناموفق بود لطفا دوباره امتحان کنید';
+      showStatusDialog(context: context, message: message);
     }
   }
 
   Future<void> search(
       {required BuildContext context, required String searchInput}) async {
     advertisementFromApi = [];
-
-    var listAdvertisementController = Get.put(ListAdvertisementController());
 
     if (searchInput.length == 1 || searchInput.isEmpty) {
       Get.rawSnackbar(
@@ -161,73 +142,59 @@ class AdvertisementProvider {
     }
     showLoaderDialog(context);
 
-    var response = await tokenProvider.api
-        .get(baseUrl +
-            'Advertisement/search/$searchInput?pageNumber=${advertisementPaginationController.currentPage.value}&pageSize=10')
-        .whenComplete(() => Get.back());
+    try {
+      var response = await tokenProvider.api
+          .get(baseUrl +
+              'Advertisement/search/$searchInput?pageNumber=${advertisementPaginationController.currentPage.value}&pageSize=10')
+          .timeout(Duration(seconds: 3))
+          .whenComplete(() => Get.back());
 
-    var xPagination = jsonDecode(response.headers['X-Pagination']![0]);
-    print(xPagination);
+      var xPagination = jsonDecode(response.headers['X-Pagination']![0]);
+      print(xPagination);
+      advertisementPaginationController.currentPage.value =
+          xPagination['CurrentPage'];
 
-    advertisementPaginationController.currentPage.value =
-        xPagination['CurrentPage'];
+      advertisementPaginationController.totalPages.value =
+          xPagination['TotalPages'];
 
-    advertisementPaginationController.totalPages.value =
-        xPagination['TotalPages'];
+      advertisementPaginationController.totalAds.value =
+          xPagination['TotalCount'];
 
-    advertisementPaginationController.totalAds.value =
-        xPagination['TotalCount'];
+      advertisementPaginationController.hasNext.value = xPagination['HasNext'];
 
-    advertisementPaginationController.hasNext.value = xPagination['HasNext'];
+      advertisementPaginationController.hasBack.value =
+          xPagination['HasPrevious'];
 
-    advertisementPaginationController.hasBack.value =
-        xPagination['HasPrevious'];
+      if (response.statusCode == 200) {
+        response.data.forEach(
+          (element) {
+            advertisementFromApi.add(Advertisement.fromJson(element));
+          },
+        );
 
-    if (response.statusCode == 200) {
-      response.data.forEach(
-        (element) {
-          advertisementFromApi.add(Advertisement.fromJson(element));
-        },
-      );
+        if (advertisementFromApi.length == 0) {
+          Get.rawSnackbar(
+              messageText: Text(
+                'موردی یافت نشد',
+                style: TextStyle(color: Colors.white),
+                textDirection: TextDirection.rtl,
+              ),
+              backgroundColor: Colors.black);
+          return;
+        }
 
-      if (advertisementFromApi.length == 0) {
-        Get.rawSnackbar(
-            messageText: Text(
-              'موردی یافت نشد',
-              style: TextStyle(color: Colors.white),
-              textDirection: TextDirection.rtl,
-            ),
-            backgroundColor: Colors.black);
-        return;
-      }
-
-      if (advertisementPaginationController.currentPage.value == 1) {
-        listAdvertisementController.adsList.value = advertisementFromApi;
+        if (advertisementPaginationController.currentPage.value == 1) {
+          listAdvertisementController.adsList.value = advertisementFromApi;
+        } else {
+          listAdvertisementController.adsList.addAll(advertisementFromApi);
+        }
       } else {
-        listAdvertisementController.adsList.addAll(advertisementFromApi);
+        var message = 'متاسفانه ارتباط ناموفق بود لطفا دوباره امتحان کنید';
+        showStatusDialog(context: context, message: message);
       }
-    } else {
-      Get.defaultDialog(
-        radius: 5,
-        title: 'ارتباط برقرار نشد',
-        barrierDismissible: true,
-        titlePadding: EdgeInsets.all(20),
-        titleStyle: TextStyle(
-          fontWeight: FontWeight.w300,
-          fontSize: 16,
-        ),
-        content: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text(
-            'مشکلی در دریافت اطلاعات به وجود آمده لطفا دوباره تلاش کنید',
-            textDirection: TextDirection.rtl,
-            style: TextStyle(
-              fontWeight: FontWeight.w200,
-              fontSize: 14,
-            ),
-          ),
-        ),
-      );
+    } on TimeoutException catch (_) {
+      var message = 'متاسفانه ارتباط ناموفق بود لطفا دوباره امتحان کنید';
+      showStatusDialog(context: context, message: message);
     }
   }
 
@@ -235,22 +202,26 @@ class AdvertisementProvider {
     advertisementFromApi = [];
 
     showLoaderDialog(context);
+    try {
+      var response = await tokenProvider.api
+          .get(baseUrl + 'Advertisement/myalamuti/useradvertisement')
+          .timeout(Duration(seconds: 4))
+          .whenComplete(() => Get.back());
 
-    var response = await tokenProvider.api
-        .get(baseUrl + 'Advertisement/myalamuti/useradvertisement')
-        .whenComplete(() => Get.back());
+      if (response.statusCode == 200) {
+        response.data.forEach(
+          (element) {
+            advertisementFromApi.add(Advertisement.fromJson(element));
+          },
+        );
 
-    if (response.statusCode == 200) {
-      response.data.forEach(
-        (element) {
-          advertisementFromApi.add(Advertisement.fromJson(element));
-        },
-      );
-
-      listAdvertisementController.adsList.value = advertisementFromApi;
-    } else {
-      var message =
-          'متاسفانه ارتباط ناموفق بود لطفا دوباره تلاش کنید یا ارتباط خود با اینترنت را بررسی کنید';
+        listAdvertisementController.adsList.value = advertisementFromApi;
+      } else {
+        var message = 'متاسفانه ارتباط ناموفق بود لطفا دوباره امتحان کنید';
+        showStatusDialog(context: context, message: message);
+      }
+    } on TimeoutException catch (_) {
+      var message = 'متاسفانه ارتباط ناموفق بود لطفا دوباره امتحان کنید';
       showStatusDialog(context: context, message: message);
     }
   }
@@ -273,7 +244,7 @@ class AdvertisementProvider {
       'price': price,
       'photo1': photo1,
       'photo2': photo2,
-      'listviewPhoto': listviewPhoto,
+      'listViewPhoto': listviewPhoto,
       'area': area,
       'village': village,
       'adsType':
@@ -292,24 +263,20 @@ class AdvertisementProvider {
     if (response.statusCode == 200) {
       Get.toNamed('/myads');
 
-      var message = 'آگهی شما با موفقیت ارسال شد و پس از تایید منتشر میشود';
+      var message = 'آگهی شما با موفقیت ارسال شد و پس از تایید منتشر خواهد شد';
 
       showStatusDialog(context: context, message: message);
     } else {
-      var message =
-          'متاسفانه ارسال ناموفق بود لطفا دوباره تلاش کنید یا ارتباط خود با اینترنت را بررسی کنید';
-
+      var message = 'متاسفانه ارتباط ناموفق بود لطفا دوباره امتحان کنید';
       showStatusDialog(context: context, message: message);
     }
   }
 
   Future<void> deleteAds(
       {required BuildContext context, required int id}) async {
-    var myAdvertisementController = Get.put(UserAdvertisementController());
-
-    for (int i = 0; i < myAdvertisementController.adsList.length; i++) {
-      if (myAdvertisementController.adsList[i].id == id) {
-        myAdvertisementController.adsList.removeAt(i);
+    for (int i = 0; i < listAdvertisementController.adsList.length; i++) {
+      if (listAdvertisementController.adsList[i].id == id) {
+        listAdvertisementController.adsList.removeAt(i);
 
         break;
       }
@@ -345,7 +312,7 @@ class AdvertisementProvider {
       'id': id,
       'title': title,
       'description': description,
-      'listviewPhoto': listviewPhoto,
+      'listViewPhoto': listviewPhoto,
       'price': price,
       'photo1': photo1,
       'photo2': photo2,
@@ -368,11 +335,10 @@ class AdvertisementProvider {
       Get.toNamed('/myads');
 
       var message =
-          'تغییرات شما با موفقیت ذخیره شدند و آگهی شما پس از بررسی مجدد منتشر میشود.';
+          'تغییرات شما با موفقیت ذخیره شدند و آگهی شما پس از بررسی مجدد منتشر خواهد شد.';
       showStatusDialog(context: context, message: message);
     } else {
-      var message =
-          'متاسفانه ارسال ناموفق بود لطفا دوباره تلاش کنید یا ارتباط خود با اینترنت را بررسی کنید';
+      var message = 'متاسفانه ارتباط ناموفق بود لطفا دوباره امتحان کنید';
       showStatusDialog(context: context, message: message);
     }
   }
@@ -393,7 +359,7 @@ class AdvertisementProvider {
     );
     showDialog(
       barrierColor: Colors.transparent,
-      barrierDismissible: false,
+      barrierDismissible: true,
       builder: (BuildContext context) {
         return alert;
       },
@@ -404,30 +370,28 @@ class AdvertisementProvider {
   showStatusDialog({required context, required String message}) {
     AlertDialog alert = AlertDialog(
       backgroundColor: Colors.white,
-      elevation: 0,
-      content: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Text(
-          message,
-          textDirection: TextDirection.rtl,
-          style: TextStyle(
-            fontWeight: FontWeight.w300,
-            fontSize: 15,
-          ),
+      elevation: 3,
+      content: Text(
+        message,
+        textDirection: TextDirection.rtl,
+        style: TextStyle(
+          fontWeight: FontWeight.w300,
+          fontSize: Get.width / 25,
         ),
       ),
       actions: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: TextButton(
-              onPressed: () {
-                Get.back(closeOverlays: true);
-              },
-              child: Text(
-                'تایید',
-                style: TextStyle(color: Colors.greenAccent),
-              )),
-        )
+        TextButton(
+            onPressed: () {
+              Get.back(closeOverlays: true);
+            },
+            child: Text(
+              'تایید',
+              style: TextStyle(
+                color: Colors.greenAccent,
+                fontWeight: FontWeight.w400,
+                fontSize: Get.width / 27,
+              ),
+            ))
       ],
     );
     showDialog(

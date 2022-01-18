@@ -20,9 +20,9 @@ class _SplashScreenState extends State<SplashScreen> {
     // await Future.delayed(Duration(seconds: 1));
     if (await _authManager.checkLoginStatus()) {
       // await tokenProviderController.refreshToken();
-      Get.toNamed('/home');
+      Get.offNamed('/home');
     } else {
-      Get.toNamed('/register');
+      Get.offNamed('/register');
     }
   }
 

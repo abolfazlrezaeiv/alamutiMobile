@@ -27,7 +27,7 @@ var routes = [
     name: '/home',
     page: () => HomePage(),
     binding: HomeBinding(),
-    transition: trans.Transition.fadeIn,
+    transition: trans.Transition.noTransition,
   ),
   GetPage(
     name: '/add_ads',

@@ -39,6 +39,10 @@ class SignalRHelper with CacheManager {
         .build();
   }
 
+  HubConnectionState getConnectionStatus() {
+    return connection.state!;
+  }
+
   initiateConnection() async {
     await connection.start();
   }
@@ -49,10 +53,7 @@ class SignalRHelper with CacheManager {
 
       await connection
           .invoke('CreatenewGroup', args: [arguments[3], arguments[4]]);
-      // if (arguments[1] !=
-      //     await storage.read(CacheManagerKey.USERID.toString())) {
-      //   newMessageController.haveNewMessage.value = true;
-      // }
+
       if (arguments[0] ==
           await storage.read(CacheManagerKey.USERID.toString())) {
         newMessageController.haveNewMessage.value = true;

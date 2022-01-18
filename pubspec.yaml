@@ -62,7 +62,7 @@ flutter:
   assets:
     - assets/logo/logo.png
     - assets/logo/no-image.png
-   
+    - assets/icons/sheep.png
    
   #   - images/a_dot_ham.jpeg
 

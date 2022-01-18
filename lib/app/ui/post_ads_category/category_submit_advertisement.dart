@@ -29,85 +29,47 @@ class CategorySubmitAds extends StatelessWidget {
         },
         child: Column(
           children: [
-            GestureDetector(
-              onTap: () {
-                advertisementTypeController.formState.value = AdsFormState.FOOD;
-                Get.toNamed('/ads_form');
-              },
-              child: Container(
-                child: Column(
-                  children: [
-                    Divider(
-                      color: Colors.transparent,
-                    ),
-                    ListTile(
-                      leading: Icon(CupertinoIcons.back),
-                      title: Text(
-                        'موادغذایی',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w400,
-                        ),
-                        textDirection: TextDirection.rtl,
-                      ),
-                      trailing: Icon(CupertinoIcons.bag),
-                    ),
-                    Divider(),
-                  ],
+            CategoryItem(
+              advertisementTypeController: advertisementTypeController,
+              category: AdsFormState.FOOD,
+              categoryIcon: Icon(
+                CupertinoIcons.bag,
+                size: Get.width / 16,
+              ),
+              categoryName: 'موادغذایی',
+            ),
+            CategoryItem(
+              advertisementTypeController: advertisementTypeController,
+              categoryName: 'دام و حیوانات محلی',
+              category: AdsFormState.Trap,
+              categoryIcon: Container(
+                width: Get.width / 16,
+                child: Opacity(
+                  opacity: 0.5,
+                  child: Image.asset(
+                    'assets/icons/sheep.png',
+                  ),
                 ),
               ),
             ),
-            GestureDetector(
-              onTap: () {
-                advertisementTypeController.formState.value = AdsFormState.JOB;
-                Get.toNamed('/ads_form');
-              },
-              child: Container(
-                child: Column(
-                  children: [
-                    ListTile(
-                      leading: Icon(CupertinoIcons.back),
-                      title: Text(
-                        'مشاغل',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w400,
-                        ),
-                        textDirection: TextDirection.rtl,
-                      ),
-                      trailing: Icon(CupertinoIcons.person_3_fill),
-                    ),
-                  ],
-                ),
+            CategoryItem(
+              advertisementTypeController: advertisementTypeController,
+              categoryName: 'مشاغل',
+              category: AdsFormState.JOB,
+              categoryIcon: Icon(
+                CupertinoIcons.person_3,
+                size: Get.width / 16,
               ),
             ),
-            GestureDetector(
-              onTap: () {
-                advertisementTypeController.formState.value =
-                    AdsFormState.REALSTATE;
-                Get.toNamed('/ads_form');
-              },
-              child: Container(
-                child: Column(
-                  children: [
-                    Divider(),
-                    ListTile(
-                      leading: Icon(CupertinoIcons.back),
-                      title: Text(
-                        'املاک',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w400,
-                        ),
-                        textDirection: TextDirection.rtl,
-                      ),
-                      trailing: Icon(CupertinoIcons.house),
-                    ),
-                    Divider(),
-                  ],
-                ),
+            CategoryItem(
+              advertisementTypeController: advertisementTypeController,
+              categoryName: 'املاک',
+              category: AdsFormState.REALSTATE,
+              categoryIcon: Icon(
+                CupertinoIcons.house,
+                size: Get.width / 16,
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -115,11 +77,46 @@ class CategorySubmitAds extends StatelessWidget {
   }
 }
 
-enum SingingCharacter { lafayette, jefferson }
+class CategoryItem extends StatelessWidget {
+  final String categoryName;
+  final Widget categoryIcon;
+  final AdsFormState category;
+  const CategoryItem({
+    Key? key,
+    required this.advertisementTypeController,
+    required this.categoryName,
+    required this.categoryIcon,
+    required this.category,
+  }) : super(key: key);
 
-class CategoryItem {
-  final IconData icon;
-  final String title;
+  final AdvertisementTypeController advertisementTypeController;
 
-  CategoryItem({required this.icon, required this.title});
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        advertisementTypeController.formState.value = category;
+        Get.toNamed('/ads_form');
+      },
+      child: Container(
+        child: Column(
+          children: [
+            ListTile(
+              leading: Icon(CupertinoIcons.back),
+              title: Text(
+                categoryName,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w400,
+                ),
+                textDirection: TextDirection.rtl,
+              ),
+              trailing: categoryIcon,
+            ),
+            Divider(),
+          ],
+        ),
+      ),
+    );
+  }
 }
