@@ -16,13 +16,14 @@ class ChatGroup {
       required this.id,
       required this.name});
 
-  //     {
-  //   List<ChatMessage> computedList = [];
-  //   messages.forEach((element) {
-  //     ChatMessage.fromJson(messages);
-  //   });
-  //   this.messages = computedList;
-  // }
-
-  void add(ChatGroup group) {}
+  factory ChatGroup.fromJson(Map<String, dynamic> json) {
+    return ChatGroup(
+      id: json["id"],
+      name: json["name"],
+      title: json["title"],
+      isChecked: json["isChecked"],
+      lastMessage: ChatMessage.fromJson(json['lastMessage']),
+      groupImage: json["image"],
+    );
+  }
 }

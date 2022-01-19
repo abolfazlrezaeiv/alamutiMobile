@@ -37,7 +37,7 @@ class UserAdvertisement extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance?.addPostFrameCallback((_) {
-      advertisementProvider.getUserAds(context);
+      advertisementProvider.getUserAds(context: context);
     });
 
     return Scaffold(
@@ -52,7 +52,8 @@ class UserAdvertisement extends StatelessWidget {
       body: Obx(
         () => RefreshIndicator(
           onRefresh: () {
-            return advertisementProvider.getUserAds(context);
+            return advertisementProvider.getUserAds(
+                context: context, isRefreshIndicator: true);
           },
           child: ListView.builder(
             itemCount: listAdvertisementController.adsList.length,

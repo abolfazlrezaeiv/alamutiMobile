@@ -1,4 +1,6 @@
+import 'package:alamuti/app/controller/selected_tap_controller.dart';
 import 'package:alamuti/app/ui/theme.dart';
+import 'package:alamuti/app/ui/widgets/buttom_navbar_items.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -9,13 +11,15 @@ class AlamutiAppBar extends StatelessWidget implements PreferredSizeWidget {
   final bool hasBackButton;
   final String? backwidget;
 
-  const AlamutiAppBar(
+  AlamutiAppBar(
       {Key? key,
       required this.title,
       required this.appBar,
       this.backwidget,
       required this.hasBackButton})
       : super(key: key);
+
+  final ScreenController screenController = Get.put(ScreenController());
 
   @override
   Widget build(BuildContext context) => AppBar(
@@ -31,7 +35,14 @@ class AlamutiAppBar extends StatelessWidget implements PreferredSizeWidget {
         centerTitle: true,
         leading: hasBackButton
             ? GestureDetector(
-                onTap: () => Get.offAllNamed(backwidget!),
+                onTap: () {
+                  var indexOfBottomNavbar =
+                      bottomNavBarScreens.indexOf(backwidget!);
+
+                  screenController.selectedIndex.value = indexOfBottomNavbar;
+
+                  Get.offAllNamed(backwidget!);
+                },
                 child: Container(
                   width: 100,
                   height: 100,

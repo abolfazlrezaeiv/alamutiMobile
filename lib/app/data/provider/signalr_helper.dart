@@ -32,8 +32,9 @@ class SignalRHelper with CacheManager {
         .withUrl(
           baseLoginUrl + 'chat',
           HttpConnectionOptions(
-            skipNegotiation: true,
-            transport: HttpTransportType.webSockets,
+            skipNegotiation: false,
+            transport: HttpTransportType.longPolling,
+            // logging: (level, message) => print(message),
           ),
         )
         .build();

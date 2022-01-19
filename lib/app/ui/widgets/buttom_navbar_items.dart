@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-var newMessageController = Get.put(NewMessageController());
+var newMessageController = Get.put(NewMessageController(), permanent: true);
 var bottomTapItems = <BottomNavigationBarItem>[
   BottomNavigationBarItem(
     icon: Icon(CupertinoIcons.person),

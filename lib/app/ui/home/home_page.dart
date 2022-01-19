@@ -85,6 +85,8 @@ class _HomePageState extends State<HomePage> {
 
         homeScrollController.scrollPosition.value = 0;
 
+        categorySelectedChips.selected.value = 0;
+
         advertisementPaginationController.currentPage.value = 1;
 
         advertisementProvider.getAll(context: context, adstype: null);
@@ -92,7 +94,7 @@ class _HomePageState extends State<HomePage> {
       advertisementRequestController.shouldSend.value = true;
       getMessages();
     });
-
+    _scrollControl.addListener(paginationScrollListener);
     super.initState();
   }
 
@@ -105,7 +107,7 @@ class _HomePageState extends State<HomePage> {
         _scrollControl.jumpTo(homeScrollController.scrollPosition.value);
       }
     });
-    _scrollControl.addListener(paginationScrollListener);
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: PreferredSize(
@@ -137,12 +139,24 @@ class _HomePageState extends State<HomePage> {
                                 fontWeight: FontWeight.w300),
                             onSubmitted: (value) async {
                               FocusScope.of(context).unfocus();
-                              checkIsSearchController.isSearchResult.value =
-                                  true;
-                              categorySelectedChips.selected.value = 0;
 
                               advertisementPaginationController
                                   .currentPage.value = 1;
+
+                              WidgetsBinding.instance
+                                  ?.addPostFrameCallback((_) {
+                                if (_scrollControl.hasClients) {
+                                  _scrollControl.jumpTo(0);
+                                }
+                              });
+
+                              checkIsSearchController.isSearchResult.value =
+                                  true;
+
+                              categorySelectedChips.selected.value = 0;
+
+                              searchKeywordController.keyword.value =
+                                  searchTextEditingController.text;
 
                               await advertisementProvider.search(
                                   context: context,
@@ -192,6 +206,13 @@ class _HomePageState extends State<HomePage> {
                                 ),
                                 onPressed: () async {
                                   FocusScope.of(context).unfocus();
+
+                                  WidgetsBinding.instance
+                                      ?.addPostFrameCallback((_) {
+                                    if (_scrollControl.hasClients) {
+                                      _scrollControl.jumpTo(0);
+                                    }
+                                  });
 
                                   advertisementPaginationController
                                       .currentPage.value = 1;
@@ -454,19 +475,18 @@ class _HomePageState extends State<HomePage> {
       if (advertisementPaginationController.hasNext.value == true) {
         advertisementPaginationController.currentPage.value =
             advertisementPaginationController.currentPage.value + 1;
-        advertisementProvider.getAll(context: context);
+        advertisementProvider.getAll(
+            context: context, adstype: categorySelectedFilter.selected.value);
       }
-    } else {
-      if (advertisementPaginationController.hasNext.value == true &&
-          checkIsSearchController.isSearchResult.value == true) {
-        if (advertisementPaginationController.currentPage.value + 1 <=
-            advertisementPaginationController.totalPages.value) {
-          advertisementPaginationController.currentPage.value =
-              advertisementPaginationController.currentPage.value + 1;
-          advertisementProvider.search(
-              context: context,
-              searchInput: searchKeywordController.keyword.value);
-        }
+    } else if (_scrollControl.offset >=
+            _scrollControl.position.maxScrollExtent &&
+        checkIsSearchController.isSearchResult.value == true) {
+      if (advertisementPaginationController.hasNext.value == true) {
+        advertisementPaginationController.currentPage.value =
+            advertisementPaginationController.currentPage.value + 1;
+        advertisementProvider.search(
+            context: context,
+            searchInput: searchKeywordController.keyword.value);
       }
     }
   }

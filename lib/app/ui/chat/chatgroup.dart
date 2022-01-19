@@ -61,7 +61,7 @@ class ChatGroups extends StatelessWidget with CacheManager {
       body: WillPopScope(
         onWillPop: () async {
           Get.put(ScreenController()).selectedIndex.value = 3;
-          Get.toNamed('/home');
+          Get.offAllNamed('/home');
 
           return false;
         },
@@ -131,7 +131,7 @@ class ChatGroups extends StatelessWidget with CacheManager {
                   if (await getUserId() ==
                       chatGroupController
                           .groupList[index].lastMessage.reciever) {
-                    messageProvider.updateGroupStatus(
+                    await messageProvider.updateGroupStatus(
                         name: chatGroupController.groupList[index].name,
                         id: chatGroupController.groupList[index].id,
                         title: chatGroupController.groupList[index].title,
@@ -139,12 +139,13 @@ class ChatGroups extends StatelessWidget with CacheManager {
                   }
 
                   chatGroupController.groupList.forEach(
-                    (element) {
-                      signalHelper.leaveGroup((element as ChatGroup).name);
+                    (element) async {
+                      await signalHelper
+                          .leaveGroup((element as ChatGroup).name);
                     },
                   );
 
-                  Get.offAll(
+                  Get.to(
                     () => Chat(
                       groupname: chatGroupController.groupList[index].name,
                       groupTitle: chatGroupController.groupList[index].title,

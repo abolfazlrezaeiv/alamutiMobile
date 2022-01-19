@@ -7,13 +7,10 @@ import 'package:alamuti/app/data/storage/cache_manager.dart';
 import 'package:alamuti/app/ui/theme.dart';
 import 'package:alamuti/app/ui/widgets/alamuti_appbar.dart';
 import 'package:alamuti/app/ui/widgets/alamuti_textfield.dart';
+import 'package:bubble/bubble.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_chat_bubble/bubble_type.dart';
-import 'package:flutter_chat_bubble/chat_bubble.dart';
-import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_9.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:signalr_core/signalr_core.dart';
 
 class NewChat extends StatelessWidget with CacheManager {
   final String receiverId;
@@ -30,28 +27,47 @@ class NewChat extends StatelessWidget with CacheManager {
 
   final double height = Get.height;
 
+  final chatTargetUserController = Get.put(ChatTargetUserController());
+
+  final chatMessageController = Get.put(ChatMessageController());
+
   final MessageProvider messageProvider = MessageProvider();
+
+  final _scrollcontroller = ScrollController();
+
+  final GlobalKey<FormState> _formKey = GlobalKey();
+
+  final SignalRHelper signalHelper = SignalRHelper();
+
+  final GetStorage storage = GetStorage();
+
+  static const styleSomebody = BubbleStyle(
+    nip: BubbleNip.leftCenter,
+    color: Colors.white,
+    borderWidth: 1,
+    elevation: 4,
+    margin: BubbleEdges.only(top: 8, right: 50),
+    alignment: Alignment.topLeft,
+  );
+
+  static const styleMe = BubbleStyle(
+    nip: BubbleNip.rightCenter,
+    color: Color.fromARGB(255, 225, 255, 199),
+    borderWidth: 1,
+    elevation: 4,
+    margin: BubbleEdges.only(top: 8, left: 50),
+    alignment: Alignment.topRight,
+  );
 
   @override
   Widget build(BuildContext context) {
     TextEditingController textEditingController = TextEditingController();
-    late SignalRHelper signalHelper;
-    final _scrollcontroller = ScrollController();
-
-    final GlobalKey<FormState> _formKey = GlobalKey();
-
-    final storage = GetStorage();
-
-    signalHelper = SignalRHelper();
-    if (signalHelper.getConnectionStatus() == HubConnectionState.disconnected) {
-      signalHelper.initiateConnection();
-    }
-    signalHelper.reciveMessage();
-    final chatTargetUserController = Get.put(ChatTargetUserController());
-    final chatMessageController = Get.put(ChatMessageController());
 
     chatMessageController.messageList.listen((p0) {
-      WidgetsBinding.instance?.addPostFrameCallback((_) {
+      WidgetsBinding.instance?.addPostFrameCallback((_) async {
+        await signalHelper.initiateConnection();
+
+        signalHelper.reciveMessage();
         if (_scrollcontroller.hasClients) {
           _scrollcontroller.jumpTo(_scrollcontroller.position.maxScrollExtent);
         }
@@ -82,90 +98,21 @@ class NewChat extends StatelessWidget with CacheManager {
                     var storage = GetStorage();
                     if (chatMessageController.messageList[index].sender ==
                         storage.read(CacheManagerKey.USERID.toString())) {
-                      return ChatBubble(
-                        clipper:
-                            ChatBubbleClipper9(type: BubbleType.sendBubble),
-                        alignment: Alignment.topRight,
-                        margin: EdgeInsets.only(top: 20),
-                        backGroundColor: alamutPrimaryColor,
-                        child: Container(
-                          constraints: BoxConstraints(
-                            maxWidth: width * 0.7,
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Text(
-                                chatMessageController
-                                    .messageList[index].message,
-                                textDirection: TextDirection.rtl,
-                                style: TextStyle(color: Colors.white),
-                              ),
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  Text(
-                                    '',
-                                    style: TextStyle(color: Colors.black),
-                                  ),
-                                  Text(
-                                    chatMessageController
-                                        .messageList[index].daySended,
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w200,
-                                        fontFamily: persianNumber,
-                                        fontSize: 13),
-                                    textDirection: TextDirection.rtl,
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: Bubble(
+                          style: styleMe,
+                          child: Text(
+                              chatMessageController.messageList[index].message),
                         ),
                       );
                     } else {
-                      return ChatBubble(
-                        clipper:
-                            ChatBubbleClipper9(type: BubbleType.receiverBubble),
-                        backGroundColor: Color(0xffE7E7ED),
-                        margin: EdgeInsets.only(top: 20),
-                        child: Container(
-                          constraints: BoxConstraints(
-                            maxWidth: width * 0.7,
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Text(
-                                chatMessageController
-                                    .messageList[index].message,
-                                textDirection: TextDirection.rtl,
-                                style: TextStyle(color: Colors.black),
-                              ),
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  Text(
-                                    '',
-                                    style: TextStyle(color: Colors.black),
-                                  ),
-                                  Text(
-                                    chatMessageController
-                                        .messageList[index].daySended,
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w200,
-                                        fontFamily: persianNumber,
-                                        fontSize: 13),
-                                    textDirection: TextDirection.rtl,
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: Bubble(
+                          style: styleSomebody,
+                          child: Text(
+                              chatMessageController.messageList[index].message),
                         ),
                       );
                     }
@@ -176,7 +123,6 @@ class NewChat extends StatelessWidget with CacheManager {
                 key: _formKey,
                 child: Container(
                   color: Colors.grey.withOpacity(0.1),
-                  // height: 60,
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Row(

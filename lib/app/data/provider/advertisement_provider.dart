@@ -5,7 +5,6 @@ import 'package:alamuti/app/controller/advertisement_controller.dart';
 import 'package:alamuti/app/controller/advertisement_pagination_controller.dart';
 import 'package:alamuti/app/controller/detail_page_advertisement.dart';
 import 'package:alamuti/app/controller/search_avoid_update.dart';
-import 'package:alamuti/app/controller/user_advertisement_controller.dart';
 import 'package:alamuti/app/data/model/advertisement.dart';
 import 'package:alamuti/app/data/provider/token_provider.dart';
 import 'package:alamuti/app/data/provider/base_url.dart';
@@ -86,7 +85,7 @@ class AdvertisementProvider {
       response = await tokenProvider.api
           .get(baseUrl +
               'Advertisement/filter/$argument?pageNumber=${advertisementPaginationController.currentPage.value}&pageSize=10')
-          .timeout(Duration(seconds: 4))
+          .timeout(Duration(seconds: 13))
           .whenComplete(() => isRefreshIndicator ? Get.width : Get.back());
 
       var xPagination = jsonDecode(response.headers['X-Pagination']![0]);
@@ -146,7 +145,7 @@ class AdvertisementProvider {
       var response = await tokenProvider.api
           .get(baseUrl +
               'Advertisement/search/$searchInput?pageNumber=${advertisementPaginationController.currentPage.value}&pageSize=10')
-          .timeout(Duration(seconds: 3))
+          .timeout(Duration(seconds: 7))
           .whenComplete(() => Get.back());
 
       var xPagination = jsonDecode(response.headers['X-Pagination']![0]);
@@ -171,6 +170,11 @@ class AdvertisementProvider {
             advertisementFromApi.add(Advertisement.fromJson(element));
           },
         );
+        if (advertisementPaginationController.currentPage.value == 1) {
+          listAdvertisementController.adsList.value = advertisementFromApi;
+        } else {
+          listAdvertisementController.adsList.addAll(advertisementFromApi);
+        }
 
         if (advertisementFromApi.length == 0) {
           Get.rawSnackbar(
@@ -182,12 +186,6 @@ class AdvertisementProvider {
               backgroundColor: Colors.black);
           return;
         }
-
-        if (advertisementPaginationController.currentPage.value == 1) {
-          listAdvertisementController.adsList.value = advertisementFromApi;
-        } else {
-          listAdvertisementController.adsList.addAll(advertisementFromApi);
-        }
       } else {
         var message = 'متاسفانه ارتباط ناموفق بود لطفا دوباره امتحان کنید';
         showStatusDialog(context: context, message: message);
@@ -198,15 +196,17 @@ class AdvertisementProvider {
     }
   }
 
-  Future<void> getUserAds(BuildContext context) async {
+  Future<void> getUserAds(
+      {required BuildContext context, bool isRefreshIndicator = false}) async {
     advertisementFromApi = [];
 
-    showLoaderDialog(context);
+    isRefreshIndicator ? Container() : showLoaderDialog(context);
+
     try {
       var response = await tokenProvider.api
           .get(baseUrl + 'Advertisement/myalamuti/useradvertisement')
-          .timeout(Duration(seconds: 4))
-          .whenComplete(() => Get.back());
+          .timeout(Duration(seconds: 12))
+          .whenComplete(() => isRefreshIndicator ? Get.width : Get.back());
 
       if (response.statusCode == 200) {
         response.data.forEach(
@@ -261,7 +261,7 @@ class AdvertisementProvider {
         .whenComplete(() => Get.back());
 
     if (response.statusCode == 200) {
-      Get.toNamed('/myads');
+      Get.offNamed('/myads');
 
       var message = 'آگهی شما با موفقیت ارسال شد و پس از تایید منتشر خواهد شد';
 
@@ -359,7 +359,7 @@ class AdvertisementProvider {
     );
     showDialog(
       barrierColor: Colors.transparent,
-      barrierDismissible: true,
+      barrierDismissible: false,
       builder: (BuildContext context) {
         return alert;
       },

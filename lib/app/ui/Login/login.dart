@@ -91,7 +91,7 @@ class _LoginState extends State<Login> {
                           color: Color.fromRGBO(112, 112, 112, 1),
                         ),
                         onPressed: () {
-                          Get.toNamed('/register');
+                          Get.offAllNamed('/register');
                         },
                         label: Text('بازگشت',
                             style: TextStyle(

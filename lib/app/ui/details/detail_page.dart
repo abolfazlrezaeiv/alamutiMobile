@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 import 'package:alamuti/app/controller/ads_form_controller.dart';
 import 'package:alamuti/app/controller/advertisement_request_controller.dart';
 import 'package:alamuti/app/controller/chat_message_controller.dart';
@@ -11,6 +12,7 @@ import 'package:alamuti/app/ui/details/fullscreen_slider.dart';
 import 'package:alamuti/app/ui/theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -203,15 +205,15 @@ class _AdsDetailState extends State<AdsDetail> {
                     ),
                   ),
                   TextButton(
-                    onPressed: () {
+                    onPressed: () async {
                       chatTargetUserController
                           .saveUserId(detailPageController.details[0].userId);
                       chatMessageController.messageList.clear();
-                      Get.offAll(
+                      var chatImage = await _getListviewImage();
+                      Get.to(
                           () => NewChat(
                               receiverId: chatTargetUserController.userId.value,
-                              groupImage:
-                                  detailPageController.details[0].photo1,
+                              groupImage: chatImage,
                               groupTitle:
                                   detailPageController.details[0].title),
                           transition: Transition.fadeIn);
@@ -246,6 +248,33 @@ class _AdsDetailState extends State<AdsDetail> {
         ),
       ),
     );
+  }
+
+  Future<String> _getListviewImage() async {
+    String imageForListView = '';
+    if (detailPageController.details[0].photo1 != null) {
+      imageForListView = detailPageController.details[0].photo1;
+    }
+    if (detailPageController.details[0].photo2 != null) {
+      imageForListView = detailPageController.details[0].photo2;
+    }
+    if (imageForListView.length > 2) {
+      imageForListView =
+          base64Encode(await _comporessList(base64Decode(imageForListView)));
+    }
+    return imageForListView;
+  }
+
+  Future<Uint8List> _comporessList(Uint8List list) async {
+    var result = await FlutterImageCompress.compressWithList(
+      list,
+      minWidth: 120,
+      minHeight: 67,
+      quality: 7,
+      rotate: 0,
+    );
+
+    return result;
   }
 
   Future<void> _makePhoneCall(String phoneNumber) async {
@@ -323,7 +352,7 @@ class _AdsDetailState extends State<AdsDetail> {
           onTap: () {
             advertisementRequestController.shouldSend.value = false;
 
-            Get.toNamed('/home');
+            Get.offNamed('/home');
           },
           child: Container(
             width: width / 5,
@@ -398,7 +427,7 @@ class _AdsDetailState extends State<AdsDetail> {
                 onTap: () {
                   advertisementRequestController.shouldSend.value = false;
 
-                  Get.toNamed('/home');
+                  Get.offNamed('/home');
                 },
                 child: Container(
                   width: width / 5,
@@ -487,7 +516,7 @@ class _AdsDetailState extends State<AdsDetail> {
           child: GestureDetector(
             onTap: () {
               advertisementRequestController.shouldSend.value = false;
-              Get.toNamed('/home');
+              Get.offNamed('/home');
             },
             child: Row(
               children: [

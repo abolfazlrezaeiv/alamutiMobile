@@ -1,19 +1,17 @@
+import 'package:alamuti/app/controller/advertisement_pagination_controller.dart';
 import 'package:alamuti/app/controller/chat_message_controller.dart';
 import 'package:alamuti/app/data/provider/chat_message_provider.dart';
 import 'package:alamuti/app/data/provider/signalr_helper.dart';
 import 'package:alamuti/app/data/storage/cache_manager.dart';
-import 'package:alamuti/app/ui/theme.dart';
 import 'package:alamuti/app/ui/widgets/alamuti_appbar.dart';
 import 'package:alamuti/app/ui/widgets/alamuti_textfield.dart';
+import 'package:bubble/bubble.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_chat_bubble/bubble_type.dart';
-import 'package:flutter_chat_bubble/chat_bubble.dart';
-import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_9.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:signalr_core/signalr_core.dart';
 
-class Chat extends GetView<ChatMessageController> with CacheManager {
+class Chat extends StatefulWidget with CacheManager {
   final String groupname;
 
   final String groupTitle;
@@ -27,6 +25,17 @@ class Chat extends GetView<ChatMessageController> with CacheManager {
     required this.groupImage,
   }) : super(key: key);
 
+  @override
+  State<Chat> createState() => _ChatState();
+}
+
+class _ChatState extends State<Chat> {
+  final ChatMessageController chatMessageController =
+      Get.put(ChatMessageController());
+
+  final AdvertisementPaginationController advertisementPaginationController =
+      Get.put(AdvertisementPaginationController());
+
   final TextEditingController textEditingController = TextEditingController();
 
   final SignalRHelper signalHelper = SignalRHelper();
@@ -34,6 +43,8 @@ class Chat extends GetView<ChatMessageController> with CacheManager {
   final ScrollController _scrollcontroller = ScrollController();
 
   final GlobalKey<FormState> _formKey = GlobalKey();
+
+  final ScrollController _scrollControl = ScrollController();
 
   final MessageProvider messageProvider = MessageProvider();
 
@@ -44,22 +55,29 @@ class Chat extends GetView<ChatMessageController> with CacheManager {
   final double height = Get.height;
 
   @override
-  Widget build(BuildContext context) {
-    final isAlamutiMessage = groupTitle == 'الموتی';
+  void initState() {
+    _scrollControl.addListener(paginationScrollListener);
 
-    messageProvider.getGroupMessages(groupname);
-    controller.messageList.listen((p0) {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isAlamutiMessage = widget.groupTitle == 'الموتی';
+    advertisementPaginationController.currentPage.value = 1;
+    messageProvider.getGroupMessages(widget.groupname);
+    chatMessageController.messageList.listen((p0) {
       WidgetsBinding.instance?.addPostFrameCallback((_) async {
-        if (_scrollcontroller.hasClients) {
-          _scrollcontroller.jumpTo(_scrollcontroller.position.maxScrollExtent);
-        }
+        // if (_scrollcontroller.hasClients) {
+        //   _scrollcontroller.jumpTo(_scrollcontroller.position.maxScrollExtent);
+        // }
         if (signalHelper.getConnectionStatus() ==
             HubConnectionState.disconnected) {
           await signalHelper.initiateConnection();
         }
 
         await signalHelper.createGroup(
-          groupname,
+          widget.groupname,
         );
         await signalHelper.reciveMessage();
       });
@@ -75,7 +93,8 @@ class Chat extends GetView<ChatMessageController> with CacheManager {
       body: WillPopScope(
         onWillPop: () async {
           await messageProvider.getGroups();
-          return true;
+          Get.offAllNamed('/chat');
+          return false;
         },
         child: Container(
           width: width,
@@ -83,91 +102,26 @@ class Chat extends GetView<ChatMessageController> with CacheManager {
             children: [
               Expanded(
                 child: Obx(() => ListView.builder(
-                      controller: _scrollcontroller,
-                      itemCount: controller.messageList.length,
+                      controller: _scrollControl,
+                      itemCount: chatMessageController.messageList.length,
                       itemBuilder: (context, index) {
-                        if (controller.messageList[index].sender ==
+                        if (chatMessageController.messageList[index].sender ==
                             storage.read(CacheManagerKey.USERID.toString())) {
-                          return ChatBubble(
-                            clipper:
-                                ChatBubbleClipper9(type: BubbleType.sendBubble),
-                            alignment: Alignment.topRight,
-                            margin: EdgeInsets.only(top: 20),
-                            backGroundColor: Color.fromRGBO(8, 212, 76, 0.5),
-                            child: Container(
-                              constraints: BoxConstraints(
-                                maxWidth: width * 0.7,
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  Text(
-                                    controller.messageList[index].message,
-                                    textDirection: TextDirection.rtl,
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                  Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      Text(
-                                        '',
-                                        style: TextStyle(color: Colors.black),
-                                      ),
-                                      Text(
-                                        controller.messageList[index].daySended,
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w200,
-                                            fontFamily: persianNumber,
-                                            fontSize: 13),
-                                        textDirection: TextDirection.rtl,
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: Bubble(
+                              style: styleMe,
+                              child: Text(chatMessageController
+                                  .messageList[index].message),
                             ),
                           );
                         } else {
-                          return ChatBubble(
-                            clipper: ChatBubbleClipper9(
-                                type: BubbleType.receiverBubble),
-                            backGroundColor: Color(0xffE7E7ED),
-                            margin: EdgeInsets.only(top: 20),
-                            child: Container(
-                              constraints: BoxConstraints(
-                                maxWidth: width * 0.7,
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  Text(
-                                    controller.messageList[index].message,
-                                    textDirection: TextDirection.rtl,
-                                    style: TextStyle(color: Colors.black),
-                                  ),
-                                  Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      Text(
-                                        '',
-                                        style: TextStyle(color: Colors.black),
-                                      ),
-                                      Text(
-                                        controller.messageList[index].daySended,
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w200,
-                                            fontFamily: persianNumber,
-                                            fontSize: 13),
-                                        textDirection: TextDirection.rtl,
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 4.0),
+                            child: Bubble(
+                              style: styleSomebody,
+                              child: Text(chatMessageController
+                                  .messageList[index].message),
                             ),
                           );
                         }
@@ -196,7 +150,7 @@ class Chat extends GetView<ChatMessageController> with CacheManager {
                               TextButton(
                                   onPressed: () {
                                     if (_formKey.currentState!.validate()) {
-                                      var target = groupname
+                                      var target = widget.groupname
                                           .replaceAll(
                                               storage.read(
                                                 CacheManagerKey.USERID
@@ -211,9 +165,9 @@ class Chat extends GetView<ChatMessageController> with CacheManager {
                                             CacheManagerKey.USERID.toString(),
                                           ),
                                           message: textEditingController.text,
-                                          groupname: groupname,
-                                          groupImage: groupImage,
-                                          grouptitle: groupTitle);
+                                          groupname: widget.groupname,
+                                          groupImage: widget.groupImage,
+                                          grouptitle: widget.groupTitle);
 
                                       WidgetsBinding.instance
                                           ?.addPostFrameCallback((_) {
@@ -241,4 +195,35 @@ class Chat extends GetView<ChatMessageController> with CacheManager {
       ),
     );
   }
+
+  void paginationScrollListener() {
+    if (_scrollControl.offset >= _scrollControl.position.maxScrollExtent) {
+      if (advertisementPaginationController.hasNext.value == true) {
+        advertisementPaginationController.currentPage.value =
+            advertisementPaginationController.currentPage.value + 1;
+        messageProvider.getGroupMessages(widget.groupname);
+        print('chat scrollll!');
+      }
+    }
+  }
+
+  static const styleSomebody = BubbleStyle(
+    nip: BubbleNip.leftCenter,
+    color: Colors.white,
+    borderColor: Colors.transparent,
+    borderWidth: 1,
+    elevation: 4,
+    margin: BubbleEdges.only(top: 8, right: 50),
+    alignment: Alignment.topLeft,
+  );
+
+  static const styleMe = BubbleStyle(
+    nip: BubbleNip.rightCenter,
+    color: Color.fromARGB(255, 225, 255, 199),
+    borderColor: Colors.transparent,
+    borderWidth: 1,
+    elevation: 4,
+    margin: BubbleEdges.only(top: 8, left: 50),
+    alignment: Alignment.topRight,
+  );
 }

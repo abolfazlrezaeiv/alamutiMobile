@@ -23,7 +23,7 @@ class CategorySubmitAds extends StatelessWidget {
       body: WillPopScope(
         onWillPop: () async {
           Get.put(ScreenController()).selectedIndex.value = 3;
-          Get.toNamed('/home');
+          Get.offNamed('/home');
 
           return false;
         },

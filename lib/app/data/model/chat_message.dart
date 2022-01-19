@@ -11,13 +11,14 @@ class ChatMessage {
       required this.message,
       required this.reciever,
       required this.daySended});
-  // late DateTime DateSended { get; set; }
 
-  ChatMessage.fromJson(Map<String, dynamic> json) {
-    id = json["id"];
-    sender = json["sender"];
-    message = json["message"];
-    reciever = json["reciever"];
-    daySended = json["daySended"];
+  factory ChatMessage.fromJson(Map<String, dynamic> json) {
+    return ChatMessage(
+      id: json["id"],
+      sender: json["sender"],
+      message: json["message"],
+      reciever: json["reciever"],
+      daySended: json["daySended"],
+    );
   }
 }

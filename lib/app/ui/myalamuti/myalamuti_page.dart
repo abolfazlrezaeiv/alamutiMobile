@@ -27,7 +27,7 @@ class MyAlamutiPage extends StatelessWidget with CacheManager {
       body: WillPopScope(
         onWillPop: () async {
           Get.put(ScreenController()).selectedIndex.value = 3;
-          Get.toNamed('/home');
+          Get.offAllNamed('/home');
 
           return false;
         },

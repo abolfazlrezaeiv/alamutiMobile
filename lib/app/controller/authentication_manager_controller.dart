@@ -8,7 +8,7 @@ class AuthenticationManager extends GetxController with CacheManager {
     isLogged.value = false;
     saveLogout();
     removeTokenRefreshToken();
-    Get.toNamed('/register');
+    Get.offAllNamed('/register');
   }
 
   void login(String token, String refreshtoken) async {
