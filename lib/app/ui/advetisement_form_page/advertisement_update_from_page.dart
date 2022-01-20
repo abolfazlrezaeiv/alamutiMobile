@@ -4,7 +4,7 @@ import 'dart:typed_data';
 import 'package:alamuti/app/controller/ads_form_controller.dart';
 import 'package:alamuti/app/controller/selected_tap_controller.dart';
 import 'package:alamuti/app/controller/update_image_advertisement_controller.dart';
-import 'package:alamuti/app/data/model/advertisement.dart';
+import 'package:alamuti/app/data/entities/advertisement.dart';
 import 'package:alamuti/app/data/provider/advertisement_provider.dart';
 import 'package:alamuti/app/ui/widgets/add_ads_photo_card.dart';
 import 'package:alamuti/app/ui/widgets/alamuti_appbar.dart';

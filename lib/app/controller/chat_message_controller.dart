@@ -1,4 +1,4 @@
-import 'package:alamuti/app/data/model/chat_message.dart';
+import 'package:alamuti/app/data/entities/chat_message.dart';
 import 'package:alamuti/app/data/storage/cache_manager.dart';
 import 'package:get/get.dart';
 

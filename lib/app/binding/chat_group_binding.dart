@@ -6,6 +6,6 @@ class ChatGroupBinding implements Bindings {
   @override
   void dependencies() {
     Get.put<NewMessageController>(NewMessageController(), permanent: true);
-    Get.put<ChatGroupController>(ChatGroupController());
+    Get.put<ChatGroupController>(ChatGroupController(), permanent: true);
   }
 }

@@ -1,7 +1,7 @@
-import 'package:alamuti/app/data/model/login_request_model.dart';
-import 'package:alamuti/app/data/model/login_response_model.dart';
-import 'package:alamuti/app/data/model/register_request_model.dart';
-import 'package:alamuti/app/data/model/register_response_model.dart';
+import 'package:alamuti/app/data/entities/login_request_model.dart';
+import 'package:alamuti/app/data/entities/login_response_model.dart';
+import 'package:alamuti/app/data/entities/register_request_model.dart';
+import 'package:alamuti/app/data/entities/register_response_model.dart';
 import 'package:alamuti/app/data/provider/base_url.dart';
 import 'package:alamuti/app/data/storage/cache_manager.dart';
 import 'package:dio/dio.dart';

@@ -10,19 +10,22 @@ import 'package:alamuti/app/controller/scroll_position.dart';
 import 'package:alamuti/app/controller/search_avoid_update.dart';
 import 'package:alamuti/app/controller/search_keyword_controller.dart';
 import 'package:alamuti/app/controller/selected_category_filter_controller.dart';
+import 'package:alamuti/app/data/entities/advertisement.dart';
 import 'package:alamuti/app/data/provider/advertisement_provider.dart';
 import 'package:alamuti/app/data/provider/chat_message_provider.dart';
 import 'package:alamuti/app/data/provider/signalr_helper.dart';
 import 'package:alamuti/app/ui/details/detail_page.dart';
 import 'package:alamuti/app/ui/theme.dart';
 import 'package:alamuti/app/ui/widgets/bottom_navbar.dart';
+import 'package:alamuti/app/ui/widgets/exception_indicators/empty_list_indicator.dart';
+import 'package:alamuti/app/ui/widgets/exception_indicators/error_indicator.dart';
 import 'package:chips_choice_null_safety/chips_choice_null_safety.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:signalr_core/signalr_core.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key? key}) : super(key: key);
@@ -57,7 +60,7 @@ class _HomePageState extends State<HomePage> {
 
   AdvertisementRequestController advertisementRequestController = Get.find();
 
-  List<String> filterType = [
+  final List<String> filterType = [
     '',
     AdsFormState.FOOD.toString(),
     AdsFormState.Trap.toString(),
@@ -65,7 +68,7 @@ class _HomePageState extends State<HomePage> {
     AdsFormState.REALSTATE.toString()
   ];
 
-  List<String> options = [
+  static const List<String> options = [
     'همه',
     'مواد غذایی',
     'دام',
@@ -77,8 +80,15 @@ class _HomePageState extends State<HomePage> {
 
   final double height = Get.height;
 
+  final _pagingController = PagingController<int, Advertisement>(
+    firstPageKey: 1,
+  );
+
   @override
   void initState() {
+    _pagingController.addPageRequestListener((pageKey) {
+      _fetchPage(pageKey);
+    });
     WidgetsBinding.instance?.addPostFrameCallback((duration) {
       if (advertisementRequestController.shouldSend.value == true) {
         checkIsSearchController.isSearchResult.value = false;
@@ -96,6 +106,34 @@ class _HomePageState extends State<HomePage> {
     });
     _scrollControl.addListener(paginationScrollListener);
     super.initState();
+  }
+
+  Future<void> _fetchPage(int pageKey) async {
+    try {
+      final newPage = await advertisementProvider.getAll(
+          context: context, adstype: categorySelectedFilter.selected.value);
+
+      final previouslyFetchedItemsCount =
+          _pagingController.itemList?.length ?? 0;
+
+      final isLastPage = newPage.isLastPage(previouslyFetchedItemsCount);
+      final newItems = newPage.itemList;
+
+      if (isLastPage) {
+        _pagingController.appendLastPage(newItems);
+      } else {
+        final nextPageKey = pageKey + 1;
+        _pagingController.appendPage(newItems, nextPageKey);
+      }
+    } catch (error) {
+      _pagingController.error = error;
+    }
+  }
+
+  @override
+  void dispose() {
+    _pagingController.dispose();
+    super.dispose();
   }
 
   @override
@@ -312,156 +350,265 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       bottomNavigationBar: AlamutBottomNavBar(),
-      body: WillPopScope(
-        onWillPop: () async {
-          await SystemNavigator.pop();
-          return false;
-        },
-        child: Obx(
-          () => RefreshIndicator(
-            color: Colors.greenAccent,
-            onRefresh: () async {
-              advertisementPaginationController.currentPage.value = 1;
-
-              searchTextEditingController.text = '';
-
-              return advertisementProvider.getAll(
-                  context: context, isRefreshIndicator: true);
-            },
-            child: ListView.builder(
-              controller: _scrollControl,
-              itemCount: listAdvertisementController.adsList.length,
-              itemBuilder: (BuildContext context, int index) {
-                return Container(
-                  height: height / 5,
-                  child: GestureDetector(
-                    onTap: () async {
-                      FocusScope.of(context).unfocus();
-                      await advertisementProvider.getDetails(
-                          id: listAdvertisementController.adsList[index].id,
-                          context: context);
-                      Get.to(
-                          () => AdsDetail(
-                                id: listAdvertisementController
-                                    .adsList[index].id,
-                              ),
-                          binding: DetailPageBinding(),
-                          transition: Transition.fadeIn);
-                    },
-                    child: Obx(
-                      () => Container(
-                        decoration: BoxDecoration(
-                          border: Border(
-                            bottom: BorderSide(
-                              color: Colors.grey.withOpacity(0.3),
-                            ),
-                          ),
-                        ),
-                        child: Center(
-                          child: Padding(
-                            padding:
-                                EdgeInsets.symmetric(horizontal: width / 50),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                FittedBox(
+      body: PagedListView.separated(
+        pagingController: _pagingController,
+        builderDelegate: PagedChildBuilderDelegate<Advertisement>(
+          itemBuilder: (context, ads, index) => Container(
+            decoration: BoxDecoration(
+              border: Border(
+                bottom: BorderSide(
+                  color: Colors.grey.withOpacity(0.3),
+                ),
+              ),
+            ),
+            child: Center(
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                    vertical: height / 100, horizontal: width / 50),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    FittedBox(
+                      fit: BoxFit.cover,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: (ads.listviewPhoto == null)
+                            ? Opacity(
+                                opacity: 0.2,
+                                child: Image.asset(
+                                  'assets/logo/no-image.png',
                                   fit: BoxFit.cover,
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(8),
-                                    child: (listAdvertisementController
-                                                .adsList[index].listviewPhoto ==
-                                            null)
-                                        ? Opacity(
-                                            opacity: 0.2,
-                                            child: Image.asset(
-                                              'assets/logo/no-image.png',
-                                              fit: BoxFit.cover,
-                                              height: height / 6,
-                                              width: height / 6,
-                                            ),
-                                          )
-                                        : Image.memory(
-                                            base64Decode(
-                                              listAdvertisementController
-                                                  .adsList[index].listviewPhoto,
-                                            ),
-                                            fit: BoxFit.cover,
-                                            height: height / 6,
-                                            width: height / 6,
-                                          ),
-                                  ),
+                                  height: height / 6,
+                                  width: height / 6,
                                 ),
-                                Flexible(
-                                  child: Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: height / 70),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.end,
-                                      children: [
-                                        Text(
-                                          listAdvertisementController
-                                              .adsList[index].title,
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.w400,
-                                              fontSize: 15),
-                                          textDirection: TextDirection.rtl,
-                                          overflow: TextOverflow.visible,
-                                        ),
-                                        SizedBox(
-                                          height: height / 18,
-                                        ),
-                                        Text(
-                                          'تومان ${listAdvertisementController.adsList[index].price.toString()}',
-                                          style: TextStyle(
-                                              fontFamily: persianNumber,
-                                              fontWeight: FontWeight.w300),
-                                          textDirection: TextDirection.rtl,
-                                        ),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.end,
-                                          children: [
-                                            Text(
-                                              listAdvertisementController
-                                                  .adsList[index].datePosted,
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.w200,
-                                                  fontFamily: persianNumber,
-                                                  fontSize: 13),
-                                              textDirection: TextDirection.rtl,
-                                            ),
-                                            Text(
-                                              listAdvertisementController
-                                                  .adsList[index].village,
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.w200,
-                                                  fontFamily: persianNumber,
-                                                  fontSize: 13),
-                                              textDirection: TextDirection.rtl,
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
+                              )
+                            : Image.memory(
+                                base64Decode(
+                                  ads.listviewPhoto!,
+                                ),
+                                fit: BoxFit.cover,
+                                height: height / 6,
+                                width: height / 6,
+                              ),
                       ),
                     ),
-                  ),
-                );
-              },
+                    Flexible(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: height / 70),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(
+                              ads.title,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w400, fontSize: 15),
+                              textDirection: TextDirection.rtl,
+                              overflow: TextOverflow.visible,
+                            ),
+                            SizedBox(
+                              height: height / 18,
+                            ),
+                            Text(
+                              'تومان ${ads.price.toString()}',
+                              style: TextStyle(
+                                  fontFamily: persianNumber,
+                                  fontWeight: FontWeight.w300),
+                              textDirection: TextDirection.rtl,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Text(
+                                  ads.datePosted,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w200,
+                                      fontFamily: persianNumber,
+                                      fontSize: 13),
+                                  textDirection: TextDirection.rtl,
+                                ),
+                                Text(
+                                  ads.village,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w200,
+                                      fontFamily: persianNumber,
+                                      fontSize: 13),
+                                  textDirection: TextDirection.rtl,
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
             ),
           ),
+          firstPageErrorIndicatorBuilder: (context) => ErrorIndicator(
+            error: _pagingController.error,
+            onTryAgain: () => _pagingController.refresh(),
+          ),
+          noItemsFoundIndicatorBuilder: (context) => EmptyListIndicator(),
+        ),
+        padding: const EdgeInsets.all(0),
+        separatorBuilder: (context, index) => const SizedBox(
+          height: 0,
         ),
       ),
+
+      //  WillPopScope(
+      //   onWillPop: () async {
+      //     await SystemNavigator.pop();
+      //     return false;
+      //   },
+      //   child: Obx(
+      //     () => RefreshIndicator(
+      //       color: Colors.greenAccent,
+      //       onRefresh: () async {
+      //         advertisementPaginationController.currentPage.value = 1;
+
+      //         searchTextEditingController.text = '';
+
+      //         return advertisementProvider.getAll(
+      //             context: context, isRefreshIndicator: true);
+      //       },
+      //       child: ListView.builder(
+      //         controller: _scrollControl,
+      //         itemCount: listAdvertisementController.adsList.length,
+      //         itemBuilder: (BuildContext context, int index) {
+      //           return Container(
+      //             height: height / 5,
+      //             child: GestureDetector(
+      //               onTap: () async {
+      //                 FocusScope.of(context).unfocus();
+      //                 await advertisementProvider.getDetails(
+      //                     id: listAdvertisementController.adsList[index].id,
+      //                     context: context);
+      //                 Get.to(
+      //                     () => AdsDetail(
+      //                           id: listAdvertisementController
+      //                               .adsList[index].id,
+      //                         ),
+      //                     binding: DetailPageBinding(),
+      //                     transition: Transition.fadeIn);
+      //               },
+      //               child: Obx(
+      //                 () => Container(
+      //                   decoration: BoxDecoration(
+      //                     border: Border(
+      //                       bottom: BorderSide(
+      //                         color: Colors.grey.withOpacity(0.3),
+      //                       ),
+      //                     ),
+      //                   ),
+      //                   child: Center(
+      //                     child: Padding(
+      //                       padding:
+      //                           EdgeInsets.symmetric(horizontal: width / 50),
+      //                       child: Row(
+      //                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      //                         crossAxisAlignment: CrossAxisAlignment.center,
+      //                         children: [
+      //                           FittedBox(
+      //                             fit: BoxFit.cover,
+      //                             child: ClipRRect(
+      //                               borderRadius: BorderRadius.circular(8),
+      //                               child: (listAdvertisementController
+      //                                           .adsList[index].listviewPhoto ==
+      //                                       null)
+      //                                   ? Opacity(
+      //                                       opacity: 0.2,
+      //                                       child: Image.asset(
+      //                                         'assets/logo/no-image.png',
+      //                                         fit: BoxFit.cover,
+      //                                         height: height / 6,
+      //                                         width: height / 6,
+      //                                       ),
+      //                                     )
+      //                                   : Image.memory(
+      //                                       base64Decode(
+      //                                         listAdvertisementController
+      //                                             .adsList[index].listviewPhoto,
+      //                                       ),
+      //                                       fit: BoxFit.cover,
+      //                                       height: height / 6,
+      //                                       width: height / 6,
+      //                                     ),
+      //                             ),
+      //                           ),
+      //                           Flexible(
+      //                             child: Padding(
+      //                               padding: EdgeInsets.symmetric(
+      //                                   vertical: height / 70),
+      //                               child: Column(
+      //                                 mainAxisAlignment:
+      //                                     MainAxisAlignment.spaceBetween,
+      //                                 crossAxisAlignment:
+      //                                     CrossAxisAlignment.end,
+      //                                 children: [
+      //                                   Text(
+      //                                     listAdvertisementController
+      //                                         .adsList[index].title,
+      //                                     style: TextStyle(
+      //                                         fontWeight: FontWeight.w400,
+      //                                         fontSize: 15),
+      //                                     textDirection: TextDirection.rtl,
+      //                                     overflow: TextOverflow.visible,
+      //                                   ),
+      //                                   SizedBox(
+      //                                     height: height / 18,
+      //                                   ),
+      //                                   Text(
+      //                                     'تومان ${listAdvertisementController.adsList[index].price.toString()}',
+      //                                     style: TextStyle(
+      //                                         fontFamily: persianNumber,
+      //                                         fontWeight: FontWeight.w300),
+      //                                     textDirection: TextDirection.rtl,
+      //                                   ),
+      //                                   Row(
+      //                                     mainAxisAlignment:
+      //                                         MainAxisAlignment.end,
+      //                                     children: [
+      //                                       Text(
+      //                                         listAdvertisementController
+      //                                             .adsList[index].datePosted,
+      //                                         style: TextStyle(
+      //                                             fontWeight: FontWeight.w200,
+      //                                             fontFamily: persianNumber,
+      //                                             fontSize: 13),
+      //                                         textDirection: TextDirection.rtl,
+      //                                       ),
+      //                                       Text(
+      //                                         listAdvertisementController
+      //                                             .adsList[index].village,
+      //                                         style: TextStyle(
+      //                                             fontWeight: FontWeight.w200,
+      //                                             fontFamily: persianNumber,
+      //                                             fontSize: 13),
+      //                                         textDirection: TextDirection.rtl,
+      //                                       ),
+      //                                     ],
+      //                                   ),
+      //                                 ],
+      //                               ),
+      //                             ),
+      //                           )
+      //                         ],
+      //                       ),
+      //                     ),
+      //                   ),
+      //                 ),
+      //               ),
+      //             ),
+      //           );
+      //         },
+      //       ),
+      //     ),
+      //   ),
+      // ),
     );
   }
 
@@ -501,18 +648,11 @@ class _HomePageState extends State<HomePage> {
     messageProvider.getGroups();
     chatGroupController.groupList.listen((p0) {
       WidgetsBinding.instance?.addPostFrameCallback((_) async {
-        if (signalHelper.getConnectionStatus() ==
-            HubConnectionState.disconnected) {
-          await signalHelper.initiateConnection();
-        }
-
         chatGroupController.groupList.forEach((element) {
           signalHelper.createGroup(
             element.name,
           );
         });
-
-        await signalHelper.reciveMessage();
       });
     });
   }

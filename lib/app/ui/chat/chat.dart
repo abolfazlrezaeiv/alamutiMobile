@@ -9,7 +9,6 @@ import 'package:bubble/bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:signalr_core/signalr_core.dart';
 
 class Chat extends StatefulWidget with CacheManager {
   final String groupname;
@@ -40,8 +39,6 @@ class _ChatState extends State<Chat> {
 
   final SignalRHelper signalHelper = SignalRHelper();
 
-  final ScrollController _scrollcontroller = ScrollController();
-
   final GlobalKey<FormState> _formKey = GlobalKey();
 
   final ScrollController _scrollControl = ScrollController();
@@ -56,31 +53,24 @@ class _ChatState extends State<Chat> {
 
   @override
   void initState() {
-    _scrollControl.addListener(paginationScrollListener);
+    advertisementPaginationController.currentPage.value = 1;
+    messageProvider.getGroupMessages(widget.groupname);
 
+    signalHelper.createGroup(
+      widget.groupname,
+    );
+    _scrollControl.addListener(paginationScrollListener);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     final isAlamutiMessage = widget.groupTitle == 'الموتی';
-    advertisementPaginationController.currentPage.value = 1;
-    messageProvider.getGroupMessages(widget.groupname);
-    chatMessageController.messageList.listen((p0) {
-      WidgetsBinding.instance?.addPostFrameCallback((_) async {
-        // if (_scrollcontroller.hasClients) {
-        //   _scrollcontroller.jumpTo(_scrollcontroller.position.maxScrollExtent);
-        // }
-        if (signalHelper.getConnectionStatus() ==
-            HubConnectionState.disconnected) {
-          await signalHelper.initiateConnection();
-        }
 
-        await signalHelper.createGroup(
-          widget.groupname,
-        );
-        await signalHelper.reciveMessage();
-      });
+    WidgetsBinding.instance?.addPostFrameCallback((_) async {
+      if (_scrollControl.hasClients) {
+        _scrollControl.jumpTo(_scrollControl.position.minScrollExtent);
+      }
     });
 
     return Scaffold(
@@ -101,31 +91,38 @@ class _ChatState extends State<Chat> {
           child: Column(
             children: [
               Expanded(
-                child: Obx(() => ListView.builder(
-                      controller: _scrollControl,
-                      itemCount: chatMessageController.messageList.length,
-                      itemBuilder: (context, index) {
-                        if (chatMessageController.messageList[index].sender ==
-                            storage.read(CacheManagerKey.USERID.toString())) {
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 8.0),
-                            child: Bubble(
-                              style: styleMe,
-                              child: Text(chatMessageController
-                                  .messageList[index].message),
-                            ),
-                          );
-                        } else {
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 4.0),
-                            child: Bubble(
-                              style: styleSomebody,
-                              child: Text(chatMessageController
-                                  .messageList[index].message),
-                            ),
-                          );
-                        }
-                      },
+                child: Obx(() => Align(
+                      alignment: Alignment.topCenter,
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        reverse: true,
+                        controller: _scrollControl,
+                        itemCount: chatMessageController.messageList.length,
+                        itemBuilder: (context, index) {
+                          if (chatMessageController.messageList[index].sender ==
+                              storage.read(CacheManagerKey.USERID.toString())) {
+                            return Padding(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: Get.height / 70),
+                              child: Bubble(
+                                style: styleMe,
+                                child: Text(chatMessageController
+                                    .messageList[index].message),
+                              ),
+                            );
+                          } else {
+                            return Padding(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: Get.height / 70),
+                              child: Bubble(
+                                style: styleSomebody,
+                                child: Text(chatMessageController
+                                    .messageList[index].message),
+                              ),
+                            );
+                          }
+                        },
+                      ),
                     )),
               ),
               isAlamutiMessage
@@ -171,10 +168,9 @@ class _ChatState extends State<Chat> {
 
                                       WidgetsBinding.instance
                                           ?.addPostFrameCallback((_) {
-                                        if (_scrollcontroller.hasClients) {
-                                          _scrollcontroller.jumpTo(
-                                              _scrollcontroller
-                                                  .position.maxScrollExtent);
+                                        if (_scrollControl.hasClients) {
+                                          _scrollControl.jumpTo(_scrollControl
+                                              .position.maxScrollExtent);
                                         }
                                       });
                                       textEditingController.text = '';

@@ -1,3 +1,4 @@
+import 'package:alamuti/app/data/provider/signalr_helper.dart';
 import 'package:alamuti/app/routes/routes.dart';
 import 'package:alamuti/app/ui/theme.dart';
 import 'package:flutter/cupertino.dart';
@@ -7,6 +8,8 @@ import 'package:get_storage/get_storage.dart';
 
 Future<void> main() async {
   await GetStorage.init();
+  // ignore: unused_local_variable
+  SignalRHelper signalRHelper = SignalRHelper();
 
   runApp(Application());
 }

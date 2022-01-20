@@ -5,7 +5,6 @@ import 'package:alamuti/app/controller/new_message_controller.dart';
 import 'package:alamuti/app/data/provider/base_url.dart';
 import 'package:alamuti/app/data/provider/chat_message_provider.dart';
 import 'package:alamuti/app/data/storage/cache_manager.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:signalr_core/signalr_core.dart';
@@ -21,7 +20,8 @@ class SignalRHelper with CacheManager {
 
   ChatGroupController chatGroupController = Get.put(ChatGroupController());
 
-  NewMessageController newMessageController = Get.put(NewMessageController());
+  NewMessageController newMessageController =
+      Get.put(NewMessageController(), permanent: true);
 
   MessageProvider messageProvider = MessageProvider();
 
@@ -29,39 +29,20 @@ class SignalRHelper with CacheManager {
 
   SignalRHelper() {
     connection = HubConnectionBuilder()
-        .withUrl(
-          baseLoginUrl + 'chat',
-          HttpConnectionOptions(
-            skipNegotiation: false,
-            transport: HttpTransportType.longPolling,
-            // logging: (level, message) => print(message),
-          ),
-        )
+        .withUrl(baseLoginUrl + 'chat', HttpConnectionOptions())
+        .withAutomaticReconnect()
         .build();
-  }
 
-  HubConnectionState getConnectionStatus() {
-    return connection.state!;
-  }
-
-  initiateConnection() async {
-    await connection.start();
-  }
-
-  reciveMessage() async {
+    connection.start();
     connection.on("ReceiveMessage", (arguments) async {
-      chatTargetUserController.userId.value = arguments![1];
-
-      await connection
-          .invoke('CreatenewGroup', args: [arguments[3], arguments[4]]);
-
-      if (arguments[0] ==
+      // chatTargetUserController.userId.value = arguments![1];
+      if (arguments![0] ==
           await storage.read(CacheManagerKey.USERID.toString())) {
         newMessageController.haveNewMessage.value = true;
       }
-
-      await messageProvider.getGroupMessages(arguments[3]);
-      await messageProvider.getGroups();
+      await connection
+          .invoke('CreatenewGroup', args: [arguments[3], arguments[4]]);
+      print('on recivee called');
     });
   }
 
@@ -88,11 +69,5 @@ class SignalRHelper with CacheManager {
 
   leaveGroup(String groupname) async {
     await connection.invoke('LeaveGroup', args: [groupname]);
-  }
-
-  closeConnection(BuildContext context) async {
-    if (connection.state == HubConnectionState.connected) {
-      await connection.stop();
-    }
   }
 }

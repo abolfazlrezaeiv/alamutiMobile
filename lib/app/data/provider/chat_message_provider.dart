@@ -1,12 +1,11 @@
 import 'dart:convert';
-
 import 'package:alamuti/app/controller/advertisement_pagination_controller.dart';
 import 'package:alamuti/app/controller/chat_group_controller.dart';
 import 'package:alamuti/app/controller/chat_message_controller.dart';
 import 'package:alamuti/app/controller/new_message_controller.dart';
+import 'package:alamuti/app/data/entities/chat_message.dart';
+import 'package:alamuti/app/data/entities/chatgroup.dart';
 import 'package:alamuti/app/data/provider/token_provider.dart';
-import 'package:alamuti/app/data/model/chat_message.dart';
-import 'package:alamuti/app/data/model/chatgroup.dart';
 import 'package:alamuti/app/data/provider/base_url.dart';
 import 'package:alamuti/app/data/storage/cache_manager.dart';
 import 'package:dio/dio.dart';
@@ -34,7 +33,7 @@ class MessageProvider with CacheManager {
   Future<void> getGroupMessages(String groupname) async {
     var response = await tokenProvider.api.get(
       baseChatUrl +
-          'api/Chat/massages/$groupname?pageNumber=${advertisementPaginationController.currentPage.value}&pageSize=15',
+          'api/Chat/massages/$groupname?pageNumber=${advertisementPaginationController.currentPage.value}&pageSize=9',
     );
     listMessagesFromApi = [];
     var xPagination = jsonDecode(response.headers['X-Pagination']![0]);
@@ -112,22 +111,22 @@ class MessageProvider with CacheManager {
     );
   }
 
-  postMessage(
-      {required String sender,
-      required int id,
-      required String message,
-      required String reciever}) async {
-    var formData = FormData.fromMap({
-      'id': id,
-      'sender': sender,
-      'message': message,
-      'reciever': reciever,
-    });
-    await tokenProvider.api.post(
-      baseChatUrl + 'api/chat',
-      data: formData,
-    );
-  }
+  // postMessage(
+  //     {required String sender,
+  //     required int id,
+  //     required String message,
+  //     required String reciever}) async {
+  //   var formData = FormData.fromMap({
+  //     'id': id,
+  //     'sender': sender,
+  //     'message': message,
+  //     'reciever': reciever,
+  //   });
+  //   await tokenProvider.api.post(
+  //     baseChatUrl + 'api/chat',
+  //     data: formData,
+  //   );
+  // }
 
   deleteMessageGroup({
     required String groupName,

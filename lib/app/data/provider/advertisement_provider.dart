@@ -5,7 +5,8 @@ import 'package:alamuti/app/controller/advertisement_controller.dart';
 import 'package:alamuti/app/controller/advertisement_pagination_controller.dart';
 import 'package:alamuti/app/controller/detail_page_advertisement.dart';
 import 'package:alamuti/app/controller/search_avoid_update.dart';
-import 'package:alamuti/app/data/model/advertisement.dart';
+import 'package:alamuti/app/data/entities/advertisement.dart';
+import 'package:alamuti/app/data/entities/list_page.dart';
 import 'package:alamuti/app/data/provider/token_provider.dart';
 import 'package:alamuti/app/data/provider/base_url.dart';
 import 'package:dio/dio.dart';
@@ -68,7 +69,9 @@ class AdvertisementProvider {
     }
   }
 
-  Future<void> getAll({
+  Future<ListPage<Advertisement>> getAll({
+    int number = 1,
+    int size = 10,
     required BuildContext context,
     String? adstype,
     bool isRefreshIndicator = false,
@@ -77,16 +80,16 @@ class AdvertisementProvider {
 
     Response response;
 
-    isRefreshIndicator ? Container() : showLoaderDialog(context);
+    // isRefreshIndicator ? Container() : showLoaderDialog(context);
 
     var argument = (adstype == null || adstype.isEmpty) ? ' ' : adstype;
-
+    await Future.delayed(Duration(seconds: 2));
     try {
       response = await tokenProvider.api
           .get(baseUrl +
-              'Advertisement/filter/$argument?pageNumber=${advertisementPaginationController.currentPage.value}&pageSize=10')
+              'Advertisement/filter/$argument?pageNumber=$number&pageSize=$size')
           .timeout(Duration(seconds: 13))
-          .whenComplete(() => isRefreshIndicator ? Get.width : Get.back());
+          .whenComplete(() => isRefreshIndicator ? Get.width : Get.width);
 
       var xPagination = jsonDecode(response.headers['X-Pagination']![0]);
       print(xPagination);
@@ -110,18 +113,28 @@ class AdvertisementProvider {
             advertisementFromApi.add(Advertisement.fromJson(element));
           },
         );
-        if (advertisementPaginationController.currentPage.value == 1) {
-          listAdvertisementController.adsList.value = advertisementFromApi;
-        } else {
-          listAdvertisementController.adsList.addAll(advertisementFromApi);
-        }
+        return ListPage(
+            itemList: advertisementFromApi,
+            grandTotalCount: advertisementPaginationController.totalAds.value);
+
+        // if (advertisementPaginationController.currentPage.value == 1) {
+        //   listAdvertisementController.adsList.value = advertisementFromApi;
+        // } else {
+        //   listAdvertisementController.adsList.addAll(advertisementFromApi);
+        // }
       } else {
         var message = 'متاسفانه ارتباط ناموفق بود لطفا دوباره امتحان کنید';
         showStatusDialog(context: context, message: message);
+        return ListPage(
+            itemList: advertisementFromApi,
+            grandTotalCount: advertisementPaginationController.totalAds.value);
       }
     } on TimeoutException catch (_) {
       var message = 'متاسفانه ارتباط ناموفق بود لطفا دوباره امتحان کنید';
       showStatusDialog(context: context, message: message);
+      return ListPage(
+          itemList: advertisementFromApi,
+          grandTotalCount: advertisementPaginationController.totalAds.value);
     }
   }
 
