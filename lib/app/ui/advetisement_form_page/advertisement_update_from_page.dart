@@ -83,8 +83,8 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
       ),
       body: WillPopScope(
         onWillPop: () async {
-          Get.put(ScreenController()).selectedIndex.value = 3;
-          Get.offNamed('/home');
+          Get.put(ScreenController()).selectedIndex.value = 0;
+          Get.back();
           return false;
         },
         child: Form(

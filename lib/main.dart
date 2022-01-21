@@ -8,9 +8,9 @@ import 'package:get_storage/get_storage.dart';
 
 Future<void> main() async {
   await GetStorage.init();
-  // ignore: unused_local_variable
-  SignalRHelper signalRHelper = SignalRHelper();
-
+  SignalRHelper signalRHelper = SignalRHelper(
+      handler: () =>
+          print('instance of signalr created! on reveive registered'));
   runApp(Application());
 }
 

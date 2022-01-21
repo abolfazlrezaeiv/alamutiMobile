@@ -4,12 +4,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class UpdateLeftPhotoCard extends GetView<UpdateUploadImageController> {
+class UpdateLeftPhotoCard extends StatelessWidget {
   UpdateLeftPhotoCard({Key? key}) : super(key: key);
 
   final double width = Get.width;
 
   final double height = Get.height;
+
+  final UpdateUploadImageController updateUploadImageController =
+      Get.put(UpdateUploadImageController());
 
   @override
   Widget build(BuildContext context) {
@@ -20,11 +23,13 @@ class UpdateLeftPhotoCard extends GetView<UpdateUploadImageController> {
         () => Card(
           elevation: 3,
           clipBehavior: Clip.antiAliasWithSaveLayer,
-          child: (controller.leftImagebyteCode.value.length > 2)
+          child: (updateUploadImageController.leftImagebyteCode.value.length >
+                  2)
               ? Stack(
                   children: [
                     Image.memory(
-                      base64Decode(controller.leftImagebyteCode.value),
+                      base64Decode(
+                          updateUploadImageController.leftImagebyteCode.value),
                       fit: BoxFit.cover,
                     ),
                     IconButton(
@@ -33,7 +38,8 @@ class UpdateLeftPhotoCard extends GetView<UpdateUploadImageController> {
                         color: Colors.white,
                       ),
                       onPressed: () {
-                        controller.leftImagebyteCode.value = '';
+                        updateUploadImageController.leftImagebyteCode.value =
+                            '';
                       },
                     )
                   ],

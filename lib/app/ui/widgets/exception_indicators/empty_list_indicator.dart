@@ -45,7 +45,7 @@ class EmptyListIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) => ExceptionIndicator(
         title: 'آگهی یافت نشد',
-        message: 'کلیدواژه دیگری را جستجو کنید تا نتایج بهتری بگیرید',
+        message: 'کلیدواژه ی دیگری را جستجو کنید تا نتایج بهتری بگیرید',
         assetName: 'assets/3.0x/empty-box.png',
         buttonTitle: 'شروع دوباره',
         onTryAgain: onTryAgain,

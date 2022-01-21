@@ -75,24 +75,36 @@ class UserAdvertisement extends StatelessWidget {
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(8),
                             child: (listAdvertisementController
-                                        .adsList[index].listviewPhoto ==
+                                        .adsList[index].photo1 ==
                                     null)
-                                ? Opacity(
-                                    opacity: 0.2,
-                                    child: Container(
-                                      decoration: BoxDecoration(),
-                                      child: Image.asset(
-                                        'assets/logo/no-image.png',
+                                ? (listAdvertisementController
+                                            .adsList[index].photo2 ==
+                                        null)
+                                    ? Opacity(
+                                        opacity: 0.2,
+                                        child: Container(
+                                          decoration: BoxDecoration(),
+                                          child: Image.asset(
+                                            'assets/logo/no-image.png',
+                                            fit: BoxFit.cover,
+                                            height: height / 6,
+                                            width: height / 6,
+                                          ),
+                                        ),
+                                      )
+                                    : Image.memory(
+                                        base64Decode(
+                                          listAdvertisementController
+                                              .adsList[index].photo2,
+                                        ),
                                         fit: BoxFit.cover,
                                         height: height / 6,
                                         width: height / 6,
-                                      ),
-                                    ),
-                                  )
+                                      )
                                 : Image.memory(
                                     base64Decode(
                                       listAdvertisementController
-                                          .adsList[index].listviewPhoto,
+                                          .adsList[index].photo1,
                                     ),
                                     fit: BoxFit.cover,
                                     height: height / 6,
@@ -258,7 +270,7 @@ class UserAdvertisement extends StatelessWidget {
                                         ),
                                         TextButton(
                                           onPressed: () {
-                                            Get.offAll(
+                                            Get.to(
                                                 () => AdvertisementUpdateForm(
                                                     ads:
                                                         listAdvertisementController

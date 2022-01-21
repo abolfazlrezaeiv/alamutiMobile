@@ -5,6 +5,7 @@ import 'package:alamuti/app/controller/new_message_controller.dart';
 import 'package:alamuti/app/data/provider/base_url.dart';
 import 'package:alamuti/app/data/provider/chat_message_provider.dart';
 import 'package:alamuti/app/data/storage/cache_manager.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:signalr_core/signalr_core.dart';
@@ -22,26 +23,30 @@ class SignalRHelper with CacheManager {
   MessageNotifierController messageNotifierController =
       Get.put(MessageNotifierController());
 
-  MessageProvider messageProvider = MessageProvider();
-
   GetStorage storage = GetStorage();
 
-  SignalRHelper() {
+  final VoidCallback handler;
+
+  SignalRHelper({required this.handler}) {
     connection = HubConnectionBuilder()
         .withUrl(baseLoginUrl + 'chat', HttpConnectionOptions())
         .withAutomaticReconnect()
         .build();
 
     connection.start();
+
+    connection.invoke('JoinToGroup',
+        args: [storage.read(CacheManagerKey.USERID.toString())]);
+
     connection.on("ReceiveMessage", (arguments) async {
       if (arguments![0] ==
           await storage.read(CacheManagerKey.USERID.toString())) {
         newMessageController.haveNewMessage.value = true;
       }
-      await connection
-          .invoke('CreatenewGroup', args: [arguments[3], arguments[4]]);
+      await connection.invoke('JoinToGroup', args: [arguments[3]]);
       print('on recivee called');
-      messageNotifierController.connection.insert(0, 'a');
+
+      handler();
     });
   }
 
@@ -62,8 +67,8 @@ class SignalRHelper with CacheManager {
     ]);
   }
 
-  createGroup(String userId) async {
-    await connection.invoke('CreateMyGroup', args: [userId]);
+  joinToGroup(String userId) async {
+    await connection.invoke('JoinToGroup', args: [userId]);
   }
 
   leaveGroup(String groupname) async {

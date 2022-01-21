@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:alamuti/app/controller/chat_group_controller.dart';
+import 'package:alamuti/app/controller/message_notifier_controller.dart';
 import 'package:alamuti/app/controller/new_message_controller.dart';
 import 'package:alamuti/app/controller/selected_tap_controller.dart';
 import 'package:alamuti/app/data/entities/chatgroup.dart';
@@ -14,11 +15,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
-class ChatGroups extends StatelessWidget with CacheManager {
+class ChatGroups extends StatefulWidget {
   ChatGroups({Key? key}) : super(key: key);
 
-  final SignalRHelper signalHelper = SignalRHelper();
+  @override
+  State<ChatGroups> createState() => _ChatGroupsState();
+}
 
+class _ChatGroupsState extends State<ChatGroups> with CacheManager {
   final MessageProvider messageProvider = MessageProvider();
 
   final GetStorage storage = GetStorage();
@@ -28,16 +32,24 @@ class ChatGroups extends StatelessWidget with CacheManager {
   final double width = Get.width;
 
   final double height = Get.height;
+
   final NewMessageController newMessageController = Get.find();
 
   final ChatGroupController chatGroupController = Get.find();
+
+  final MessageNotifierController messageNotifierController =
+      Get.put(MessageNotifierController());
+
   @override
   Widget build(BuildContext context) {
     messageProvider.getGroups();
+    final SignalRHelper signalHelper =
+        SignalRHelper(handler: () => messageProvider.getGroups);
+
     chatGroupController.groupList.listen((p0) {
       WidgetsBinding.instance?.addPostFrameCallback((_) async {
         chatGroupController.groupList.forEach((element) {
-          signalHelper.createGroup(
+          signalHelper.joinToGroup(
             element.name,
           );
         });
@@ -120,7 +132,6 @@ class ChatGroups extends StatelessWidget with CacheManager {
                   );
                 },
                 onTap: () async {
-                  newMessageController.haveNewMessage.value = false;
                   if (await getUserId() ==
                       chatGroupController
                           .groupList[index].lastMessage.reciever) {
@@ -129,6 +140,7 @@ class ChatGroups extends StatelessWidget with CacheManager {
                         id: chatGroupController.groupList[index].id,
                         title: chatGroupController.groupList[index].title,
                         isChecked: true);
+                    newMessageController.haveNewMessage.value = false;
                   }
 
                   chatGroupController.groupList.forEach(
@@ -138,6 +150,8 @@ class ChatGroups extends StatelessWidget with CacheManager {
                     },
                   );
 
+                  signalHelper
+                      .joinToGroup(chatGroupController.groupList[index].name);
                   Get.to(
                     () => Chat(
                       groupname: chatGroupController.groupList[index].name,

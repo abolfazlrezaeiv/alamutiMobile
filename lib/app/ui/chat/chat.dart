@@ -3,6 +3,7 @@ import 'package:alamuti/app/data/entities/chat_message.dart';
 import 'package:alamuti/app/data/provider/chat_message_provider.dart';
 import 'package:alamuti/app/data/provider/signalr_helper.dart';
 import 'package:alamuti/app/data/storage/cache_manager.dart';
+import 'package:alamuti/app/ui/theme.dart';
 import 'package:alamuti/app/ui/widgets/alamuti_appbar.dart';
 import 'package:alamuti/app/ui/widgets/alamuti_textfield.dart';
 import 'package:bubble/bubble.dart';
@@ -32,11 +33,7 @@ class Chat extends StatefulWidget {
 class _ChatState extends State<Chat> {
   final TextEditingController textEditingController = TextEditingController();
 
-  final SignalRHelper signalHelper = SignalRHelper();
-
   final GlobalKey<FormState> _formKey = GlobalKey();
-
-  final ScrollController _scrollControl = ScrollController();
 
   final MessageProvider messageProvider = MessageProvider();
 
@@ -54,21 +51,19 @@ class _ChatState extends State<Chat> {
 
   @override
   void initState() {
+    super.initState();
+
+    messageNotifierController.isInChatPage.value = true;
     chatScreenPagingController.addPageRequestListener((pageKey) {
       _fetchPage(pageKey);
     });
-    signalHelper.createGroup(widget.groupname);
-    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     final isAlamutiMessage = widget.groupTitle == 'الموتی';
-    messageNotifierController.connection.listen((val) {
-      chatScreenPagingController.refresh();
-
-      print('recived');
-    });
+    final SignalRHelper signalHelper =
+        SignalRHelper(handler: () => chatScreenPagingController.refresh());
     return Scaffold(
       appBar: AlamutiAppBar(
         appBar: AppBar(),
@@ -76,93 +71,99 @@ class _ChatState extends State<Chat> {
         hasBackButton: true,
         backwidget: "/chat",
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: PagedListView.separated(
-              pagingController: chatScreenPagingController,
-              separatorBuilder: (context, index) => const SizedBox(
-                height: 0,
+      body: WillPopScope(
+        onWillPop: () async {
+          await messageProvider.getGroups();
+          return true;
+        },
+        child: Column(
+          children: [
+            Expanded(
+              child: PagedListView.separated(
+                pagingController: chatScreenPagingController,
+                separatorBuilder: (context, index) => const SizedBox(
+                  height: 0,
+                ),
+                shrinkWrap: true,
+                reverse: true,
+                builderDelegate: PagedChildBuilderDelegate<ChatMessage>(
+                    itemBuilder: (context, message, index) {
+                  if (message.sender ==
+                      storage.read(CacheManagerKey.USERID.toString())) {
+                    return Padding(
+                      padding: EdgeInsets.symmetric(vertical: Get.height / 70),
+                      child: Bubble(
+                        style: styleMe,
+                        child: Text(message.message),
+                      ),
+                    );
+                  } else {
+                    return Padding(
+                      padding: EdgeInsets.symmetric(vertical: Get.height / 70),
+                      child: Bubble(
+                        style: styleSomebody,
+                        child: Text(message.message),
+                      ),
+                    );
+                  }
+                }),
               ),
-              shrinkWrap: true,
-              reverse: true,
-              builderDelegate: PagedChildBuilderDelegate<ChatMessage>(
-                  itemBuilder: (context, message, index) {
-                if (message.sender ==
-                    storage.read(CacheManagerKey.USERID.toString())) {
-                  return Padding(
-                    padding: EdgeInsets.symmetric(vertical: Get.height / 70),
-                    child: Bubble(
-                      style: styleMe,
-                      child: Text(message.message),
-                    ),
-                  );
-                } else {
-                  return Padding(
-                    padding: EdgeInsets.symmetric(vertical: Get.height / 70),
-                    child: Bubble(
-                      style: styleSomebody,
-                      child: Text(message.message),
-                    ),
-                  );
-                }
-              }),
             ),
-          ),
-          isAlamutiMessage
-              ? Container()
-              : Form(
-                  key: _formKey,
-                  child: Container(
-                    color: Colors.grey.withOpacity(0.1),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        children: [
-                          Expanded(
-                              child: AlamutiTextField(
-                            textEditingController: textEditingController,
-                            isNumber: false,
-                            isPrice: false,
-                            isChatTextField: true,
-                            hasCharacterLimitation: false,
-                            prefix: '',
-                          )),
-                          TextButton(
-                              onPressed: () async {
-                                if (_formKey.currentState!.validate()) {
-                                  var target = widget.groupname
-                                      .replaceAll(
-                                          storage.read(
-                                            CacheManagerKey.USERID.toString(),
-                                          ),
-                                          '')
-                                      .trimRight();
+            isAlamutiMessage
+                ? Container()
+                : Form(
+                    key: _formKey,
+                    child: Container(
+                      color: Colors.grey.withOpacity(0.1),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          children: [
+                            Expanded(
+                                child: AlamutiTextField(
+                              textEditingController: textEditingController,
+                              isNumber: false,
+                              isPrice: false,
+                              isChatTextField: true,
+                              hasCharacterLimitation: false,
+                              prefix: '',
+                            )),
+                            TextButton(
+                                onPressed: () async {
+                                  if (_formKey.currentState!.validate()) {
+                                    var target = widget.groupname
+                                        .replaceAll(
+                                            storage.read(
+                                              CacheManagerKey.USERID.toString(),
+                                            ),
+                                            '')
+                                        .trimRight();
 
-                                  await signalHelper.sendMessage(
-                                      receiverId: target,
-                                      senderId: storage.read(
-                                        CacheManagerKey.USERID.toString(),
-                                      ),
-                                      message: textEditingController.text,
-                                      groupname: widget.groupname,
-                                      groupImage: widget.groupImage,
-                                      grouptitle: widget.groupTitle);
+                                    await signalHelper.sendMessage(
+                                        receiverId: target,
+                                        senderId: storage.read(
+                                          CacheManagerKey.USERID.toString(),
+                                        ),
+                                        message: textEditingController.text,
+                                        groupname: widget.groupname,
+                                        groupImage: null,
+                                        grouptitle: widget.groupTitle);
 
-                                  textEditingController.text = '';
-                                  // chatScreenPagingController.refresh();
-                                }
-                              },
-                              child: Text(
-                                'ارسال',
-                                style: TextStyle(color: Colors.greenAccent),
-                              ))
-                        ],
+                                    textEditingController.text = '';
+                                    // chatScreenPagingController.refresh();
+                                  }
+                                },
+                                child: Text(
+                                  'ارسال',
+                                  style: TextStyle(color: Colors.greenAccent),
+                                ))
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                )
-        ],
+                  )
+          ],
+        ),
       ),
     );
   }
@@ -197,24 +198,4 @@ class _ChatState extends State<Chat> {
     chatScreenPagingController.dispose();
     super.dispose();
   }
-
-  static const styleSomebody = BubbleStyle(
-    nip: BubbleNip.leftCenter,
-    color: Colors.white,
-    borderColor: Colors.transparent,
-    borderWidth: 1,
-    elevation: 4,
-    margin: BubbleEdges.only(top: 8, right: 50),
-    alignment: Alignment.topLeft,
-  );
-
-  static const styleMe = BubbleStyle(
-    nip: BubbleNip.rightCenter,
-    color: Color.fromARGB(255, 225, 255, 199),
-    borderColor: Colors.transparent,
-    borderWidth: 1,
-    elevation: 4,
-    margin: BubbleEdges.only(top: 8, left: 50),
-    alignment: Alignment.topRight,
-  );
 }

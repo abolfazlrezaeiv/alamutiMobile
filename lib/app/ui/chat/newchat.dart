@@ -4,6 +4,7 @@ import 'package:alamuti/app/data/entities/chat_message.dart';
 import 'package:alamuti/app/data/provider/chat_message_provider.dart';
 import 'package:alamuti/app/data/provider/signalr_helper.dart';
 import 'package:alamuti/app/data/storage/cache_manager.dart';
+import 'package:alamuti/app/ui/theme.dart';
 import 'package:alamuti/app/ui/widgets/alamuti_appbar.dart';
 import 'package:alamuti/app/ui/widgets/alamuti_textfield.dart';
 import 'package:bubble/bubble.dart';
@@ -36,27 +37,11 @@ class NewChat extends StatelessWidget with CacheManager {
 
   final GlobalKey<FormState> _formKey = GlobalKey();
 
-  final SignalRHelper signalHelper = SignalRHelper();
+  final SignalRHelper signalHelper = SignalRHelper(
+    handler: () => print('signalr is being track in newchat'),
+  );
 
   final GetStorage storage = GetStorage();
-
-  static const styleSomebody = BubbleStyle(
-    nip: BubbleNip.leftCenter,
-    color: Colors.white,
-    borderWidth: 1,
-    elevation: 4,
-    margin: BubbleEdges.only(top: 8, right: 50),
-    alignment: Alignment.topLeft,
-  );
-
-  static const styleMe = BubbleStyle(
-    nip: BubbleNip.rightCenter,
-    color: Color.fromARGB(255, 225, 255, 199),
-    borderWidth: 1,
-    elevation: 4,
-    margin: BubbleEdges.only(top: 8, left: 50),
-    alignment: Alignment.topRight,
-  );
 
   @override
   Widget build(BuildContext context) {

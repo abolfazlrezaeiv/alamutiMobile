@@ -36,12 +36,12 @@ class AlamutiAppBar extends StatelessWidget implements PreferredSizeWidget {
         leading: hasBackButton
             ? GestureDetector(
                 onTap: () {
-                  var indexOfBottomNavbar =
-                      bottomNavBarScreens.indexOf(backwidget!);
+                  // var indexOfBottomNavbar =
+                  //     bottomNavBarScreens.indexOf(backwidget!);
 
-                  screenController.selectedIndex.value = indexOfBottomNavbar;
+                  // screenController.selectedIndex.value = indexOfBottomNavbar;
 
-                  Get.offAllNamed(backwidget!);
+                  Get.back();
                 },
                 child: Container(
                   width: 100,

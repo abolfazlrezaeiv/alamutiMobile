@@ -95,20 +95,8 @@ class _HomePageState extends State<HomePage> {
                                 fontSize: width / 27,
                                 fontFamily: persianNumber,
                                 fontWeight: FontWeight.w300),
-                            onSubmitted: (value) async {
-                              FocusScope.of(context).unfocus();
-                              if (searchController.isSearchResult.value !=
-                                  true) {}
-                              searchController.isSearchResult.value = true;
-                              categoryFilterController.selectedTapIndex.value =
-                                  0;
-                              searchController.keyword.value =
-                                  searchTextEditingController.text;
-
-                              _pagingController.refresh();
-
-                              searchController.keyword.value =
-                                  searchTextEditingController.text;
+                            onSubmitted: (value) {
+                              _seach();
                             },
                             textAlign: TextAlign.right,
                             decoration: InputDecoration(
@@ -148,14 +136,8 @@ class _HomePageState extends State<HomePage> {
                                   size: 30,
                                   color: Color.fromRGBO(8, 212, 76, 0.5),
                                 ),
-                                onPressed: () async {
-                                  FocusScope.of(context).unfocus();
-
-                                  searchController.keyword.value =
-                                      searchTextEditingController.text;
-
-                                  categoryFilterController
-                                      .selectedTapIndex.value = 0;
+                                onPressed: () {
+                                  _seach();
                                 },
                               ),
                               fillColor: Colors.white,
@@ -366,6 +348,20 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
+  }
+
+  _seach() {
+    FocusScope.of(context).unfocus();
+
+    searchController.isSearchResult.value = true;
+
+    categoryFilterController.selectedTapIndex.value = 0;
+
+    searchController.keyword.value = searchTextEditingController.text;
+
+    _pagingController.refresh();
+
+    searchController.keyword.value = searchTextEditingController.text;
   }
 
   Future<void> _fetchPage(int pageKey) async {
