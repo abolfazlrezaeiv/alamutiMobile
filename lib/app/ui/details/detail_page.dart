@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:alamuti/app/controller/ads_form_controller.dart';
-import 'package:alamuti/app/controller/advertisement_request_controller.dart';
 import 'package:alamuti/app/controller/chat_message_controller.dart';
 import 'package:alamuti/app/controller/chat_target_controller.dart';
 import 'package:alamuti/app/controller/detail_page_advertisement.dart';
@@ -46,9 +45,6 @@ class _AdsDetailState extends State<AdsDetail> {
   final ChatMessageController chatMessageController = Get.find();
 
   final DetailPageController detailPageController = Get.find();
-
-  final AdvertisementRequestController advertisementRequestController =
-      Get.find();
 
   final double width = Get.width;
 
@@ -350,9 +346,7 @@ class _AdsDetailState extends State<AdsDetail> {
         alignment: Alignment.topLeft,
         child: GestureDetector(
           onTap: () {
-            advertisementRequestController.shouldSend.value = false;
-
-            Get.offNamed('/home');
+            Get.back();
           },
           child: Container(
             width: width / 5,
@@ -425,9 +419,7 @@ class _AdsDetailState extends State<AdsDetail> {
               alignment: Alignment.topLeft,
               child: GestureDetector(
                 onTap: () {
-                  advertisementRequestController.shouldSend.value = false;
-
-                  Get.offNamed('/home');
+                  Get.back();
                 },
                 child: Container(
                   width: width / 5,
@@ -515,8 +507,7 @@ class _AdsDetailState extends State<AdsDetail> {
           opacity: 0.5,
           child: GestureDetector(
             onTap: () {
-              advertisementRequestController.shouldSend.value = false;
-              Get.offNamed('/home');
+              Get.back();
             },
             child: Row(
               children: [

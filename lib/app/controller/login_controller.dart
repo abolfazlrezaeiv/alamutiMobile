@@ -23,11 +23,9 @@ class LoginViewModel extends GetxController {
       if (response.success == true) {
         _authManager.login(response.token!, response.refreshtoken!);
       }
-
       return true;
-    } else {
-      return false;
     }
+    return false;
   }
 
   Future<bool> registerUser(String phone) async {
@@ -36,8 +34,7 @@ class LoginViewModel extends GetxController {
 
     if (response != null) {
       return true;
-    } else {
-      return false;
     }
+    return false;
   }
 }

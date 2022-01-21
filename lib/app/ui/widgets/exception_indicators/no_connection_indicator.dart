@@ -46,9 +46,9 @@ class NoConnectionIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) => ExceptionIndicator(
         title: 'ارتباط ناموفق',
-        message:
-            'لطفا اتصال به اینترنت دستگاه خود را چک کنید و دوباره امتحان کنید.',
-        assetName: 'assets/3.0x/frustrated-face.png',
+        message: 'لطفا اتصال به اینترنت دستگاه خود را بررسی کنید',
+        assetName: 'assets/logo/logo.png',
         onTryAgain: onTryAgain,
+        buttonTitle: 'دوباره امتحان کنید',
       );
 }

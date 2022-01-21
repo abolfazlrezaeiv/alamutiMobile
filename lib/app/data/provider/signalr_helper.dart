@@ -1,6 +1,6 @@
 import 'package:alamuti/app/controller/chat_group_controller.dart';
 import 'package:alamuti/app/controller/chat_message_controller.dart';
-import 'package:alamuti/app/controller/chat_target_controller.dart';
+import 'package:alamuti/app/controller/message_notifier_controller.dart';
 import 'package:alamuti/app/controller/new_message_controller.dart';
 import 'package:alamuti/app/data/provider/base_url.dart';
 import 'package:alamuti/app/data/provider/chat_message_provider.dart';
@@ -12,16 +12,15 @@ import 'package:signalr_core/signalr_core.dart';
 class SignalRHelper with CacheManager {
   late HubConnection connection;
 
-  ChatTargetUserController chatTargetUserController =
-      Get.put(ChatTargetUserController());
-
   ChatMessageController chatMessageController =
       Get.put(ChatMessageController());
 
   ChatGroupController chatGroupController = Get.put(ChatGroupController());
 
-  NewMessageController newMessageController =
-      Get.put(NewMessageController(), permanent: true);
+  NewMessageController newMessageController = Get.put(NewMessageController());
+
+  MessageNotifierController messageNotifierController =
+      Get.put(MessageNotifierController());
 
   MessageProvider messageProvider = MessageProvider();
 
@@ -35,7 +34,6 @@ class SignalRHelper with CacheManager {
 
     connection.start();
     connection.on("ReceiveMessage", (arguments) async {
-      // chatTargetUserController.userId.value = arguments![1];
       if (arguments![0] ==
           await storage.read(CacheManagerKey.USERID.toString())) {
         newMessageController.haveNewMessage.value = true;
@@ -43,6 +41,7 @@ class SignalRHelper with CacheManager {
       await connection
           .invoke('CreatenewGroup', args: [arguments[3], arguments[4]]);
       print('on recivee called');
+      messageNotifierController.connection.insert(0, 'a');
     });
   }
 

@@ -1,11 +1,10 @@
-import 'package:alamuti/app/controller/Connection_controller.dart';
 import 'package:alamuti/app/controller/authentication_manager_controller.dart';
 import 'package:alamuti/app/data/provider/token_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class SplashScreen extends StatefulWidget {
-  SplashScreen({Key? key}) : super(key: key);
+  const SplashScreen({Key? key}) : super(key: key);
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
@@ -17,9 +16,8 @@ class _SplashScreenState extends State<SplashScreen> {
   TokenProvider tokenProviderController = Get.find();
 
   Future<void> initializeApp() async {
-    // await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(Duration(seconds: 1));
     if (await _authManager.checkLoginStatus()) {
-      // await tokenProviderController.refreshToken();
       Get.offNamed('/home');
     } else {
       Get.offNamed('/register');
@@ -43,8 +41,6 @@ class WaitingSplashScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ConnectionController connectionController = Get.put(ConnectionController());
-    connectionController.checkConnectionStatus();
     return Scaffold(
         body: Stack(
       children: [
@@ -67,12 +63,10 @@ class WaitingSplashScreen extends StatelessWidget {
             height: 200,
             child: Column(
               children: [
-                connectionController.isConnected.value
-                    ? CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: Colors.greenAccent[700],
-                      )
-                    : Text('لطفا ارتباط با اینترنت همراه خود را بررسی کنید')
+                CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: Colors.greenAccent[700],
+                )
               ],
             ),
           ),

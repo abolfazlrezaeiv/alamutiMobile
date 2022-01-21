@@ -4,7 +4,6 @@ import 'package:alamuti/app/controller/ads_form_controller.dart';
 import 'package:alamuti/app/controller/advertisement_controller.dart';
 import 'package:alamuti/app/controller/advertisement_pagination_controller.dart';
 import 'package:alamuti/app/controller/detail_page_advertisement.dart';
-import 'package:alamuti/app/controller/search_avoid_update.dart';
 import 'package:alamuti/app/data/entities/advertisement.dart';
 import 'package:alamuti/app/data/entities/list_page.dart';
 import 'package:alamuti/app/data/provider/token_provider.dart';
@@ -16,15 +15,12 @@ import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/utils.dart';
 
 class AdvertisementProvider {
-  TokenProvider tokenProvider = Get.put(TokenProvider());
+  final TokenProvider tokenProvider = Get.put(TokenProvider());
 
-  AdvertisementPaginationController advertisementPaginationController =
+  final AdvertisementPaginationController advertisementPaginationController =
       Get.put(AdvertisementPaginationController());
 
-  CheckIsSearchedController checkIsSearchController =
-      Get.put(CheckIsSearchedController());
-
-  ListAdvertisementController listAdvertisementController =
+  final ListAdvertisementController listAdvertisementController =
       Get.put(ListAdvertisementController());
 
   List<Advertisement> advertisementFromApi = [];
@@ -56,7 +52,7 @@ class AdvertisementProvider {
         ),
         content: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Text(
+          child: const Text(
             'مشکلی در دریافت اطلاعات به وجود آمده لطفا دوباره تلاش کنید',
             textDirection: TextDirection.rtl,
             style: TextStyle(
@@ -72,7 +68,6 @@ class AdvertisementProvider {
   Future<ListPage<Advertisement>> getAll({
     int number = 1,
     int size = 10,
-    required BuildContext context,
     String? adstype,
     bool isRefreshIndicator = false,
   }) async {
@@ -80,16 +75,13 @@ class AdvertisementProvider {
 
     Response response;
 
-    // isRefreshIndicator ? Container() : showLoaderDialog(context);
-
     var argument = (adstype == null || adstype.isEmpty) ? ' ' : adstype;
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(Duration(seconds: 1));
     try {
       response = await tokenProvider.api
           .get(baseUrl +
               'Advertisement/filter/$argument?pageNumber=$number&pageSize=$size')
-          .timeout(Duration(seconds: 13))
-          .whenComplete(() => isRefreshIndicator ? Get.width : Get.width);
+          .timeout(Duration(seconds: 8));
 
       var xPagination = jsonDecode(response.headers['X-Pagination']![0]);
       print(xPagination);
@@ -113,53 +105,29 @@ class AdvertisementProvider {
             advertisementFromApi.add(Advertisement.fromJson(element));
           },
         );
+
         return ListPage(
             itemList: advertisementFromApi,
             grandTotalCount: advertisementPaginationController.totalAds.value);
-
-        // if (advertisementPaginationController.currentPage.value == 1) {
-        //   listAdvertisementController.adsList.value = advertisementFromApi;
-        // } else {
-        //   listAdvertisementController.adsList.addAll(advertisementFromApi);
-        // }
       } else {
-        var message = 'متاسفانه ارتباط ناموفق بود لطفا دوباره امتحان کنید';
-        showStatusDialog(context: context, message: message);
         return ListPage(
             itemList: advertisementFromApi,
             grandTotalCount: advertisementPaginationController.totalAds.value);
       }
     } on TimeoutException catch (_) {
-      var message = 'متاسفانه ارتباط ناموفق بود لطفا دوباره امتحان کنید';
-      showStatusDialog(context: context, message: message);
-      return ListPage(
-          itemList: advertisementFromApi,
-          grandTotalCount: advertisementPaginationController.totalAds.value);
+      throw TimeoutException('');
     }
   }
 
-  Future<void> search(
-      {required BuildContext context, required String searchInput}) async {
+  Future<ListPage<Advertisement>> search(
+      {int number = 1, int size = 10, required String searchInput}) async {
     advertisementFromApi = [];
-
-    if (searchInput.length == 1 || searchInput.isEmpty) {
-      Get.rawSnackbar(
-          messageText: Text(
-            'موردی یافت نشد',
-            style: TextStyle(color: Colors.white),
-            textDirection: TextDirection.rtl,
-          ),
-          backgroundColor: Colors.black);
-      return;
-    }
-    showLoaderDialog(context);
-
+    print(number.toString() + ' from search');
     try {
       var response = await tokenProvider.api
           .get(baseUrl +
-              'Advertisement/search/$searchInput?pageNumber=${advertisementPaginationController.currentPage.value}&pageSize=10')
-          .timeout(Duration(seconds: 7))
-          .whenComplete(() => Get.back());
+              'Advertisement/search/$searchInput?pageNumber=$number&pageSize=$size')
+          .timeout(Duration(seconds: 4));
 
       var xPagination = jsonDecode(response.headers['X-Pagination']![0]);
       print(xPagination);
@@ -183,29 +151,16 @@ class AdvertisementProvider {
             advertisementFromApi.add(Advertisement.fromJson(element));
           },
         );
-        if (advertisementPaginationController.currentPage.value == 1) {
-          listAdvertisementController.adsList.value = advertisementFromApi;
-        } else {
-          listAdvertisementController.adsList.addAll(advertisementFromApi);
-        }
-
-        if (advertisementFromApi.length == 0) {
-          Get.rawSnackbar(
-              messageText: Text(
-                'موردی یافت نشد',
-                style: TextStyle(color: Colors.white),
-                textDirection: TextDirection.rtl,
-              ),
-              backgroundColor: Colors.black);
-          return;
-        }
+        return ListPage(
+            itemList: advertisementFromApi,
+            grandTotalCount: advertisementPaginationController.totalAds.value);
       } else {
-        var message = 'متاسفانه ارتباط ناموفق بود لطفا دوباره امتحان کنید';
-        showStatusDialog(context: context, message: message);
+        return ListPage(
+            itemList: advertisementFromApi,
+            grandTotalCount: advertisementPaginationController.totalAds.value);
       }
     } on TimeoutException catch (_) {
-      var message = 'متاسفانه ارتباط ناموفق بود لطفا دوباره امتحان کنید';
-      showStatusDialog(context: context, message: message);
+      throw TimeoutException('');
     }
   }
 

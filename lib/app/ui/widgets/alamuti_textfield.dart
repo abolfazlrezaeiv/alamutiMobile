@@ -95,7 +95,7 @@ class AlamutiTextField extends StatelessWidget {
                 ? TextStyle(height: 0, fontSize: 0, fontFamily: persianNumber)
                 : TextStyle(fontSize: 13, fontFamily: persianNumber),
             focusedErrorBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.red, width: 0.6),
+              borderSide: const BorderSide(color: Colors.red, width: 0.6),
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
@@ -106,7 +106,7 @@ class AlamutiTextField extends StatelessWidget {
               ),
             ),
             contentPadding:
-                EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
               borderSide: BorderSide(color: Colors.greenAccent, width: 2.0),

@@ -5,6 +5,7 @@ import 'package:alamuti/app/controller/chat_message_controller.dart';
 import 'package:alamuti/app/controller/new_message_controller.dart';
 import 'package:alamuti/app/data/entities/chat_message.dart';
 import 'package:alamuti/app/data/entities/chatgroup.dart';
+import 'package:alamuti/app/data/entities/list_page.dart';
 import 'package:alamuti/app/data/provider/token_provider.dart';
 import 'package:alamuti/app/data/provider/base_url.dart';
 import 'package:alamuti/app/data/storage/cache_manager.dart';
@@ -30,11 +31,13 @@ class MessageProvider with CacheManager {
 
   GetStorage storage = GetStorage();
 
-  Future<void> getGroupMessages(String groupname) async {
+  Future<ListPage<ChatMessage>> getGroupMessages(
+      {int number = 1, int size = 10, required String groupname}) async {
     var response = await tokenProvider.api.get(
       baseChatUrl +
-          'api/Chat/massages/$groupname?pageNumber=${advertisementPaginationController.currentPage.value}&pageSize=9',
+          'api/Chat/massages/$groupname?pageNumber=$number&pageSize=$size',
     );
+
     listMessagesFromApi = [];
     var xPagination = jsonDecode(response.headers['X-Pagination']![0]);
     print(xPagination);
@@ -59,11 +62,9 @@ class MessageProvider with CacheManager {
         );
       },
     );
-    if (advertisementPaginationController.currentPage.value == 1) {
-      chatMessageController.messageList.value = listMessagesFromApi;
-    } else {
-      chatMessageController.messageList.addAll(listMessagesFromApi);
-    }
+    return ListPage(
+        itemList: listMessagesFromApi,
+        grandTotalCount: advertisementPaginationController.totalAds.value);
   }
 
   Future<void> getGroups() async {

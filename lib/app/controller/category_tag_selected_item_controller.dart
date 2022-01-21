@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 
-class CategorySelectedChipsController extends GetxController {
-  var selected = 0.obs;
+class CategoryFilterController extends GetxController {
+  var selectedTapIndex = 0.obs;
+  var selectedFilterString = ''.obs;
 }

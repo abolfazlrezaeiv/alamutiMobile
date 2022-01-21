@@ -1,19 +1,10 @@
 import 'dart:convert';
 import 'package:alamuti/app/binding/detail_binding.dart';
 import 'package:alamuti/app/controller/ads_form_controller.dart';
-import 'package:alamuti/app/controller/advertisement_controller.dart';
-import 'package:alamuti/app/controller/advertisement_pagination_controller.dart';
-import 'package:alamuti/app/controller/advertisement_request_controller.dart';
 import 'package:alamuti/app/controller/category_tag_selected_item_controller.dart';
-import 'package:alamuti/app/controller/chat_group_controller.dart';
-import 'package:alamuti/app/controller/scroll_position.dart';
-import 'package:alamuti/app/controller/search_avoid_update.dart';
-import 'package:alamuti/app/controller/search_keyword_controller.dart';
-import 'package:alamuti/app/controller/selected_category_filter_controller.dart';
+import 'package:alamuti/app/controller/search_controller.dart';
 import 'package:alamuti/app/data/entities/advertisement.dart';
 import 'package:alamuti/app/data/provider/advertisement_provider.dart';
-import 'package:alamuti/app/data/provider/chat_message_provider.dart';
-import 'package:alamuti/app/data/provider/signalr_helper.dart';
 import 'package:alamuti/app/ui/details/detail_page.dart';
 import 'package:alamuti/app/ui/theme.dart';
 import 'package:alamuti/app/ui/widgets/bottom_navbar.dart';
@@ -24,7 +15,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 class HomePage extends StatefulWidget {
@@ -35,30 +25,11 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  AdvertisementProvider advertisementProvider = AdvertisementProvider();
+  CategoryFilterController categoryFilterController = Get.find();
+  SearchController searchController = Get.find();
 
   TextEditingController searchTextEditingController = TextEditingController();
-
-  ScrollController _scrollControl = ScrollController();
-
-  GetStorage storage = GetStorage();
-
-  HomeScrollController homeScrollController = Get.find();
-
-  CategorySelectedFilterController categorySelectedFilter = Get.find();
-
-  CategorySelectedChipsController categorySelectedChips = Get.find();
-
-  ListAdvertisementController listAdvertisementController = Get.find();
-
-  CheckIsSearchedController checkIsSearchController = Get.find();
-
-  SearchKeywordController searchKeywordController = Get.find();
-
-  AdvertisementPaginationController advertisementPaginationController =
-      Get.find();
-
-  AdvertisementRequestController advertisementRequestController = Get.find();
+  AdvertisementProvider advertisementProvider = AdvertisementProvider();
 
   final List<String> filterType = [
     '',
@@ -81,71 +52,20 @@ class _HomePageState extends State<HomePage> {
   final double height = Get.height;
 
   final _pagingController = PagingController<int, Advertisement>(
-    firstPageKey: 1,
-  );
+      firstPageKey: 1, invisibleItemsThreshold: 2);
 
   @override
   void initState() {
+    searchController.isSearchResult.value = false;
     _pagingController.addPageRequestListener((pageKey) {
       _fetchPage(pageKey);
     });
-    WidgetsBinding.instance?.addPostFrameCallback((duration) {
-      if (advertisementRequestController.shouldSend.value == true) {
-        checkIsSearchController.isSearchResult.value = false;
-
-        homeScrollController.scrollPosition.value = 0;
-
-        categorySelectedChips.selected.value = 0;
-
-        advertisementPaginationController.currentPage.value = 1;
-
-        advertisementProvider.getAll(context: context, adstype: null);
-      }
-      advertisementRequestController.shouldSend.value = true;
-      getMessages();
-    });
-    _scrollControl.addListener(paginationScrollListener);
+    categoryFilterController.selectedTapIndex.value = 0;
     super.initState();
-  }
-
-  Future<void> _fetchPage(int pageKey) async {
-    try {
-      final newPage = await advertisementProvider.getAll(
-          context: context, adstype: categorySelectedFilter.selected.value);
-
-      final previouslyFetchedItemsCount =
-          _pagingController.itemList?.length ?? 0;
-
-      final isLastPage = newPage.isLastPage(previouslyFetchedItemsCount);
-      final newItems = newPage.itemList;
-
-      if (isLastPage) {
-        _pagingController.appendLastPage(newItems);
-      } else {
-        final nextPageKey = pageKey + 1;
-        _pagingController.appendPage(newItems, nextPageKey);
-      }
-    } catch (error) {
-      _pagingController.error = error;
-    }
-  }
-
-  @override
-  void dispose() {
-    _pagingController.dispose();
-    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    _scrollControl.addListener(positionScrollListener);
-
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
-      if (_scrollControl.hasClients) {
-        _scrollControl.jumpTo(homeScrollController.scrollPosition.value);
-      }
-    });
-
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: PreferredSize(
@@ -177,31 +97,17 @@ class _HomePageState extends State<HomePage> {
                                 fontWeight: FontWeight.w300),
                             onSubmitted: (value) async {
                               FocusScope.of(context).unfocus();
-
-                              advertisementPaginationController
-                                  .currentPage.value = 1;
-
-                              WidgetsBinding.instance
-                                  ?.addPostFrameCallback((_) {
-                                if (_scrollControl.hasClients) {
-                                  _scrollControl.jumpTo(0);
-                                }
-                              });
-
-                              checkIsSearchController.isSearchResult.value =
-                                  true;
-
-                              categorySelectedChips.selected.value = 0;
-
-                              searchKeywordController.keyword.value =
+                              if (searchController.isSearchResult.value !=
+                                  true) {}
+                              searchController.isSearchResult.value = true;
+                              categoryFilterController.selectedTapIndex.value =
+                                  0;
+                              searchController.keyword.value =
                                   searchTextEditingController.text;
 
-                              await advertisementProvider.search(
-                                  context: context,
-                                  searchInput:
-                                      searchTextEditingController.text);
+                              _pagingController.refresh();
 
-                              searchKeywordController.keyword.value =
+                              searchController.keyword.value =
                                   searchTextEditingController.text;
                             },
                             textAlign: TextAlign.right,
@@ -245,28 +151,11 @@ class _HomePageState extends State<HomePage> {
                                 onPressed: () async {
                                   FocusScope.of(context).unfocus();
 
-                                  WidgetsBinding.instance
-                                      ?.addPostFrameCallback((_) {
-                                    if (_scrollControl.hasClients) {
-                                      _scrollControl.jumpTo(0);
-                                    }
-                                  });
-
-                                  advertisementPaginationController
-                                      .currentPage.value = 1;
-
-                                  await advertisementProvider.search(
-                                      context: context,
-                                      searchInput:
-                                          searchTextEditingController.text);
-
-                                  searchKeywordController.keyword.value =
+                                  searchController.keyword.value =
                                       searchTextEditingController.text;
 
-                                  advertisementRequestController
-                                      .shouldSend.value = false;
-
-                                  categorySelectedChips.selected.value = 0;
+                                  categoryFilterController
+                                      .selectedTapIndex.value = 0;
                                 },
                               ),
                               fillColor: Colors.white,
@@ -304,33 +193,18 @@ class _HomePageState extends State<HomePage> {
                           padding: const EdgeInsets.only(right: 8),
                           child: ChipsChoice<int>.single(
                             mainAxisAlignment: MainAxisAlignment.center,
-                            value: categorySelectedChips.selected.value,
+                            value:
+                                categoryFilterController.selectedTapIndex.value,
                             onChanged: (val) {
                               FocusScope.of(context).unfocus();
                               searchTextEditingController.text = '';
+                              searchController.isSearchResult.value = false;
+                              categoryFilterController
+                                  .selectedFilterString.value = filterType[val];
 
-                              advertisementPaginationController
-                                  .currentPage.value = 1;
-
-                              checkIsSearchController.isSearchResult.value =
-                                  false;
-                              categorySelectedFilter.selected.value =
-                                  filterType[val];
-
-                              advertisementProvider.getAll(
-                                  context: context,
-                                  adstype:
-                                      categorySelectedFilter.selected.value);
-                              categorySelectedChips.selected.value = val;
-                              homeScrollController.scrollPosition.value = 0.0;
-
-                              WidgetsBinding.instance
-                                  ?.addPostFrameCallback((_) {
-                                if (_scrollControl.hasClients) {
-                                  _scrollControl.jumpTo(homeScrollController
-                                      .scrollPosition.value);
-                                }
-                              });
+                              _pagingController.refresh();
+                              categoryFilterController.selectedTapIndex.value =
+                                  val;
                             },
                             choiceItems: C2Choice.listFrom<int, String>(
                               source: options,
@@ -350,310 +224,186 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       bottomNavigationBar: AlamutBottomNavBar(),
-      body: PagedListView.separated(
-        pagingController: _pagingController,
-        builderDelegate: PagedChildBuilderDelegate<Advertisement>(
-          itemBuilder: (context, ads, index) => Container(
-            decoration: BoxDecoration(
-              border: Border(
-                bottom: BorderSide(
-                  color: Colors.grey.withOpacity(0.3),
-                ),
-              ),
-            ),
-            child: Center(
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                    vertical: height / 100, horizontal: width / 50),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    FittedBox(
-                      fit: BoxFit.cover,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
-                        child: (ads.listviewPhoto == null)
-                            ? Opacity(
-                                opacity: 0.2,
-                                child: Image.asset(
-                                  'assets/logo/no-image.png',
-                                  fit: BoxFit.cover,
-                                  height: height / 6,
-                                  width: height / 6,
-                                ),
-                              )
-                            : Image.memory(
-                                base64Decode(
-                                  ads.listviewPhoto!,
-                                ),
-                                fit: BoxFit.cover,
-                                height: height / 6,
-                                width: height / 6,
-                              ),
+      body: WillPopScope(
+        onWillPop: () async {
+          await SystemNavigator.pop();
+          return false;
+        },
+        child: RefreshIndicator(
+          color: Colors.greenAccent,
+          onRefresh: () => Future.sync(
+            () => _pagingController.refresh(),
+          ),
+          child: PagedListView.separated(
+            pagingController: _pagingController,
+            builderDelegate: PagedChildBuilderDelegate<Advertisement>(
+              itemBuilder: (context, ads, index) => GestureDetector(
+                onTap: () async {
+                  FocusScope.of(context).unfocus();
+                  await advertisementProvider.getDetails(
+                      id: ads.id, context: context);
+                  Get.to(
+                      () => AdsDetail(
+                            id: ads.id,
+                          ),
+                      binding: DetailPageBinding(),
+                      transition: Transition.fadeIn);
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border(
+                      bottom: BorderSide(
+                        color: Colors.grey.withOpacity(0.3),
                       ),
                     ),
-                    Flexible(
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(vertical: height / 70),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Text(
-                              ads.title,
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w400, fontSize: 15),
-                              textDirection: TextDirection.rtl,
-                              overflow: TextOverflow.visible,
+                  ),
+                  child: Center(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                          vertical: height / 100, horizontal: width / 50),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          FittedBox(
+                            fit: BoxFit.cover,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: (ads.listviewPhoto == null)
+                                  ? Opacity(
+                                      opacity: 0.2,
+                                      child: Image.asset(
+                                        'assets/logo/no-image.png',
+                                        fit: BoxFit.cover,
+                                        height: height / 6,
+                                        width: height / 6,
+                                      ),
+                                    )
+                                  : Image.memory(
+                                      base64Decode(
+                                        ads.listviewPhoto!,
+                                      ),
+                                      fit: BoxFit.cover,
+                                      height: height / 6,
+                                      width: height / 6,
+                                    ),
                             ),
-                            SizedBox(
-                              height: height / 18,
+                          ),
+                          Flexible(
+                            child: Padding(
+                              padding:
+                                  EdgeInsets.symmetric(vertical: height / 70),
+                              child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    ads.title,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 15),
+                                    textDirection: TextDirection.rtl,
+                                    overflow: TextOverflow.visible,
+                                  ),
+                                  SizedBox(
+                                    height: height / 18,
+                                  ),
+                                  Text(
+                                    'تومان ${ads.price.toString()}',
+                                    style: TextStyle(
+                                        fontFamily: persianNumber,
+                                        fontWeight: FontWeight.w300),
+                                    textDirection: TextDirection.rtl,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Text(
+                                        ads.datePosted,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w200,
+                                            fontFamily: persianNumber,
+                                            fontSize: 13),
+                                        textDirection: TextDirection.rtl,
+                                      ),
+                                      Text(
+                                        ads.village,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w200,
+                                            fontFamily: persianNumber,
+                                            fontSize: 13),
+                                        textDirection: TextDirection.rtl,
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
-                            Text(
-                              'تومان ${ads.price.toString()}',
-                              style: TextStyle(
-                                  fontFamily: persianNumber,
-                                  fontWeight: FontWeight.w300),
-                              textDirection: TextDirection.rtl,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Text(
-                                  ads.datePosted,
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w200,
-                                      fontFamily: persianNumber,
-                                      fontSize: 13),
-                                  textDirection: TextDirection.rtl,
-                                ),
-                                Text(
-                                  ads.village,
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w200,
-                                      fontFamily: persianNumber,
-                                      fontSize: 13),
-                                  textDirection: TextDirection.rtl,
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
+                          )
+                        ],
                       ),
-                    )
-                  ],
+                    ),
+                  ),
                 ),
               ),
+              firstPageErrorIndicatorBuilder: (context) => ErrorIndicator(
+                error: _pagingController.error,
+                onTryAgain: () => _pagingController.refresh(),
+              ),
+              noItemsFoundIndicatorBuilder: (context) => EmptyListIndicator(
+                onTryAgain: () {
+                  searchTextEditingController.text = '';
+                  searchController.isSearchResult.value = false;
+                  return _pagingController.refresh();
+                },
+              ),
+            ),
+            separatorBuilder: (context, index) => const SizedBox(
+              height: 0,
             ),
           ),
-          firstPageErrorIndicatorBuilder: (context) => ErrorIndicator(
-            error: _pagingController.error,
-            onTryAgain: () => _pagingController.refresh(),
-          ),
-          noItemsFoundIndicatorBuilder: (context) => EmptyListIndicator(),
-        ),
-        padding: const EdgeInsets.all(0),
-        separatorBuilder: (context, index) => const SizedBox(
-          height: 0,
         ),
       ),
-
-      //  WillPopScope(
-      //   onWillPop: () async {
-      //     await SystemNavigator.pop();
-      //     return false;
-      //   },
-      //   child: Obx(
-      //     () => RefreshIndicator(
-      //       color: Colors.greenAccent,
-      //       onRefresh: () async {
-      //         advertisementPaginationController.currentPage.value = 1;
-
-      //         searchTextEditingController.text = '';
-
-      //         return advertisementProvider.getAll(
-      //             context: context, isRefreshIndicator: true);
-      //       },
-      //       child: ListView.builder(
-      //         controller: _scrollControl,
-      //         itemCount: listAdvertisementController.adsList.length,
-      //         itemBuilder: (BuildContext context, int index) {
-      //           return Container(
-      //             height: height / 5,
-      //             child: GestureDetector(
-      //               onTap: () async {
-      //                 FocusScope.of(context).unfocus();
-      //                 await advertisementProvider.getDetails(
-      //                     id: listAdvertisementController.adsList[index].id,
-      //                     context: context);
-      //                 Get.to(
-      //                     () => AdsDetail(
-      //                           id: listAdvertisementController
-      //                               .adsList[index].id,
-      //                         ),
-      //                     binding: DetailPageBinding(),
-      //                     transition: Transition.fadeIn);
-      //               },
-      //               child: Obx(
-      //                 () => Container(
-      //                   decoration: BoxDecoration(
-      //                     border: Border(
-      //                       bottom: BorderSide(
-      //                         color: Colors.grey.withOpacity(0.3),
-      //                       ),
-      //                     ),
-      //                   ),
-      //                   child: Center(
-      //                     child: Padding(
-      //                       padding:
-      //                           EdgeInsets.symmetric(horizontal: width / 50),
-      //                       child: Row(
-      //                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //                         crossAxisAlignment: CrossAxisAlignment.center,
-      //                         children: [
-      //                           FittedBox(
-      //                             fit: BoxFit.cover,
-      //                             child: ClipRRect(
-      //                               borderRadius: BorderRadius.circular(8),
-      //                               child: (listAdvertisementController
-      //                                           .adsList[index].listviewPhoto ==
-      //                                       null)
-      //                                   ? Opacity(
-      //                                       opacity: 0.2,
-      //                                       child: Image.asset(
-      //                                         'assets/logo/no-image.png',
-      //                                         fit: BoxFit.cover,
-      //                                         height: height / 6,
-      //                                         width: height / 6,
-      //                                       ),
-      //                                     )
-      //                                   : Image.memory(
-      //                                       base64Decode(
-      //                                         listAdvertisementController
-      //                                             .adsList[index].listviewPhoto,
-      //                                       ),
-      //                                       fit: BoxFit.cover,
-      //                                       height: height / 6,
-      //                                       width: height / 6,
-      //                                     ),
-      //                             ),
-      //                           ),
-      //                           Flexible(
-      //                             child: Padding(
-      //                               padding: EdgeInsets.symmetric(
-      //                                   vertical: height / 70),
-      //                               child: Column(
-      //                                 mainAxisAlignment:
-      //                                     MainAxisAlignment.spaceBetween,
-      //                                 crossAxisAlignment:
-      //                                     CrossAxisAlignment.end,
-      //                                 children: [
-      //                                   Text(
-      //                                     listAdvertisementController
-      //                                         .adsList[index].title,
-      //                                     style: TextStyle(
-      //                                         fontWeight: FontWeight.w400,
-      //                                         fontSize: 15),
-      //                                     textDirection: TextDirection.rtl,
-      //                                     overflow: TextOverflow.visible,
-      //                                   ),
-      //                                   SizedBox(
-      //                                     height: height / 18,
-      //                                   ),
-      //                                   Text(
-      //                                     'تومان ${listAdvertisementController.adsList[index].price.toString()}',
-      //                                     style: TextStyle(
-      //                                         fontFamily: persianNumber,
-      //                                         fontWeight: FontWeight.w300),
-      //                                     textDirection: TextDirection.rtl,
-      //                                   ),
-      //                                   Row(
-      //                                     mainAxisAlignment:
-      //                                         MainAxisAlignment.end,
-      //                                     children: [
-      //                                       Text(
-      //                                         listAdvertisementController
-      //                                             .adsList[index].datePosted,
-      //                                         style: TextStyle(
-      //                                             fontWeight: FontWeight.w200,
-      //                                             fontFamily: persianNumber,
-      //                                             fontSize: 13),
-      //                                         textDirection: TextDirection.rtl,
-      //                                       ),
-      //                                       Text(
-      //                                         listAdvertisementController
-      //                                             .adsList[index].village,
-      //                                         style: TextStyle(
-      //                                             fontWeight: FontWeight.w200,
-      //                                             fontFamily: persianNumber,
-      //                                             fontSize: 13),
-      //                                         textDirection: TextDirection.rtl,
-      //                                       ),
-      //                                     ],
-      //                                   ),
-      //                                 ],
-      //                               ),
-      //                             ),
-      //                           )
-      //                         ],
-      //                       ),
-      //                     ),
-      //                   ),
-      //                 ),
-      //               ),
-      //             ),
-      //           );
-      //         },
-      //       ),
-      //     ),
-      //   ),
-      // ),
     );
   }
 
-  void positionScrollListener() {
-    homeScrollController.scrollPosition.value = _scrollControl.position.pixels;
-  }
+  Future<void> _fetchPage(int pageKey) async {
+    try {
+      var newPage;
+      if (searchController.isSearchResult.value == true) {
+        newPage = await advertisementProvider.search(
+          number: pageKey,
+          size: 10,
+          searchInput: searchController.keyword.value,
+        );
+      } else {
+        newPage = await advertisementProvider.getAll(
+            number: pageKey,
+            size: 10,
+            adstype: categoryFilterController.selectedFilterString.value);
+      }
 
-  void paginationScrollListener() {
-    if (_scrollControl.offset >= _scrollControl.position.maxScrollExtent &&
-        checkIsSearchController.isSearchResult.value == false) {
-      if (advertisementPaginationController.hasNext.value == true) {
-        advertisementPaginationController.currentPage.value =
-            advertisementPaginationController.currentPage.value + 1;
-        advertisementProvider.getAll(
-            context: context, adstype: categorySelectedFilter.selected.value);
+      final previouslyFetchedItemsCount =
+          _pagingController.itemList?.length ?? 0;
+
+      final isLastPage = newPage.isLastPage(previouslyFetchedItemsCount);
+      final newItems = newPage.itemList;
+
+      if (isLastPage) {
+        _pagingController.appendLastPage(newItems);
+      } else {
+        final nextPageKey = pageKey + 1;
+        _pagingController.appendPage(newItems, nextPageKey);
       }
-    } else if (_scrollControl.offset >=
-            _scrollControl.position.maxScrollExtent &&
-        checkIsSearchController.isSearchResult.value == true) {
-      if (advertisementPaginationController.hasNext.value == true) {
-        advertisementPaginationController.currentPage.value =
-            advertisementPaginationController.currentPage.value + 1;
-        advertisementProvider.search(
-            context: context,
-            searchInput: searchKeywordController.keyword.value);
-      }
+    } catch (error) {
+      _pagingController.error = error;
     }
   }
 
-  getMessages() async {
-    final ChatGroupController chatGroupController =
-        Get.put(ChatGroupController());
-
-    final SignalRHelper signalHelper = SignalRHelper();
-
-    final MessageProvider messageProvider = MessageProvider();
-    messageProvider.getGroups();
-    chatGroupController.groupList.listen((p0) {
-      WidgetsBinding.instance?.addPostFrameCallback((_) async {
-        chatGroupController.groupList.forEach((element) {
-          signalHelper.createGroup(
-            element.name,
-          );
-        });
-      });
-    });
+  @override
+  void dispose() {
+    _pagingController.dispose();
+    super.dispose();
   }
 }

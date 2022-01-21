@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:alamuti/app/binding/advertisement_update_binding.dart';
 import 'package:alamuti/app/controller/ads_form_controller.dart';
 import 'package:alamuti/app/controller/advertisement_controller.dart';
-import 'package:alamuti/app/controller/advertisement_pagination_controller.dart';
 import 'package:alamuti/app/controller/update_image_advertisement_controller.dart';
 import 'package:alamuti/app/data/provider/advertisement_provider.dart';
 import 'package:alamuti/app/ui/advetisement_form_page/advertisement_update_from_page.dart';
@@ -24,9 +23,6 @@ class UserAdvertisement extends StatelessWidget {
   final ListAdvertisementController listAdvertisementController = Get.find();
 
   final UpdateUploadImageController updateUploadImageController = Get.find();
-
-  final AdvertisementPaginationController advertisementPaginationController =
-      Get.find();
 
   final AdvertisementProvider advertisementProvider = AdvertisementProvider();
 

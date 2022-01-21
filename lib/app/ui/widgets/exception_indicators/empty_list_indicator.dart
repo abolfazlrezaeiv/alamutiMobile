@@ -38,11 +38,16 @@ import 'exception_indicator.dart';
 
 /// Indicates that no items were found.
 class EmptyListIndicator extends StatelessWidget {
+  const EmptyListIndicator({
+    required this.onTryAgain,
+  });
+  final VoidCallback onTryAgain;
   @override
   Widget build(BuildContext context) => ExceptionIndicator(
-        title: 'چیزی یافت نشد',
-        message: 'کلیدواژه های دیگری را جستجو کنید تا نتایج بهتری بگیرید',
+        title: 'آگهی یافت نشد',
+        message: 'کلیدواژه دیگری را جستجو کنید تا نتایج بهتری بگیرید',
         assetName: 'assets/3.0x/empty-box.png',
-        onTryAgain: () {},
+        buttonTitle: 'شروع دوباره',
+        onTryAgain: onTryAgain,
       );
 }

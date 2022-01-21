@@ -32,6 +32,7 @@
  * THE SOFTWARE.
  */
 
+import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'generic_error_indicator.dart';
@@ -49,7 +50,7 @@ class ErrorIndicator extends StatelessWidget {
   final VoidCallback onTryAgain;
 
   @override
-  Widget build(BuildContext context) => error is SocketException
+  Widget build(BuildContext context) => error is TimeoutException
       ? NoConnectionIndicator(
           onTryAgain: onTryAgain,
         )

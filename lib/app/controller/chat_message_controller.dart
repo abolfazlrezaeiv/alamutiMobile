@@ -5,12 +5,7 @@ import 'package:get/get.dart';
 class ChatMessageController extends GetxController with CacheManager {
   final messageList = [].obs;
 
-  void addMessage(ChatMessage message) async {
+  void addMessage(ChatMessage message) {
     messageList.add(message);
-  }
-
-  Future<bool> isSender() async {
-    return (messageList[messageList.length] as ChatMessage).sender ==
-        await getUserId();
   }
 }

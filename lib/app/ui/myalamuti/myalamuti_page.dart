@@ -43,52 +43,57 @@ class MyAlamutiPage extends StatelessWidget with CacheManager {
                         Container(
                           alignment: Alignment.center,
                           padding: EdgeInsets.symmetric(horizontal: width / 30),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              TextButton(
-                                onPressed: () {
-                                  auth.logOut();
-                                },
-                                child: Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: width / 120),
-                                  child: Text(
-                                    'خروج ازحساب',
-                                    style: TextStyle(
-                                        color: Colors.black.withOpacity(1),
-                                        fontWeight: FontWeight.w300,
-                                        fontSize: width / 33),
+                          child: Padding(
+                            padding:
+                                EdgeInsets.symmetric(horizontal: width / 100),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                TextButton(
+                                  onPressed: () {
+                                    auth.logOut();
+                                  },
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: width / 120),
+                                    child: Text(
+                                      'خروج ازحساب',
+                                      style: TextStyle(
+                                          color: Colors.black.withOpacity(1),
+                                          fontWeight: FontWeight.w300,
+                                          fontSize: width / 33),
+                                    ),
                                   ),
-                                ),
-                                style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all(
-                                    Colors.white,
-                                  ),
-                                  shape: MaterialStateProperty.all<
-                                      RoundedRectangleBorder>(
-                                    RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(40),
-                                      side: BorderSide(
-                                          color: Colors.black.withOpacity(0.4),
-                                          width: 0.7),
+                                  style: ButtonStyle(
+                                    backgroundColor: MaterialStateProperty.all(
+                                      Colors.white,
+                                    ),
+                                    shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(40),
+                                        side: BorderSide(
+                                            color:
+                                                Colors.black.withOpacity(0.4),
+                                            width: 0.7),
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                              SizedBox(
-                                width: width / 40,
-                              ),
-                              Text(
-                                'شما با شماره موبایل ${getPhonenNumber()} وارد شده اید',
-                                textDirection: TextDirection.rtl,
-                                style: TextStyle(
-                                    fontSize: width / 29,
-                                    fontFamily: 'IRANSansXFaNum',
-                                    fontWeight: FontWeight.w300),
-                              ),
-                            ],
+                                SizedBox(
+                                  width: width / 40,
+                                ),
+                                Text(
+                                  'شما با شماره موبایل ${getPhonenNumber()} وارد شده اید',
+                                  textDirection: TextDirection.rtl,
+                                  style: TextStyle(
+                                      fontSize: width / 29,
+                                      fontFamily: 'IRANSansXFaNum',
+                                      fontWeight: FontWeight.w300),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                         GestureDetector(

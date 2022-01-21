@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 class ChatGroupBinding implements Bindings {
   @override
   void dependencies() {
-    Get.put<NewMessageController>(NewMessageController(), permanent: true);
-    Get.put<ChatGroupController>(ChatGroupController(), permanent: true);
+    Get.put<NewMessageController>(NewMessageController());
+    Get.put<ChatGroupController>(ChatGroupController());
   }
 }

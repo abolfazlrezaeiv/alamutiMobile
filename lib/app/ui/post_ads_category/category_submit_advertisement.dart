@@ -27,50 +27,53 @@ class CategorySubmitAds extends StatelessWidget {
 
           return false;
         },
-        child: Column(
-          children: [
-            CategoryItem(
-              advertisementTypeController: advertisementTypeController,
-              category: AdsFormState.FOOD,
-              categoryIcon: Icon(
-                CupertinoIcons.bag,
-                size: Get.width / 16,
+        child: Padding(
+          padding: const EdgeInsets.only(top: 10.0),
+          child: Column(
+            children: [
+              CategoryItem(
+                advertisementTypeController: advertisementTypeController,
+                category: AdsFormState.FOOD,
+                categoryIcon: Icon(
+                  CupertinoIcons.bag,
+                  size: Get.width / 16,
+                ),
+                categoryName: 'موادغذایی',
               ),
-              categoryName: 'موادغذایی',
-            ),
-            CategoryItem(
-              advertisementTypeController: advertisementTypeController,
-              categoryName: 'دام و حیوانات محلی',
-              category: AdsFormState.Trap,
-              categoryIcon: Container(
-                width: Get.width / 16,
-                child: Opacity(
-                  opacity: 0.5,
-                  child: Image.asset(
-                    'assets/icons/sheep.png',
+              CategoryItem(
+                advertisementTypeController: advertisementTypeController,
+                categoryName: 'دام و حیوانات محلی',
+                category: AdsFormState.Trap,
+                categoryIcon: Container(
+                  width: Get.width / 16,
+                  child: Opacity(
+                    opacity: 0.5,
+                    child: Image.asset(
+                      'assets/icons/sheep.png',
+                    ),
                   ),
                 ),
               ),
-            ),
-            CategoryItem(
-              advertisementTypeController: advertisementTypeController,
-              categoryName: 'مشاغل',
-              category: AdsFormState.JOB,
-              categoryIcon: Icon(
-                CupertinoIcons.person_3,
-                size: Get.width / 16,
+              CategoryItem(
+                advertisementTypeController: advertisementTypeController,
+                categoryName: 'مشاغل',
+                category: AdsFormState.JOB,
+                categoryIcon: Icon(
+                  CupertinoIcons.person_3,
+                  size: Get.width / 16,
+                ),
               ),
-            ),
-            CategoryItem(
-              advertisementTypeController: advertisementTypeController,
-              categoryName: 'املاک',
-              category: AdsFormState.REALSTATE,
-              categoryIcon: Icon(
-                CupertinoIcons.house,
-                size: Get.width / 16,
+              CategoryItem(
+                advertisementTypeController: advertisementTypeController,
+                categoryName: 'املاک',
+                category: AdsFormState.REALSTATE,
+                categoryIcon: Icon(
+                  CupertinoIcons.house,
+                  size: Get.width / 16,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

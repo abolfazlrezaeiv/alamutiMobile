@@ -41,10 +41,12 @@ class ExceptionIndicator extends StatelessWidget {
     required this.assetName,
     required this.message,
     required this.onTryAgain,
+    required this.buttonTitle,
   });
   final String title;
   final String message;
   final String assetName;
+  final String buttonTitle;
   final VoidCallback onTryAgain;
 
   @override
@@ -53,9 +55,6 @@ class ExceptionIndicator extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 16),
           child: Column(
             children: [
-              Image.asset(
-                assetName,
-              ),
               const SizedBox(
                 height: 32,
               ),
@@ -64,31 +63,30 @@ class ExceptionIndicator extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.headline6,
               ),
-              if (message != null)
-                const SizedBox(
-                  height: 16,
-                ),
-              if (message != null)
-                Text(
-                  message,
-                  textAlign: TextAlign.center,
-                ),
-              if (onTryAgain != null) const Spacer(),
-              if (onTryAgain != null)
-                SizedBox(
-                  height: 50,
-                  width: double.infinity,
-                  child: TextButton(
-                    onPressed: onTryAgain,
-                    child: const Text(
-                      'دوباره امتحان کنید',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.white,
-                      ),
+              const SizedBox(
+                height: 16,
+              ),
+              Text(
+                message,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(
+                height: 16,
+              ),
+              SizedBox(
+                height: 50,
+                width: double.infinity,
+                child: TextButton(
+                  onPressed: onTryAgain,
+                  child: Text(
+                    this.buttonTitle,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.green,
                     ),
                   ),
                 ),
+              ),
             ],
           ),
         ),
