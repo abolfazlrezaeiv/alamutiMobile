@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 import 'exception_indicator.dart';
 
 /// Indicates that no items were found.
-class EmptyListIndicator extends StatelessWidget {
-  const EmptyListIndicator({
+class EmptyChatGroupIndicator extends StatelessWidget {
+  const EmptyChatGroupIndicator({
     required this.onTryAgain,
   });
   final VoidCallback onTryAgain;
   @override
   Widget build(BuildContext context) => ExceptionIndicator(
-        title: 'آگهی یافت نشد',
-        message: 'کلیدواژه ی دیگری را جستجو کنید تا نتایج بهتری بگیرید',
+        title: '',
+        message: 'لیست پیامها خالی است',
         assetName: 'assets/3.0x/empty-box.png',
-        buttonTitle: 'شروع دوباره',
+        buttonTitle: '',
         onTryAgain: onTryAgain,
       );
 }

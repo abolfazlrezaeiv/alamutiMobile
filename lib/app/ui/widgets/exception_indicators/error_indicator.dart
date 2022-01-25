@@ -33,7 +33,6 @@
  */
 
 import 'dart:async';
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'generic_error_indicator.dart';
 import 'no_connection_indicator.dart';

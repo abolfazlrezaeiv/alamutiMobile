@@ -79,7 +79,6 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
         title: 'ویرایش آگهی',
         hasBackButton: true,
         appBar: AppBar(),
-        backwidget: "/myads",
       ),
       body: WillPopScope(
         onWillPop: () async {

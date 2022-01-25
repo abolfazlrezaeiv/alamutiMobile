@@ -6,7 +6,7 @@ class ChatGroup {
   final String title;
   final bool isChecked;
   final ChatMessage lastMessage;
-  final String? groupImage;
+  final String groupImage;
 
   ChatGroup(
       {required this.groupImage,

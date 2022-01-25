@@ -5,7 +5,9 @@ import 'package:alamuti/app/controller/chat_message_controller.dart';
 import 'package:alamuti/app/controller/chat_target_controller.dart';
 import 'package:alamuti/app/controller/detail_page_advertisement.dart';
 import 'package:alamuti/app/data/provider/advertisement_provider.dart';
-import 'package:alamuti/app/ui/chat/newchat.dart';
+import 'package:alamuti/app/data/provider/signalr_helper.dart';
+import 'package:alamuti/app/data/storage/cache_manager.dart';
+import 'package:alamuti/app/ui/chat/chat.dart';
 import 'package:alamuti/app/ui/details/fullscreen_image.dart';
 import 'package:alamuti/app/ui/details/fullscreen_slider.dart';
 import 'package:alamuti/app/ui/theme.dart';
@@ -14,21 +16,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AdsDetail extends StatefulWidget {
   final int id;
-  // late String? byteImage2;
-  // late String? byteImage1;
-  // late String phoneNumber;
-  // late String title;
-  // late String price;
-  // late String sendedDate;
-  // late String userId;
-  // late String description;
-  // late String adsType;
-  // late String area;
-  // late String village;
 
   AdsDetail({
     Key? key,
@@ -39,7 +31,7 @@ class AdsDetail extends StatefulWidget {
   State<AdsDetail> createState() => _AdsDetailState();
 }
 
-class _AdsDetailState extends State<AdsDetail> {
+class _AdsDetailState extends State<AdsDetail> with CacheManager {
   final ChatTargetUserController chatTargetUserController = Get.find();
 
   final ChatMessageController chatMessageController = Get.find();
@@ -51,15 +43,18 @@ class _AdsDetailState extends State<AdsDetail> {
   final double height = Get.height;
 
   final AdvertisementProvider advertisementProvider = AdvertisementProvider();
-  @override
-  void initState() {
-    WidgetsBinding.instance?.addPostFrameCallback((duration) async {});
-    super.initState();
-  }
+
+  final SignalRHelper signalRHelper = SignalRHelper(
+    handler: () => print('created in detail'),
+  );
+
+  final GetStorage storage = GetStorage();
 
   @override
   Widget build(BuildContext context) {
+    print(signalRHelper.connection.state);
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Obx(
         () => Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -202,16 +197,31 @@ class _AdsDetailState extends State<AdsDetail> {
                   ),
                   TextButton(
                     onPressed: () async {
-                      chatTargetUserController
-                          .saveUserId(detailPageController.details[0].userId);
                       chatMessageController.messageList.clear();
+
                       var chatImage = await _getListviewImage();
+
+                      var groupName = detailPageController.details[0].userId +
+                          await getUserId() +
+                          detailPageController.details[0].title;
+
+                      await signalRHelper.initializeChat(
+                          receiverId: detailPageController.details[0].userId,
+                          senderId: await getUserId(),
+                          groupname: groupName,
+                          groupImage: chatImage,
+                          grouptitle: detailPageController.details[0].title);
+
                       Get.to(
-                          () => NewChat(
-                              receiverId: chatTargetUserController.userId.value,
-                              groupImage: chatImage,
-                              groupTitle:
-                                  detailPageController.details[0].title),
+                          () => Chat(
+                                groupImage: chatImage,
+                                receiverId:
+                                    detailPageController.details[0].userId,
+                                groupTitle:
+                                    detailPageController.details[0].title,
+                                groupname: groupName,
+                                signalRHelper: signalRHelper,
+                              ),
                           transition: Transition.fadeIn);
                     },
                     child: Padding(

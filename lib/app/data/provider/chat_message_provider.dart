@@ -17,17 +17,12 @@ import 'package:get_storage/get_storage.dart';
 class MessageProvider with CacheManager {
   TokenProvider tokenProvider = Get.put(TokenProvider());
 
-  ChatMessageController chatMessageController =
-      Get.put(ChatMessageController());
-
-  ChatGroupController chatGroupController = Get.put(ChatGroupController());
-
-  NewMessageController newMessageController = Get.put(NewMessageController());
-
   AdvertisementPaginationController advertisementPaginationController =
       Get.put(AdvertisementPaginationController());
 
   List<ChatMessage> listMessagesFromApi = [];
+
+  List<ChatGroup> listGroupsFromApi = [];
 
   GetStorage storage = GetStorage();
 
@@ -67,31 +62,52 @@ class MessageProvider with CacheManager {
         grandTotalCount: advertisementPaginationController.totalAds.value);
   }
 
-  Future<void> getGroups() async {
-    List<ChatGroup> mygroups = [];
+  Future<ListPage<ChatGroup>> getGroups({int number = 1, int size = 10}) async {
+    listGroupsFromApi = [];
     var response = await tokenProvider.api.get(
-      baseChatUrl + 'api/Chat/groupswithmessages',
+      baseChatUrl +
+          'api/Chat/groupswithmessages?pageNumber=$number&pageSize=$size',
     );
-    if (response.statusCode == 200) {
-      response.data.forEach(
-        (element) {
-          mygroups.add(ChatGroup.fromJson(element));
-        },
-      );
+    var xPagination = jsonDecode(response.headers['X-Pagination']![0]);
+    print(xPagination);
+    advertisementPaginationController.currentPage.value =
+        xPagination['CurrentPage'];
 
-      chatGroupController.groupList.value = mygroups;
-      for (var i = 0; i < chatGroupController.groupList.length; i++) {
-        if ((chatGroupController.groupList[i].isChecked == false &&
-            chatGroupController.groupList[i].lastMessage.reciever ==
-                await storage.read(CacheManagerKey.USERID.toString()))) {
-          newMessageController.haveNewMessage.value = true;
-        }
-      }
-    } else {
-      Get.defaultDialog(
-          title: 'دریافت اطلاعات ناموفق بود',
-          textConfirm: 'لطفا دوباره تلاش کنید');
-    }
+    advertisementPaginationController.totalPages.value =
+        xPagination['TotalPages'];
+
+    advertisementPaginationController.totalAds.value =
+        xPagination['TotalCount'];
+
+    advertisementPaginationController.hasNext.value = xPagination['HasNext'];
+
+    advertisementPaginationController.hasBack.value =
+        xPagination['HasPrevious'];
+
+    response.data.forEach(
+      (element) {
+        listGroupsFromApi.add(ChatGroup.fromJson(element));
+      },
+    );
+
+    return ListPage(
+        itemList: listGroupsFromApi,
+        grandTotalCount: advertisementPaginationController.totalAds.value);
+  }
+
+  Future<List<ChatGroup>> getGroupsNoPagination() async {
+    List<ChatGroup> listGroupsToJoin = [];
+    var response = await tokenProvider.api.get(
+      baseChatUrl + 'api/Chat/groups',
+    );
+
+    response.data.forEach(
+      (element) {
+        listGroupsToJoin.add(ChatGroup.fromJson(element));
+      },
+    );
+
+    return listGroupsToJoin;
   }
 
   updateGroupStatus({
@@ -132,13 +148,6 @@ class MessageProvider with CacheManager {
   deleteMessageGroup({
     required String groupName,
   }) async {
-    for (var i = 0; i < chatGroupController.groupList.length; i++) {
-      if (chatGroupController.groupList[i].name == groupName) {
-        chatGroupController.groupList.removeAt(i);
-        break;
-      }
-    }
-
     await tokenProvider.api.delete(
       baseChatUrl + 'api/Chat/group/$groupName',
     );

@@ -5,6 +5,7 @@ import 'package:alamuti/app/controller/category_tag_selected_item_controller.dar
 import 'package:alamuti/app/controller/search_controller.dart';
 import 'package:alamuti/app/data/entities/advertisement.dart';
 import 'package:alamuti/app/data/provider/advertisement_provider.dart';
+import 'package:alamuti/app/data/provider/signalr_helper.dart';
 import 'package:alamuti/app/ui/details/detail_page.dart';
 import 'package:alamuti/app/ui/theme.dart';
 import 'package:alamuti/app/ui/widgets/bottom_navbar.dart';
@@ -60,6 +61,9 @@ class _HomePageState extends State<HomePage> {
     _pagingController.addPageRequestListener((pageKey) {
       _fetchPage(pageKey);
     });
+    // var signalR = SignalRHelper(
+    //   handler: () => print('signal created'),
+    // );
     categoryFilterController.selectedTapIndex.value = 0;
     super.initState();
   }

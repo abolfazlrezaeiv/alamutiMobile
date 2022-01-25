@@ -16,7 +16,6 @@ class AboutAlamuti extends StatelessWidget {
       appBar: AlamutiAppBar(
         appBar: AppBar(),
         title: 'درباره الموتی',
-        backwidget: "/myalamuti",
         hasBackButton: true,
       ),
       bottomNavigationBar: AlamutBottomNavBar(),

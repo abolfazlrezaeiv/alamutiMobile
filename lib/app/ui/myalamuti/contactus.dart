@@ -17,7 +17,6 @@ class ContactPage extends StatelessWidget {
       appBar: AlamutiAppBar(
         appBar: AppBar(),
         title: 'ارتباط با ما',
-        backwidget: "/myalamuti",
         hasBackButton: true,
       ),
       bottomNavigationBar: AlamutBottomNavBar(),

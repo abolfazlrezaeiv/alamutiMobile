@@ -14,7 +14,7 @@ var bottomTapItems = <BottomNavigationBarItem>[
         () => Stack(
           children: [
             Icon(CupertinoIcons.chat_bubble),
-            newMessageController.haveNewMessage.value
+            newMessageController.haveNewMessage.value == true
                 ? Icon(
                     CupertinoIcons.circle_fill,
                     color: Colors.red,

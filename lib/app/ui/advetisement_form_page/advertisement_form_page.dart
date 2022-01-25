@@ -46,7 +46,6 @@ class AdvertisementForm extends GetView<UploadImageController> {
         title: 'ثبت آگهی',
         hasBackButton: true,
         appBar: AppBar(),
-        backwidget: '/add_ads',
       ),
       body: Form(
         key: _formKey,

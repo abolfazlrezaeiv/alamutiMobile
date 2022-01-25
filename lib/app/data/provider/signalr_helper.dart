@@ -1,7 +1,5 @@
-import 'package:alamuti/app/controller/chat_group_controller.dart';
-import 'package:alamuti/app/controller/chat_message_controller.dart';
-import 'package:alamuti/app/controller/message_notifier_controller.dart';
 import 'package:alamuti/app/controller/new_message_controller.dart';
+import 'package:alamuti/app/data/entities/chatgroup.dart';
 import 'package:alamuti/app/data/provider/base_url.dart';
 import 'package:alamuti/app/data/provider/chat_message_provider.dart';
 import 'package:alamuti/app/data/storage/cache_manager.dart';
@@ -13,19 +11,11 @@ import 'package:signalr_core/signalr_core.dart';
 class SignalRHelper with CacheManager {
   late HubConnection connection;
 
-  ChatMessageController chatMessageController =
-      Get.put(ChatMessageController());
-
-  ChatGroupController chatGroupController = Get.put(ChatGroupController());
-
   NewMessageController newMessageController = Get.put(NewMessageController());
-
-  MessageNotifierController messageNotifierController =
-      Get.put(MessageNotifierController());
 
   GetStorage storage = GetStorage();
 
-  final VoidCallback handler;
+  VoidCallback handler;
 
   SignalRHelper({required this.handler}) {
     connection = HubConnectionBuilder()
@@ -38,12 +28,17 @@ class SignalRHelper with CacheManager {
     connection.invoke('JoinToGroup',
         args: [storage.read(CacheManagerKey.USERID.toString())]);
 
+    connection.on("InitializeChat", (arguments) async {
+      newMessageController.haveNewMessage.value = true;
+      print('on initialize called');
+      handler();
+    });
+
     connection.on("ReceiveMessage", (arguments) async {
-      if (arguments![0] ==
+      if (arguments![1] !=
           await storage.read(CacheManagerKey.USERID.toString())) {
         newMessageController.haveNewMessage.value = true;
       }
-      await connection.invoke('JoinToGroup', args: [arguments[3]]);
       print('on recivee called');
 
       handler();
@@ -65,6 +60,16 @@ class SignalRHelper with CacheManager {
       grouptitle,
       groupImage
     ]);
+  }
+
+  Future<void> initializeChat(
+      {required String receiverId,
+      required String senderId,
+      required String grouptitle,
+      required String groupname,
+      String? groupImage}) async {
+    await connection.invoke('InitializeChat',
+        args: [receiverId, senderId, groupname, grouptitle, groupImage]);
   }
 
   joinToGroup(String userId) async {

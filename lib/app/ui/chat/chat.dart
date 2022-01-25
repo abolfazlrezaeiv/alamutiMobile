@@ -1,4 +1,5 @@
-import 'package:alamuti/app/controller/message_notifier_controller.dart';
+import 'package:alamuti/app/controller/new_message_controller.dart';
+import 'package:alamuti/app/controller/selected_tap_controller.dart';
 import 'package:alamuti/app/data/entities/chat_message.dart';
 import 'package:alamuti/app/data/provider/chat_message_provider.dart';
 import 'package:alamuti/app/data/provider/signalr_helper.dart';
@@ -6,6 +7,7 @@ import 'package:alamuti/app/data/storage/cache_manager.dart';
 import 'package:alamuti/app/ui/theme.dart';
 import 'package:alamuti/app/ui/widgets/alamuti_appbar.dart';
 import 'package:alamuti/app/ui/widgets/alamuti_textfield.dart';
+import 'package:alamuti/app/ui/widgets/exception_indicators/empty_chat_indicator.dart';
 import 'package:bubble/bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -14,16 +16,20 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 class Chat extends StatefulWidget {
   final String groupname;
-
   final String groupTitle;
-
+  final String receiverId;
   final String? groupImage;
+  int? groupId = 1;
+  final SignalRHelper? signalRHelper;
 
   Chat({
     Key? key,
     required this.groupname,
     required this.groupTitle,
     required this.groupImage,
+    required this.receiverId,
+    this.signalRHelper,
+    this.groupId,
   }) : super(key: key);
 
   @override
@@ -43,27 +49,24 @@ class _ChatState extends State<Chat> {
 
   final double height = Get.height;
 
-  final chatScreenPagingController =
+  final _chatScreenPagingController =
       PagingController<int, ChatMessage>(firstPageKey: 1);
-
-  MessageNotifierController messageNotifierController =
-      Get.put(MessageNotifierController());
 
   @override
   void initState() {
-    super.initState();
-
-    messageNotifierController.isInChatPage.value = true;
-    chatScreenPagingController.addPageRequestListener((pageKey) {
-      _fetchPage(pageKey);
+    _chatScreenPagingController.addPageRequestListener((pageKey) {
+      _fetchMessage(pageKey);
     });
+
+    widget.signalRHelper?.handler = () => _chatScreenPagingController.refresh();
+
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     final isAlamutiMessage = widget.groupTitle == 'الموتی';
-    final SignalRHelper signalHelper =
-        SignalRHelper(handler: () => chatScreenPagingController.refresh());
+
     return Scaffold(
       appBar: AlamutiAppBar(
         appBar: AppBar(),
@@ -73,40 +76,59 @@ class _ChatState extends State<Chat> {
       ),
       body: WillPopScope(
         onWillPop: () async {
-          await messageProvider.getGroups();
+          Get.put(ScreenController()).selectedIndex.value = 1;
+          Get.toNamed('/chat');
+
           return true;
         },
         child: Column(
           children: [
             Expanded(
               child: PagedListView.separated(
-                pagingController: chatScreenPagingController,
+                pagingController: _chatScreenPagingController,
                 separatorBuilder: (context, index) => const SizedBox(
                   height: 0,
                 ),
                 shrinkWrap: true,
                 reverse: true,
                 builderDelegate: PagedChildBuilderDelegate<ChatMessage>(
-                    itemBuilder: (context, message, index) {
-                  if (message.sender ==
-                      storage.read(CacheManagerKey.USERID.toString())) {
-                    return Padding(
-                      padding: EdgeInsets.symmetric(vertical: Get.height / 70),
-                      child: Bubble(
-                        style: styleMe,
-                        child: Text(message.message),
-                      ),
-                    );
-                  } else {
-                    return Padding(
-                      padding: EdgeInsets.symmetric(vertical: Get.height / 70),
-                      child: Bubble(
-                        style: styleSomebody,
-                        child: Text(message.message),
-                      ),
-                    );
-                  }
-                }),
+                  itemBuilder: (context, message, index) {
+                    messageProvider.updateGroupStatus(
+                        name: widget.groupname,
+                        id: widget.groupId!,
+                        title: widget.groupTitle,
+                        isChecked: true);
+
+                    // WidgetsBinding.instance?.addPostFrameCallback((_) async {
+                    //   Get.put(NewMessageController()).haveNewMessage.value =
+                    //       false;
+                    // });
+
+                    if (message.sender ==
+                        storage.read(CacheManagerKey.USERID.toString())) {
+                      return Padding(
+                        padding:
+                            EdgeInsets.symmetric(vertical: Get.height / 70),
+                        child: Bubble(
+                          style: styleMe,
+                          child: Text(message.message),
+                        ),
+                      );
+                    } else {
+                      return Padding(
+                        padding:
+                            EdgeInsets.symmetric(vertical: Get.height / 70),
+                        child: Bubble(
+                          style: styleSomebody,
+                          child: Text(message.message),
+                        ),
+                      );
+                    }
+                  },
+                  noItemsFoundIndicatorBuilder: (context) => EmptyChatIndicator(
+                    onTryAgain: () {},
+                  ),
+                ),
               ),
             ),
             isAlamutiMessage
@@ -131,26 +153,17 @@ class _ChatState extends State<Chat> {
                             TextButton(
                                 onPressed: () async {
                                   if (_formKey.currentState!.validate()) {
-                                    var target = widget.groupname
-                                        .replaceAll(
-                                            storage.read(
-                                              CacheManagerKey.USERID.toString(),
-                                            ),
-                                            '')
-                                        .trimRight();
-
-                                    await signalHelper.sendMessage(
-                                        receiverId: target,
+                                    await widget.signalRHelper?.sendMessage(
+                                        receiverId: widget.receiverId,
                                         senderId: storage.read(
                                           CacheManagerKey.USERID.toString(),
                                         ),
                                         message: textEditingController.text,
                                         groupname: widget.groupname,
-                                        groupImage: null,
+                                        groupImage: widget.groupImage,
                                         grouptitle: widget.groupTitle);
 
                                     textEditingController.text = '';
-                                    // chatScreenPagingController.refresh();
                                   }
                                 },
                                 child: Text(
@@ -168,7 +181,7 @@ class _ChatState extends State<Chat> {
     );
   }
 
-  Future<void> _fetchPage(int pageKey) async {
+  Future<void> _fetchMessage(int pageKey) async {
     try {
       var newPage = await messageProvider.getGroupMessages(
         number: pageKey,
@@ -177,25 +190,25 @@ class _ChatState extends State<Chat> {
       );
 
       final previouslyFetchedItemsCount =
-          chatScreenPagingController.itemList?.length ?? 0;
+          _chatScreenPagingController.itemList?.length ?? 0;
 
       final isLastPage = newPage.isLastPage(previouslyFetchedItemsCount);
       final newItems = newPage.itemList;
 
       if (isLastPage) {
-        chatScreenPagingController.appendLastPage(newItems);
+        _chatScreenPagingController.appendLastPage(newItems);
       } else {
         final nextPageKey = pageKey + 1;
-        chatScreenPagingController.appendPage(newItems, nextPageKey);
+        _chatScreenPagingController.appendPage(newItems, nextPageKey);
       }
     } catch (error) {
-      chatScreenPagingController.error = error;
+      _chatScreenPagingController.error = error;
     }
   }
 
   @override
   void dispose() {
-    chatScreenPagingController.dispose();
     super.dispose();
+    _chatScreenPagingController.dispose();
   }
 }

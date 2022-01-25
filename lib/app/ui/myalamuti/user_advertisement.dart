@@ -41,7 +41,6 @@ class UserAdvertisement extends StatelessWidget {
       appBar: AlamutiAppBar(
         appBar: AppBar(),
         title: 'آگهی های من',
-        backwidget: "/myalamuti",
         hasBackButton: true,
       ),
       bottomNavigationBar: AlamutBottomNavBar(),
