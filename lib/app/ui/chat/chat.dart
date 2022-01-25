@@ -19,7 +19,6 @@ class Chat extends StatefulWidget {
   final String groupTitle;
   final String receiverId;
   final String? groupImage;
-  int? groupId = 1;
   final SignalRHelper? signalRHelper;
 
   Chat({
@@ -29,7 +28,6 @@ class Chat extends StatefulWidget {
     required this.groupImage,
     required this.receiverId,
     this.signalRHelper,
-    this.groupId,
   }) : super(key: key);
 
   @override
@@ -93,11 +91,7 @@ class _ChatState extends State<Chat> {
                 reverse: true,
                 builderDelegate: PagedChildBuilderDelegate<ChatMessage>(
                   itemBuilder: (context, message, index) {
-                    messageProvider.updateGroupStatus(
-                        name: widget.groupname,
-                        id: widget.groupId!,
-                        title: widget.groupTitle,
-                        isChecked: true);
+                    messageProvider.changeToSeen(groupname: widget.groupname);
 
                     // WidgetsBinding.instance?.addPostFrameCallback((_) async {
                     //   Get.put(NewMessageController()).haveNewMessage.value =

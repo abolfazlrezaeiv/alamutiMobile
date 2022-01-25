@@ -49,7 +49,6 @@ class _HomePageState extends State<HomePage> {
   ];
 
   final double width = Get.width;
-
   final double height = Get.height;
 
   final _pagingController = PagingController<int, Advertisement>(
@@ -61,9 +60,7 @@ class _HomePageState extends State<HomePage> {
     _pagingController.addPageRequestListener((pageKey) {
       _fetchPage(pageKey);
     });
-    // var signalR = SignalRHelper(
-    //   handler: () => print('signal created'),
-    // );
+
     categoryFilterController.selectedTapIndex.value = 0;
     super.initState();
   }
@@ -212,7 +209,14 @@ class _HomePageState extends State<HomePage> {
       bottomNavigationBar: AlamutBottomNavBar(),
       body: WillPopScope(
         onWillPop: () async {
-          await SystemNavigator.pop();
+          if (searchController.isSearchResult.value == true) {
+            searchController.isSearchResult.value = false;
+            searchTextEditingController.text = '';
+            _pagingController.refresh();
+          } else {
+            await SystemNavigator.pop();
+          }
+
           return false;
         },
         child: RefreshIndicator(

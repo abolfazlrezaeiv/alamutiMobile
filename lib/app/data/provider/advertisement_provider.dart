@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:alamuti/app/controller/ads_form_controller.dart';
 import 'package:alamuti/app/controller/advertisement_controller.dart';
-import 'package:alamuti/app/controller/advertisement_pagination_controller.dart';
 import 'package:alamuti/app/controller/detail_page_advertisement.dart';
 import 'package:alamuti/app/data/entities/advertisement.dart';
 import 'package:alamuti/app/data/entities/list_page.dart';
@@ -16,9 +15,6 @@ import 'package:get/utils.dart';
 
 class AdvertisementProvider {
   final TokenProvider tokenProvider = Get.put(TokenProvider());
-
-  final AdvertisementPaginationController advertisementPaginationController =
-      Get.put(AdvertisementPaginationController());
 
   final ListAdvertisementController listAdvertisementController =
       Get.put(ListAdvertisementController());
@@ -85,19 +81,6 @@ class AdvertisementProvider {
 
       var xPagination = jsonDecode(response.headers['X-Pagination']![0]);
       print(xPagination);
-      advertisementPaginationController.currentPage.value =
-          xPagination['CurrentPage'];
-
-      advertisementPaginationController.totalPages.value =
-          xPagination['TotalPages'];
-
-      advertisementPaginationController.totalAds.value =
-          xPagination['TotalCount'];
-
-      advertisementPaginationController.hasNext.value = xPagination['HasNext'];
-
-      advertisementPaginationController.hasBack.value =
-          xPagination['HasPrevious'];
 
       if (response.statusCode == 200) {
         response.data.forEach(
@@ -108,11 +91,11 @@ class AdvertisementProvider {
 
         return ListPage(
             itemList: advertisementFromApi,
-            grandTotalCount: advertisementPaginationController.totalAds.value);
+            grandTotalCount: xPagination['TotalCount']);
       } else {
         return ListPage(
             itemList: advertisementFromApi,
-            grandTotalCount: advertisementPaginationController.totalAds.value);
+            grandTotalCount: xPagination['TotalCount']);
       }
     } on TimeoutException catch (_) {
       throw TimeoutException('');
@@ -122,7 +105,6 @@ class AdvertisementProvider {
   Future<ListPage<Advertisement>> search(
       {int number = 1, int size = 10, required String searchInput}) async {
     advertisementFromApi = [];
-    print(number.toString() + ' from search');
     try {
       var response = await tokenProvider.api
           .get(baseUrl +
@@ -131,19 +113,6 @@ class AdvertisementProvider {
 
       var xPagination = jsonDecode(response.headers['X-Pagination']![0]);
       print(xPagination);
-      advertisementPaginationController.currentPage.value =
-          xPagination['CurrentPage'];
-
-      advertisementPaginationController.totalPages.value =
-          xPagination['TotalPages'];
-
-      advertisementPaginationController.totalAds.value =
-          xPagination['TotalCount'];
-
-      advertisementPaginationController.hasNext.value = xPagination['HasNext'];
-
-      advertisementPaginationController.hasBack.value =
-          xPagination['HasPrevious'];
 
       if (response.statusCode == 200) {
         response.data.forEach(
@@ -153,28 +122,30 @@ class AdvertisementProvider {
         );
         return ListPage(
             itemList: advertisementFromApi,
-            grandTotalCount: advertisementPaginationController.totalAds.value);
+            grandTotalCount: xPagination['TotalCount']);
       } else {
         return ListPage(
             itemList: advertisementFromApi,
-            grandTotalCount: advertisementPaginationController.totalAds.value);
+            grandTotalCount: xPagination['TotalCount']);
       }
     } on TimeoutException catch (_) {
       throw TimeoutException('');
     }
   }
 
-  Future<void> getUserAds(
-      {required BuildContext context, bool isRefreshIndicator = false}) async {
+  Future<ListPage<Advertisement>> getUserAds({
+    int number = 1,
+    int size = 10,
+  }) async {
     advertisementFromApi = [];
-
-    isRefreshIndicator ? Container() : showLoaderDialog(context);
-
     try {
       var response = await tokenProvider.api
-          .get(baseUrl + 'Advertisement/myalamuti/useradvertisement')
-          .timeout(Duration(seconds: 12))
-          .whenComplete(() => isRefreshIndicator ? Get.width : Get.back());
+          .get(baseUrl +
+              'Advertisement/useradvertisement?PageNumber=$number&PageSize=$size')
+          .timeout(Duration(seconds: 12));
+
+      var xPagination = jsonDecode(response.headers['X-Pagination']![0]);
+      print(xPagination);
 
       if (response.statusCode == 200) {
         response.data.forEach(
@@ -182,15 +153,16 @@ class AdvertisementProvider {
             advertisementFromApi.add(Advertisement.fromJson(element));
           },
         );
-
-        listAdvertisementController.adsList.value = advertisementFromApi;
+        return ListPage(
+            itemList: advertisementFromApi,
+            grandTotalCount: xPagination['TotalCount']);
       } else {
-        var message = 'متاسفانه ارتباط ناموفق بود لطفا دوباره امتحان کنید';
-        showStatusDialog(context: context, message: message);
+        return ListPage(
+            itemList: advertisementFromApi,
+            grandTotalCount: xPagination['TotalCount']);
       }
     } on TimeoutException catch (_) {
-      var message = 'متاسفانه ارتباط ناموفق بود لطفا دوباره امتحان کنید';
-      showStatusDialog(context: context, message: message);
+      throw TimeoutException('');
     }
   }
 

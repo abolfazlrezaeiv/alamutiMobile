@@ -134,11 +134,8 @@ class _ChatGroupsState extends State<ChatGroups> with CacheManager {
                   },
                   onTap: () async {
                     if (await getUserId() != group.lastMessage.sender) {
-                      await messageProvider.updateGroupStatus(
-                          name: group.name,
-                          id: group.id,
-                          title: group.title,
-                          isChecked: true);
+                      await messageProvider.changeToSeen(groupname: group.name);
+
                       newMessageController.haveNewMessage.value = false;
                     }
                     signalHelper.joinToGroup(group.name);
@@ -150,7 +147,6 @@ class _ChatGroupsState extends State<ChatGroups> with CacheManager {
                         groupImage: group.groupImage,
                         receiverId: '',
                         signalRHelper: signalHelper,
-                        groupId: group.id,
                       ),
                       transition: Transition.fadeIn,
                     );

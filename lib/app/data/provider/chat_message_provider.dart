@@ -1,24 +1,16 @@
 import 'dart:convert';
-import 'package:alamuti/app/controller/advertisement_pagination_controller.dart';
-import 'package:alamuti/app/controller/chat_group_controller.dart';
-import 'package:alamuti/app/controller/chat_message_controller.dart';
-import 'package:alamuti/app/controller/new_message_controller.dart';
 import 'package:alamuti/app/data/entities/chat_message.dart';
 import 'package:alamuti/app/data/entities/chatgroup.dart';
 import 'package:alamuti/app/data/entities/list_page.dart';
 import 'package:alamuti/app/data/provider/token_provider.dart';
 import 'package:alamuti/app/data/provider/base_url.dart';
 import 'package:alamuti/app/data/storage/cache_manager.dart';
-import 'package:dio/dio.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/route_manager.dart';
 import 'package:get_storage/get_storage.dart';
 
 class MessageProvider with CacheManager {
   TokenProvider tokenProvider = Get.put(TokenProvider());
-
-  AdvertisementPaginationController advertisementPaginationController =
-      Get.put(AdvertisementPaginationController());
 
   List<ChatMessage> listMessagesFromApi = [];
 
@@ -36,19 +28,6 @@ class MessageProvider with CacheManager {
     listMessagesFromApi = [];
     var xPagination = jsonDecode(response.headers['X-Pagination']![0]);
     print(xPagination);
-    advertisementPaginationController.currentPage.value =
-        xPagination['CurrentPage'];
-
-    advertisementPaginationController.totalPages.value =
-        xPagination['TotalPages'];
-
-    advertisementPaginationController.totalAds.value =
-        xPagination['TotalCount'];
-
-    advertisementPaginationController.hasNext.value = xPagination['HasNext'];
-
-    advertisementPaginationController.hasBack.value =
-        xPagination['HasPrevious'];
 
     response.data.forEach(
       (element) {
@@ -59,7 +38,7 @@ class MessageProvider with CacheManager {
     );
     return ListPage(
         itemList: listMessagesFromApi,
-        grandTotalCount: advertisementPaginationController.totalAds.value);
+        grandTotalCount: xPagination['TotalCount']);
   }
 
   Future<ListPage<ChatGroup>> getGroups({int number = 1, int size = 10}) async {
@@ -70,19 +49,6 @@ class MessageProvider with CacheManager {
     );
     var xPagination = jsonDecode(response.headers['X-Pagination']![0]);
     print(xPagination);
-    advertisementPaginationController.currentPage.value =
-        xPagination['CurrentPage'];
-
-    advertisementPaginationController.totalPages.value =
-        xPagination['TotalPages'];
-
-    advertisementPaginationController.totalAds.value =
-        xPagination['TotalCount'];
-
-    advertisementPaginationController.hasNext.value = xPagination['HasNext'];
-
-    advertisementPaginationController.hasBack.value =
-        xPagination['HasPrevious'];
 
     response.data.forEach(
       (element) {
@@ -92,7 +58,7 @@ class MessageProvider with CacheManager {
 
     return ListPage(
         itemList: listGroupsFromApi,
-        grandTotalCount: advertisementPaginationController.totalAds.value);
+        grandTotalCount: xPagination['TotalCount']);
   }
 
   Future<List<ChatGroup>> getGroupsNoPagination() async {
@@ -110,40 +76,13 @@ class MessageProvider with CacheManager {
     return listGroupsToJoin;
   }
 
-  updateGroupStatus({
-    required String name,
-    required int id,
-    required String title,
-    required bool isChecked,
+  changeToSeen({
+    required String groupname,
   }) async {
-    var formData = FormData.fromMap({
-      'id': id,
-      'title': title,
-      'name': name,
-      'isChecked': isChecked,
-    });
     await tokenProvider.api.put(
-      baseChatUrl + 'api/Chat',
-      data: formData,
+      baseChatUrl + 'api/Chat/group/$groupname',
     );
   }
-
-  // postMessage(
-  //     {required String sender,
-  //     required int id,
-  //     required String message,
-  //     required String reciever}) async {
-  //   var formData = FormData.fromMap({
-  //     'id': id,
-  //     'sender': sender,
-  //     'message': message,
-  //     'reciever': reciever,
-  //   });
-  //   await tokenProvider.api.post(
-  //     baseChatUrl + 'api/chat',
-  //     data: formData,
-  //   );
-  // }
 
   deleteMessageGroup({
     required String groupName,
