@@ -9,9 +9,9 @@ class EmptyChatIndicator extends StatelessWidget {
   final VoidCallback onTryAgain;
   @override
   Widget build(BuildContext context) => ExceptionIndicator(
-        title: '',
-        message: 'هنوز پیامی ارسال نکرده اید',
-        assetName: 'assets/3.0x/empty-box.png',
+        title: 'هنوز پیامی ارسال نکرده اید',
+        message: '',
+        assetName: 'assets/icons/messages.jpg',
         buttonTitle: '',
         onTryAgain: onTryAgain,
       );

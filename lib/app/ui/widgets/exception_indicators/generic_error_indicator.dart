@@ -47,7 +47,7 @@ class GenericErrorIndicator extends StatelessWidget {
   Widget build(BuildContext context) => ExceptionIndicator(
         title: 'ارتباط برقرار نشد',
         message: 'لطفا اتصال به اینترنت دستگاه خود را بررسی کنید',
-        assetName: 'assets/3.0x/confused-face.png',
+        assetName: 'assets/icons/no-connection.jpg',
         onTryAgain: onTryAgain,
         buttonTitle: 'دوباره امتحان کنید',
       );

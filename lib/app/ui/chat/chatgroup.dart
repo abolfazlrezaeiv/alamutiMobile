@@ -33,24 +33,28 @@ class _ChatGroupsState extends State<ChatGroups> with CacheManager {
 
   final NewMessageController newMessageController = Get.find();
 
-  final groupChatScreenPagingController =
+  var groupChatScreenPagingController =
       PagingController<int, ChatGroup>(firstPageKey: 1);
 
-  late SignalRHelper signalHelper;
+  SignalRHelper signalHelper =
+      SignalRHelper(handler: () => print('created in group'));
 
   @override
   void initState() {
-    super.initState();
     groupChatScreenPagingController.addPageRequestListener((pageKey) {
       _fetchGroups(pageKey);
     });
+    signalHelper.handler = () => groupChatScreenPagingController.refresh();
+
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    signalHelper =
-        SignalRHelper(handler: () => groupChatScreenPagingController.refresh());
+    signalHelper.handler = () => groupChatScreenPagingController.refresh();
+
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AlamutiAppBar(
         appBar: AppBar(),
         title: 'پیامها',
@@ -75,7 +79,7 @@ class _ChatGroupsState extends State<ChatGroups> with CacheManager {
                   ),
               itemBuilder: (context, group, index) {
                 signalHelper.joinToGroup(group.name);
-
+                joinToGroups();
                 return GestureDetector(
                   onLongPress: () {
                     Get.defaultDialog(
@@ -133,13 +137,12 @@ class _ChatGroupsState extends State<ChatGroups> with CacheManager {
                     );
                   },
                   onTap: () async {
-                    if (await getUserId() != group.lastMessage.sender) {
+                    if (await storage.read(CacheManagerKey.USERID.toString()) !=
+                        group.lastMessage.sender) {
                       await messageProvider.changeToSeen(groupname: group.name);
-
                       newMessageController.haveNewMessage.value = false;
                     }
                     signalHelper.joinToGroup(group.name);
-
                     Get.to(
                       () => Chat(
                         groupname: group.name,
@@ -303,10 +306,19 @@ class _ChatGroupsState extends State<ChatGroups> with CacheManager {
     }
   }
 
-  @override
-  void dispose() {
-    groupChatScreenPagingController.dispose();
+  joinToGroups() async {
+    var chats = await messageProvider.getGroupsNoPagination();
 
-    super.dispose();
+    await signalHelper
+        .joinToGroup(storage.read(CacheManagerKey.USERID.toString()));
+
+    chats.forEach((group) async => await signalHelper.joinToGroup(group.name));
   }
+
+  // @override
+  // void dispose() {
+  //   groupChatScreenPagingController.dispose();
+
+  //   super.dispose();
+  // }
 }

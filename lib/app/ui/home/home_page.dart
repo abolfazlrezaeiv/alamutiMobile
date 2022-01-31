@@ -5,6 +5,7 @@ import 'package:alamuti/app/controller/category_tag_selected_item_controller.dar
 import 'package:alamuti/app/controller/search_controller.dart';
 import 'package:alamuti/app/data/entities/advertisement.dart';
 import 'package:alamuti/app/data/provider/advertisement_provider.dart';
+import 'package:alamuti/app/data/provider/chat_message_provider.dart';
 import 'package:alamuti/app/data/provider/signalr_helper.dart';
 import 'package:alamuti/app/ui/details/detail_page.dart';
 import 'package:alamuti/app/ui/theme.dart';
@@ -61,7 +62,7 @@ class _HomePageState extends State<HomePage> {
       _fetchPage(pageKey);
     });
 
-    categoryFilterController.selectedTapIndex.value = 0;
+    // categoryFilterController.selectedTapIndex.value = 0;
     super.initState();
   }
 
@@ -339,7 +340,18 @@ class _HomePageState extends State<HomePage> {
               ),
               firstPageErrorIndicatorBuilder: (context) => ErrorIndicator(
                 error: _pagingController.error,
-                onTryAgain: () => _pagingController.refresh(),
+                onTryAgain: () async {
+                  var messageProvider = MessageProvider();
+
+                  SignalRHelper signalRHelper = SignalRHelper(
+                      handler: () => print(
+                          'instance of signalr created! on reveive registered'));
+                  var chats = await messageProvider.getGroupsNoPagination();
+
+                  chats.forEach(
+                      (group) => signalRHelper.joinToGroup(group.name));
+                  _pagingController.refresh();
+                },
               ),
               noItemsFoundIndicatorBuilder: (context) => EmptyListIndicator(
                 onTryAgain: () {

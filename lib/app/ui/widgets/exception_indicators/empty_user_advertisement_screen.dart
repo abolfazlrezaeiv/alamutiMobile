@@ -11,7 +11,7 @@ class EmptyUserAdsScreenIndicator extends StatelessWidget {
   Widget build(BuildContext context) => ExceptionIndicator(
         title: 'لیست آگهی های شما خالی است',
         message: 'جهت ثبت آگهی به صفحه ثبت آگهی بروید',
-        assetName: 'assets/3.0x/empty-box.png',
+        assetName: 'assets/icons/advertisement-empty.jpg',
         buttonTitle: '',
         onTryAgain: onTryAgain,
       );

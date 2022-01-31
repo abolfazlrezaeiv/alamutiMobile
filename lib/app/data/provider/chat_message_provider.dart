@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:alamuti/app/data/entities/chat_message.dart';
 import 'package:alamuti/app/data/entities/chatgroup.dart';
@@ -63,15 +64,21 @@ class MessageProvider with CacheManager {
 
   Future<List<ChatGroup>> getGroupsNoPagination() async {
     List<ChatGroup> listGroupsToJoin = [];
-    var response = await tokenProvider.api.get(
-      baseChatUrl + 'api/Chat/groups',
-    );
+    try {
+      var response = await tokenProvider.api
+          .get(
+            baseChatUrl + 'api/Chat/groups',
+          )
+          .timeout(Duration(seconds: 5));
 
-    response.data.forEach(
-      (element) {
-        listGroupsToJoin.add(ChatGroup.fromJson(element));
-      },
-    );
+      response.data.forEach(
+        (element) {
+          listGroupsToJoin.add(ChatGroup.fromJson(element));
+        },
+      );
+    } on TimeoutException catch (_) {
+      return listGroupsToJoin;
+    }
 
     return listGroupsToJoin;
   }

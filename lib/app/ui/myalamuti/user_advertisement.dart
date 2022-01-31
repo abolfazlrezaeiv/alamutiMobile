@@ -5,7 +5,6 @@ import 'package:alamuti/app/data/provider/advertisement_provider.dart';
 import 'package:alamuti/app/ui/advetisement_form_page/advertisement_update_from_page.dart';
 import 'package:alamuti/app/ui/widgets/alamuti_appbar.dart';
 import 'package:alamuti/app/ui/widgets/bottom_navbar.dart';
-import 'package:alamuti/app/ui/widgets/exception_indicators/empty_list_indicator.dart';
 import 'package:alamuti/app/ui/widgets/exception_indicators/empty_user_advertisement_screen.dart';
 import 'package:alamuti/app/ui/widgets/exception_indicators/error_indicator.dart';
 import 'package:flutter/material.dart';

@@ -1,4 +1,3 @@
-import 'package:alamuti/app/controller/new_message_controller.dart';
 import 'package:alamuti/app/controller/selected_tap_controller.dart';
 import 'package:alamuti/app/data/entities/chat_message.dart';
 import 'package:alamuti/app/data/provider/chat_message_provider.dart';
@@ -7,6 +6,7 @@ import 'package:alamuti/app/data/storage/cache_manager.dart';
 import 'package:alamuti/app/ui/theme.dart';
 import 'package:alamuti/app/ui/widgets/alamuti_appbar.dart';
 import 'package:alamuti/app/ui/widgets/alamuti_textfield.dart';
+import 'package:alamuti/app/ui/widgets/buttom_navbar_items.dart';
 import 'package:alamuti/app/ui/widgets/exception_indicators/empty_chat_indicator.dart';
 import 'package:bubble/bubble.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +20,6 @@ class Chat extends StatefulWidget {
   final String receiverId;
   final String? groupImage;
   final SignalRHelper? signalRHelper;
-
   Chat({
     Key? key,
     required this.groupname,
@@ -50,13 +49,17 @@ class _ChatState extends State<Chat> {
   final _chatScreenPagingController =
       PagingController<int, ChatMessage>(firstPageKey: 1);
 
+  late SignalRHelper signalRHelper;
+
   @override
   void initState() {
     _chatScreenPagingController.addPageRequestListener((pageKey) {
       _fetchMessage(pageKey);
     });
 
-    widget.signalRHelper?.handler = () => _chatScreenPagingController.refresh();
+    widget.signalRHelper?.handler = () {
+      _chatScreenPagingController.refresh();
+    };
 
     super.initState();
   }
@@ -66,6 +69,7 @@ class _ChatState extends State<Chat> {
     final isAlamutiMessage = widget.groupTitle == 'الموتی';
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AlamutiAppBar(
         appBar: AppBar(),
         title: 'پیامها',
@@ -74,9 +78,10 @@ class _ChatState extends State<Chat> {
       ),
       body: WillPopScope(
         onWillPop: () async {
-          Get.put(ScreenController()).selectedIndex.value = 1;
-          Get.toNamed('/chat');
-
+          // widget.signalRHelper?.connection.off('ReceiveMessage');
+          Get.put(ScreenController()).selectedIndex.value = 3;
+          Get.toNamed('/home');
+          newMessageController.haveNewMessage.value = false;
           return true;
         },
         child: Column(
@@ -91,7 +96,7 @@ class _ChatState extends State<Chat> {
                 reverse: true,
                 builderDelegate: PagedChildBuilderDelegate<ChatMessage>(
                   itemBuilder: (context, message, index) {
-                    messageProvider.changeToSeen(groupname: widget.groupname);
+                    // messageProvider.changeToSeen(groupname: widget.groupname);
 
                     // WidgetsBinding.instance?.addPostFrameCallback((_) async {
                     //   Get.put(NewMessageController()).haveNewMessage.value =
@@ -200,9 +205,10 @@ class _ChatState extends State<Chat> {
     }
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    _chatScreenPagingController.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   super.dispose();
+
+  //   _chatScreenPagingController.dispose();
+  // }
 }

@@ -1,7 +1,12 @@
 import 'package:alamuti/app/controller/authentication_manager_controller.dart';
+import 'package:alamuti/app/data/provider/chat_message_provider.dart';
+import 'package:alamuti/app/data/provider/signalr_helper.dart';
 import 'package:alamuti/app/data/provider/token_provider.dart';
+import 'package:alamuti/app/data/storage/cache_manager.dart';
+import 'package:alamuti/app/ui/widgets/buttom_navbar_items.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -24,9 +29,25 @@ class _SplashScreenState extends State<SplashScreen> {
     }
   }
 
+  prepareChat() async {
+    var messageProvider = MessageProvider();
+    var storage = GetStorage();
+    SignalRHelper signalRHelper = SignalRHelper(handler: () {
+      newMessageController.haveNewMessage.value = true;
+    });
+
+    var chats = await messageProvider.getGroupsNoPagination();
+
+    await signalRHelper
+        .joinToGroup(storage.read(CacheManagerKey.USERID.toString()));
+
+    chats.forEach((group) async => await signalRHelper.joinToGroup(group.name));
+  }
+
   @override
   void initState() {
     initializeApp();
+    prepareChat();
     super.initState();
   }
 

@@ -1,5 +1,6 @@
 import 'package:alamuti/app/controller/selected_tap_controller.dart';
 import 'package:alamuti/app/ui/theme.dart';
+import 'package:alamuti/app/ui/widgets/buttom_navbar_items.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -37,9 +38,11 @@ class AlamutiAppBar extends StatelessWidget implements PreferredSizeWidget {
                 onTap: () {
                   if (backwidget != null) {
                     if (backwidget == '/chat') {
-                      Get.put(ScreenController()).selectedIndex.value = 1;
+                      Get.put(ScreenController()).selectedIndex.value = 3;
                     }
-                    Get.toNamed(backwidget!);
+                    newMessageController.haveNewMessage.value = false;
+
+                    Get.toNamed('/home');
                   } else {
                     Get.back();
                   }

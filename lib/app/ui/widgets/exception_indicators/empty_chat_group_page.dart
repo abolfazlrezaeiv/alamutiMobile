@@ -9,9 +9,9 @@ class EmptyChatGroupIndicator extends StatelessWidget {
   final VoidCallback onTryAgain;
   @override
   Widget build(BuildContext context) => ExceptionIndicator(
-        title: '',
-        message: 'لیست پیامها خالی است',
-        assetName: 'assets/3.0x/empty-box.png',
+        title: 'لیست پیامها خالی است',
+        message: '',
+        assetName: 'assets/icons/messages.jpg',
         buttonTitle: '',
         onTryAgain: onTryAgain,
       );

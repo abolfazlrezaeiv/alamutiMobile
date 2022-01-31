@@ -11,8 +11,8 @@ class EmptyListIndicator extends StatelessWidget {
   Widget build(BuildContext context) => ExceptionIndicator(
         title: 'آگهی یافت نشد',
         message: 'کلیدواژه ی دیگری را جستجو کنید تا نتایج بهتری بگیرید',
-        assetName: 'assets/3.0x/empty-box.png',
-        buttonTitle: 'شروع دوباره',
+        assetName: 'assets/icons/search-empty.jpg',
+        buttonTitle: '',
         onTryAgain: onTryAgain,
       );
 }
