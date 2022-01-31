@@ -174,8 +174,7 @@ class _AdsDetailState extends State<AdsDetail> with CacheManager {
                     },
                     child: Padding(
                       padding: EdgeInsets.symmetric(
-                          horizontal: Get.width / 5.6,
-                          vertical: Get.width / 90),
+                          horizontal: Get.width / 6, vertical: Get.width / 90),
                       child: Text(
                         'تماس',
                         style: TextStyle(
@@ -226,7 +225,7 @@ class _AdsDetailState extends State<AdsDetail> with CacheManager {
                     },
                     child: Padding(
                       padding: EdgeInsets.symmetric(
-                          horizontal: Get.width / 5.6,
+                          horizontal: Get.width / 6.0,
                           vertical: Get.width / 90),
                       child: Text(
                         'چت',
@@ -366,7 +365,7 @@ class _AdsDetailState extends State<AdsDetail> with CacheManager {
               children: [
                 Icon(
                   CupertinoIcons.back,
-                  size: 25,
+                  size: width / 20,
                   color: Colors.black,
                 ),
                 Text(
@@ -374,7 +373,7 @@ class _AdsDetailState extends State<AdsDetail> with CacheManager {
                   style: TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.w500,
-                      fontSize: 16),
+                      fontSize: width / 23),
                 )
               ],
             ),
@@ -439,7 +438,7 @@ class _AdsDetailState extends State<AdsDetail> with CacheManager {
                     children: [
                       Icon(
                         CupertinoIcons.back,
-                        size: 25,
+                        size: width / 20,
                         color: Colors.black,
                       ),
                       Text(
@@ -447,7 +446,7 @@ class _AdsDetailState extends State<AdsDetail> with CacheManager {
                         style: TextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.w500,
-                            fontSize: 16),
+                            fontSize: width / 23),
                       )
                     ],
                   ),
@@ -523,7 +522,7 @@ class _AdsDetailState extends State<AdsDetail> with CacheManager {
               children: [
                 Icon(
                   CupertinoIcons.back,
-                  size: 25,
+                  size: width / 20,
                   color: Colors.black,
                 ),
                 Text(
@@ -531,7 +530,7 @@ class _AdsDetailState extends State<AdsDetail> with CacheManager {
                   style: TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.w500,
-                      fontSize: 16),
+                      fontSize: width / 23),
                 )
               ],
             ),

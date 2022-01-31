@@ -82,7 +82,7 @@ class MyAlamutiPage extends StatelessWidget with CacheManager {
                                   ),
                                 ),
                                 SizedBox(
-                                  width: width / 40,
+                                  width: width / 60,
                                 ),
                                 Text(
                                   'شما با شماره موبایل ${getPhonenNumber()} وارد شده اید',

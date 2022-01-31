@@ -26,31 +26,13 @@ class FullscreenImageSlider extends StatelessWidget {
           indicatorColor: Colors.greenAccent,
           indicatorBackgroundColor: Colors.white,
           children: [
-            ShaderMask(
-              shaderCallback: (rect) {
-                return RadialGradient(
-                  colors: [Colors.transparent, Colors.white],
-                ).createShader(
-                    Rect.fromLTRB(-200, -200, Get.width / 2, Get.width / 2));
-              },
-              blendMode: BlendMode.dstIn,
-              child: Image.memory(
-                base64Decode(image1),
-                fit: BoxFit.cover,
-              ),
+            Image.memory(
+              base64Decode(image1),
+              fit: BoxFit.cover,
             ),
-            ShaderMask(
-              shaderCallback: (rect) {
-                return RadialGradient(
-                  colors: [Colors.transparent, Colors.white],
-                ).createShader(
-                    Rect.fromLTRB(-200, -200, Get.width / 2, Get.width / 2));
-              },
-              blendMode: BlendMode.dstIn,
-              child: Image.memory(
-                base64Decode(image2),
-                fit: BoxFit.cover,
-              ),
+            Image.memory(
+              base64Decode(image2),
+              fit: BoxFit.cover,
             ),
           ],
           autoPlayInterval: null,

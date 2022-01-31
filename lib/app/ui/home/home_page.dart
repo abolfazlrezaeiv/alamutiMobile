@@ -62,7 +62,6 @@ class _HomePageState extends State<HomePage> {
       _fetchPage(pageKey);
     });
 
-    // categoryFilterController.selectedTapIndex.value = 0;
     super.initState();
   }
 
@@ -71,10 +70,10 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(height / 5.7),
+        preferredSize: Size.fromHeight(height / 5.9),
         child: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.only(top: 8.0),
+            padding: EdgeInsets.only(top: height / 100),
             child: Container(
               child: Card(
                 elevation: 6,
@@ -85,7 +84,7 @@ class _HomePageState extends State<HomePage> {
                 child: Column(
                   children: [
                     Container(
-                      height: 50,
+                      // height: Get.height / 13,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: Directionality(
@@ -135,7 +134,7 @@ class _HomePageState extends State<HomePage> {
                               prefixIcon: IconButton(
                                 icon: Icon(
                                   CupertinoIcons.search,
-                                  size: 30,
+                                  size: width / 15,
                                   color: Color.fromRGBO(8, 212, 76, 0.5),
                                 ),
                                 onPressed: () {

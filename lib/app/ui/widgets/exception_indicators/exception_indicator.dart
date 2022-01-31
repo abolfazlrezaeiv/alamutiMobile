@@ -31,7 +31,7 @@ class ExceptionIndicator extends StatelessWidget {
               Text(
                 title,
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 19),
+                style: TextStyle(fontSize: 17),
               ),
               const SizedBox(
                 height: 16,

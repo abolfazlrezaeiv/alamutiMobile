@@ -6,6 +6,7 @@ var themes = ThemeData(
   appBarTheme: AppBarTheme(
     backgroundColor: Color.fromRGBO(8, 212, 76, 0.5),
   ),
+  progressIndicatorTheme: ProgressIndicatorThemeData(color: Colors.greenAccent),
   bottomNavigationBarTheme: BottomNavigationBarThemeData(
       elevation: 0,
       backgroundColor: Color.fromRGBO(8, 212, 76, 0.5),

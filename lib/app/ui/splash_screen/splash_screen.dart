@@ -29,25 +29,9 @@ class _SplashScreenState extends State<SplashScreen> {
     }
   }
 
-  prepareChat() async {
-    var messageProvider = MessageProvider();
-    var storage = GetStorage();
-    SignalRHelper signalRHelper = SignalRHelper(handler: () {
-      newMessageController.haveNewMessage.value = true;
-    });
-
-    var chats = await messageProvider.getGroupsNoPagination();
-
-    await signalRHelper
-        .joinToGroup(storage.read(CacheManagerKey.USERID.toString()));
-
-    chats.forEach((group) async => await signalRHelper.joinToGroup(group.name));
-  }
-
   @override
   void initState() {
     initializeApp();
-    prepareChat();
     super.initState();
   }
 
