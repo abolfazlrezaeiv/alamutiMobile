@@ -110,7 +110,10 @@ class _ChatState extends State<Chat> {
                             EdgeInsets.symmetric(vertical: Get.height / 70),
                         child: Bubble(
                           style: styleMe,
-                          child: Text(message.message),
+                          child: Text(
+                            message.message,
+                            textDirection: TextDirection.rtl,
+                          ),
                         ),
                       );
                     } else {
@@ -119,7 +122,10 @@ class _ChatState extends State<Chat> {
                             EdgeInsets.symmetric(vertical: Get.height / 70),
                         child: Bubble(
                           style: styleSomebody,
-                          child: Text(message.message),
+                          child: Text(
+                            message.message,
+                            textDirection: TextDirection.rtl,
+                          ),
                         ),
                       );
                     }
