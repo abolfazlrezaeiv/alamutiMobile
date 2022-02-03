@@ -1,67 +1,39 @@
 import 'package:alamuti/app/controller/login_controller.dart';
+import 'package:alamuti/app/controller/otp_request_controller.dart';
 import 'package:alamuti/app/data/storage/cache_manager.dart';
-import 'package:alamuti/app/ui/Login/login.dart';
+import 'package:alamuti/app/ui/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
-class Registeration extends StatefulWidget {
-  @override
-  State<Registeration> createState() => _RegisterationState();
-}
-
-class _RegisterationState extends State<Registeration> {
+class Registeration extends StatelessWidget {
   final GlobalKey<FormState> formKey = GlobalKey();
 
-  LoginViewModel loginViewModel = Get.put(LoginViewModel());
+  final OTPRequestController otpRequestController = Get.find();
 
-  TextEditingController phoneNumberCtr = TextEditingController();
+  final LoginViewModel loginViewModel = Get.find();
 
-  bool isPhoneNumber = false;
+  final TextEditingController phoneNumberTextEditingCtr =
+      TextEditingController();
 
-  bool succesed = true;
-
-  bool isSendingSms = false;
+  final storage = new GetStorage();
 
   final double width = Get.width;
 
   final double height = Get.height;
 
   @override
-  void initState() {
-    super.initState();
-    phoneNumberCtr.addListener(() {
-      var userInput = phoneNumberCtr.text;
-      if (userInput.isNotEmpty &&
-          userInput.isNum &&
-          userInput.length == 11 &&
-          userInput[0] == '0' &&
-          userInput[1] == '9') {
-        setState(() {
-          isPhoneNumber = true;
-        });
-      } else {
-        setState(() {
-          isPhoneNumber = false;
-        });
-      }
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
     bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom == 0;
-
+    phonenumberChecker();
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: SingleChildScrollView(
         reverse: true,
-        child: Padding(
-          padding:
-              EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-          child: GestureDetector(
-            onTap: () => FocusScope.of(context).unfocus(),
-            child: Form(
+        child: GestureDetector(
+          onTap: () => FocusScope.of(context).unfocus(),
+          child: Obx(
+            () => Form(
               key: formKey,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -113,27 +85,28 @@ class _RegisterationState extends State<Registeration> {
                   Column(
                     children: [
                       Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding: EdgeInsets.symmetric(horizontal: width / 25),
                         child: Container(
                           alignment: Alignment.centerRight,
                           child: Text(
                             "شماره همراه خود را وارد کنید",
+                            textDirection: TextDirection.rtl,
                             style: TextStyle(
-                                fontWeight: FontWeight.w300, fontSize: 18),
+                                fontWeight: FontWeight.w400,
+                                fontSize: width / 27),
                           ),
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: width / 50, vertical: height / 100),
                         child: Directionality(
                           textDirection: TextDirection.rtl,
                           child: TextFormField(
+                            maxLength: 11,
                             keyboardType: TextInputType.phone,
-                            controller: phoneNumberCtr,
+                            controller: phoneNumberTextEditingCtr,
                             validator: (value) {
-                              if (succesed == false) {
-                                return 'مشکل در ارتباط , لطفا اتصال به اینترنت تلفن همراه خود را بررسی کنید';
-                              }
                               if (value == null ||
                                   value.isEmpty ||
                                   !value.isNum ||
@@ -143,7 +116,10 @@ class _RegisterationState extends State<Registeration> {
                                 return null;
                               }
                             },
-                            decoration: inputDecoration('موبایل', Icons.phone),
+                            decoration: inputDecoration(
+                              'موبایل',
+                              Icons.phone,
+                            ),
                           ),
                         ),
                       ),
@@ -155,50 +131,34 @@ class _RegisterationState extends State<Registeration> {
                         padding: EdgeInsets.symmetric(horizontal: 8),
                         child: TextButton(
                           style: ElevatedButton.styleFrom(
-                            primary: isPhoneNumber
+                            primary: otpRequestController.isPhoneNumber.value
                                 ? Color.fromRGBO(141, 235, 172, 1)
                                 : Colors.grey.withOpacity(0.5),
                           ),
                           onPressed: () async {
-                            setState(() {
-                              succesed = true;
-                            });
                             if (formKey.currentState?.validate() ?? false) {
-                              setState(() {
-                                isSendingSms = true;
-                              });
-                              var result = await loginViewModel
-                                  .registerUser(phoneNumberCtr.text);
+                              otpRequestController.isSendingSms.value = true;
+
+                              var result = await loginViewModel.registerUser(
+                                  phoneNumberTextEditingCtr.text, context);
 
                               if (result == true) {
-                                var storage = new GetStorage();
-                                storage.write(
+                                await storage.write(
                                     CacheManagerKey.PHONENUMBER.toString(),
-                                    phoneNumberCtr.text);
-                                setState(() {
-                                  succesed = true;
-                                  isSendingSms = true;
-                                });
-                                Get.offAll(
-                                    () => Login(
-                                          phonenumber: phoneNumberCtr.text,
-                                        ),
-                                    transition: Transition.fadeIn);
+                                    phoneNumberTextEditingCtr.text);
+
+                                otpRequestController.isSendingSms.value = true;
+
+                                otpRequestController.phoneNumber.value =
+                                    phoneNumberTextEditingCtr.text;
+
+                                Get.toNamed('/login');
                               } else {
-                                setState(() {
-                                  succesed = false;
-                                });
+                                otpRequestController.isSendingSms.value = false;
                               }
-                              // Future.delayed(Duration(seconds: 6), () {
-                              //   setState(() {
-                              //     succesed = false;
-                              //     isSendingSms = false;
-                              //   });
-                              //   formKey.currentState?.validate();
-                              // });
                             }
                           },
-                          child: isSendingSms
+                          child: otpRequestController.isSendingSms.value
                               ? Padding(
                                   padding: EdgeInsets.symmetric(
                                       vertical: height / 150),
@@ -237,7 +197,7 @@ class _RegisterationState extends State<Registeration> {
                             ),
                             GestureDetector(
                               onTap: () {
-                                showPrivacyRules();
+                                showPrivacyRules(context);
                               },
                               child: Text(
                                 'قوانین مربوط به حفظ حریم خصوصی ',
@@ -262,7 +222,22 @@ class _RegisterationState extends State<Registeration> {
     );
   }
 
-  showPrivacyRules() {
+  phonenumberChecker() {
+    phoneNumberTextEditingCtr.addListener(() {
+      var userInput = phoneNumberTextEditingCtr.text;
+      if (userInput.isNotEmpty &&
+          userInput.isNum &&
+          userInput.length == 11 &&
+          userInput[0] == '0' &&
+          userInput[1] == '9') {
+        otpRequestController.isPhoneNumber.value = true;
+      } else {
+        otpRequestController.isPhoneNumber.value = false;
+      }
+    });
+  }
+
+  showPrivacyRules(BuildContext context) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -289,7 +264,7 @@ class _RegisterationState extends State<Registeration> {
                         height: 20,
                       ),
                       Text(
-                        'الموتی ضمن احترام  به حریم خصوصی کاربران برای ارائه خدمات بهتر و استفاده بهینه  و مفیدتر در زمان ثبت نام یا ارسال آگهی اطلاعاتی مانند شماره موبایل کاربر و منطقه(روستا) ارسال آگهی را دریافت می کند',
+                        'الموتی ضمن احترام  به حریم خصوصی کاربران برای ارائه خدمات بهتر در زمان ثبت نام یا ارسال آگهی اطلاعاتی مانند شماره موبایل یا نام روستای ارسال کننده آگهی را دریافت می کند',
                         textDirection: TextDirection.rtl,
                         style: TextStyle(
                           fontWeight: FontWeight.w200,
@@ -305,7 +280,7 @@ class _RegisterationState extends State<Registeration> {
                         ),
                       ),
                       Text(
-                        'از شماره موبایل جهت احراز هویت کاربر و ارتباط دیگر کاربران با ثبت کننده آگهی در همین حال اگر کاربران آگهی منتشر نکنند قادر به دیدن شماره یکدیگر نیستند.',
+                        'از شماره موبایل جهت احراز هویت کاربر و ارتباط دیگر کاربران با ثبت کننده آگهی استفاده می شود. در همین حال اگر کاربران آگهی منتشر نکنند شماره تماس آنها قابل رویت نیست.',
                         textDirection: TextDirection.rtl,
                         style: TextStyle(
                           fontWeight: FontWeight.w200,
@@ -313,7 +288,7 @@ class _RegisterationState extends State<Registeration> {
                         ),
                       ),
                       Text(
-                        'منطقه یا نام روستا به دلیل دسته بندی آگهی ها و قابلیت جستجو بر اساس مناطق از کاربر ثبت کننده آگهی دریافت می شود.',
+                        'از نام روستا جهت ایجاد تجربه ی بهتر در زمان جستجو بین آگهی ها استفاده می شود.',
                         textDirection: TextDirection.rtl,
                         style: TextStyle(
                           fontWeight: FontWeight.w200,
@@ -345,7 +320,7 @@ class _RegisterationState extends State<Registeration> {
                         ),
                       ),
                       Text(
-                        'کلیه اطلاعات دریافت شده از کاربران تنها در دسترس کارکنان الموتی می باشد و در اختیار اشخاص خارج از مجموعه قرار نخواهد گرفت.',
+                        'کلیه اطلاعات دریافت شده از کاربران تنها در دسترس کارکنان الموتی می باشد و در اختیار اشخاص خارج از مجموعه قرار نمی گیرد.',
                         textDirection: TextDirection.rtl,
                         style: TextStyle(
                           fontWeight: FontWeight.w200,

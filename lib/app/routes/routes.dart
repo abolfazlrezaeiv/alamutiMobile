@@ -1,8 +1,11 @@
 import 'package:alamuti/app/binding/category_submit_ads_binding.dart';
 import 'package:alamuti/app/binding/chat_group_binding.dart';
 import 'package:alamuti/app/binding/home_binding.dart';
+import 'package:alamuti/app/binding/login_binding.dart';
+import 'package:alamuti/app/binding/register_binding.dart';
 import 'package:alamuti/app/binding/splash_screen_binding.dart';
 import 'package:alamuti/app/binding/user_advertisement_binding.dart';
+import 'package:alamuti/app/ui/Login/login.dart';
 import 'package:alamuti/app/ui/Login/register.dart';
 import 'package:alamuti/app/ui/advetisement_form_page/advertisement_form_page.dart';
 import 'package:alamuti/app/ui/chat/chatgroup.dart';
@@ -71,5 +74,11 @@ var routes = [
     name: "/register",
     page: () => Registeration(),
     transition: trans.Transition.fadeIn,
+    binding: RegisterPageBinding(),
   ),
+  GetPage(
+      name: "/login",
+      page: () => Login(),
+      transition: trans.Transition.fadeIn,
+      binding: LoginPageBinding()),
 ];

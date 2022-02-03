@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:alamuti/app/controller/ads_form_controller.dart';
-import 'package:alamuti/app/controller/advertisement_controller.dart';
 import 'package:alamuti/app/controller/detail_page_advertisement.dart';
 import 'package:alamuti/app/data/entities/advertisement.dart';
 import 'package:alamuti/app/data/entities/list_page.dart';
@@ -15,9 +14,6 @@ import 'package:get/utils.dart';
 
 class AdvertisementProvider {
   final TokenProvider tokenProvider = Get.put(TokenProvider());
-
-  final ListAdvertisementController listAdvertisementController =
-      Get.put(ListAdvertisementController());
 
   List<Advertisement> advertisementFromApi = [];
 
@@ -42,16 +38,14 @@ class AdvertisementProvider {
     }
   }
 
-  Future<ListPage<Advertisement>> getAll({
-    int number = 1,
-    int size = 10,
-    String? adstype,
-  }) async {
+  Future<ListPage<Advertisement>> getAll(
+      {int number = 1, int size = 10, String? adstype}) async {
     advertisementFromApi = [];
 
     Response response;
 
     var argument = (adstype == null || adstype.isEmpty) ? ' ' : adstype;
+
     try {
       response = await tokenProvider.api
           .get(baseUrl +
@@ -193,13 +187,6 @@ class AdvertisementProvider {
 
   Future<void> deleteAds(
       {required BuildContext context, required int id}) async {
-    for (int i = 0; i < listAdvertisementController.adsList.length; i++) {
-      if (listAdvertisementController.adsList[i].id == id) {
-        listAdvertisementController.adsList.removeAt(i);
-
-        break;
-      }
-    }
     showLoaderDialog(context);
     Response response = await tokenProvider.api
         .delete(baseUrl + 'Advertisement/$id')
@@ -258,6 +245,31 @@ class AdvertisementProvider {
       showStatusDialog(context: context, message: message);
     } else {
       var message = 'متاسفانه ارتباط ناموفق بود لطفا دوباره امتحان کنید';
+      showStatusDialog(context: context, message: message);
+    }
+  }
+
+  Future<void> sendReport({
+    required BuildContext context,
+    required int id,
+    required String report,
+  }) async {
+    var formData = FormData.fromMap({
+      'id': id,
+      'message': report,
+    });
+
+    var response = await tokenProvider.api.put(
+      baseUrl + 'Advertisement/report',
+      data: formData,
+    );
+
+    if (response.statusCode == 200) {
+      var message =
+          'باتشکر از گزارش شما. کارشناسان ما در اسرع وقت به مشکل رسیدگی می کنند.';
+      showStatusDialog(context: context, message: message);
+    } else {
+      var message = 'ارتباط ناموفق بود لطفا دوباره امتحان کنید';
       showStatusDialog(context: context, message: message);
     }
   }

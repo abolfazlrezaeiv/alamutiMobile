@@ -1,79 +1,42 @@
 import 'package:alamuti/app/binding/home_binding.dart';
 import 'package:alamuti/app/controller/login_controller.dart';
+import 'package:alamuti/app/controller/otp_request_controller.dart';
 import 'package:alamuti/app/data/storage/cache_manager.dart';
 import 'package:alamuti/app/ui/home/home_page.dart';
 import 'package:alamuti/app/ui/theme.dart';
+import 'package:argon_buttons_flutter/argon_buttons_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_countdown_timer/countdown_timer_controller.dart';
-import 'package:flutter_countdown_timer/current_remaining_time.dart';
-import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
-class Login extends StatefulWidget {
-  final String phonenumber;
+class Login extends StatelessWidget {
+  final OTPRequestController otpRequestController = Get.find();
 
-  Login({Key? key, required this.phonenumber}) : super(key: key);
+  final LoginViewModel loginViewModelController = Get.find();
 
-  @override
-  State<Login> createState() => _LoginState();
-}
-
-class _LoginState extends State<Login> {
   final GlobalKey<FormState> formKey = GlobalKey();
+
+  final storage = new GetStorage();
 
   final double width = Get.width;
 
   final double height = Get.height;
 
-  TextEditingController passwordCtr = TextEditingController();
-
-  bool isPinCode = false;
-
-  int endTime = DateTime.now().millisecondsSinceEpoch + 1000 * 150;
-
-  bool succesed = true;
-
-  late CountdownTimerController timercontroller;
-  bool canRequestAgain = false;
-  @override
-  void initState() {
-    timercontroller = CountdownTimerController(
-      endTime: endTime,
-      onEnd: () {
-        setState(() {
-          canRequestAgain = true;
-        });
-      },
-    );
-    passwordCtr.addListener(() {
-      var userInput = passwordCtr.text;
-      if (userInput.isNotEmpty && userInput.isNum && userInput.length == 4) {
-        setState(() {
-          isPinCode = true;
-        });
-      } else {
-        setState(() {
-          isPinCode = false;
-        });
-      }
-    });
-    super.initState();
-  }
+  final TextEditingController passwordCtr = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    LoginViewModel _viewModel = Get.put(LoginViewModel());
     bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom == 0;
-
+    checkPinCode();
     return Scaffold(
-        resizeToAvoidBottomInset: false,
-        body: SingleChildScrollView(
-          child: GestureDetector(
-            onTap: () => FocusScope.of(context).unfocus(),
-            child: Form(
+      resizeToAvoidBottomInset: false,
+      body: SingleChildScrollView(
+        child: GestureDetector(
+          onTap: () => FocusScope.of(context).unfocus(),
+          child: Obx(
+            () => Form(
               autovalidateMode: AutovalidateMode.onUserInteraction,
               key: formKey,
               child:
@@ -142,7 +105,7 @@ class _LoginState extends State<Login> {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: Text(
-                        "کد تایید به شماره ${widget.phonenumber} ارسال شد",
+                        "کد تایید به شماره ${otpRequestController.phoneNumber.value} ارسال شد",
                         style: TextStyle(
                           fontWeight: FontWeight.w300,
                           fontSize: 14,
@@ -159,6 +122,7 @@ class _LoginState extends State<Login> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             TextFormField(
+                              maxLength: 4,
                               keyboardType: TextInputType.number,
                               inputFormatters: [
                                 FilteringTextInputFormatter.allow(
@@ -166,9 +130,6 @@ class _LoginState extends State<Login> {
                               ],
                               controller: passwordCtr,
                               validator: (value) {
-                                if (succesed == false) {
-                                  return ' ورود ناموفق لطفا کد صحیح را دوباره وارد کنید و دکمه تایید را بزنید';
-                                }
                                 if (value == null ||
                                     value.isEmpty ||
                                     value.length != 4) {
@@ -179,7 +140,7 @@ class _LoginState extends State<Login> {
                               },
                               decoration: inputDecoration(
                                   'کد ورود',
-                                  !isPinCode
+                                  !otpRequestController.isOTP.value
                                       ? CupertinoIcons.lock
                                       : CupertinoIcons.lock_open),
                             ),
@@ -196,30 +157,22 @@ class _LoginState extends State<Login> {
                       padding: EdgeInsets.symmetric(horizontal: 8),
                       child: TextButton(
                         style: ElevatedButton.styleFrom(
-                          primary: isPinCode
+                          primary: otpRequestController.isOTP.value
                               ? Color.fromRGBO(141, 235, 172, 1)
                               : Colors.grey.withOpacity(0.5),
                         ),
                         onPressed: () async {
                           if (formKey.currentState?.validate() ?? false) {
-                            var result =
-                                await _viewModel.loginUser(passwordCtr.text);
+                            var result = await loginViewModelController
+                                .loginUser(passwordCtr.text, context);
                             if (result == true) {
-                              setState(() {
-                                succesed = true;
-                              });
-                              timercontroller.dispose();
-                              timercontroller.disposeTimer();
                               Get.offAll(() => HomePage(),
                                   binding: HomeBinding(),
                                   transition: Transition.noTransition);
-                            } else {
-                              setState(() {
-                                succesed = false;
-                              });
-                            }
-                            var storage = new GetStorage();
-                            storage.write(CacheManagerKey.PASSWORD.toString(),
+                            } else {}
+
+                            await storage.write(
+                                CacheManagerKey.PASSWORD.toString(),
                                 passwordCtr.text);
                           }
                         },
@@ -233,109 +186,86 @@ class _LoginState extends State<Login> {
                       ),
                     ),
                     SizedBox(
-                      height: MediaQuery.of(context).size.height / 50,
+                      height: height / 50,
                     ),
-                    canRequestAgain
-                        ? Container(
-                            width: width,
-                            height: height / 11,
-                            padding: EdgeInsets.symmetric(horizontal: 8),
-                            child: TextButton(
-                              style: ElevatedButton.styleFrom(
-                                primary: Colors.red.withOpacity(0.4),
-                              ),
-                              onPressed: () async {
-                                await _viewModel
-                                    .registerUser(widget.phonenumber);
-                                var newEndTime =
-                                    DateTime.now().millisecondsSinceEpoch +
-                                        1000 * 150;
-                                setState(() {
-                                  canRequestAgain = false;
-                                  endTime = newEndTime;
-                                  succesed = true;
-                                });
-                                timercontroller.endTime = newEndTime;
-                                timercontroller.start();
-                              },
-                              child: Text(
-                                'ارسال کد',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w300,
-                                    fontSize: 18,
-                                    color: Colors.black),
-                              ),
-                            ),
-                          )
-                        : CountdownTimer(
-                            controller: timercontroller,
-                            widgetBuilder: (_, CurrentRemainingTime? time) {
-                              if (time == null) {
-                                return Center(child: Text(''));
-                              }
-                              return Center(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      '${time.min ?? 0} : ${time.sec}',
-                                      style: TextStyle(
-                                          fontFamily: persianNumber,
-                                          fontWeight: FontWeight.w300,
-                                          fontSize: 20),
-                                    ),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    Container(
-                                      height: 15,
-                                      width: 15,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 1,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ArgonTimerButton(
+                        width: width,
+                        height: height / 11,
+                        minWidth: width * 2,
+                        highlightColor: Colors.transparent,
+                        highlightElevation: 0,
+                        roundLoadingShape: true,
+                        splashColor: Colors.transparent,
+                        onTap: (startTimer, btnState) async {
+                          if (btnState == ButtonState.Idle) {
+                            startTimer(90);
+                            await loginViewModelController.registerUser(
+                                otpRequestController.phoneNumber.value,
+                                context);
+                          }
+                        },
+                        initialTimer: 90,
+                        child: Container(
+                          alignment: Alignment.center,
+                          width: width,
+                          height: height / 11,
+                          color: Colors.red.withOpacity(0.4),
+                          child: Text(
+                            "ارسال کد",
+                            style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 15,
+                                fontWeight: FontWeight.w500),
                           ),
+                        ),
+                        loader: (timeLeft) {
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                  height: 10,
+                                  width: 10,
+                                  child: CircularProgressIndicator()),
+                              Text(
+                                'ارسال کد تا ${timeLeft.seconds.inSeconds.toString()} ثانیه ',
+                                textDirection: TextDirection.rtl,
+                                style: TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 15,
+                                    fontFamily: persianNumber,
+                                    fontWeight: FontWeight.w300),
+                              ),
+                            ],
+                          );
+                        },
+                        borderRadius: 5.0,
+                        color: Colors.transparent,
+                        elevation: 0,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 50,
+                    ),
                   ],
                 )
               ]),
             ),
           ),
-        ));
+        ),
+      ),
+    );
   }
-}
 
-InputDecoration inputDecoration(String labelText, IconData iconData,
-    {String? prefix, String? helperText}) {
-  return InputDecoration(
-    contentPadding: EdgeInsets.symmetric(vertical: 20, horizontal: 12),
-    helperText: helperText,
-    labelText: labelText,
-    labelStyle: TextStyle(
-      color: Colors.grey,
-    ),
-    prefixText: prefix,
-    prefixIcon: Icon(
-      iconData,
-      size: 20,
-    ),
-    prefixIconConstraints: BoxConstraints(minWidth: 60),
-    enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(8),
-        borderSide:
-            BorderSide(color: Color.fromRGBO(69, 230, 123, 1), width: 0.9)),
-    focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(8),
-        borderSide:
-            BorderSide(color: Color.fromRGBO(69, 230, 123, 1), width: 2)),
-    errorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(8),
-        borderSide: BorderSide(color: Colors.red)),
-    border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(8),
-        borderSide: BorderSide(color: Colors.white)),
-  );
+  checkPinCode() {
+    passwordCtr.addListener(() {
+      var userInput = passwordCtr.text;
+      if (userInput.isNotEmpty && userInput.isNum && userInput.length == 4) {
+        otpRequestController.isOTP.value = true;
+      } else {
+        otpRequestController.isOTP.value = false;
+      }
+    });
+  }
 }

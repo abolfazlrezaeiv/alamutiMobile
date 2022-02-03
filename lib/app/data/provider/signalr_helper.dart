@@ -21,26 +21,23 @@ class SignalRHelper with CacheManager {
         .withAutomaticReconnect()
         .build();
 
-    connection.start();
+    connection.start()?.whenComplete(() => connection
+        .invoke('JoinToGroup',
+            args: [storage.read(CacheManagerKey.USERID.toString())])
+        .whenComplete(() => connection.on("InitializeChat", (arguments) {
+              newMessageController.haveNewMessage.value = true;
+              print('on initialize called');
+              handler();
+            }))
+        .whenComplete(() => connection.on("ReceiveMessage", (arguments) async {
+              if (arguments![1] !=
+                  await storage.read(CacheManagerKey.USERID.toString())) {
+                newMessageController.haveNewMessage.value = true;
+              }
+              print('on recivee called');
 
-    connection.invoke('JoinToGroup',
-        args: [storage.read(CacheManagerKey.USERID.toString())]);
-
-    connection.on("InitializeChat", (arguments) async {
-      newMessageController.haveNewMessage.value = true;
-      print('on initialize called');
-      handler();
-    });
-
-    connection.on("ReceiveMessage", (arguments) async {
-      if (arguments![1] !=
-          await storage.read(CacheManagerKey.USERID.toString())) {
-        newMessageController.haveNewMessage.value = true;
-      }
-      print('on recivee called');
-
-      handler();
-    });
+              handler();
+            })));
   }
 
   sendMessage(

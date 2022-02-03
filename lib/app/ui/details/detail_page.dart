@@ -1,8 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:alamuti/app/controller/ads_form_controller.dart';
-import 'package:alamuti/app/controller/chat_message_controller.dart';
-import 'package:alamuti/app/controller/chat_target_controller.dart';
 import 'package:alamuti/app/controller/detail_page_advertisement.dart';
 import 'package:alamuti/app/data/provider/advertisement_provider.dart';
 import 'package:alamuti/app/data/provider/signalr_helper.dart';
@@ -11,6 +9,7 @@ import 'package:alamuti/app/ui/chat/chat.dart';
 import 'package:alamuti/app/ui/details/fullscreen_image.dart';
 import 'package:alamuti/app/ui/details/fullscreen_slider.dart';
 import 'package:alamuti/app/ui/theme.dart';
+import 'package:alamuti/app/ui/widgets/description_textfield.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
@@ -32,11 +31,9 @@ class AdsDetail extends StatefulWidget {
 }
 
 class _AdsDetailState extends State<AdsDetail> with CacheManager {
-  final ChatTargetUserController chatTargetUserController = Get.find();
-
-  final ChatMessageController chatMessageController = Get.find();
-
   final DetailPageController detailPageController = Get.find();
+
+  TextEditingController reportTextEditingCtrl = TextEditingController();
 
   final double width = Get.width;
 
@@ -137,20 +134,101 @@ class _AdsDetailState extends State<AdsDetail> with CacheManager {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Container(
-                            decoration: BoxDecoration(
-                                color: Colors.greenAccent.withOpacity(0.1),
-                                border: Border.all(
-                                    color: Colors.greenAccent, width: 0.5)),
-                            child: Padding(
-                              padding: const EdgeInsets.all(2),
-                              child: Text(
-                                'گزارش مشکل آگهی',
-                                textDirection: TextDirection.rtl,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w300,
-                                    color: Colors.grey,
-                                    fontSize: width / 31),
+                          GestureDetector(
+                            onTap: () {
+                              showReportDialog(context) {
+                                AlertDialog alert = AlertDialog(
+                                    backgroundColor: Colors.white,
+                                    elevation: 0,
+                                    content: Container(
+                                      height: height / 2.9,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
+                                        children: [
+                                          Text(
+                                            'درباره مشکل توضیح دهید.',
+                                            textDirection: TextDirection.rtl,
+                                            style: TextStyle(
+                                                color: Colors.grey,
+                                                fontSize: width / 30,
+                                                fontWeight: FontWeight.w300),
+                                          ),
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              SizedBox(
+                                                height: 5,
+                                              ),
+                                              DescriptionTextField(
+                                                  textEditingController:
+                                                      reportTextEditingCtrl),
+                                              TextButton(
+                                                  onPressed: () async {
+                                                    Get.back();
+                                                    await advertisementProvider
+                                                        .sendReport(
+                                                      context: context,
+                                                      id: detailPageController
+                                                          .details[0].id,
+                                                      report:
+                                                          reportTextEditingCtrl
+                                                              .text,
+                                                    );
+                                                  },
+                                                  child: Text(
+                                                    'ثبت گزارش',
+                                                    style: TextStyle(
+                                                        color:
+                                                            Colors.greenAccent,
+                                                        fontWeight:
+                                                            FontWeight.w500),
+                                                  ))
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ));
+                                showDialog(
+                                  barrierDismissible: true,
+                                  builder: (BuildContext context) {
+                                    return alert;
+                                  },
+                                  context: context,
+                                );
+                              }
+
+                              return showReportDialog(context);
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(3),
+                                  color: Colors.transparent,
+                                  border: Border.all(
+                                      color: Colors.greenAccent, width: 0.5)),
+                              child: Padding(
+                                padding: const EdgeInsets.all(2),
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      'گزارش مشکل آگهی',
+                                      textDirection: TextDirection.rtl,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w300,
+                                          color: Colors.grey,
+                                          fontSize: width / 31),
+                                    ),
+                                    SizedBox(
+                                      width: 2,
+                                    ),
+                                    Icon(
+                                      CupertinoIcons
+                                          .exclamationmark_circle_fill,
+                                      color: Colors.greenAccent,
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
@@ -219,8 +297,6 @@ class _AdsDetailState extends State<AdsDetail> with CacheManager {
                   ),
                   TextButton(
                     onPressed: () async {
-                      chatMessageController.messageList.clear();
-
                       var chatImage = await _getListviewImage();
 
                       var groupName = detailPageController.details[0].userId +
@@ -531,7 +607,12 @@ class _AdsDetailState extends State<AdsDetail> with CacheManager {
   }
 
   Widget getAppbarWithBack() {
-    return Container(
+    return Card(
+      margin: EdgeInsets.all(0),
+      elevation: 6,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(0.0),
+      ),
       color: Color.fromRGBO(8, 212, 76, 0.5),
       child: Padding(
         padding: EdgeInsets.only(top: 40.0, bottom: 20),
