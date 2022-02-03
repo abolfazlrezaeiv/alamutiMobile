@@ -212,6 +212,9 @@ class _UserAdvertisementState extends State<UserAdvertisement> {
                                                         .deleteAds(
                                                             id: ads.id,
                                                             context: context);
+
+                                                    _userAdvertisementPagingController
+                                                        .refresh();
                                                   },
                                                   child: Text(
                                                     'حذف',

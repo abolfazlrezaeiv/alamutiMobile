@@ -1,12 +1,6 @@
 import 'package:alamuti/app/controller/authentication_manager_controller.dart';
-import 'package:alamuti/app/data/provider/chat_message_provider.dart';
-import 'package:alamuti/app/data/provider/signalr_helper.dart';
-import 'package:alamuti/app/data/provider/token_provider.dart';
-import 'package:alamuti/app/data/storage/cache_manager.dart';
-import 'package:alamuti/app/ui/widgets/buttom_navbar_items.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -18,14 +12,11 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   AuthenticationManager _authManager = Get.find();
 
-  TokenProvider tokenProviderController = Get.find();
-
   Future<void> initializeApp() async {
-    await Future.delayed(Duration(seconds: 1));
     if (await _authManager.checkLoginStatus()) {
       Get.offNamed('/home');
     } else {
-      Get.offNamed('/register');
+      Get.toNamed('/register');
     }
   }
 
@@ -69,7 +60,7 @@ class WaitingSplashScreen extends StatelessWidget {
             child: Column(
               children: [
                 CircularProgressIndicator(
-                  strokeWidth: 2,
+                  strokeWidth: 4,
                   color: Colors.greenAccent[700],
                 )
               ],

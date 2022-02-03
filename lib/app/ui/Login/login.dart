@@ -71,233 +71,238 @@ class _LoginState extends State<Login> {
     return Scaffold(
         resizeToAvoidBottomInset: false,
         body: SingleChildScrollView(
-          child: Form(
-            autovalidateMode: AutovalidateMode.onUserInteraction,
-            key: formKey,
-            child:
-                Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-              Container(
-                alignment: Alignment.centerRight,
-                color: Color.fromRGBO(71, 68, 68, 0.1),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(
-                          top: height / 14, right: 20, bottom: 15),
-                      child: TextButton.icon(
-                        icon: Icon(
-                          CupertinoIcons.back,
-                          color: Color.fromRGBO(112, 112, 112, 1),
-                        ),
-                        onPressed: () {
-                          Get.offAllNamed('/register');
-                        },
-                        label: Text('بازگشت',
-                            style: TextStyle(
-                                fontWeight: FontWeight.w300,
-                                fontSize: 18,
-                                color: Color.fromRGBO(112, 112, 112, 1))),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                        top: height / 14,
-                        right: 20,
-                        bottom: 15,
-                      ),
-                      child: Opacity(
-                        opacity: 0.6,
-                        child: Image.asset(
-                          'assets/logo/logo.png',
-                          height: height / 19,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              isKeyboardOpen
-                  ? SizedBox(
-                      height: height / 6,
-                    )
-                  : SizedBox(
-                      height: 30,
-                    ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 10),
-                    child: Text(
-                      "کد تایید را وارد کنید",
-                      style:
-                          TextStyle(fontWeight: FontWeight.w300, fontSize: 18),
-                      textDirection: TextDirection.rtl,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Text(
-                      "کد تایید به شماره ${widget.phonenumber} ارسال شد",
-                      style: TextStyle(
-                        fontWeight: FontWeight.w300,
-                        fontSize: 14,
-                        color: Colors.green,
-                      ),
-                      textDirection: TextDirection.rtl,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Directionality(
-                      textDirection: TextDirection.rtl,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          TextFormField(
-                            keyboardType: TextInputType.number,
-                            inputFormatters: [
-                              FilteringTextInputFormatter.allow(RegExp('[0-9]'))
-                            ],
-                            controller: passwordCtr,
-                            validator: (value) {
-                              if (succesed == false) {
-                                return ' ورود ناموفق لطفا کد صحیح را دوباره وارد کنید و دکمه تایید را بزنید';
-                              }
-                              if (value == null ||
-                                  value.isEmpty ||
-                                  value.length != 4) {
-                                return 'لطفا کد ارسال شده را وارد کنید';
-                              }
-
-                              return null;
-                            },
-                            decoration: inputDecoration(
-                                'کد ورود',
-                                !isPinCode
-                                    ? CupertinoIcons.lock
-                                    : CupertinoIcons.lock_open),
+          child: GestureDetector(
+            onTap: () => FocusScope.of(context).unfocus(),
+            child: Form(
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              key: formKey,
+              child:
+                  Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+                Container(
+                  alignment: Alignment.centerRight,
+                  color: Color.fromRGBO(71, 68, 68, 0.1),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(
+                            top: height / 14, right: 20, bottom: 15),
+                        child: TextButton.icon(
+                          icon: Icon(
+                            CupertinoIcons.back,
+                            color: Color.fromRGBO(112, 112, 112, 1),
                           ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: height / 180,
-                  ),
-                  Container(
-                    width: width,
-                    height: height / 11,
-                    padding: EdgeInsets.symmetric(horizontal: 8),
-                    child: TextButton(
-                      style: ElevatedButton.styleFrom(
-                        primary: isPinCode
-                            ? Color.fromRGBO(141, 235, 172, 1)
-                            : Colors.grey.withOpacity(0.5),
-                      ),
-                      onPressed: () async {
-                        if (formKey.currentState?.validate() ?? false) {
-                          var result =
-                              await _viewModel.loginUser(passwordCtr.text);
-                          if (result == true) {
-                            setState(() {
-                              succesed = true;
-                            });
-                            timercontroller.dispose();
-                            timercontroller.disposeTimer();
-                            Get.offAll(() => HomePage(),
-                                binding: HomeBinding(),
-                                transition: Transition.noTransition);
-                          } else {
-                            setState(() {
-                              succesed = false;
-                            });
-                          }
-                          var storage = new GetStorage();
-                          storage.write(CacheManagerKey.PASSWORD.toString(),
-                              passwordCtr.text);
-                        }
-                      },
-                      child: Text(
-                        'تایید و ادامه',
-                        style: TextStyle(
-                            fontWeight: FontWeight.w300,
-                            fontSize: 18,
-                            color: Colors.white),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height / 50,
-                  ),
-                  canRequestAgain
-                      ? Container(
-                          width: width,
-                          height: height / 11,
-                          padding: EdgeInsets.symmetric(horizontal: 8),
-                          child: TextButton(
-                            style: ElevatedButton.styleFrom(
-                              primary: Colors.red.withOpacity(0.4),
-                            ),
-                            onPressed: () async {
-                              await _viewModel.registerUser(widget.phonenumber);
-                              var newEndTime =
-                                  DateTime.now().millisecondsSinceEpoch +
-                                      1000 * 150;
-                              setState(() {
-                                canRequestAgain = false;
-                                endTime = newEndTime;
-                                succesed = true;
-                              });
-                              timercontroller.endTime = newEndTime;
-                              timercontroller.start();
-                            },
-                            child: Text(
-                              'ارسال کد',
+                          onPressed: () {
+                            Get.offAllNamed('/register');
+                          },
+                          label: Text('بازگشت',
                               style: TextStyle(
                                   fontWeight: FontWeight.w300,
                                   fontSize: 18,
-                                  color: Colors.black),
-                            ),
-                          ),
-                        )
-                      : CountdownTimer(
-                          controller: timercontroller,
-                          widgetBuilder: (_, CurrentRemainingTime? time) {
-                            if (time == null) {
-                              return Center(child: Text(''));
-                            }
-                            return Center(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    '${time.min ?? 0} : ${time.sec}',
-                                    style: TextStyle(
-                                        fontFamily: persianNumber,
-                                        fontWeight: FontWeight.w300,
-                                        fontSize: 20),
-                                  ),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  Container(
-                                    height: 15,
-                                    width: 15,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 1,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
+                                  color: Color.fromRGBO(112, 112, 112, 1))),
                         ),
-                ],
-              )
-            ]),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(
+                          top: height / 14,
+                          right: 20,
+                          bottom: 15,
+                        ),
+                        child: Opacity(
+                          opacity: 0.6,
+                          child: Image.asset(
+                            'assets/logo/logo.png',
+                            height: height / 19,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                isKeyboardOpen
+                    ? SizedBox(
+                        height: height / 6,
+                      )
+                    : SizedBox(
+                        height: 30,
+                      ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 10),
+                      child: Text(
+                        "کد تایید را وارد کنید",
+                        style: TextStyle(
+                            fontWeight: FontWeight.w300, fontSize: 18),
+                        textDirection: TextDirection.rtl,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Text(
+                        "کد تایید به شماره ${widget.phonenumber} ارسال شد",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w300,
+                          fontSize: 14,
+                          color: Colors.green,
+                        ),
+                        textDirection: TextDirection.rtl,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Directionality(
+                        textDirection: TextDirection.rtl,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            TextFormField(
+                              keyboardType: TextInputType.number,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.allow(
+                                    RegExp('[0-9]'))
+                              ],
+                              controller: passwordCtr,
+                              validator: (value) {
+                                if (succesed == false) {
+                                  return ' ورود ناموفق لطفا کد صحیح را دوباره وارد کنید و دکمه تایید را بزنید';
+                                }
+                                if (value == null ||
+                                    value.isEmpty ||
+                                    value.length != 4) {
+                                  return 'لطفا کد ارسال شده را وارد کنید';
+                                }
+
+                                return null;
+                              },
+                              decoration: inputDecoration(
+                                  'کد ورود',
+                                  !isPinCode
+                                      ? CupertinoIcons.lock
+                                      : CupertinoIcons.lock_open),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: height / 180,
+                    ),
+                    Container(
+                      width: width,
+                      height: height / 11,
+                      padding: EdgeInsets.symmetric(horizontal: 8),
+                      child: TextButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: isPinCode
+                              ? Color.fromRGBO(141, 235, 172, 1)
+                              : Colors.grey.withOpacity(0.5),
+                        ),
+                        onPressed: () async {
+                          if (formKey.currentState?.validate() ?? false) {
+                            var result =
+                                await _viewModel.loginUser(passwordCtr.text);
+                            if (result == true) {
+                              setState(() {
+                                succesed = true;
+                              });
+                              timercontroller.dispose();
+                              timercontroller.disposeTimer();
+                              Get.offAll(() => HomePage(),
+                                  binding: HomeBinding(),
+                                  transition: Transition.noTransition);
+                            } else {
+                              setState(() {
+                                succesed = false;
+                              });
+                            }
+                            var storage = new GetStorage();
+                            storage.write(CacheManagerKey.PASSWORD.toString(),
+                                passwordCtr.text);
+                          }
+                        },
+                        child: Text(
+                          'تایید و ادامه',
+                          style: TextStyle(
+                              fontWeight: FontWeight.w300,
+                              fontSize: 18,
+                              color: Colors.white),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height / 50,
+                    ),
+                    canRequestAgain
+                        ? Container(
+                            width: width,
+                            height: height / 11,
+                            padding: EdgeInsets.symmetric(horizontal: 8),
+                            child: TextButton(
+                              style: ElevatedButton.styleFrom(
+                                primary: Colors.red.withOpacity(0.4),
+                              ),
+                              onPressed: () async {
+                                await _viewModel
+                                    .registerUser(widget.phonenumber);
+                                var newEndTime =
+                                    DateTime.now().millisecondsSinceEpoch +
+                                        1000 * 150;
+                                setState(() {
+                                  canRequestAgain = false;
+                                  endTime = newEndTime;
+                                  succesed = true;
+                                });
+                                timercontroller.endTime = newEndTime;
+                                timercontroller.start();
+                              },
+                              child: Text(
+                                'ارسال کد',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w300,
+                                    fontSize: 18,
+                                    color: Colors.black),
+                              ),
+                            ),
+                          )
+                        : CountdownTimer(
+                            controller: timercontroller,
+                            widgetBuilder: (_, CurrentRemainingTime? time) {
+                              if (time == null) {
+                                return Center(child: Text(''));
+                              }
+                              return Center(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      '${time.min ?? 0} : ${time.sec}',
+                                      style: TextStyle(
+                                          fontFamily: persianNumber,
+                                          fontWeight: FontWeight.w300,
+                                          fontSize: 20),
+                                    ),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Container(
+                                      height: 15,
+                                      width: 15,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 1,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                  ],
+                )
+              ]),
+            ),
           ),
         ));
   }

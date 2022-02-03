@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
+// ignore: must_be_immutable
 class AlamutBottomNavBar extends StatelessWidget {
   AlamutBottomNavBar({Key? key}) : super(key: key);
 
@@ -32,8 +33,8 @@ class AlamutBottomNavBar extends StatelessWidget {
 
           var chats = await messageProvider.getGroupsNoPagination();
 
-          await signalRHelper
-              .joinToGroup(storage.read(CacheManagerKey.USERID.toString()));
+          await signalRHelper.joinToGroup(
+              await storage.read(CacheManagerKey.USERID.toString()));
 
           chats.forEach(
               (group) async => await signalRHelper.joinToGroup(group.name));

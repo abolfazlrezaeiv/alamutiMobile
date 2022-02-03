@@ -76,12 +76,13 @@ class _HomePageState extends State<HomePage> {
             padding: EdgeInsets.only(top: height / 100),
             child: Container(
               child: Card(
-                elevation: 6,
+                elevation: 7,
                 margin: EdgeInsets.zero,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(0.0),
                 ),
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
                       // height: Get.height / 13,
@@ -172,31 +173,30 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                     ),
-                    Obx(() => Padding(
-                          padding: const EdgeInsets.only(right: 8),
-                          child: ChipsChoice<int>.single(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            value:
-                                categoryFilterController.selectedTapIndex.value,
-                            onChanged: (val) {
-                              FocusScope.of(context).unfocus();
-                              searchTextEditingController.text = '';
-                              searchController.isSearchResult.value = false;
-                              categoryFilterController
-                                  .selectedFilterString.value = filterType[val];
+                    Obx(() => ChipsChoice<int>.single(
+                          padding: EdgeInsets.all(0),
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          value:
+                              categoryFilterController.selectedTapIndex.value,
+                          onChanged: (val) {
+                            FocusScope.of(context).unfocus();
+                            searchTextEditingController.text = '';
+                            searchController.isSearchResult.value = false;
+                            categoryFilterController
+                                .selectedFilterString.value = filterType[val];
 
-                              _pagingController.refresh();
-                              categoryFilterController.selectedTapIndex.value =
-                                  val;
-                            },
-                            choiceItems: C2Choice.listFrom<int, String>(
-                              source: options,
-                              value: (i, v) => i,
-                              label: (i, v) => v,
-                            ),
-                            choiceStyle: C2ChoiceStyle(
-                              color: Color.fromRGBO(8, 212, 76, 1),
-                            ),
+                            _pagingController.refresh();
+                            categoryFilterController.selectedTapIndex.value =
+                                val;
+                          },
+                          choiceItems: C2Choice.listFrom<int, String>(
+                            source: options,
+                            value: (i, v) => i,
+                            label: (i, v) => v,
+                          ),
+                          choiceStyle: C2ChoiceStyle(
+                            color: Color.fromRGBO(8, 212, 76, 1),
                           ),
                         ))
                   ],

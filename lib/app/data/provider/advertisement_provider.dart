@@ -37,27 +37,8 @@ class AdvertisementProvider {
         Advertisement.fromJson(response.data)
       ];
     } else {
-      Get.defaultDialog(
-        radius: 5,
-        title: 'ارتباط برقرار نشد',
-        barrierDismissible: true,
-        titlePadding: EdgeInsets.all(20),
-        titleStyle: TextStyle(
-          fontWeight: FontWeight.w300,
-          fontSize: 16,
-        ),
-        content: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: const Text(
-            'مشکلی در دریافت اطلاعات به وجود آمده لطفا دوباره تلاش کنید',
-            textDirection: TextDirection.rtl,
-            style: TextStyle(
-              fontWeight: FontWeight.w200,
-              fontSize: 14,
-            ),
-          ),
-        ),
-      );
+      var message = 'متاسفانه ارتباط ناموفق بود لطفا دوباره امتحان کنید';
+      showStatusDialog(context: context, message: message);
     }
   }
 
@@ -65,14 +46,12 @@ class AdvertisementProvider {
     int number = 1,
     int size = 10,
     String? adstype,
-    bool isRefreshIndicator = false,
   }) async {
     advertisementFromApi = [];
 
     Response response;
 
     var argument = (adstype == null || adstype.isEmpty) ? ' ' : adstype;
-    // await Future.delayed(Duration(seconds: 1));
     try {
       response = await tokenProvider.api
           .get(baseUrl +

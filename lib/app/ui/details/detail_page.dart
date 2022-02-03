@@ -134,10 +134,33 @@ class _AdsDetailState extends State<AdsDetail> with CacheManager {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Text(
-                        'توضیحات',
-                        style: TextStyle(
-                            fontWeight: FontWeight.w500, fontSize: width / 24),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                                color: Colors.greenAccent.withOpacity(0.1),
+                                border: Border.all(
+                                    color: Colors.greenAccent, width: 0.5)),
+                            child: Padding(
+                              padding: const EdgeInsets.all(2),
+                              child: Text(
+                                'گزارش مشکل آگهی',
+                                textDirection: TextDirection.rtl,
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w300,
+                                    color: Colors.grey,
+                                    fontSize: width / 31),
+                              ),
+                            ),
+                          ),
+                          Text(
+                            'توضیحات',
+                            style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                fontSize: width / 24),
+                          ),
+                        ],
                       ),
                       SizedBox(
                         height: height / 55,
@@ -146,7 +169,7 @@ class _AdsDetailState extends State<AdsDetail> with CacheManager {
                         alignment: Alignment.centerRight,
                         child: Text(
                           detailPageController.details[0].description,
-                          maxLines: 7,
+                          maxLines: 6,
                           overflow: TextOverflow.visible,
                           textDirection: TextDirection.rtl,
                           style: TextStyle(

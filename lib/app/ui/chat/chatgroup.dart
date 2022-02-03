@@ -67,216 +67,224 @@ class _ChatGroupsState extends State<ChatGroups> with CacheManager {
           Get.offAllNamed('/home');
           return false;
         },
-        child: PagedListView.separated(
-          pagingController: groupChatScreenPagingController,
-          separatorBuilder: (context, index) => const SizedBox(
-            height: 0,
+        child: RefreshIndicator(
+          onRefresh: () => Future.sync(
+            () => groupChatScreenPagingController.refresh(),
           ),
-          builderDelegate: PagedChildBuilderDelegate<ChatGroup>(
-              noItemsFoundIndicatorBuilder: (context) =>
-                  EmptyChatGroupIndicator(
-                    onTryAgain: () {},
-                  ),
-              itemBuilder: (context, group, index) {
-                signalHelper.joinToGroup(group.name);
-                joinToGroups();
-                return GestureDetector(
-                  onLongPress: () {
-                    Get.defaultDialog(
-                      radius: 5,
-                      title: 'از حذف چت مطمئن هستید ؟ ',
-                      barrierDismissible: false,
-                      titlePadding: EdgeInsets.all(20),
-                      titleStyle: TextStyle(
-                        fontWeight: FontWeight.w300,
-                        fontSize: 16,
-                      ),
-                      content: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          'پیامهای مربوط به این کاربر حذف میشوند',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w200,
-                            fontSize: 14,
-                          ),
+          child: PagedListView.separated(
+            pagingController: groupChatScreenPagingController,
+            separatorBuilder: (context, index) => const SizedBox(
+              height: 0,
+            ),
+            builderDelegate: PagedChildBuilderDelegate<ChatGroup>(
+                noItemsFoundIndicatorBuilder: (context) =>
+                    EmptyChatGroupIndicator(
+                      onTryAgain: () {},
+                    ),
+                itemBuilder: (context, group, index) {
+                  signalHelper.joinToGroup(group.name);
+                  joinToGroups();
+                  return GestureDetector(
+                    onLongPress: () {
+                      Get.defaultDialog(
+                        radius: 5,
+                        title: 'از حذف چت مطمئن هستید ؟ ',
+                        barrierDismissible: false,
+                        titlePadding: EdgeInsets.all(20),
+                        titleStyle: TextStyle(
+                          fontWeight: FontWeight.w300,
+                          fontSize: 16,
                         ),
-                      ),
-                      cancel: Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: TextButton(
-                          onPressed: () {
-                            Get.back();
-                          },
+                        content: Padding(
+                          padding: const EdgeInsets.all(8.0),
                           child: Text(
-                            'انصراف',
+                            'پیامهای مربوط به این کاربر حذف میشوند',
                             style: TextStyle(
-                                fontWeight: FontWeight.w300,
-                                fontSize: 14,
-                                color: Colors.green),
+                              fontWeight: FontWeight.w200,
+                              fontSize: 14,
+                            ),
                           ),
                         ),
-                      ),
-                      confirm: Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: TextButton(
-                            onPressed: () async {
-                              await messageProvider.deleteMessageGroup(
-                                groupName: group.name,
-                              );
-                              groupChatScreenPagingController.refresh();
+                        cancel: Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: TextButton(
+                            onPressed: () {
                               Get.back();
                             },
                             child: Text(
-                              'حذف',
+                              'انصراف',
                               style: TextStyle(
                                   fontWeight: FontWeight.w300,
                                   fontSize: 14,
-                                  color: Colors.red),
-                            )),
-                      ),
-                    );
-                  },
-                  onTap: () async {
-                    if (await storage.read(CacheManagerKey.USERID.toString()) !=
-                        group.lastMessage.sender) {
-                      await messageProvider.changeToSeen(groupname: group.name);
-                      newMessageController.haveNewMessage.value = false;
-                    }
-                    signalHelper.joinToGroup(group.name);
-                    Get.to(
-                      () => Chat(
-                        groupname: group.name,
-                        groupTitle: group.title,
-                        groupImage: group.groupImage,
-                        receiverId: '',
-                        signalRHelper: signalHelper,
-                      ),
-                      transition: Transition.fadeIn,
-                    );
-                  },
-                  child: Stack(
-                    alignment: Alignment.bottomLeft,
-                    children: [
-                      Card(
-                        color: Colors.white,
-                        child: Padding(
-                          padding: EdgeInsets.all(height / 50),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Text(
-                                group.lastMessage.message,
-                                textDirection: TextDirection.rtl,
+                                  color: Colors.green),
+                            ),
+                          ),
+                        ),
+                        confirm: Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: TextButton(
+                              onPressed: () async {
+                                await messageProvider.deleteMessageGroup(
+                                  groupName: group.name,
+                                );
+                                groupChatScreenPagingController.refresh();
+                                Get.back();
+                              },
+                              child: Text(
+                                'حذف',
                                 style: TextStyle(
-                                    fontWeight: (group.isChecked == false &&
-                                            group.lastMessage.sender !=
-                                                storage.read(
-                                                  CacheManagerKey.USERID
-                                                      .toString(),
-                                                ))
-                                        ? FontWeight.w500
-                                        : FontWeight.w300,
-                                    fontSize: 13),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              SizedBox(
-                                height: height / 80,
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Text(
-                                    group.title,
-                                    textDirection: TextDirection.rtl,
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w400,
-                                        fontFamily: persianNumber,
-                                        fontSize: 12),
-                                  ),
-                                  SizedBox(
-                                    width: width / 30,
-                                  ),
-                                  FittedBox(
-                                    fit: BoxFit.fill,
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(8),
-                                      // ignore: unnecessary_null_comparison
-                                      child: (group.groupImage != null &&
-                                              group.groupImage.length > 4)
-                                          ? Image.memory(
-                                              base64Decode(group.groupImage),
-                                              filterQuality: FilterQuality.low,
-                                              fit: BoxFit.cover,
-                                              width: width / 7,
-                                              height: width / 7,
-                                            )
-                                          : ((group.title == 'الموتی'
-                                              ? Image.asset(
-                                                  'assets/logo/logo.png',
-                                                  fit: BoxFit.fitWidth,
-                                                  width: width / 7,
-                                                  height: width / 7,
-                                                )
-                                              : Image.asset(
-                                                  'assets/logo/no-image.png',
-                                                  fit: BoxFit.cover,
-                                                  width: width / 7,
-                                                  height: width / 7,
-                                                ))),
+                                    fontWeight: FontWeight.w300,
+                                    fontSize: 14,
+                                    color: Colors.red),
+                              )),
+                        ),
+                      );
+                    },
+                    onTap: () async {
+                      if (await storage
+                              .read(CacheManagerKey.USERID.toString()) !=
+                          group.lastMessage.sender) {
+                        await messageProvider.changeToSeen(
+                            groupname: group.name);
+                        newMessageController.haveNewMessage.value = false;
+                      }
+                      signalHelper.joinToGroup(group.name);
+                      Get.to(
+                        () => Chat(
+                          groupname: group.name,
+                          groupTitle: group.title,
+                          groupImage: group.groupImage,
+                          receiverId: '',
+                          signalRHelper: signalHelper,
+                        ),
+                        transition: Transition.fadeIn,
+                      );
+                    },
+                    child: Stack(
+                      alignment: Alignment.bottomLeft,
+                      children: [
+                        Card(
+                          color: Colors.white,
+                          child: Padding(
+                            padding: EdgeInsets.all(height / 50),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(
+                                  group.lastMessage.message,
+                                  textDirection: TextDirection.rtl,
+                                  style: TextStyle(
+                                      fontWeight: (group.isChecked == false &&
+                                              group.lastMessage.sender !=
+                                                  storage.read(
+                                                    CacheManagerKey.USERID
+                                                        .toString(),
+                                                  ))
+                                          ? FontWeight.w500
+                                          : FontWeight.w300,
+                                      fontSize: 13),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                SizedBox(
+                                  height: height / 80,
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Text(
+                                      group.title,
+                                      textDirection: TextDirection.rtl,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w400,
+                                          fontFamily: persianNumber,
+                                          fontSize: 12),
                                     ),
-                                  )
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(20.0),
-                        child: Align(
-                          alignment: Alignment.topLeft,
-                          child: Text(
-                            group.lastMessage.daySended,
-                            textDirection: TextDirection.rtl,
-                            style: TextStyle(
-                                fontWeight: FontWeight.w200,
-                                fontFamily: persianNumber,
-                                fontSize: 12),
-                          ),
-                        ),
-                      ),
-                      (group.isChecked == false &&
-                              group.lastMessage.sender !=
-                                  storage.read(
-                                    CacheManagerKey.USERID.toString(),
-                                  ))
-                          ? Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 20.0, vertical: 40),
-                              child: Container(
-                                width: 18,
-                                height: 18,
-                                decoration: BoxDecoration(
-                                  color: Colors.green.withOpacity(0.25),
-                                  shape: BoxShape.circle,
+                                    SizedBox(
+                                      width: width / 30,
+                                    ),
+                                    FittedBox(
+                                      fit: BoxFit.fill,
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(8),
+                                        // ignore: unnecessary_null_comparison
+                                        child: (group.groupImage != null &&
+                                                group.groupImage!.length > 4)
+                                            ? Image.memory(
+                                                base64Decode(group.groupImage!),
+                                                filterQuality:
+                                                    FilterQuality.low,
+                                                fit: BoxFit.cover,
+                                                width: width / 7,
+                                                height: width / 7,
+                                              )
+                                            : ((group.title == 'الموتی'
+                                                ? Image.asset(
+                                                    'assets/logo/logo.png',
+                                                    fit: BoxFit.fitWidth,
+                                                    width: width / 7,
+                                                    height: width / 7,
+                                                  )
+                                                : Image.asset(
+                                                    'assets/logo/no-image.png',
+                                                    fit: BoxFit.cover,
+                                                    width: width / 7,
+                                                    height: width / 7,
+                                                  ))),
+                                      ),
+                                    )
+                                  ],
                                 ),
-                                child: Padding(
-                                  padding: EdgeInsets.all(2),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: Colors.red),
-                                    child: Container(),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: Align(
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              group.lastMessage.daySended,
+                              textDirection: TextDirection.rtl,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w200,
+                                  fontFamily: persianNumber,
+                                  fontSize: 12),
+                            ),
+                          ),
+                        ),
+                        (group.isChecked == false &&
+                                group.lastMessage.sender !=
+                                    storage.read(
+                                      CacheManagerKey.USERID.toString(),
+                                    ))
+                            ? Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 20.0, vertical: 40),
+                                child: Container(
+                                  width: 18,
+                                  height: 18,
+                                  decoration: BoxDecoration(
+                                    color: Colors.green.withOpacity(0.25),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Padding(
+                                    padding: EdgeInsets.all(2),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Colors.red),
+                                      child: Container(),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            )
-                          : Container(color: Colors.transparent)
-                    ],
-                  ),
-                );
-              }),
+                              )
+                            : Container(color: Colors.transparent)
+                      ],
+                    ),
+                  );
+                }),
+          ),
         ),
       ),
     );
