@@ -50,6 +50,7 @@ class LoginProvider extends GetConnect with CacheManager {
     } on TimeoutException catch (_) {
       var message = 'خطا در اتصال به اینترنت ...';
       showStatusDialog(context: context, message: message);
+      return null;
     }
   }
 

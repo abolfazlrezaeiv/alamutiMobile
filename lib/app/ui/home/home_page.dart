@@ -415,10 +415,4 @@ class _HomePageState extends State<HomePage> {
       _pagingController.error = error;
     }
   }
-
-  @override
-  void dispose() {
-    _pagingController.dispose();
-    super.dispose();
-  }
 }
