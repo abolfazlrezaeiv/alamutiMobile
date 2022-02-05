@@ -31,13 +31,21 @@ class AlamutBottomNavBar extends StatelessWidget {
               bottomNavBarScreens[selectedTapController.selectedIndex.value],
               preventDuplicates: true);
 
+          SignalRHelper signalRHelper = SignalRHelper(handler: () {
+            newMessageController.haveNewMessage.value = true;
+          });
+
           var chats = await messageProvider.getGroupsNoPagination();
 
-          await signalRHelper.joinToGroup(
-              await storage.read(CacheManagerKey.USERID.toString()));
-
-          chats.forEach(
-              (group) async => await signalRHelper.joinToGroup(group.name));
+          chats.forEach((chat) async => {
+                await signalRHelper.joinToGroup(chat.name),
+                if (chat.isChecked == false &&
+                    chat.lastMessage.sender !=
+                        storage.read(
+                          CacheManagerKey.USERID.toString(),
+                        ))
+                  {newMessageController.haveNewMessage.value = true}
+              });
         },
         items: bottomTapItems,
       ),
