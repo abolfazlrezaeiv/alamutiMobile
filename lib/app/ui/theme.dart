@@ -1,15 +1,25 @@
 import 'package:bubble/bubble.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 
 var themes = ThemeData(
   fontFamily: 'IRANSansX',
   appBarTheme: AppBarTheme(
-    backgroundColor: Color.fromRGBO(8, 212, 76, 0.5),
+    elevation: 6,
+    backgroundColor: Color.fromRGBO(78, 198, 122, 1.0),
   ),
+  elevatedButtonTheme: ElevatedButtonThemeData(style: ButtonStyle(elevation: MaterialStateProperty.all(3),
+      fixedSize: MaterialStateProperty.all(Size.fromWidth(Get.width/2.2)),
+      backgroundColor: MaterialStateProperty.all(Color.fromRGBO(
+      119, 224, 151, 1.0),)
+  ),
+  ) ,
   progressIndicatorTheme: ProgressIndicatorThemeData(color: Colors.greenAccent),
   bottomNavigationBarTheme: BottomNavigationBarThemeData(
-      elevation: 0,
-      backgroundColor: Color.fromRGBO(8, 212, 76, 0.5),
+      elevation: 12,
+      backgroundColor: Color.fromRGBO(113, 234, 155, 1.0),
+
       unselectedIconTheme: IconThemeData(color: Colors.black),
       selectedIconTheme: IconThemeData(color: Colors.white.withOpacity(0.9)),
       selectedItemColor: Colors.white.withOpacity(0.9)),

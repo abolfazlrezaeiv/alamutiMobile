@@ -12,7 +12,6 @@ import 'package:alamuti/app/ui/theme.dart';
 import 'package:alamuti/app/ui/widgets/description_textfield.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
 import 'package:get/get.dart';
@@ -51,37 +50,43 @@ class _AdsDetailState extends State<AdsDetail> with CacheManager {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       appBar: AppBar(
-        automaticallyImplyLeading: false,
-        leadingWidth: 300,
-        shadowColor: Colors.transparent,
-        leading: GestureDetector(
-        onTap: () {
-          Get.back();
-        },
-        child: Row(
-          children: [
-            Icon(
-              CupertinoIcons.back,
-              size: width / 20,
-              color: Colors.black,
-            ),
-            Text(
-              'بازگشت',
-              style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.w500,
-                  fontSize: width / 23),
-            )
-          ],
-        ),
-      ),
+          automaticallyImplyLeading: false,
+          leadingWidth: 120,
 
-        backgroundColor: Colors.transparent,
-      ) ,
-      resizeToAvoidBottomInset: false,
-      extendBodyBehindAppBar: true,
+          elevation: 4,
+          shadowColor: Colors.transparent,
+          leading: GestureDetector(
+          onTap: () {
+            Get.back();
+          },
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal : 12.0),
+            child: Row(
+              children: [
+                Icon(
+                  CupertinoIcons.back,
+                  size: width / 20,
+                  color: Colors.black,
+                ),
+                Text(
+                  'بازگشت',
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.w500,
+                      fontSize: width / 23),
+                )
+              ],
+            ),
+          ),
+        ),
+
+          backgroundColor:Colors.transparent,
+        ),
+
+
+      resizeToAvoidBottomInset:  false,
+      extendBodyBehindAppBar: true ,
       body: Obx(
         () => ListView(
           padding: EdgeInsets.zero,
@@ -305,14 +310,14 @@ class _AdsDetailState extends State<AdsDetail> with CacheManager {
           crossAxisAlignment: CrossAxisAlignment.end,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            TextButton(
+            ElevatedButton(
               onPressed: () async {
                 _makePhoneCall(
                     detailPageController.details[0].phoneNumber);
               },
               child: Padding(
                 padding: EdgeInsets.symmetric(
-                    horizontal: Get.width / 6, vertical: Get.width / 90),
+                    vertical: Get.width / 40),
                 child: Text(
                   'تماس',
                   style: TextStyle(
@@ -321,18 +326,9 @@ class _AdsDetailState extends State<AdsDetail> with CacheManager {
                   ),
                 ),
               ),
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(
-                  Color.fromRGBO(10, 210, 71, 0.4),
-                ),
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                ),
-              ),
+
             ),
-            TextButton(
+            ElevatedButton(
               onPressed: () async {
                 var chatImage = await _getListviewImage();
 
@@ -361,8 +357,7 @@ class _AdsDetailState extends State<AdsDetail> with CacheManager {
               },
               child: Padding(
                 padding: EdgeInsets.symmetric(
-                    horizontal: Get.width / 6.0,
-                    vertical: Get.width / 90),
+                    vertical: Get.width / 40),
                 child: Text(
                   'چت',
                   style: TextStyle(
@@ -371,16 +366,7 @@ class _AdsDetailState extends State<AdsDetail> with CacheManager {
                   ),
                 ),
               ),
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(
-                  Color.fromRGBO(10, 210, 71, 0.4),
-                ),
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                ),
-              ),
+
             ),
           ],
         ),
@@ -486,10 +472,12 @@ class _AdsDetailState extends State<AdsDetail> with CacheManager {
 
   Widget getImageOrEmpty() {
     if (detailPageController.details[0].photo1 != null) {
+
       return singleImage(detailPageController.details[0].photo1);
     }
 
     if (detailPageController.details[0].photo2 != null) {
+
       return singleImage(detailPageController.details[0].photo2);
     }
 
@@ -580,34 +568,8 @@ class _AdsDetailState extends State<AdsDetail> with CacheManager {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(0.0),
       ),
-      color: Color.fromRGBO(8, 212, 76, 0.5),
-      child: Padding(
-        padding: EdgeInsets.only(top: 40.0, bottom: 20),
-        child: Opacity(
-          opacity: 0.5,
-          child: GestureDetector(
-            onTap: () {
-              Get.back();
-            },
-            child: Row(
-              children: [
-                Icon(
-                  CupertinoIcons.back,
-                  size: width / 20,
-                  color: Colors.black,
-                ),
-                Text(
-                  'بازگشت',
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.w500,
-                      fontSize: width / 23),
-                )
-              ],
-            ),
-          ),
-        ),
-      ),
+      color: Color.fromRGBO(78, 198, 122, 1.0),
+     child: Container(width: width,height: 80,),
     );
   }
 }

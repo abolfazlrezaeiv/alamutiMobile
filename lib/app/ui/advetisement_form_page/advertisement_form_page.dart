@@ -221,11 +221,7 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
               Container(
                 padding: EdgeInsets.only(
                     right: width / 2, left: width / 35, bottom: width / 35),
-                child: TextButton(
-                  style: ElevatedButton.styleFrom(
-                    primary: Color.fromRGBO(10, 210, 71, 0.5),
-                    minimumSize: Size(88, 36),
-                  ),
+                child:ElevatedButton (
                   onPressed: () async {
                     FocusScope.of(context).unfocus();
                     if (_formKey.currentState!.validate()) {

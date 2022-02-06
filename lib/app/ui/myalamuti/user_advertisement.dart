@@ -26,7 +26,7 @@ class _UserAdvertisementState extends State<UserAdvertisement> {
 
   final double width = Get.width;
 
-  final double height = Get.height;flu
+  final double height = Get.height;
 
   final _userAdvertisementPagingController =
       PagingController<int, Advertisement>(
@@ -239,9 +239,11 @@ class _UserAdvertisementState extends State<UserAdvertisement> {
                                           ),
                                         ),
                                         style: ButtonStyle(
+                                          elevation:
+                                              MaterialStateProperty.all(3),
                                           backgroundColor:
                                               MaterialStateProperty.all(
-                                            Color.fromRGBO(255, 0, 0, 0.3),
+                                            Color.fromRGBO(255, 186, 182, 1.0),
                                           ),
                                           shape: MaterialStateProperty.all<
                                               RoundedRectangleBorder>(
@@ -274,9 +276,11 @@ class _UserAdvertisementState extends State<UserAdvertisement> {
                                           ),
                                         ),
                                         style: ButtonStyle(
+                                          elevation:
+                                              MaterialStateProperty.all(3),
                                           backgroundColor:
                                               MaterialStateProperty.all(
-                                            Color.fromRGBO(10, 210, 71, 0.3),
+                                            Color.fromRGBO(119, 224, 151, 1.0),
                                           ),
                                           shape: MaterialStateProperty.all<
                                               RoundedRectangleBorder>(
