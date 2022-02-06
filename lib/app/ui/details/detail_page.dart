@@ -50,43 +50,16 @@ class _AdsDetailState extends State<AdsDetail> with CacheManager {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-          automaticallyImplyLeading: false,
-          leadingWidth: 120,
-
-          elevation: 4,
-          shadowColor: Colors.transparent,
-          leading: GestureDetector(
-          onTap: () {
-            Get.back();
-          },
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal : 12.0),
-            child: Row(
-              children: [
-                Icon(
-                  CupertinoIcons.back,
-                  size: width / 20,
-                  color: Colors.black,
-                ),
-                Text(
-                  'بازگشت',
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.w500,
-                      fontSize: width / 23),
-                )
-              ],
-            ),
-          ),
-        ),
-
-          backgroundColor:Colors.transparent,
-        ),
-
-
-      resizeToAvoidBottomInset:  false,
-      extendBodyBehindAppBar: true ,
+        automaticallyImplyLeading: true,
+        elevation: 0,
+        foregroundColor: Colors.black,
+        shadowColor: Colors.transparent,
+        backgroundColor: Colors.white.withOpacity(0.3),
+      ),
+      resizeToAvoidBottomInset: false,
+      extendBodyBehindAppBar: true,
       body: Obx(
         () => ListView(
           padding: EdgeInsets.zero,
@@ -297,81 +270,71 @@ class _AdsDetailState extends State<AdsDetail> with CacheManager {
                 ),
               ],
             ),
-
           ],
         ),
       ),
       bottomNavigationBar: BottomAppBar(
         elevation: 6,
-        child:  Padding(
-        padding:
-        EdgeInsets.symmetric(horizontal: 8.0, vertical: height / 50),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            ElevatedButton(
-              onPressed: () async {
-                _makePhoneCall(
-                    detailPageController.details[0].phoneNumber);
-              },
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                    vertical: Get.width / 40),
-                child: Text(
-                  'تماس',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-              ),
-
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                var chatImage = await _getListviewImage();
-
-                var groupName = detailPageController.details[0].userId +
-                    await getUserId() +
-                    detailPageController.details[0].title;
-
-                await signalRHelper.initializeChat(
-                    receiverId: detailPageController.details[0].userId,
-                    senderId: await getUserId(),
-                    groupname: groupName,
-                    groupImage: chatImage,
-                    grouptitle: detailPageController.details[0].title);
-
-                Get.to(
-                        () => Chat(
-                      groupImage: chatImage,
-                      receiverId:
-                      detailPageController.details[0].userId,
-                      groupTitle:
-                      detailPageController.details[0].title,
-                      groupname: groupName,
-                      signalRHelper: signalRHelper,
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: height / 50),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              ElevatedButton(
+                onPressed: () async {
+                  _makePhoneCall(detailPageController.details[0].phoneNumber);
+                },
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: Get.width / 40),
+                  child: Text(
+                    'تماس',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.w400,
                     ),
-                    transition: Transition.fadeIn);
-              },
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                    vertical: Get.width / 40),
-                child: Text(
-                  'چت',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w400,
                   ),
                 ),
               ),
+              ElevatedButton(
+                onPressed: () async {
+                  var chatImage = await _getListviewImage();
 
-            ),
-          ],
+                  var groupName = detailPageController.details[0].userId +
+                      await getUserId() +
+                      detailPageController.details[0].title;
+
+                  await signalRHelper.initializeChat(
+                      receiverId: detailPageController.details[0].userId,
+                      senderId: await getUserId(),
+                      groupname: groupName,
+                      groupImage: chatImage,
+                      grouptitle: detailPageController.details[0].title);
+
+                  Get.to(
+                      () => Chat(
+                            groupImage: chatImage,
+                            receiverId: detailPageController.details[0].userId,
+                            groupTitle: detailPageController.details[0].title,
+                            groupname: groupName,
+                            signalRHelper: signalRHelper,
+                          ),
+                      transition: Transition.fadeIn);
+                },
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: Get.width / 40),
+                  child: Text(
+                    'چت',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
-      ),
-
       ),
     );
   }
@@ -386,12 +349,12 @@ class _AdsDetailState extends State<AdsDetail> with CacheManager {
     }
     if (imageForListView.length > 2) {
       imageForListView =
-          base64Encode(await _comporessList(base64Decode(imageForListView)));
+          base64Encode(await _compressList(base64Decode(imageForListView)));
     }
     return imageForListView;
   }
 
-  Future<Uint8List> _comporessList(Uint8List list) async {
+  Future<Uint8List> _compressList(Uint8List list) async {
     var result = await FlutterImageCompress.compressWithList(
       list,
       minWidth: 120,
@@ -428,18 +391,9 @@ class _AdsDetailState extends State<AdsDetail> with CacheManager {
               ),
             );
           },
-          child: ShaderMask(
-            shaderCallback: (rect) {
-              return RadialGradient(
-                colors: [Colors.transparent, Colors.white],
-              ).createShader(
-                  Rect.fromLTRB(-200, -200, Get.width / 2, Get.width / 2));
-            },
-            blendMode: BlendMode.dstIn,
-            child: Image.memory(
-              base64Decode(detailPageController.details[0].photo1!),
-              fit: BoxFit.cover,
-            ),
+          child: Image.memory(
+            base64Decode(detailPageController.details[0].photo1!),
+            fit: BoxFit.cover,
           ),
         ),
         GestureDetector(
@@ -451,17 +405,9 @@ class _AdsDetailState extends State<AdsDetail> with CacheManager {
               ),
             );
           },
-          child: ShaderMask(
-            shaderCallback: (rect) {
-              return RadialGradient(
-                colors: [Colors.transparent, Colors.white],
-              ).createShader(Rect.fromLTRB(-200, -200, width / 2, width / 2));
-            },
-            blendMode: BlendMode.dstIn,
-            child: Image.memory(
-              base64Decode(detailPageController.details[0].photo2!),
-              fit: BoxFit.cover,
-            ),
+          child: Image.memory(
+            base64Decode(detailPageController.details[0].photo2!),
+            fit: BoxFit.cover,
           ),
         ),
       ],
@@ -472,12 +418,10 @@ class _AdsDetailState extends State<AdsDetail> with CacheManager {
 
   Widget getImageOrEmpty() {
     if (detailPageController.details[0].photo1 != null) {
-
       return singleImage(detailPageController.details[0].photo1);
     }
 
     if (detailPageController.details[0].photo2 != null) {
-
       return singleImage(detailPageController.details[0].photo2);
     }
 
@@ -494,18 +438,9 @@ class _AdsDetailState extends State<AdsDetail> with CacheManager {
       child: Container(
         height: height / 2.5,
         width: width,
-        child: ShaderMask(
-          shaderCallback: (rect) {
-            return RadialGradient(
-              colors: [Colors.transparent, Colors.white],
-            ).createShader(
-                Rect.fromLTRB(-200, -200, Get.width / 2, Get.width / 2));
-          },
-          blendMode: BlendMode.dstIn,
-          child: Image.memory(
-            base64Decode(image!),
-            fit: BoxFit.cover,
-          ),
+        child: Image.memory(
+          base64Decode(image!),
+          fit: BoxFit.cover,
         ),
       ),
     );
@@ -564,12 +499,15 @@ class _AdsDetailState extends State<AdsDetail> with CacheManager {
   Widget getAppbarWithBack() {
     return Card(
       margin: EdgeInsets.all(0),
-      elevation: 6,
+      elevation: 3,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(0.0),
       ),
-      color: Color.fromRGBO(78, 198, 122, 1.0),
-     child: Container(width: width,height: 80,),
+      // color: Color.fromRGBO(78, 198, 122, 1.0),
+      child: Container(
+        width: width,
+        height: 80,
+      ),
     );
   }
 }

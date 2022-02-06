@@ -50,10 +50,11 @@ class AlamutiAppBar extends StatelessWidget implements PreferredSizeWidget {
                 child: Container(
                   width: 100,
                   height: 100,
+                  alignment: Alignment.centerLeft,
                   color: alamutPrimaryColor.withOpacity(0.0),
                   child: Icon(
-                    CupertinoIcons.chevron_back,
-                    size: 30,
+                    CupertinoIcons.back,
+                    size: 25,
                   ),
                 ),
               )

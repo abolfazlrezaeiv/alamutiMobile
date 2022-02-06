@@ -15,7 +15,7 @@ class FullscreenImageSlider extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.transparent,
       ),
       backgroundColor: Colors.black,
       body: Center(

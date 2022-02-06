@@ -9,17 +9,18 @@ var themes = ThemeData(
     elevation: 6,
     backgroundColor: Color.fromRGBO(78, 198, 122, 1.0),
   ),
-  elevatedButtonTheme: ElevatedButtonThemeData(style: ButtonStyle(elevation: MaterialStateProperty.all(3),
-      fixedSize: MaterialStateProperty.all(Size.fromWidth(Get.width/2.2)),
-      backgroundColor: MaterialStateProperty.all(Color.fromRGBO(
-      119, 224, 151, 1.0),)
+  elevatedButtonTheme: ElevatedButtonThemeData(
+    style: ButtonStyle(
+        elevation: MaterialStateProperty.all(3),
+        fixedSize: MaterialStateProperty.all(Size.fromWidth(Get.width / 2.2)),
+        backgroundColor: MaterialStateProperty.all(
+          Color.fromRGBO(119, 224, 151, 1.0),
+        )),
   ),
-  ) ,
   progressIndicatorTheme: ProgressIndicatorThemeData(color: Colors.greenAccent),
   bottomNavigationBarTheme: BottomNavigationBarThemeData(
       elevation: 12,
       backgroundColor: Color.fromRGBO(113, 234, 155, 1.0),
-
       unselectedIconTheme: IconThemeData(color: Colors.black),
       selectedIconTheme: IconThemeData(color: Colors.white.withOpacity(0.9)),
       selectedItemColor: Colors.white.withOpacity(0.9)),

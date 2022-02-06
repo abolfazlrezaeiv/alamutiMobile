@@ -34,7 +34,8 @@ class Chat extends StatefulWidget {
 }
 
 class _ChatState extends State<Chat> {
-  final TextEditingController messageTextEditingController = TextEditingController();
+  final TextEditingController messageTextEditingController =
+      TextEditingController();
 
   final GlobalKey<FormState> _formKey = GlobalKey();
 
@@ -69,6 +70,7 @@ class _ChatState extends State<Chat> {
     final isAlamutiMessage = widget.groupTitle == 'الموتی';
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
       appBar: AlamutiAppBar(
         appBar: AppBar(),
@@ -136,51 +138,57 @@ class _ChatState extends State<Chat> {
                 ),
               ),
             ),
-            isAlamutiMessage
-                ? Container()
-                : Form(
-                    key: _formKey,
-                    child: Container(
-                      color: Colors.grey.withOpacity(0.1),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          children: [
-                            Expanded(
-                                child: AlamutiTextField(
-                              textEditingController: messageTextEditingController,
-                              isNumber: false,
-                              isPrice: false,
-                              isChatTextField: true,
-                              hasCharacterLimitation: false,
-                              prefix: '',
-                            )),
-                            TextButton(
-                                onPressed: () async {
-                                  if (_formKey.currentState!.validate()) {
-                                    await widget.signalRHelper?.sendMessage(
-                                        receiverId: widget.receiverId,
-                                        senderId: storage.read(
-                                          CacheManagerKey.USERID.toString(),
-                                        ),
-                                        message: messageTextEditingController.text,
-                                        groupname: widget.groupname,
-                                        groupImage: widget.groupImage,
-                                        grouptitle: widget.groupTitle);
+          ],
+        ),
+      ),
+      bottomNavigationBar: SafeArea(
+        bottom: true,
+        maintainBottomViewPadding: true,
+        child: BottomAppBar(
+          child: isAlamutiMessage
+              ? Container()
+              : Form(
+                  key: _formKey,
+                  child: Container(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        children: [
+                          Expanded(
+                              child: AlamutiTextField(
+                            textEditingController: messageTextEditingController,
+                            isNumber: false,
+                            isPrice: false,
+                            isChatTextField: true,
+                            hasCharacterLimitation: false,
+                            prefix: '',
+                          )),
+                          TextButton(
+                              onPressed: () async {
+                                if (_formKey.currentState!.validate()) {
+                                  await widget.signalRHelper?.sendMessage(
+                                      receiverId: widget.receiverId,
+                                      senderId: storage.read(
+                                        CacheManagerKey.USERID.toString(),
+                                      ),
+                                      message:
+                                          messageTextEditingController.text,
+                                      groupname: widget.groupname,
+                                      groupImage: widget.groupImage,
+                                      grouptitle: widget.groupTitle);
 
-                                    messageTextEditingController.text = '';
-                                  }
-                                },
-                                child: Text(
-                                  'ارسال',
-                                  style: TextStyle(color: Colors.greenAccent),
-                                ))
-                          ],
-                        ),
+                                  messageTextEditingController.text = '';
+                                }
+                              },
+                              child: Text(
+                                'ارسال',
+                                style: TextStyle(color: Colors.greenAccent),
+                              ))
+                        ],
                       ),
                     ),
-                  )
-          ],
+                  ),
+                ),
         ),
       ),
     );
@@ -213,7 +221,6 @@ class _ChatState extends State<Chat> {
 
   @override
   void dispose() {
-
     messageTextEditingController.dispose();
     _chatScreenPagingController.dispose();
     super.dispose();
