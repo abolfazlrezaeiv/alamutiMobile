@@ -26,7 +26,7 @@ class _UserAdvertisementState extends State<UserAdvertisement> {
 
   final double width = Get.width;
 
-  final double height = Get.height;
+  final double height = Get.height;flu
 
   final _userAdvertisementPagingController =
       PagingController<int, Advertisement>(

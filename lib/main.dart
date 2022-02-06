@@ -11,8 +11,27 @@ import 'package:get_storage/get_storage.dart';
 
 Future<void> main() async {
   await GetStorage.init();
+  var messageProvider = MessageProvider();
+
+  var storage = GetStorage();
 
   runApp(Application());
+
+  SignalRHelper signalRHelper = SignalRHelper(handler: () {
+    newMessageController.haveNewMessage.value = true;
+  });
+
+  var chats = await messageProvider.getGroupsNoPagination();
+
+  chats.forEach((chat) async => {
+    await signalRHelper.joinToGroup(chat.name),
+    if (chat.isChecked == false &&
+        chat.lastMessage.sender !=
+            storage.read(
+              CacheManagerKey.USERID.toString(),
+            ))
+      {newMessageController.haveNewMessage.value = true}
+  });
 }
 
 class Application extends StatelessWidget {

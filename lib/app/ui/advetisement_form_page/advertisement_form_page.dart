@@ -15,7 +15,14 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
-class AdvertisementForm extends GetView<UploadImageController> {
+class AdvertisementForm extends StatefulWidget {
+  @override
+  State<AdvertisementForm> createState() => _AdvertisementFormState();
+}
+
+class _AdvertisementFormState extends State<AdvertisementForm> {
+  UploadImageController controller = Get.find();
+
   final areaTextFieldController = TextEditingController();
 
   final GlobalKey<FormState> _formKey = GlobalKey();
@@ -353,15 +360,6 @@ class AdvertisementForm extends GetView<UploadImageController> {
   }
 
 //for list view
-
-//  minWidth: 853,
-//       minHeight: 480,
-//       quality: 27,
-
-//   imageQuality: 100,
-//         maxHeight: 480,
-//         maxWidth: 853);
-
   chooseImage() async {
     var uploadImageController = Get.put(UploadImageController());
 
@@ -401,5 +399,14 @@ class AdvertisementForm extends GetView<UploadImageController> {
       style: TextStyle(fontSize: width / 28, fontWeight: FontWeight.w400),
       textDirection: TextDirection.rtl,
     );
+  }
+  @override
+  void dispose() {
+    areaTextFieldController.dispose();
+    priceTextFieldController.dispose();
+    titleTextFieldController.dispose();
+    vilageNameTextFieldController.dispose();
+    descriptionTextFieldController.dispose();
+    super.dispose();
   }
 }

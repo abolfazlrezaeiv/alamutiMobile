@@ -12,6 +12,7 @@ import 'package:alamuti/app/ui/theme.dart';
 import 'package:alamuti/app/ui/widgets/description_textfield.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
 import 'package:get/get.dart';
@@ -49,12 +50,42 @@ class _AdsDetailState extends State<AdsDetail> with CacheManager {
 
   @override
   Widget build(BuildContext context) {
-    print(signalRHelper.connection.state);
     return Scaffold(
+
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        leadingWidth: 300,
+        shadowColor: Colors.transparent,
+        leading: GestureDetector(
+        onTap: () {
+          Get.back();
+        },
+        child: Row(
+          children: [
+            Icon(
+              CupertinoIcons.back,
+              size: width / 20,
+              color: Colors.black,
+            ),
+            Text(
+              'بازگشت',
+              style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.w500,
+                  fontSize: width / 23),
+            )
+          ],
+        ),
+      ),
+
+        backgroundColor: Colors.transparent,
+      ) ,
       resizeToAvoidBottomInset: false,
+      extendBodyBehindAppBar: true,
       body: Obx(
-        () => Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        () => ListView(
+          padding: EdgeInsets.zero,
+          physics: ClampingScrollPhysics(),
           children: [
             Column(
               children: [
@@ -261,95 +292,100 @@ class _AdsDetailState extends State<AdsDetail> with CacheManager {
                 ),
               ],
             ),
-            Padding(
-              padding:
-                  EdgeInsets.symmetric(horizontal: 8.0, vertical: height / 50),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  TextButton(
-                    onPressed: () async {
-                      _makePhoneCall(
-                          detailPageController.details[0].phoneNumber);
-                    },
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: Get.width / 6, vertical: Get.width / 90),
-                      child: Text(
-                        'تماس',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                    ),
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(
-                        Color.fromRGBO(10, 210, 71, 0.4),
-                      ),
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                      ),
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () async {
-                      var chatImage = await _getListviewImage();
 
-                      var groupName = detailPageController.details[0].userId +
-                          await getUserId() +
-                          detailPageController.details[0].title;
-
-                      await signalRHelper.initializeChat(
-                          receiverId: detailPageController.details[0].userId,
-                          senderId: await getUserId(),
-                          groupname: groupName,
-                          groupImage: chatImage,
-                          grouptitle: detailPageController.details[0].title);
-
-                      Get.to(
-                          () => Chat(
-                                groupImage: chatImage,
-                                receiverId:
-                                    detailPageController.details[0].userId,
-                                groupTitle:
-                                    detailPageController.details[0].title,
-                                groupname: groupName,
-                                signalRHelper: signalRHelper,
-                              ),
-                          transition: Transition.fadeIn);
-                    },
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: Get.width / 6.0,
-                          vertical: Get.width / 90),
-                      child: Text(
-                        'چت',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                    ),
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(
-                        Color.fromRGBO(10, 210, 71, 0.4),
-                      ),
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            )
           ],
         ),
+      ),
+      bottomNavigationBar: BottomAppBar(
+        elevation: 6,
+        child:  Padding(
+        padding:
+        EdgeInsets.symmetric(horizontal: 8.0, vertical: height / 50),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            TextButton(
+              onPressed: () async {
+                _makePhoneCall(
+                    detailPageController.details[0].phoneNumber);
+              },
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                    horizontal: Get.width / 6, vertical: Get.width / 90),
+                child: Text(
+                  'تماس',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ),
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(
+                  Color.fromRGBO(10, 210, 71, 0.4),
+                ),
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: () async {
+                var chatImage = await _getListviewImage();
+
+                var groupName = detailPageController.details[0].userId +
+                    await getUserId() +
+                    detailPageController.details[0].title;
+
+                await signalRHelper.initializeChat(
+                    receiverId: detailPageController.details[0].userId,
+                    senderId: await getUserId(),
+                    groupname: groupName,
+                    groupImage: chatImage,
+                    grouptitle: detailPageController.details[0].title);
+
+                Get.to(
+                        () => Chat(
+                      groupImage: chatImage,
+                      receiverId:
+                      detailPageController.details[0].userId,
+                      groupTitle:
+                      detailPageController.details[0].title,
+                      groupname: groupName,
+                      signalRHelper: signalRHelper,
+                    ),
+                    transition: Transition.fadeIn);
+              },
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                    horizontal: Get.width / 6.0,
+                    vertical: Get.width / 90),
+                child: Text(
+                  'چت',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ),
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(
+                  Color.fromRGBO(10, 210, 71, 0.4),
+                ),
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+
       ),
     );
   }
@@ -390,96 +426,62 @@ class _AdsDetailState extends State<AdsDetail> with CacheManager {
   }
 
   Widget getImageSlider() {
-    return Stack(children: [
-      ImageSlideshow(
-        width: double.infinity,
-        height: height / 3,
-        initialPage: 0,
-        indicatorColor: Colors.greenAccent,
-        indicatorBackgroundColor: Colors.white,
-        children: [
-          GestureDetector(
-            onTap: () {
-              Get.to(
-                () => FullscreenImageSlider(
-                  image1: detailPageController.details[0].photo1!,
-                  image2: detailPageController.details[0].photo2!,
-                ),
-              );
-            },
-            child: ShaderMask(
-              shaderCallback: (rect) {
-                return RadialGradient(
-                  colors: [Colors.transparent, Colors.white],
-                ).createShader(
-                    Rect.fromLTRB(-200, -200, Get.width / 2, Get.width / 2));
-              },
-              blendMode: BlendMode.dstIn,
-              child: Image.memory(
-                base64Decode(detailPageController.details[0].photo1!),
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          GestureDetector(
-            onTap: () {
-              Get.to(
-                () => FullscreenImageSlider(
-                  image1: detailPageController.details[0].photo1!,
-                  image2: detailPageController.details[0].photo2!,
-                ),
-              );
-            },
-            child: ShaderMask(
-              shaderCallback: (rect) {
-                return RadialGradient(
-                  colors: [Colors.transparent, Colors.white],
-                ).createShader(Rect.fromLTRB(-200, -200, width / 2, width / 2));
-              },
-              blendMode: BlendMode.dstIn,
-              child: Image.memory(
-                base64Decode(detailPageController.details[0].photo2!),
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-        ],
-        autoPlayInterval: null,
-        isLoop: true,
-      ),
-      Container(
-        padding: EdgeInsets.only(top: width / 12, left: width / 45),
-        width: width,
-        height: height / 3,
-        alignment: Alignment.topLeft,
-        child: GestureDetector(
+    return ImageSlideshow(
+      width: double.infinity,
+      height: height / 2.5,
+      initialPage: 0,
+      indicatorColor: Colors.greenAccent,
+      indicatorBackgroundColor: Colors.white,
+      children: [
+        GestureDetector(
           onTap: () {
-            Get.back();
+            Get.to(
+              () => FullscreenImageSlider(
+                image1: detailPageController.details[0].photo1!,
+                image2: detailPageController.details[0].photo2!,
+              ),
+            );
           },
-          child: Container(
-            width: width / 5,
-            height: width / 9,
-            color: Colors.transparent,
-            child: Row(
-              children: [
-                Icon(
-                  CupertinoIcons.back,
-                  size: width / 20,
-                  color: Colors.black,
-                ),
-                Text(
-                  'بازگشت',
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.w500,
-                      fontSize: width / 23),
-                )
-              ],
+          child: ShaderMask(
+            shaderCallback: (rect) {
+              return RadialGradient(
+                colors: [Colors.transparent, Colors.white],
+              ).createShader(
+                  Rect.fromLTRB(-200, -200, Get.width / 2, Get.width / 2));
+            },
+            blendMode: BlendMode.dstIn,
+            child: Image.memory(
+              base64Decode(detailPageController.details[0].photo1!),
+              fit: BoxFit.cover,
             ),
           ),
         ),
-      ),
-    ]);
+        GestureDetector(
+          onTap: () {
+            Get.to(
+              () => FullscreenImageSlider(
+                image1: detailPageController.details[0].photo1!,
+                image2: detailPageController.details[0].photo2!,
+              ),
+            );
+          },
+          child: ShaderMask(
+            shaderCallback: (rect) {
+              return RadialGradient(
+                colors: [Colors.transparent, Colors.white],
+              ).createShader(Rect.fromLTRB(-200, -200, width / 2, width / 2));
+            },
+            blendMode: BlendMode.dstIn,
+            child: Image.memory(
+              base64Decode(detailPageController.details[0].photo2!),
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+      ],
+      autoPlayInterval: null,
+      isLoop: true,
+    );
   }
 
   Widget getImageOrEmpty() {
@@ -501,57 +503,22 @@ class _AdsDetailState extends State<AdsDetail> with CacheManager {
           () => FullscreenImage(image: image!),
         );
       },
-      child: Stack(
-        children: [
-          Container(
-            height: height / 2.5,
-            width: width,
-            child: ShaderMask(
-              shaderCallback: (rect) {
-                return RadialGradient(
-                  colors: [Colors.transparent, Colors.white],
-                ).createShader(
-                    Rect.fromLTRB(-200, -200, Get.width / 2, Get.width / 2));
-              },
-              blendMode: BlendMode.dstIn,
-              child: Image.memory(
-                base64Decode(image!),
-                fit: BoxFit.cover,
-              ),
-            ),
+      child: Container(
+        height: height / 2.5,
+        width: width,
+        child: ShaderMask(
+          shaderCallback: (rect) {
+            return RadialGradient(
+              colors: [Colors.transparent, Colors.white],
+            ).createShader(
+                Rect.fromLTRB(-200, -200, Get.width / 2, Get.width / 2));
+          },
+          blendMode: BlendMode.dstIn,
+          child: Image.memory(
+            base64Decode(image!),
+            fit: BoxFit.cover,
           ),
-          Container(
-              padding: EdgeInsets.only(top: width / 12, left: width / 45),
-              width: width,
-              height: height / 2.5,
-              alignment: Alignment.topLeft,
-              child: GestureDetector(
-                onTap: () {
-                  Get.back();
-                },
-                child: Container(
-                  width: width / 5,
-                  height: width / 9,
-                  color: Colors.transparent,
-                  child: Row(
-                    children: [
-                      Icon(
-                        CupertinoIcons.back,
-                        size: width / 20,
-                        color: Colors.black,
-                      ),
-                      Text(
-                        'بازگشت',
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.w500,
-                            fontSize: width / 23),
-                      )
-                    ],
-                  ),
-                ),
-              ))
-        ],
+        ),
       ),
     );
   }

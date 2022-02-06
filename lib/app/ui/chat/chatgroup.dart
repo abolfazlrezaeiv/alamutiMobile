@@ -323,10 +323,10 @@ class _ChatGroupsState extends State<ChatGroups> with CacheManager {
     chats.forEach((group) async => await signalHelper.joinToGroup(group.name));
   }
 
-  // @override
-  // void dispose() {
-  //   groupChatScreenPagingController.dispose();
+  @override
+  void dispose() {
+    groupChatScreenPagingController.dispose();
 
-  //   super.dispose();
-  // }
+    super.dispose();
+  }
 }

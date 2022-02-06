@@ -1,3 +1,4 @@
+import 'package:alamuti/app/binding/advertisement_form_binding.dart';
 import 'package:alamuti/app/binding/category_submit_ads_binding.dart';
 import 'package:alamuti/app/binding/chat_group_binding.dart';
 import 'package:alamuti/app/binding/home_binding.dart';
@@ -53,6 +54,7 @@ var routes = [
   GetPage(
     name: "/ads_form",
     page: () => AdvertisementForm(),
+    binding: FormAdvertisementBinding(),
     transition: trans.Transition.fadeIn,
   ),
   GetPage(

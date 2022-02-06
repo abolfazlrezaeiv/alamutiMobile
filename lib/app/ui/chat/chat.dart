@@ -34,7 +34,7 @@ class Chat extends StatefulWidget {
 }
 
 class _ChatState extends State<Chat> {
-  final TextEditingController textEditingController = TextEditingController();
+  final TextEditingController messageTextEditingController = TextEditingController();
 
   final GlobalKey<FormState> _formKey = GlobalKey();
 
@@ -148,7 +148,7 @@ class _ChatState extends State<Chat> {
                           children: [
                             Expanded(
                                 child: AlamutiTextField(
-                              textEditingController: textEditingController,
+                              textEditingController: messageTextEditingController,
                               isNumber: false,
                               isPrice: false,
                               isChatTextField: true,
@@ -163,12 +163,12 @@ class _ChatState extends State<Chat> {
                                         senderId: storage.read(
                                           CacheManagerKey.USERID.toString(),
                                         ),
-                                        message: textEditingController.text,
+                                        message: messageTextEditingController.text,
                                         groupname: widget.groupname,
                                         groupImage: widget.groupImage,
                                         grouptitle: widget.groupTitle);
 
-                                    textEditingController.text = '';
+                                    messageTextEditingController.text = '';
                                   }
                                 },
                                 child: Text(
@@ -211,10 +211,11 @@ class _ChatState extends State<Chat> {
     }
   }
 
-  // @override
-  // void dispose() {
-  //   super.dispose();
+  @override
+  void dispose() {
 
-  //   _chatScreenPagingController.dispose();
-  // }
+    messageTextEditingController.dispose();
+    _chatScreenPagingController.dispose();
+    super.dispose();
+  }
 }

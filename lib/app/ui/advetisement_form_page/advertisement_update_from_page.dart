@@ -422,4 +422,13 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
       textDirection: TextDirection.rtl,
     );
   }
+  @override
+  void dispose() {
+    areaTextFieldController.dispose();
+    priceTextFieldController.dispose();
+    titleTextFieldController.dispose();
+    vilageNameTextFieldController.dispose();
+    descriptionTextFieldController.dispose();
+    super.dispose();
+  }
 }
