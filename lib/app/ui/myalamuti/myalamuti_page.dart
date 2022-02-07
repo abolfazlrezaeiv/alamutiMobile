@@ -12,9 +12,6 @@ class MyAlamutiPage extends StatelessWidget with CacheManager {
   MyAlamutiPage({Key? key}) : super(key: key);
   AuthenticationManager auth = Get.put(AuthenticationManager());
 
-  final double width = Get.width;
-  final double height = Get.height;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,10 +39,11 @@ class MyAlamutiPage extends StatelessWidget with CacheManager {
                       children: [
                         Container(
                           alignment: Alignment.center,
-                          padding: EdgeInsets.symmetric(horizontal: width / 30),
+                          padding:
+                              EdgeInsets.symmetric(horizontal: Get.width / 30),
                           child: Padding(
-                            padding:
-                                EdgeInsets.symmetric(horizontal: width / 100),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: Get.width / 100),
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.end,
@@ -56,13 +54,13 @@ class MyAlamutiPage extends StatelessWidget with CacheManager {
                                   },
                                   child: Padding(
                                     padding: EdgeInsets.symmetric(
-                                        horizontal: width / 120),
+                                        horizontal: Get.width / 120),
                                     child: Text(
                                       'خروج ازحساب',
                                       style: TextStyle(
                                           color: Colors.black.withOpacity(1),
                                           fontWeight: FontWeight.w300,
-                                          fontSize: width / 33),
+                                          fontSize: Get.width / 33),
                                     ),
                                   ),
                                   style: ButtonStyle(
@@ -82,13 +80,13 @@ class MyAlamutiPage extends StatelessWidget with CacheManager {
                                   ),
                                 ),
                                 SizedBox(
-                                  width: width / 60,
+                                  width: Get.width / 60,
                                 ),
                                 Text(
                                   'شما با شماره موبایل ${getPhonenNumber()} وارد شده اید',
                                   textDirection: TextDirection.rtl,
                                   style: TextStyle(
-                                      fontSize: width / 29,
+                                      fontSize: Get.width / 29,
                                       fontFamily: 'IRANSansXFaNum',
                                       fontWeight: FontWeight.w300),
                                 ),

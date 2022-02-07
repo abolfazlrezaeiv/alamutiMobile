@@ -1,3 +1,4 @@
+import 'package:alamuti/app/controller/chat_info_controller.dart';
 import 'package:alamuti/app/controller/selected_tap_controller.dart';
 import 'package:alamuti/app/data/entities/chat_message.dart';
 import 'package:alamuti/app/data/provider/chat_message_provider.dart';
@@ -15,17 +16,9 @@ import 'package:get_storage/get_storage.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 class Chat extends StatefulWidget {
-  final String groupname;
-  final String groupTitle;
-  final String receiverId;
-  final String? groupImage;
   final SignalRHelper? signalRHelper;
   Chat({
     Key? key,
-    required this.groupname,
-    required this.groupTitle,
-    required this.groupImage,
-    required this.receiverId,
     this.signalRHelper,
   }) : super(key: key);
 
@@ -37,15 +30,15 @@ class _ChatState extends State<Chat> {
   final TextEditingController messageTextEditingController =
       TextEditingController();
 
+  final ScreenController screenController = Get.find();
+
+  final ChatInfoController chatInfoController = Get.find();
+
   final GlobalKey<FormState> _formKey = GlobalKey();
 
   final MessageProvider messageProvider = MessageProvider();
 
   final GetStorage storage = GetStorage();
-
-  final double width = Get.width;
-
-  final double height = Get.height;
 
   final _chatScreenPagingController =
       PagingController<int, ChatMessage>(firstPageKey: 1);
@@ -67,10 +60,9 @@ class _ChatState extends State<Chat> {
 
   @override
   Widget build(BuildContext context) {
-    final isAlamutiMessage = widget.groupTitle == 'الموتی';
+    final isAlamutiMessage = chatInfoController.chat[0].title == 'الموتی';
 
     return Scaffold(
-      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
       appBar: AlamutiAppBar(
         appBar: AppBar(),
@@ -80,9 +72,10 @@ class _ChatState extends State<Chat> {
       ),
       body: WillPopScope(
         onWillPop: () async {
-          // widget.signalRHelper?.connection.off('ReceiveMessage');
-          Get.put(ScreenController()).selectedIndex.value = 3;
-          Get.toNamed('/home');
+          screenController.selectedIndex.value == 3
+              ? Get.back()
+              : Get.toNamed('/home');
+          screenController.selectedIndex.value = 3;
           newMessageController.haveNewMessage.value = false;
           return true;
         },
@@ -98,13 +91,6 @@ class _ChatState extends State<Chat> {
                 reverse: true,
                 builderDelegate: PagedChildBuilderDelegate<ChatMessage>(
                   itemBuilder: (context, message, index) {
-                    // messageProvider.changeToSeen(groupname: widget.groupname);
-
-                    // WidgetsBinding.instance?.addPostFrameCallback((_) async {
-                    //   Get.put(NewMessageController()).haveNewMessage.value =
-                    //       false;
-                    // });
-
                     if (message.sender ==
                         storage.read(CacheManagerKey.USERID.toString())) {
                       return Padding(
@@ -141,51 +127,56 @@ class _ChatState extends State<Chat> {
           ],
         ),
       ),
-      bottomNavigationBar: SafeArea(
-        bottom: true,
-        maintainBottomViewPadding: true,
+      bottomNavigationBar: Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
         child: BottomAppBar(
+          elevation: 10,
           child: isAlamutiMessage
-              ? Container()
+              ? Container(
+                  width: 0,
+                  height: 0,
+                )
               : Form(
                   key: _formKey,
-                  child: Container(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        children: [
-                          Expanded(
-                              child: AlamutiTextField(
-                            textEditingController: messageTextEditingController,
-                            isNumber: false,
-                            isPrice: false,
-                            isChatTextField: true,
-                            hasCharacterLimitation: false,
-                            prefix: '',
-                          )),
-                          TextButton(
-                              onPressed: () async {
-                                if (_formKey.currentState!.validate()) {
-                                  await widget.signalRHelper?.sendMessage(
-                                      receiverId: widget.receiverId,
-                                      senderId: storage.read(
-                                        CacheManagerKey.USERID.toString(),
-                                      ),
-                                      message:
-                                          messageTextEditingController.text,
-                                      groupname: widget.groupname,
-                                      groupImage: widget.groupImage,
-                                      grouptitle: widget.groupTitle);
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                            child: AlamutiTextField(
+                          textEditingController: messageTextEditingController,
+                          isNumber: false,
+                          isPrice: false,
+                          isChatTextField: true,
+                          hasCharacterLimitation: false,
+                          prefix: '',
+                        )),
+                        TextButton(
+                            onPressed: () async {
+                              if (_formKey.currentState!.validate()) {
+                                await widget.signalRHelper?.sendMessage(
+                                    receiverId: chatInfoController
+                                        .chat[0].lastMessage.reciever,
+                                    senderId: storage.read(
+                                      CacheManagerKey.USERID.toString(),
+                                    ),
+                                    message: messageTextEditingController.text,
+                                    groupname: chatInfoController.chat[0].name,
+                                    groupImage:
+                                        chatInfoController.chat[0].groupImage,
+                                    grouptitle:
+                                        chatInfoController.chat[0].title);
 
-                                  messageTextEditingController.text = '';
-                                }
-                              },
-                              child: Text(
-                                'ارسال',
-                                style: TextStyle(color: Colors.greenAccent),
-                              ))
-                        ],
-                      ),
+                                messageTextEditingController.text = '';
+                              }
+                            },
+                            child: Text(
+                              'ارسال',
+                              style: TextStyle(color: Colors.greenAccent),
+                            ))
+                      ],
                     ),
                   ),
                 ),
@@ -199,7 +190,7 @@ class _ChatState extends State<Chat> {
       var newPage = await messageProvider.getGroupMessages(
         number: pageKey,
         size: 11,
-        groupname: widget.groupname,
+        groupname: chatInfoController.chat[0].name,
       );
 
       final previouslyFetchedItemsCount =

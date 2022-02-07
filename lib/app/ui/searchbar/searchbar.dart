@@ -26,8 +26,6 @@ class Search extends StatefulWidget {
 }
 
 class _SearchState extends State<Search> {
-  final double width = Get.width;
-  final double height = Get.height;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -38,7 +36,7 @@ class _SearchState extends State<Search> {
           controller: widget.textEditingController,
           style: TextStyle(
               backgroundColor: Colors.white,
-              fontSize: width / 27,
+              fontSize: Get.width / 27,
               fontFamily: persianNumber,
               fontWeight: FontWeight.w300),
           onSubmitted: (value) {
@@ -55,9 +53,9 @@ class _SearchState extends State<Search> {
                 backgroundColor: Colors.transparent,
                 color: Colors.black,
                 fontWeight: FontWeight.w200,
-                fontSize: width / 31),
+                fontSize: Get.width / 31),
             label: SizedBox(
-              width: width / 3,
+              width: Get.width / 3,
               child: Opacity(
                 opacity: 0.5,
                 child: Row(
@@ -69,11 +67,11 @@ class _SearchState extends State<Search> {
                           backgroundColor: Colors.transparent,
                           color: Colors.black,
                           fontWeight: FontWeight.w400,
-                          fontSize: width / 28),
+                          fontSize: Get.width / 28),
                     ),
                     Image.asset(
                       'assets/logo/logo.png',
-                      width: width / 8,
+                      width: Get.width / 8,
                     ),
                   ],
                 ),
@@ -82,7 +80,7 @@ class _SearchState extends State<Search> {
             prefixIcon: IconButton(
               icon: Icon(
                 CupertinoIcons.search,
-                size: width / 15,
+                size: Get.width / 15,
                 color: Color.fromRGBO(8, 212, 76, 0.5),
               ),
               onPressed: () {

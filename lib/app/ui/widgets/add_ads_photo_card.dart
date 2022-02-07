@@ -4,15 +4,11 @@ import 'package:get/get.dart';
 class AddPhotoWidget extends StatelessWidget {
   AddPhotoWidget({Key? key}) : super(key: key);
 
-  final double width = Get.width;
-
-  final double height = Get.height;
-
   @override
   Widget build(BuildContext context) {
     return Container(
       child: Padding(
-        padding: EdgeInsets.all(width / 13),
+        padding: EdgeInsets.all(Get.width / 13),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -26,8 +22,8 @@ class AddPhotoWidget extends StatelessWidget {
             ),
             Text(
               'افزودن عکس',
-              style:
-                  TextStyle(fontWeight: FontWeight.w400, fontSize: width / 40),
+              style: TextStyle(
+                  fontWeight: FontWeight.w400, fontSize: Get.width / 40),
             )
           ],
         ),

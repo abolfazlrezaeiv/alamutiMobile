@@ -41,10 +41,6 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
 
   final AdvertisementProvider advertisementProvider = AdvertisementProvider();
 
-  final double width = Get.width;
-
-  final double height = Get.height;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,7 +59,7 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
               Column(
                 children: [
                   SizedBox(
-                    height: height / 45,
+                    height: Get.height / 45,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -81,13 +77,13 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
                 ],
               ),
               SizedBox(
-                height: height / 45,
+                height: Get.height / 45,
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: width / 25),
+                    padding: EdgeInsets.symmetric(horizontal: Get.width / 25),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.end,
@@ -95,24 +91,24 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
                         Text(
                           'عنوان آگهی',
                           style: TextStyle(
-                              fontSize: width / 28,
+                              fontSize: Get.width / 28,
                               fontWeight: FontWeight.w400),
                           textDirection: TextDirection.rtl,
                         ),
-                        SizedBox(height: height / 65),
+                        SizedBox(height: Get.height / 65),
                         Text(
                           'در عنوان آگهی به موارد مهم و چشمگیر اشاره کنید',
                           style: TextStyle(
-                              fontSize: width / 31,
+                              fontSize: Get.width / 31,
                               fontWeight: FontWeight.w300),
                           textDirection: TextDirection.rtl,
                         ),
                       ],
                     ),
                   ),
-                  SizedBox(height: height / 80),
+                  SizedBox(height: Get.height / 80),
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: width / 35),
+                    padding: EdgeInsets.symmetric(horizontal: Get.width / 35),
                     child: AlamutiTextField(
                       textEditingController: titleTextFieldController,
                       isNumber: false,
@@ -124,19 +120,19 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
                   ),
                 ],
               ),
-              SizedBox(height: height / 40),
+              SizedBox(height: Get.height / 40),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: width / 25),
+                    padding: EdgeInsets.symmetric(horizontal: Get.width / 25),
                     child: getPriceTextFieldTitle(),
                   ),
                   SizedBox(
-                    height: height / 80,
+                    height: Get.height / 80,
                   ),
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: width / 35),
+                    padding: EdgeInsets.symmetric(horizontal: Get.width / 35),
                     child: AlamutiTextField(
                       textEditingController: priceTextFieldController,
                       isNumber: true,
@@ -152,21 +148,22 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  SizedBox(height: height / 40),
+                  SizedBox(height: Get.height / 40),
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: width / 25),
+                    padding: EdgeInsets.symmetric(horizontal: Get.width / 25),
                     child: Text(
                       'نام روستا',
                       style: TextStyle(
-                          fontSize: width / 28, fontWeight: FontWeight.w400),
+                          fontSize: Get.width / 28,
+                          fontWeight: FontWeight.w400),
                       textDirection: TextDirection.rtl,
                     ),
                   ),
                   SizedBox(
-                    height: height / 80,
+                    height: Get.height / 80,
                   ),
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: width / 35),
+                    padding: EdgeInsets.symmetric(horizontal: Get.width / 35),
                     child: AlamutiTextField(
                       textEditingController: vilageNameTextFieldController,
                       isNumber: false,
@@ -182,46 +179,48 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   SizedBox(
-                    height: height / 20,
+                    height: Get.height / 20,
                   ),
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: width / 25),
+                    padding: EdgeInsets.symmetric(horizontal: Get.width / 25),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text(
                           'توضیحات آگهی',
                           style: TextStyle(
-                              fontSize: width / 28,
+                              fontSize: Get.width / 28,
                               fontWeight: FontWeight.w400),
                           textDirection: TextDirection.rtl,
                         ),
-                        SizedBox(height: height / 65),
+                        SizedBox(height: Get.height / 65),
                         Text(
                           'جزئیات و نکات قابل توجه آگهی خود را کامل و دقیق بنویسید',
                           style: TextStyle(
-                              fontSize: width / 31,
+                              fontSize: Get.width / 31,
                               fontWeight: FontWeight.w300),
                           textDirection: TextDirection.rtl,
                         ),
                       ],
                     ),
                   ),
-                  SizedBox(height: height / 80),
+                  SizedBox(height: Get.height / 80),
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: width / 35),
+                    padding: EdgeInsets.symmetric(horizontal: Get.width / 35),
                     child: DescriptionTextField(
                         textEditingController: descriptionTextFieldController),
                   ),
                 ],
               ),
               SizedBox(
-                height: height / 80,
+                height: Get.height / 80,
               ),
               Container(
                 padding: EdgeInsets.only(
-                    right: width / 2, left: width / 35, bottom: width / 35),
-                child:ElevatedButton (
+                    right: Get.width / 2,
+                    left: Get.width / 35,
+                    bottom: Get.width / 35),
+                child: ElevatedButton(
                   onPressed: () async {
                     FocusScope.of(context).unfocus();
                     if (_formKey.currentState!.validate()) {
@@ -246,9 +245,9 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
                   child: Text(
                     'ثبت',
                     style: TextStyle(
-                      color: Colors.black,
+                      color: Color.fromRGBO(88, 77, 77, 1.0),
                       fontWeight: FontWeight.w400,
-                      fontSize: width / 25,
+                      fontSize: Get.width / 25,
                     ),
                   ),
                 ),
@@ -268,21 +267,21 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
         ? Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              SizedBox(height: height / 40),
+              SizedBox(height: Get.height / 40),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: width / 28),
+                padding: EdgeInsets.symmetric(horizontal: Get.width / 28),
                 child: Text(
                   "متراژ",
                   style: TextStyle(
-                      fontSize: width / 28, fontWeight: FontWeight.w400),
+                      fontSize: Get.width / 28, fontWeight: FontWeight.w400),
                   textDirection: TextDirection.rtl,
                 ),
               ),
               SizedBox(
-                height: height / 80,
+                height: Get.height / 80,
               ),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: width / 35),
+                padding: EdgeInsets.symmetric(horizontal: Get.width / 35),
                 child: AlamutiTextField(
                   textEditingController: areaTextFieldController,
                   isNumber: true,
@@ -392,10 +391,11 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
     }
     return Text(
       title,
-      style: TextStyle(fontSize: width / 28, fontWeight: FontWeight.w400),
+      style: TextStyle(fontSize: Get.width / 28, fontWeight: FontWeight.w400),
       textDirection: TextDirection.rtl,
     );
   }
+
   @override
   void dispose() {
     areaTextFieldController.dispose();

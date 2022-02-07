@@ -10,10 +10,6 @@ class DescriptionTextField extends StatelessWidget {
 
   final TextEditingController textEditingController;
 
-  final double width = Get.width;
-
-  final double height = Get.height;
-
   DescriptionTextField(
       {Key? key, required this.textEditingController, this.initialvalue})
       : super(key: key);
@@ -39,13 +35,13 @@ class DescriptionTextField extends StatelessWidget {
 
           return null;
         },
-        inputFormatters: [MaxLinesTextInputFormatter(12)],
-
-        maxLines: 12,
+        inputFormatters: [MaxLinesTextInputFormatter(8)],
+        // expands: true,
+        maxLines: null,
         textAlign: TextAlign.start,
         style: TextStyle(
             backgroundColor: Colors.white,
-            fontSize: width / 27,
+            fontSize: Get.width / 27,
             fontFamily: persianNumber,
             fontWeight: FontWeight.w300),
         decoration: InputDecoration(
@@ -86,9 +82,9 @@ class MaxLinesTextInputFormatter extends TextInputFormatter {
 
   @override
   TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue, // unused.
-      TextEditingValue newValue,
-      ) {
+    TextEditingValue oldValue, // unused.
+    TextEditingValue newValue,
+  ) {
     if (maxLines != null && maxLines > 0) {
       final regEx = RegExp("^.*((\n?.*){0,${maxLines - 1}})");
       String newString = regEx.stringMatch(newValue.text) ?? "";

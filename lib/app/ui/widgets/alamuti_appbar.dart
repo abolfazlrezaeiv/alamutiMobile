@@ -38,11 +38,12 @@ class AlamutiAppBar extends StatelessWidget implements PreferredSizeWidget {
                 onTap: () {
                   if (backwidget != null) {
                     if (backwidget == '/chat') {
-                      Get.put(ScreenController()).selectedIndex.value = 3;
+                      screenController.selectedIndex.value == 3
+                          ? Get.back()
+                          : Get.toNamed('/home');
+                      screenController.selectedIndex.value = 3;
+                      newMessageController.haveNewMessage.value = false;
                     }
-                    newMessageController.haveNewMessage.value = false;
-
-                    Get.toNamed('/home');
                   } else {
                     Get.back();
                   }
@@ -51,10 +52,11 @@ class AlamutiAppBar extends StatelessWidget implements PreferredSizeWidget {
                   width: 100,
                   height: 100,
                   alignment: Alignment.centerLeft,
+                  padding: EdgeInsets.only(left: 10),
                   color: alamutPrimaryColor.withOpacity(0.0),
                   child: Icon(
                     CupertinoIcons.back,
-                    size: 25,
+                    size: 27,
                   ),
                 ),
               )

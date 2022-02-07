@@ -50,9 +50,6 @@ class _HomePageState extends State<HomePage> {
     'املاک',
   ];
 
-  final double width = Get.width;
-  final double height = Get.height;
-
   final _pagingController = PagingController<int, Advertisement>(
       firstPageKey: 1, invisibleItemsThreshold: 2);
 
@@ -69,52 +66,50 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      // backgroundColor: Color.fromRGBO(78, 198, 122, 1.0),
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(height / 5.9),
-        child: SafeArea(
-          minimum: EdgeInsets.only(top: 30),
-          child: Card(
-            elevation: 7,
-            margin: EdgeInsets.zero,
-            shape: RoundedRectangleBorder(
-              side: BorderSide(color: Colors.transparent, width: 0),
-              borderRadius: BorderRadius.circular(0.0),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Search(
-                  pagingController: _pagingController,
-                  textEditingController: searchTextEditingController,
-                  categoryFilterController: categoryFilterController,
-                  searchController: searchController,
-                ),
-                Obx(() => ChipsChoice<int>.single(
-                      padding: EdgeInsets.all(0),
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      value: categoryFilterController.selectedTapIndex.value,
-                      onChanged: (val) {
-                        FocusScope.of(context).unfocus();
-                        searchTextEditingController.text = '';
-                        searchController.isSearchResult.value = false;
-                        categoryFilterController.selectedFilterString.value =
-                            filterType[val];
+        preferredSize: Size.fromHeight(Get.height / 6.1),
+        child: Card(
+          elevation: 7,
+          margin: EdgeInsets.zero,
+          shape: RoundedRectangleBorder(
+            side: BorderSide(color: Colors.transparent, width: 0),
+            borderRadius: BorderRadius.circular(0.0),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Search(
+                pagingController: _pagingController,
+                textEditingController: searchTextEditingController,
+                categoryFilterController: categoryFilterController,
+                searchController: searchController,
+              ),
+              Obx(() => ChipsChoice<int>.single(
+                    padding: EdgeInsets.all(0),
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    value: categoryFilterController.selectedTapIndex.value,
+                    onChanged: (val) {
+                      FocusScope.of(context).unfocus();
+                      searchTextEditingController.text = '';
+                      searchController.isSearchResult.value = false;
+                      categoryFilterController.selectedFilterString.value =
+                          filterType[val];
 
-                        _pagingController.refresh();
-                        categoryFilterController.selectedTapIndex.value = val;
-                      },
-                      choiceItems: C2Choice.listFrom<int, String>(
-                        source: options,
-                        value: (i, v) => i,
-                        label: (i, v) => v,
-                      ),
-                      choiceStyle: C2ChoiceStyle(
-                        color: Color.fromRGBO(8, 212, 76, 1),
-                      ),
-                    ))
-              ],
-            ),
+                      _pagingController.refresh();
+                      categoryFilterController.selectedTapIndex.value = val;
+                    },
+                    choiceItems: C2Choice.listFrom<int, String>(
+                      source: options,
+                      value: (i, v) => i,
+                      label: (i, v) => v,
+                    ),
+                    choiceStyle: C2ChoiceStyle(
+                      color: Color.fromRGBO(8, 212, 76, 1),
+                    ),
+                  ))
+            ],
           ),
         ),
       ),
@@ -144,107 +139,102 @@ class _HomePageState extends State<HomePage> {
                   FocusScope.of(context).unfocus();
                   await advertisementProvider.getDetails(
                       id: ads.id, context: context);
-                  Get.to(
-                      () => AdsDetail(
-                            id: ads.id,
-                          ),
-                      binding: DetailPageBinding(),
-                      transition: Transition.fadeIn);
+                  Get.toNamed('/detail');
                 },
-                child: Container(
-                  decoration: BoxDecoration(
-                    border: Border(
-                      bottom: BorderSide(
-                        color: Colors.grey.withOpacity(0.3),
-                      ),
-                    ),
+                child: Card(
+                  shape: RoundedRectangleBorder(
+                    side: BorderSide(color: Colors.transparent, width: 0),
+                    borderRadius: BorderRadius.circular(12.0),
                   ),
-                  child: Center(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                          vertical: height / 100, horizontal: width / 50),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          FittedBox(
-                            fit: BoxFit.cover,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(8),
-                              child: (ads.listviewPhoto == null)
-                                  ? Opacity(
-                                      opacity: 0.2,
-                                      child: Image.asset(
-                                        'assets/logo/no-image.png',
-                                        fit: BoxFit.cover,
-                                        height: height / 6,
-                                        width: height / 6,
-                                      ),
-                                    )
-                                  : Image.memory(
-                                      base64Decode(
-                                        ads.listviewPhoto!,
-                                      ),
+                  margin:
+                      const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+                  elevation: 12,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                        vertical: Get.height / 100, horizontal: Get.width / 40),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        FittedBox(
+                          fit: BoxFit.cover,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(5),
+                            child: (ads.listviewPhoto == null)
+                                ? Opacity(
+                                    opacity: 0.2,
+                                    child: Image.asset(
+                                      'assets/logo/no-image.png',
                                       fit: BoxFit.cover,
-                                      height: height / 6,
-                                      width: height / 6,
+                                      height: Get.height / 6,
+                                      width: Get.height / 6,
                                     ),
+                                  )
+                                : Image.memory(
+                                    base64Decode(
+                                      ads.listviewPhoto!,
+                                    ),
+                                    fit: BoxFit.cover,
+                                    height: Get.height / 6,
+                                    width: Get.height / 6,
+                                  ),
+                          ),
+                        ),
+                        Flexible(
+                          child: Padding(
+                            padding:
+                                EdgeInsets.symmetric(vertical: Get.height / 70),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(
+                                  ads.title,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 15),
+                                  textDirection: TextDirection.rtl,
+                                  overflow: TextOverflow.visible,
+                                ),
+                                SizedBox(
+                                  height: Get.height / 14,
+                                ),
+                                Text(
+                                  'تومان ${ads.price.toString()}',
+                                  style: TextStyle(
+                                      fontFamily: persianNumber,
+                                      fontWeight: FontWeight.w300),
+                                  textDirection: TextDirection.rtl,
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Text(
+                                      ads.datePosted,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w200,
+                                          fontFamily: persianNumber,
+                                          fontSize: 13),
+                                      textDirection: TextDirection.rtl,
+                                    ),
+                                    SizedBox(
+                                      width: 2,
+                                    ),
+                                    Text(
+                                      ads.village,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w200,
+                                          fontFamily: persianNumber,
+                                          fontSize: 13),
+                                      textDirection: TextDirection.rtl,
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
                           ),
-                          Flexible(
-                            child: Padding(
-                              padding:
-                                  EdgeInsets.symmetric(vertical: height / 70),
-                              child: Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  Text(
-                                    ads.title,
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 15),
-                                    textDirection: TextDirection.rtl,
-                                    overflow: TextOverflow.visible,
-                                  ),
-                                  SizedBox(
-                                    height: height / 18,
-                                  ),
-                                  Text(
-                                    'تومان ${ads.price.toString()}',
-                                    style: TextStyle(
-                                        fontFamily: persianNumber,
-                                        fontWeight: FontWeight.w300),
-                                    textDirection: TextDirection.rtl,
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      Text(
-                                        ads.datePosted,
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w200,
-                                            fontFamily: persianNumber,
-                                            fontSize: 13),
-                                        textDirection: TextDirection.rtl,
-                                      ),
-                                      Text(
-                                        ads.village,
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w200,
-                                            fontFamily: persianNumber,
-                                            fontSize: 13),
-                                        textDirection: TextDirection.rtl,
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
+                        )
+                      ],
                     ),
                   ),
                 ),
@@ -287,13 +277,13 @@ class _HomePageState extends State<HomePage> {
       if (searchController.isSearchResult.value == true) {
         newPage = await advertisementProvider.search(
           number: pageKey,
-          size: 10,
+          size: 6,
           searchInput: searchController.keyword.value,
         );
       } else {
         newPage = await advertisementProvider.getAll(
             number: pageKey,
-            size: 10,
+            size: 6,
             adstype: categoryFilterController.selectedFilterString.value);
       }
 

@@ -16,10 +16,6 @@ class AlamutiTextField extends StatelessWidget {
 
   final String prefix;
 
-  final double width = Get.width;
-
-  final double height = Get.height;
-
   final PriceController priceController = Get.put(PriceController());
 
   AlamutiTextField(
@@ -79,7 +75,7 @@ class AlamutiTextField extends StatelessWidget {
           textAlign: TextAlign.start,
           style: TextStyle(
               backgroundColor: Colors.transparent,
-              fontSize: width / 27,
+              fontSize: Get.width / 27,
               fontFamily: persianNumber,
               fontWeight: FontWeight.w300),
           decoration: InputDecoration(
@@ -87,7 +83,7 @@ class AlamutiTextField extends StatelessWidget {
               prefix,
               style: TextStyle(
                   backgroundColor: Colors.white.withOpacity(0.5),
-                  fontSize: width / 30,
+                  fontSize: Get.width / 30,
                   fontFamily: persianNumber,
                   fontWeight: FontWeight.w300),
             ),

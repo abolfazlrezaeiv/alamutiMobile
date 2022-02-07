@@ -21,33 +21,42 @@ class AlamutBottomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Obx(
-      () => BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        currentIndex: selectedTapController.selectedIndex.value,
-        onTap: (value) async {
-          selectedTapController.selectedIndex.value = value;
+      () => Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.only(
+              topRight: Radius.circular(30), topLeft: Radius.circular(30)),
+          boxShadow: [
+            BoxShadow(color: Colors.black38, spreadRadius: 0, blurRadius: 5),
+          ],
+        ),
+        child: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          currentIndex: selectedTapController.selectedIndex.value,
+          onTap: (value) async {
+            selectedTapController.selectedIndex.value = value;
 
-          Get.offNamed(
-              bottomNavBarScreens[selectedTapController.selectedIndex.value],
-              preventDuplicates: true);
+            Get.offNamed(
+                bottomNavBarScreens[selectedTapController.selectedIndex.value],
+                preventDuplicates: true);
 
-          SignalRHelper signalRHelper = SignalRHelper(handler: () {
-            newMessageController.haveNewMessage.value = true;
-          });
+            SignalRHelper signalRHelper = SignalRHelper(handler: () {
+              newMessageController.haveNewMessage.value = true;
+            });
 
-          var chats = await messageProvider.getGroupsNoPagination();
+            var chats = await messageProvider.getGroupsNoPagination();
 
-          chats.forEach((chat) async => {
-                await signalRHelper.joinToGroup(chat.name),
-                if (chat.isChecked == false &&
-                    chat.lastMessage.sender !=
-                        storage.read(
-                          CacheManagerKey.USERID.toString(),
-                        ))
-                  {newMessageController.haveNewMessage.value = true}
-              });
-        },
-        items: bottomTapItems,
+            chats.forEach((chat) async => {
+                  await signalRHelper.joinToGroup(chat.name),
+                  if (chat.isChecked == false &&
+                      chat.lastMessage.sender !=
+                          storage.read(
+                            CacheManagerKey.USERID.toString(),
+                          ))
+                    {newMessageController.haveNewMessage.value = true}
+                });
+          },
+          items: bottomTapItems,
+        ),
       ),
     );
   }

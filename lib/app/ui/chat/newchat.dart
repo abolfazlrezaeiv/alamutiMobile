@@ -23,9 +23,9 @@
 //       required this.groupImage})
 //       : super(key: key);
 
-//   final double width = Get.width;
+//
 
-//   final double height = Get.height;
+//
 
 //   final chatTargetUserController = Get.put(ChatTargetUserController());
 
@@ -67,7 +67,7 @@
 //         backwidget: "/chat",
 //       ),
 //       body: Container(
-//         width: width,
+//         width  : Get.width,
 //         child: Obx(
 //           () => Column(
 //             children: [

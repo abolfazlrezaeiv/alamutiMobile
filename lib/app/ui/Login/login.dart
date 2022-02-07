@@ -20,10 +20,6 @@ class Login extends StatelessWidget {
 
   final storage = new GetStorage();
 
-  final double width = Get.width;
-
-  final double height = Get.height;
-
   final TextEditingController passwordCtr = TextEditingController();
 
   @override
@@ -49,7 +45,7 @@ class Login extends StatelessWidget {
                     children: [
                       Padding(
                         padding: EdgeInsets.only(
-                            top: height / 14, right: 20, bottom: 15),
+                            top: Get.height / 14, right: 20, bottom: 15),
                         child: TextButton.icon(
                           icon: Icon(
                             CupertinoIcons.back,
@@ -67,7 +63,7 @@ class Login extends StatelessWidget {
                       ),
                       Padding(
                         padding: EdgeInsets.only(
-                          top: height / 14,
+                          top: Get.height / 14,
                           right: 20,
                           bottom: 15,
                         ),
@@ -75,7 +71,7 @@ class Login extends StatelessWidget {
                           opacity: 0.6,
                           child: Image.asset(
                             'assets/logo/logo.png',
-                            height: height / 19,
+                            height: Get.height / 19,
                           ),
                         ),
                       ),
@@ -84,7 +80,7 @@ class Login extends StatelessWidget {
                 ),
                 isKeyboardOpen
                     ? SizedBox(
-                        height: height / 6,
+                        height: Get.height / 6,
                       )
                     : SizedBox(
                         height: 30,
@@ -149,11 +145,11 @@ class Login extends StatelessWidget {
                       ),
                     ),
                     SizedBox(
-                      height: height / 180,
+                      height: Get.height / 180,
                     ),
                     Container(
-                      width: width,
-                      height: height / 11,
+                      width: Get.width,
+                      height: Get.height / 11,
                       padding: EdgeInsets.symmetric(horizontal: 8),
                       child: TextButton(
                         style: ElevatedButton.styleFrom(
@@ -186,14 +182,14 @@ class Login extends StatelessWidget {
                       ),
                     ),
                     SizedBox(
-                      height: height / 50,
+                      height: Get.height / 50,
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: ArgonTimerButton(
-                        width: width,
-                        height: height / 11,
-                        minWidth: width * 2,
+                        width: Get.width,
+                        height: Get.height / 11,
+                        minWidth: Get.width * 2,
                         highlightColor: Colors.transparent,
                         highlightElevation: 0,
                         roundLoadingShape: true,
@@ -209,8 +205,8 @@ class Login extends StatelessWidget {
                         initialTimer: 90,
                         child: Container(
                           alignment: Alignment.center,
-                          width: width,
-                          height: height / 11,
+                          width: Get.width,
+                          height: Get.height / 11,
                           color: Colors.red.withOpacity(0.4),
                           child: Text(
                             "ارسال کد",

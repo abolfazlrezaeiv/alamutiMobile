@@ -39,7 +39,7 @@ class AdvertisementProvider {
   }
 
   Future<ListPage<Advertisement>> getAll(
-      {int number = 1, int size = 10, String? adstype}) async {
+      {int number = 1, int size = 8, String? adstype}) async {
     advertisementFromApi = [];
 
     Response response;
@@ -50,7 +50,7 @@ class AdvertisementProvider {
       response = await tokenProvider.api
           .get(baseUrl +
               'Advertisement/filter/$argument?pageNumber=$number&pageSize=$size')
-          .timeout(Duration(seconds: 8));
+          .timeout(Duration(seconds: 14));
 
       var xPagination = jsonDecode(response.headers['X-Pagination']![0]);
       print(xPagination);

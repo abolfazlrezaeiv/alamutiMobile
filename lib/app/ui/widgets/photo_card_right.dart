@@ -10,15 +10,11 @@ class RightPhotoCard extends StatelessWidget {
   final UploadImageController uploadImageController =
       Get.put(UploadImageController());
 
-  final double width = Get.width;
-
-  final double height = Get.height;
-
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: width / 3,
-      width: width / 3,
+      height: Get.width / 3,
+      width: Get.width / 3,
       child: Obx(
         () => Card(
           elevation: 3,
@@ -44,7 +40,7 @@ class RightPhotoCard extends StatelessWidget {
                   fit: StackFit.expand,
                 )
               : Padding(
-                  padding: EdgeInsets.all(width / 14),
+                  padding: EdgeInsets.all(Get.width / 14),
                   child: Icon(
                     Icons.photo_outlined,
                     size: 50,

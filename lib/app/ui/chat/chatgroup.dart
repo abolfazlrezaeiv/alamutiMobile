@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:alamuti/app/binding/chat_binding.dart';
+import 'package:alamuti/app/controller/chat_info_controller.dart';
 import 'package:alamuti/app/controller/new_message_controller.dart';
 import 'package:alamuti/app/controller/selected_tap_controller.dart';
 import 'package:alamuti/app/data/entities/chatgroup.dart';
@@ -27,14 +29,13 @@ class _ChatGroupsState extends State<ChatGroups> with CacheManager {
 
   final GetStorage storage = GetStorage();
 
-  final double width = Get.width;
-
-  final double height = Get.height;
-
   final NewMessageController newMessageController = Get.find();
 
-  var groupChatScreenPagingController =
-      PagingController<int, ChatGroup>(firstPageKey: 1);
+  final ChatInfoController chatInfoController = Get.find();
+
+  var groupChatScreenPagingController = PagingController<int, ChatGroup>(
+    firstPageKey: 1,
+  );
 
   SignalRHelper signalHelper =
       SignalRHelper(handler: () => print('created in group'));
@@ -68,6 +69,7 @@ class _ChatGroupsState extends State<ChatGroups> with CacheManager {
           return false;
         },
         child: RefreshIndicator(
+          color: Colors.greenAccent,
           onRefresh: () => Future.sync(
             () => groupChatScreenPagingController.refresh(),
           ),
@@ -149,14 +151,14 @@ class _ChatGroupsState extends State<ChatGroups> with CacheManager {
                         newMessageController.haveNewMessage.value = false;
                       }
                       signalHelper.joinToGroup(group.name);
+
+                      chatInfoController.chat.value = [group];
+
                       Get.to(
                         () => Chat(
-                          groupname: group.name,
-                          groupTitle: group.title,
-                          groupImage: group.groupImage,
-                          receiverId: '',
                           signalRHelper: signalHelper,
                         ),
+                        binding: ChatBinding(),
                         transition: Transition.fadeIn,
                       );
                     },
@@ -164,9 +166,16 @@ class _ChatGroupsState extends State<ChatGroups> with CacheManager {
                       alignment: Alignment.bottomLeft,
                       children: [
                         Card(
-                          color: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            side:
+                                BorderSide(color: Colors.transparent, width: 0),
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
+                          margin: const EdgeInsets.symmetric(
+                              vertical: 6, horizontal: 6),
+                          elevation: 8,
                           child: Padding(
-                            padding: EdgeInsets.all(height / 50),
+                            padding: EdgeInsets.all(Get.height / 50),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
@@ -187,13 +196,15 @@ class _ChatGroupsState extends State<ChatGroups> with CacheManager {
                                   overflow: TextOverflow.ellipsis,
                                 ),
                                 SizedBox(
-                                  height: height / 80,
+                                  height: Get.height / 80,
                                 ),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
                                     Text(
-                                      group.title,
+                                      group.title == 'الموتی'
+                                          ? ''
+                                          : group.title,
                                       textDirection: TextDirection.rtl,
                                       style: TextStyle(
                                           fontWeight: FontWeight.w400,
@@ -201,7 +212,7 @@ class _ChatGroupsState extends State<ChatGroups> with CacheManager {
                                           fontSize: 12),
                                     ),
                                     SizedBox(
-                                      width: width / 30,
+                                      width: Get.width / 30,
                                     ),
                                     FittedBox(
                                       fit: BoxFit.fill,
@@ -215,21 +226,21 @@ class _ChatGroupsState extends State<ChatGroups> with CacheManager {
                                                 filterQuality:
                                                     FilterQuality.low,
                                                 fit: BoxFit.cover,
-                                                width: width / 7,
-                                                height: width / 7,
+                                                width: Get.width / 7,
+                                                height: Get.width / 7,
                                               )
                                             : ((group.title == 'الموتی'
                                                 ? Image.asset(
                                                     'assets/logo/logo.png',
                                                     fit: BoxFit.fitWidth,
-                                                    width: width / 7,
-                                                    height: width / 7,
+                                                    width: Get.width / 7,
+                                                    height: Get.width / 7,
                                                   )
                                                 : Image.asset(
                                                     'assets/logo/no-image.png',
                                                     fit: BoxFit.cover,
-                                                    width: width / 7,
-                                                    height: width / 7,
+                                                    width: Get.width / 7,
+                                                    height: Get.width / 7,
                                                   ))),
                                       ),
                                     )
@@ -294,7 +305,7 @@ class _ChatGroupsState extends State<ChatGroups> with CacheManager {
     try {
       var newPage = await messageProvider.getGroups(
         number: pageKey,
-        size: 11,
+        size: 7,
       );
 
       final previouslyFetchedItemsCount =
@@ -321,12 +332,5 @@ class _ChatGroupsState extends State<ChatGroups> with CacheManager {
         .joinToGroup(storage.read(CacheManagerKey.USERID.toString()));
 
     chats.forEach((group) async => await signalHelper.joinToGroup(group.name));
-  }
-
-  @override
-  void dispose() {
-    groupChatScreenPagingController.dispose();
-
-    super.dispose();
   }
 }

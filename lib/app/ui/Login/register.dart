@@ -18,10 +18,6 @@ class Registeration extends StatelessWidget {
 
   final storage = new GetStorage();
 
-  final double width = Get.width;
-
-  final double height = Get.height;
-
   @override
   Widget build(BuildContext context) {
     bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom == 0;
@@ -43,7 +39,7 @@ class Registeration extends StatelessWidget {
                     color: Color.fromRGBO(71, 68, 68, 0.1),
                     child: Padding(
                       padding: EdgeInsets.only(
-                        top: height / 14,
+                        top: Get.height / 14,
                         right: 20,
                         bottom: 15,
                       ),
@@ -51,13 +47,13 @@ class Registeration extends StatelessWidget {
                         opacity: 0.6,
                         child: Image.asset(
                           'assets/logo/logo.png',
-                          height: height / 19,
+                          height: Get.height / 19,
                         ),
                       ),
                     ),
                   ),
                   SizedBox(
-                    height: height / 60,
+                    height: Get.height / 60,
                   ),
                   Container(
                     alignment: Alignment.centerRight,
@@ -77,7 +73,7 @@ class Registeration extends StatelessWidget {
                   ),
                   isKeyboardOpen
                       ? SizedBox(
-                          height: height / 6,
+                          height: Get.height / 6,
                         )
                       : SizedBox(
                           height: 30,
@@ -85,7 +81,8 @@ class Registeration extends StatelessWidget {
                   Column(
                     children: [
                       Padding(
-                        padding: EdgeInsets.symmetric(horizontal: width / 25),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: Get.width / 25),
                         child: Container(
                           alignment: Alignment.centerRight,
                           child: Text(
@@ -93,13 +90,14 @@ class Registeration extends StatelessWidget {
                             textDirection: TextDirection.rtl,
                             style: TextStyle(
                                 fontWeight: FontWeight.w400,
-                                fontSize: width / 27),
+                                fontSize: Get.width / 27),
                           ),
                         ),
                       ),
                       Padding(
                         padding: EdgeInsets.symmetric(
-                            horizontal: width / 50, vertical: height / 100),
+                            horizontal: Get.width / 50,
+                            vertical: Get.height / 100),
                         child: Directionality(
                           textDirection: TextDirection.rtl,
                           child: TextFormField(
@@ -127,7 +125,7 @@ class Registeration extends StatelessWidget {
                         height: 12,
                       ),
                       Container(
-                        width: width,
+                        width: Get.width,
                         padding: EdgeInsets.symmetric(horizontal: 8),
                         child: TextButton(
                           style: ElevatedButton.styleFrom(
@@ -161,29 +159,30 @@ class Registeration extends StatelessWidget {
                           child: otpRequestController.isSendingSms.value
                               ? Padding(
                                   padding: EdgeInsets.symmetric(
-                                      vertical: height / 150),
+                                      vertical: Get.height / 150),
                                   child: CircularProgressIndicator(
                                     color: Colors.white,
                                   ),
                                 )
                               : Padding(
                                   padding: EdgeInsets.symmetric(
-                                      vertical: height / 80),
+                                      vertical: Get.height / 80),
                                   child: Text(
                                     'دریافت کد ورود',
                                     style: TextStyle(
                                         fontWeight: FontWeight.w300,
-                                        fontSize: width / 25,
+                                        fontSize: Get.width / 25,
                                         color: Colors.white),
                                   ),
                                 ),
                         ),
                       ),
                       SizedBox(
-                        height: height / 50,
+                        height: Get.height / 50,
                       ),
                       Padding(
-                        padding: EdgeInsets.symmetric(horizontal: width / 20),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: Get.width / 20),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
@@ -192,7 +191,7 @@ class Registeration extends StatelessWidget {
                               textDirection: TextDirection.rtl,
                               style: TextStyle(
                                 fontWeight: FontWeight.w200,
-                                fontSize: width / 32,
+                                fontSize: Get.width / 32,
                               ),
                             ),
                             GestureDetector(
@@ -203,7 +202,7 @@ class Registeration extends StatelessWidget {
                                 'قوانین مربوط به حفظ حریم خصوصی ',
                                 style: TextStyle(
                                     fontWeight: FontWeight.w200,
-                                    fontSize: width / 32,
+                                    fontSize: Get.width / 32,
                                     color: Colors.blue),
                                 textDirection: TextDirection.rtl,
                               ),
@@ -248,7 +247,7 @@ class Registeration extends StatelessWidget {
                 "حفظ حریم خصوصی",
                 style: TextStyle(
                   fontWeight: FontWeight.w300,
-                  fontSize: width / 25,
+                  fontSize: Get.width / 25,
                 ),
               )),
               shape: RoundedRectangleBorder(

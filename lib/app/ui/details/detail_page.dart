@@ -1,7 +1,10 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:alamuti/app/controller/ads_form_controller.dart';
+import 'package:alamuti/app/controller/chat_info_controller.dart';
 import 'package:alamuti/app/controller/detail_page_advertisement.dart';
+import 'package:alamuti/app/data/entities/chat_message.dart';
+import 'package:alamuti/app/data/entities/chatgroup.dart';
 import 'package:alamuti/app/data/provider/advertisement_provider.dart';
 import 'package:alamuti/app/data/provider/signalr_helper.dart';
 import 'package:alamuti/app/data/storage/cache_manager.dart';
@@ -18,26 +21,21 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class AdsDetail extends StatefulWidget {
-  final int id;
-
-  AdsDetail({
+class Detail extends StatefulWidget {
+  Detail({
     Key? key,
-    required this.id,
   }) : super(key: key);
 
   @override
-  State<AdsDetail> createState() => _AdsDetailState();
+  State<Detail> createState() => _DetailState();
 }
 
-class _AdsDetailState extends State<AdsDetail> with CacheManager {
+class _DetailState extends State<Detail> with CacheManager {
   final DetailPageController detailPageController = Get.find();
 
+  final ChatInfoController chatInfoController = Get.find();
+
   TextEditingController reportTextEditingCtrl = TextEditingController();
-
-  final double width = Get.width;
-
-  final double height = Get.height;
 
   final AdvertisementProvider advertisementProvider = AdvertisementProvider();
 
@@ -56,7 +54,7 @@ class _AdsDetailState extends State<AdsDetail> with CacheManager {
         elevation: 0,
         foregroundColor: Colors.black,
         shadowColor: Colors.transparent,
-        backgroundColor: Colors.white.withOpacity(0.3),
+        backgroundColor: Colors.white.withOpacity(0.1),
       ),
       resizeToAvoidBottomInset: false,
       extendBodyBehindAppBar: true,
@@ -73,7 +71,7 @@ class _AdsDetailState extends State<AdsDetail> with CacheManager {
                     : getImageOrEmpty(),
                 Padding(
                   padding: EdgeInsets.symmetric(
-                    horizontal: width / 20,
+                    horizontal: Get.width / 20,
                   ),
                   child: Container(
                     child: Column(
@@ -81,13 +79,13 @@ class _AdsDetailState extends State<AdsDetail> with CacheManager {
                       children: [
                         Padding(
                           padding: EdgeInsets.symmetric(
-                            vertical: height / 55,
+                            vertical: Get.height / 55,
                           ),
                           child: Text(
                             detailPageController.details[0].title,
                             style: TextStyle(
                                 fontWeight: FontWeight.w500,
-                                fontSize: width / 24),
+                                fontSize: Get.width / 24),
                             textDirection: TextDirection.rtl,
                             overflow: TextOverflow.visible,
                           ),
@@ -99,15 +97,16 @@ class _AdsDetailState extends State<AdsDetail> with CacheManager {
                           style: TextStyle(
                               fontWeight: FontWeight.w300,
                               fontFamily: persianNumber,
-                              fontSize: width / 31),
+                              fontSize: Get.width / 31),
                           textDirection: TextDirection.rtl,
                         ),
                         SizedBox(
-                          height: height / 55,
+                          height: Get.height / 55,
                         ),
                         Divider(),
                         Padding(
-                          padding: EdgeInsets.symmetric(vertical: width / 55),
+                          padding:
+                              EdgeInsets.symmetric(vertical: Get.width / 55),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -115,7 +114,7 @@ class _AdsDetailState extends State<AdsDetail> with CacheManager {
                                 '${detailPageController.details[0].price} تومان',
                                 textDirection: TextDirection.ltr,
                                 style: TextStyle(
-                                    fontSize: width / 26,
+                                    fontSize: Get.width / 26,
                                     fontFamily: persianNumber,
                                     fontWeight: FontWeight.w400),
                               ),
@@ -124,7 +123,7 @@ class _AdsDetailState extends State<AdsDetail> with CacheManager {
                                 textDirection: TextDirection.rtl,
                                 style: TextStyle(
                                     fontWeight: FontWeight.w300,
-                                    fontSize: width / 27),
+                                    fontSize: Get.width / 27),
                               )
                             ],
                           ),
@@ -136,7 +135,7 @@ class _AdsDetailState extends State<AdsDetail> with CacheManager {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: width / 20),
+                  padding: EdgeInsets.symmetric(horizontal: Get.width / 20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
@@ -150,7 +149,7 @@ class _AdsDetailState extends State<AdsDetail> with CacheManager {
                                     backgroundColor: Colors.white,
                                     elevation: 0,
                                     content: Container(
-                                      height: height / 2.9,
+                                      height: Get.height / 2.9,
                                       child: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.end,
@@ -160,7 +159,7 @@ class _AdsDetailState extends State<AdsDetail> with CacheManager {
                                             textDirection: TextDirection.rtl,
                                             style: TextStyle(
                                                 color: Colors.grey,
-                                                fontSize: width / 30,
+                                                fontSize: Get.width / 30,
                                                 fontWeight: FontWeight.w300),
                                           ),
                                           Column(
@@ -226,7 +225,7 @@ class _AdsDetailState extends State<AdsDetail> with CacheManager {
                                       style: TextStyle(
                                           fontWeight: FontWeight.w300,
                                           color: Colors.grey,
-                                          fontSize: width / 31),
+                                          fontSize: Get.width / 31),
                                     ),
                                     SizedBox(
                                       width: 2,
@@ -245,23 +244,21 @@ class _AdsDetailState extends State<AdsDetail> with CacheManager {
                             'توضیحات',
                             style: TextStyle(
                                 fontWeight: FontWeight.w500,
-                                fontSize: width / 24),
+                                fontSize: Get.width / 24),
                           ),
                         ],
                       ),
                       SizedBox(
-                        height: height / 55,
+                        height: Get.height / 55,
                       ),
                       Container(
                         alignment: Alignment.centerRight,
                         child: Text(
                           detailPageController.details[0].description,
-                          maxLines: 6,
-                          overflow: TextOverflow.visible,
                           textDirection: TextDirection.rtl,
                           style: TextStyle(
                             fontWeight: FontWeight.w300,
-                            fontSize: width / 28,
+                            fontSize: Get.width / 28,
                           ),
                         ),
                       ),
@@ -274,14 +271,18 @@ class _AdsDetailState extends State<AdsDetail> with CacheManager {
         ),
       ),
       bottomNavigationBar: BottomAppBar(
-        elevation: 6,
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: height / 50),
+          padding:
+              EdgeInsets.symmetric(horizontal: 8.0, vertical: Get.height / 50),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.end,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               ElevatedButton(
+                style: ButtonStyle(
+                  fixedSize: MaterialStateProperty.all(
+                      Size.fromWidth(MediaQuery.of(context).size.width / 2.2)),
+                ),
                 onPressed: () async {
                   _makePhoneCall(detailPageController.details[0].phoneNumber);
                 },
@@ -290,13 +291,17 @@ class _AdsDetailState extends State<AdsDetail> with CacheManager {
                   child: Text(
                     'تماس',
                     style: TextStyle(
-                      color: Colors.black,
+                      color: Color.fromRGBO(88, 77, 77, 1.0),
                       fontWeight: FontWeight.w400,
                     ),
                   ),
                 ),
               ),
               ElevatedButton(
+                style: ButtonStyle(
+                  fixedSize: MaterialStateProperty.all(
+                      Size.fromWidth(MediaQuery.of(context).size.width / 2.2)),
+                ),
                 onPressed: () async {
                   var chatImage = await _getListviewImage();
 
@@ -311,14 +316,23 @@ class _AdsDetailState extends State<AdsDetail> with CacheManager {
                       groupImage: chatImage,
                       grouptitle: detailPageController.details[0].title);
 
-                  Get.to(
-                      () => Chat(
-                            groupImage: chatImage,
-                            receiverId: detailPageController.details[0].userId,
-                            groupTitle: detailPageController.details[0].title,
-                            groupname: groupName,
-                            signalRHelper: signalRHelper,
-                          ),
+                  var Target = ChatGroup(
+                      groupImage: chatImage,
+                      lastMessage: ChatMessage(
+                        reciever: detailPageController.details[0].userId,
+                        sender: '',
+                        daySended: '',
+                        message: '',
+                        id: 2,
+                      ),
+                      id: 1,
+                      isChecked: true,
+                      name: groupName,
+                      title: detailPageController.details[0].title);
+
+                  chatInfoController.chat.value = [Target];
+
+                  Get.to(() => Chat(signalRHelper: signalRHelper),
                       transition: Transition.fadeIn);
                 },
                 child: Padding(
@@ -326,7 +340,7 @@ class _AdsDetailState extends State<AdsDetail> with CacheManager {
                   child: Text(
                     'چت',
                     style: TextStyle(
-                      color: Colors.black,
+                      color: Color.fromRGBO(88, 77, 77, 1.0),
                       fontWeight: FontWeight.w400,
                     ),
                   ),
@@ -377,7 +391,7 @@ class _AdsDetailState extends State<AdsDetail> with CacheManager {
   Widget getImageSlider() {
     return ImageSlideshow(
       width: double.infinity,
-      height: height / 2.5,
+      height: Get.height / 2.5,
       initialPage: 0,
       indicatorColor: Colors.greenAccent,
       indicatorBackgroundColor: Colors.white,
@@ -436,8 +450,8 @@ class _AdsDetailState extends State<AdsDetail> with CacheManager {
         );
       },
       child: Container(
-        height: height / 2.5,
-        width: width,
+        height: Get.height / 2.5,
+        width: Get.width,
         child: Image.memory(
           base64Decode(image!),
           fit: BoxFit.cover,
@@ -466,7 +480,7 @@ class _AdsDetailState extends State<AdsDetail> with CacheManager {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Padding(
-                padding: EdgeInsets.symmetric(vertical: width / 55),
+                padding: EdgeInsets.symmetric(vertical: Get.width / 55),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -475,7 +489,7 @@ class _AdsDetailState extends State<AdsDetail> with CacheManager {
                       '${detailPageController.details[0].area} متر',
                       textDirection: TextDirection.ltr,
                       style: TextStyle(
-                          fontSize: width / 26,
+                          fontSize: Get.width / 26,
                           fontFamily: persianNumber,
                           fontWeight: FontWeight.w400),
                     ),
@@ -484,7 +498,7 @@ class _AdsDetailState extends State<AdsDetail> with CacheManager {
                       textDirection: TextDirection.rtl,
                       style: TextStyle(
                           fontWeight: FontWeight.w300,
-                          fontSize: width / 27,
+                          fontSize: Get.width / 27,
                           fontFamily: persianNumber),
                     )
                   ],
@@ -503,9 +517,9 @@ class _AdsDetailState extends State<AdsDetail> with CacheManager {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(0.0),
       ),
-      // color: Color.fromRGBO(78, 198, 122, 1.0),
+      color: Color.fromRGBO(78, 198, 122, 1.0),
       child: Container(
-        width: width,
+        width: Get.width,
         height: 80,
       ),
     );
