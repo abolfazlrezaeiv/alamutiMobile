@@ -1,6 +1,7 @@
 import 'package:alamuti/app/controller/authentication_manager_controller.dart';
 import 'package:alamuti/app/controller/selected_tap_controller.dart';
 import 'package:alamuti/app/data/storage/cache_manager.dart';
+import 'package:alamuti/app/ui/theme.dart';
 import 'package:alamuti/app/ui/widgets/alamuti_appbar.dart';
 import 'package:alamuti/app/ui/widgets/bottom_navbar.dart';
 import 'package:flutter/cupertino.dart';
@@ -42,11 +43,10 @@ class MyAlamutiPage extends StatelessWidget with CacheManager {
                           padding:
                               EdgeInsets.symmetric(horizontal: Get.width / 30),
                           child: Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: Get.width / 100),
+                            padding: EdgeInsets.only(right: Get.width / 40),
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.end,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 TextButton(
                                   onPressed: () {
@@ -60,7 +60,7 @@ class MyAlamutiPage extends StatelessWidget with CacheManager {
                                       style: TextStyle(
                                           color: Colors.black.withOpacity(1),
                                           fontWeight: FontWeight.w300,
-                                          fontSize: Get.width / 33),
+                                          fontSize: Get.width / 36),
                                     ),
                                   ),
                                   style: ButtonStyle(
@@ -72,8 +72,7 @@ class MyAlamutiPage extends StatelessWidget with CacheManager {
                                       RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(40),
                                         side: BorderSide(
-                                            color:
-                                                Colors.black.withOpacity(0.4),
+                                            color: Colors.greenAccent,
                                             width: 0.7),
                                       ),
                                     ),
@@ -86,8 +85,8 @@ class MyAlamutiPage extends StatelessWidget with CacheManager {
                                   'شما با شماره موبایل ${getPhonenNumber()} وارد شده اید',
                                   textDirection: TextDirection.rtl,
                                   style: TextStyle(
-                                      fontSize: Get.width / 29,
-                                      fontFamily: 'IRANSansXFaNum',
+                                      fontSize: Get.width / 35,
+                                      fontFamily: persianNumber,
                                       fontWeight: FontWeight.w300),
                                 ),
                               ],

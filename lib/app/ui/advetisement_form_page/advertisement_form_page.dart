@@ -208,6 +208,8 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: Get.width / 35),
                     child: DescriptionTextField(
+                        minline: 5,
+                        maxline: 8,
                         textEditingController: descriptionTextFieldController),
                   ),
                 ],
@@ -221,6 +223,13 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
                     left: Get.width / 35,
                     bottom: Get.width / 35),
                 child: ElevatedButton(
+                  style: ButtonStyle(
+                      elevation: MaterialStateProperty.all(3),
+                      fixedSize: MaterialStateProperty.all(
+                          Size.fromWidth(Get.width / 2.2)),
+                      backgroundColor: MaterialStateProperty.all(
+                        Color.fromRGBO(123, 234, 159, 1.0),
+                      )),
                   onPressed: () async {
                     FocusScope.of(context).unfocus();
                     if (_formKey.currentState!.validate()) {
@@ -242,12 +251,15 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
                     controller.leftImagebyteCode.value = '';
                     controller.rightImagebyteCode.value = '';
                   },
-                  child: Text(
-                    'ثبت',
-                    style: TextStyle(
-                      color: Color.fromRGBO(88, 77, 77, 1.0),
-                      fontWeight: FontWeight.w400,
-                      fontSize: Get.width / 25,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: Text(
+                      'ثبت',
+                      style: TextStyle(
+                        color: Color.fromRGBO(88, 77, 77, 1.0),
+                        fontWeight: FontWeight.w400,
+                        fontSize: Get.width / 25,
+                      ),
                     ),
                   ),
                 ),

@@ -18,9 +18,8 @@ mixin CacheManager {
     await box.remove(CacheManagerKey.REFRESHTOKEN.toString());
   }
 
-  Future<void> savePhoneNumber(String phoneNumber, String password) async {
+  Future<void> savePhoneNumber(String phoneNumber) async {
     await box.write(CacheManagerKey.PHONENUMBER.toString(), phoneNumber);
-    await box.write(CacheManagerKey.PASSWORD.toString(), password);
   }
 
   String getPhonenNumber() {

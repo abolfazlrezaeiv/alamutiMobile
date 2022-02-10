@@ -27,6 +27,9 @@
    <application
         android:label="alamuti"
         android:icon="@mipmap/ic_launcher">
+       <meta-data
+           android:name="pushe_token"
+           android:value="OWdsNm95bTUxMzRtcjgzZ0BydHJANjIzNzk2NjM4ODY3" />
         <activity
             android:name=".MainActivity"
             android:exported = "true"

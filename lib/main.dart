@@ -8,10 +8,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:pushe_flutter/pushe.dart';
 
 Future<void> main() async {
   await GetStorage.init();
   var messageProvider = MessageProvider();
+
+  await Pushe.enableNotificationForceForegroundAware();
 
   var storage = GetStorage();
 
@@ -24,14 +27,14 @@ Future<void> main() async {
   var chats = await messageProvider.getGroupsNoPagination();
 
   chats.forEach((chat) async => {
-    await signalRHelper.joinToGroup(chat.name),
-    if (chat.isChecked == false &&
-        chat.lastMessage.sender !=
-            storage.read(
-              CacheManagerKey.USERID.toString(),
-            ))
-      {newMessageController.haveNewMessage.value = true}
-  });
+        await signalRHelper.joinToGroup(chat.name),
+        if (chat.isChecked == false &&
+            chat.lastMessage.sender !=
+                storage.read(
+                  CacheManagerKey.USERID.toString(),
+                ))
+          {newMessageController.haveNewMessage.value = true}
+      });
 }
 
 class Application extends StatelessWidget {

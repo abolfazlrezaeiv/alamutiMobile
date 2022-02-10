@@ -82,7 +82,7 @@ var routes = [
   ),
   GetPage(
     name: "/register",
-    page: () => Registeration(),
+    page: () => Registration(),
     transition: trans.Transition.noTransition,
     binding: RegisterPageBinding(),
   ),

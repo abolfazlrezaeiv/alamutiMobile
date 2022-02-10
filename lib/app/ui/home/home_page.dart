@@ -64,11 +64,12 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    var mq = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Colors.white,
       // backgroundColor: Color.fromRGBO(78, 198, 122, 1.0),
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(Get.height / 6.1),
+        preferredSize: Size.fromHeight(mq.height / 6.1),
         child: Card(
           elevation: 7,
           margin: EdgeInsets.zero,

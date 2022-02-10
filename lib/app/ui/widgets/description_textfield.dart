@@ -7,11 +7,16 @@ import 'dart:math' as math;
 // ignore: must_be_immutable
 class DescriptionTextField extends StatelessWidget {
   String? initialvalue = ' ';
-
+  final int maxline;
+  final int minline;
   final TextEditingController textEditingController;
 
   DescriptionTextField(
-      {Key? key, required this.textEditingController, this.initialvalue})
+      {Key? key,
+      required this.textEditingController,
+      this.initialvalue,
+      required this.maxline,
+      required this.minline})
       : super(key: key);
 
   @override
@@ -35,9 +40,10 @@ class DescriptionTextField extends StatelessWidget {
 
           return null;
         },
-        inputFormatters: [MaxLinesTextInputFormatter(8)],
+        inputFormatters: [MaxLinesTextInputFormatter(maxline)],
         // expands: true,
         maxLines: null,
+        minLines: minline,
         textAlign: TextAlign.start,
         style: TextStyle(
             backgroundColor: Colors.white,

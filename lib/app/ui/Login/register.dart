@@ -6,7 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
-class Registeration extends StatelessWidget {
+class Registration extends StatefulWidget {
+  @override
+  State<Registration> createState() => _RegistrationState();
+}
+
+class _RegistrationState extends State<Registration> {
   final GlobalKey<FormState> formKey = GlobalKey();
 
   final OTPRequestController otpRequestController = Get.find();
@@ -141,10 +146,6 @@ class Registeration extends StatelessWidget {
                                   phoneNumberTextEditingCtr.text, context);
 
                               if (result == true) {
-                                await storage.write(
-                                    CacheManagerKey.PHONENUMBER.toString(),
-                                    phoneNumberTextEditingCtr.text);
-
                                 otpRequestController.isSendingSms.value = true;
 
                                 otpRequestController.phoneNumber.value =

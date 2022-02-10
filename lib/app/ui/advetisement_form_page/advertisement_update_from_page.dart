@@ -240,6 +240,8 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: Get.width / 35),
                       child: DescriptionTextField(
+                          minline: 5,
+                          maxline: 8,
                           textEditingController:
                               descriptionTextFieldController),
                     ),
@@ -280,12 +282,15 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
                         );
                       }
                     },
-                    child: Text(
-                      'ثبت',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w400,
-                        fontSize: Get.width / 25,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: Text(
+                        'ثبت',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w400,
+                          fontSize: Get.width / 25,
+                        ),
                       ),
                     ),
                   ),

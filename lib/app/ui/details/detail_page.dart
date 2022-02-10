@@ -170,6 +170,8 @@ class _DetailState extends State<Detail> with CacheManager {
                                                 height: 5,
                                               ),
                                               DescriptionTextField(
+                                                  minline: 6,
+                                                  maxline: 6,
                                                   textEditingController:
                                                       reportTextEditingCtrl),
                                               TextButton(
@@ -306,7 +308,9 @@ class _DetailState extends State<Detail> with CacheManager {
                   var chatImage = await _getListviewImage();
 
                   var groupName = detailPageController.details[0].userId +
+                      '_' +
                       await getUserId() +
+                      '_' +
                       detailPageController.details[0].title;
 
                   await signalRHelper.initializeChat(
@@ -316,7 +320,7 @@ class _DetailState extends State<Detail> with CacheManager {
                       groupImage: chatImage,
                       grouptitle: detailPageController.details[0].title);
 
-                  var Target = ChatGroup(
+                  var target = ChatGroup(
                       groupImage: chatImage,
                       lastMessage: ChatMessage(
                         reciever: detailPageController.details[0].userId,
@@ -330,7 +334,7 @@ class _DetailState extends State<Detail> with CacheManager {
                       name: groupName,
                       title: detailPageController.details[0].title);
 
-                  chatInfoController.chat.value = [Target];
+                  chatInfoController.chat.value = [target];
 
                   Get.to(() => Chat(signalRHelper: signalRHelper),
                       transition: Transition.fadeIn);

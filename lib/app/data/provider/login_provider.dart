@@ -8,6 +8,7 @@ import 'package:alamuti/app/data/storage/cache_manager.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pushe_flutter/pushe.dart';
 
 class LoginProvider extends GetConnect with CacheManager {
   final String loginUrl = baseLoginUrl + 'login';
@@ -38,11 +39,19 @@ class LoginProvider extends GetConnect with CacheManager {
 
       if (response.statusCode == 200) {
         print('sucessful');
-        saveUserId(response.body['id']);
+
+        await saveUserId(response.body['id']);
+
+        await savePhoneNumber(response.body['phonenumber']);
+
+        Pushe.setCustomId(await getUserId());
+
         return RegisterResponseModel.fromJson(response.body);
       } else {
         var message = 'خطا در اتصال به اینترنت ...';
+
         showStatusDialog(context: context, message: message);
+
         print('not successful');
 
         return null;

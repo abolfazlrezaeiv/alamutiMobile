@@ -14,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:pushe_flutter/pushe.dart';
 
 class Chat extends StatefulWidget {
   final SignalRHelper? signalRHelper;
@@ -45,6 +46,8 @@ class _ChatState extends State<Chat> {
 
   late SignalRHelper signalRHelper;
 
+  var receiverId;
+
   @override
   void initState() {
     _chatScreenPagingController.addPageRequestListener((pageKey) {
@@ -54,6 +57,13 @@ class _ChatState extends State<Chat> {
     widget.signalRHelper?.handler = () {
       _chatScreenPagingController.refresh();
     };
+
+    if (chatInfoController.chat[0].name.toString().split('_')[0] ==
+        storage.read(CacheManagerKey.USERID.toString())) {
+      receiverId = chatInfoController.chat[0].name.toString().split('_')[1];
+    } else {
+      receiverId = chatInfoController.chat[0].name.toString().split('_')[0];
+    }
 
     super.initState();
   }
@@ -157,8 +167,7 @@ class _ChatState extends State<Chat> {
                             onPressed: () async {
                               if (_formKey.currentState!.validate()) {
                                 await widget.signalRHelper?.sendMessage(
-                                    receiverId: chatInfoController
-                                        .chat[0].lastMessage.reciever,
+                                    receiverId: receiverId,
                                     senderId: storage.read(
                                       CacheManagerKey.USERID.toString(),
                                     ),
@@ -168,6 +177,19 @@ class _ChatState extends State<Chat> {
                                         chatInfoController.chat[0].groupImage,
                                     grouptitle:
                                         chatInfoController.chat[0].title);
+
+                                Pushe.sendNotificationToUser(
+                                    IdType.CustomId,
+                                    receiverId, // Or another Id
+                                    'پیام جدید در الموتی',
+                                    messageTextEditingController
+                                        .text, // content
+                                    bigTitle:
+                                        'یک پیام جدید برای آگهی ${chatInfoController.chat[0].title}',
+                                    bigContent: messageTextEditingController.text,
+                                    imageUrl: null,
+                                    iconUrl: null,
+                                    customContent: {'key1': 'value1'});
 
                                 messageTextEditingController.text = '';
                               }
