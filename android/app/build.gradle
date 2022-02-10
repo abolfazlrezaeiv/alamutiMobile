@@ -59,7 +59,10 @@ android {
        release {
            signingConfig signingConfigs.release
             shrinkResources false
-            minifyEnabled false
+            minifyEnabled true
+            useProguard true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
        }
    }
 }

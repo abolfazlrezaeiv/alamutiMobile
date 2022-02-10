@@ -178,7 +178,7 @@ class _ChatState extends State<Chat> {
                                     grouptitle:
                                         chatInfoController.chat[0].title);
 
-                                Pushe.sendNotificationToUser(
+                                await Pushe.sendNotificationToUser(
                                     IdType.CustomId,
                                     receiverId, // Or another Id
                                     'پیام جدید در الموتی',
