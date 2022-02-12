@@ -6,6 +6,7 @@ import 'package:alamuti/app/data/entities/advertisement.dart';
 import 'package:alamuti/app/data/entities/list_page.dart';
 import 'package:alamuti/app/data/provider/token_provider.dart';
 import 'package:alamuti/app/data/provider/base_url.dart';
+import 'package:alamuti/app/ui/alert_dialog_class.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
@@ -34,7 +35,7 @@ class AdvertisementProvider {
       ];
     } else {
       var message = 'متاسفانه ارتباط ناموفق بود لطفا دوباره امتحان کنید';
-      showStatusDialog(context: context, message: message);
+      Alert.showStatusDialog(context: context, message: message);
     }
   }
 
@@ -178,10 +179,10 @@ class AdvertisementProvider {
 
       var message = 'آگهی شما با موفقیت ارسال شد و پس از تایید منتشر خواهد شد';
 
-      showStatusDialog(context: context, message: message);
+      Alert.showStatusDialog(context: context, message: message);
     } else {
       var message = 'متاسفانه ارتباط ناموفق بود لطفا دوباره امتحان کنید';
-      showStatusDialog(context: context, message: message);
+      Alert.showStatusDialog(context: context, message: message);
     }
   }
 
@@ -194,10 +195,10 @@ class AdvertisementProvider {
 
     if (response.statusCode == 200) {
       var message = 'آگهی با موفقیت حذف شد';
-      showStatusDialog(context: context, message: message);
+      Alert.showStatusDialog(context: context, message: message);
     } else {
       var message = 'حذف آگهی ناموفق بود لطفا دوباره تلاش کنید';
-      showStatusDialog(context: context, message: message);
+      Alert.showStatusDialog(context: context, message: message);
     }
   }
 
@@ -242,10 +243,10 @@ class AdvertisementProvider {
 
       var message =
           'تغییرات شما با موفقیت ذخیره شدند و آگهی شما پس از بررسی مجدد منتشر خواهد شد.';
-      showStatusDialog(context: context, message: message);
+      Alert.showStatusDialog(context: context, message: message);
     } else {
       var message = 'متاسفانه ارتباط ناموفق بود لطفا دوباره امتحان کنید';
-      showStatusDialog(context: context, message: message);
+      Alert.showStatusDialog(context: context, message: message);
     }
   }
 
@@ -267,10 +268,10 @@ class AdvertisementProvider {
     if (response.statusCode == 200) {
       var message =
           'باتشکر از گزارش شما. کارشناسان ما در اسرع وقت به مشکل رسیدگی می کنند.';
-      showStatusDialog(context: context, message: message);
+      Alert.showStatusDialog(context: context, message: message);
     } else {
       var message = 'ارتباط ناموفق بود لطفا دوباره امتحان کنید';
-      showStatusDialog(context: context, message: message);
+      Alert.showStatusDialog(context: context, message: message);
     }
   }
 
@@ -291,42 +292,6 @@ class AdvertisementProvider {
     showDialog(
       barrierColor: Colors.transparent,
       barrierDismissible: false,
-      builder: (BuildContext context) {
-        return alert;
-      },
-      context: context,
-    );
-  }
-
-  showStatusDialog({required context, required String message}) {
-    AlertDialog alert = AlertDialog(
-      backgroundColor: Colors.white,
-      elevation: 3,
-      content: Text(
-        message,
-        textDirection: TextDirection.rtl,
-        style: TextStyle(
-          fontWeight: FontWeight.w300,
-          fontSize: Get.width / 25,
-        ),
-      ),
-      actions: [
-        TextButton(
-            onPressed: () {
-              Get.back(closeOverlays: true);
-            },
-            child: Text(
-              'تایید',
-              style: TextStyle(
-                color: Colors.greenAccent,
-                fontWeight: FontWeight.w400,
-                fontSize: Get.width / 27,
-              ),
-            ))
-      ],
-    );
-    showDialog(
-      barrierDismissible: true,
       builder: (BuildContext context) {
         return alert;
       },

@@ -91,7 +91,6 @@ class _SearchState extends State<Search> {
                 }
               },
             ),
-            fillColor: Colors.white,
             focusedErrorBorder: OutlineInputBorder(
               borderSide: BorderSide(color: Colors.red, width: 0.6),
             ),

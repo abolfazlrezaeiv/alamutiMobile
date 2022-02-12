@@ -6,13 +6,12 @@ import 'package:get/get_core/src/get_main.dart';
 var themes = ThemeData(
   fontFamily: 'IRANSansX',
   appBarTheme: AppBarTheme(
-    elevation: 6,
+    elevation: 9,
     backgroundColor: Color.fromRGBO(78, 198, 122, 1.0),
   ),
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ButtonStyle(
         elevation: MaterialStateProperty.all(3),
-        fixedSize: MaterialStateProperty.all(Size.fromWidth(Get.width / 2.2)),
         backgroundColor: MaterialStateProperty.all(
           Color.fromRGBO(123, 234, 159, 1.0),
         )),

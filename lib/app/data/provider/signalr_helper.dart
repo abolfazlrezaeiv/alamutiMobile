@@ -25,9 +25,9 @@ class SignalRHelper with CacheManager {
         .invoke('JoinToGroup',
             args: [storage.read(CacheManagerKey.USERID.toString())])
         .whenComplete(() => connection.on("InitializeChat", (arguments) {
-              newMessageController.haveNewMessage.value = true;
+              // newMessageController.haveNewMessage.value = true;
               print('on initialize called');
-              handler();
+              // handler();
             }))
         .whenComplete(() => connection.on("ReceiveMessage", (arguments) async {
               if (arguments![1] !=

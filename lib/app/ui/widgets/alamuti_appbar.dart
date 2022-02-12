@@ -10,13 +10,15 @@ class AlamutiAppBar extends StatelessWidget implements PreferredSizeWidget {
   final AppBar appBar;
   final bool hasBackButton;
   final String? backwidget;
+  final VoidCallback? method;
 
   AlamutiAppBar(
       {Key? key,
       required this.title,
       required this.appBar,
       this.backwidget,
-      required this.hasBackButton})
+      required this.hasBackButton,
+      this.method})
       : super(key: key);
 
   final ScreenController screenController = Get.put(ScreenController());
@@ -24,6 +26,22 @@ class AlamutiAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) => AppBar(
         leadingWidth: 100,
+        actions: [
+          backwidget == '/chat'
+              ? Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: InkWell(
+                      onTap: () {
+                        method!();
+                        print('working');
+                      },
+                      child: Icon(
+                        CupertinoIcons.ellipsis_vertical,
+                        size: 25,
+                      )),
+                )
+              : Container()
+        ],
         title: Text(
           title,
           style: TextStyle(

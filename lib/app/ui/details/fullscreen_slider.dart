@@ -19,24 +19,26 @@ class FullscreenImageSlider extends StatelessWidget {
       ),
       backgroundColor: Colors.black,
       body: Center(
-        child: ImageSlideshow(
-          width: double.infinity,
-          height: Get.height / 3,
-          initialPage: 0,
-          indicatorColor: Colors.greenAccent,
-          indicatorBackgroundColor: Colors.white,
-          children: [
-            Image.memory(
-              base64Decode(image1),
-              fit: BoxFit.cover,
-            ),
-            Image.memory(
-              base64Decode(image2),
-              fit: BoxFit.cover,
-            ),
-          ],
-          autoPlayInterval: null,
-          isLoop: true,
+        child: FractionallySizedBox(
+          heightFactor: 0.7,
+          widthFactor: 1,
+          child: ImageSlideshow(
+            initialPage: 0,
+            indicatorColor: Colors.greenAccent,
+            indicatorBackgroundColor: Colors.white,
+            children: [
+              Image.memory(
+                base64Decode(image1),
+                fit: BoxFit.cover,
+              ),
+              Image.memory(
+                base64Decode(image2),
+                fit: BoxFit.cover,
+              ),
+            ],
+            autoPlayInterval: null,
+            isLoop: true,
+          ),
         ),
       ),
     );

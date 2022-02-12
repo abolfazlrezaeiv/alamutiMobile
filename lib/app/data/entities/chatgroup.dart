@@ -1,4 +1,7 @@
+import 'package:alamuti/app/controller/detail_page_advertisement.dart';
 import 'package:alamuti/app/data/entities/chat_message.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 
 class ChatGroup {
   final int id;
@@ -7,6 +10,9 @@ class ChatGroup {
   final bool isChecked;
   final ChatMessage lastMessage;
   final String? groupImage;
+  final String? blockedUserId;
+  final bool isDeleted;
+  final String? reportMessage;
 
   ChatGroup(
       {required this.groupImage,
@@ -14,6 +20,9 @@ class ChatGroup {
       required this.title,
       required this.isChecked,
       required this.id,
+      required this.blockedUserId,
+      required this.isDeleted,
+      required this.reportMessage,
       required this.name});
 
   factory ChatGroup.fromJson(Map<String, dynamic> json) {
@@ -24,6 +33,34 @@ class ChatGroup {
       isChecked: json["isChecked"],
       lastMessage: ChatMessage.fromJson(json['lastMessage']),
       groupImage: json["image"],
+      blockedUserId: json["blockedUserId"],
+      isDeleted: json["isDeleted"],
+      reportMessage: json["reportMessage"],
+    );
+  }
+
+  final DetailPageController detailPageController =
+      Get.put(DetailPageController());
+
+  factory ChatGroup.fromJsonForInitialization(Map<String, dynamic> json) {
+    final DetailPageController detailPageController =
+        Get.put(DetailPageController());
+    return ChatGroup(
+      id: json["id"],
+      name: json["name"],
+      title: json["title"],
+      isChecked: json["isChecked"],
+      lastMessage: ChatMessage(
+        reciever: detailPageController.details[0].userId,
+        sender: '',
+        daySended: '',
+        message: '',
+        id: 2,
+      ),
+      groupImage: json["image"],
+      blockedUserId: json["blockedUserId"],
+      isDeleted: json["isDeleted"],
+      reportMessage: json["reportMessage"],
     );
   }
 }

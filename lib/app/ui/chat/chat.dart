@@ -4,12 +4,14 @@ import 'package:alamuti/app/data/entities/chat_message.dart';
 import 'package:alamuti/app/data/provider/chat_message_provider.dart';
 import 'package:alamuti/app/data/provider/signalr_helper.dart';
 import 'package:alamuti/app/data/storage/cache_manager.dart';
+import 'package:alamuti/app/ui/alert_dialog_class.dart';
 import 'package:alamuti/app/ui/theme.dart';
 import 'package:alamuti/app/ui/widgets/alamuti_appbar.dart';
 import 'package:alamuti/app/ui/widgets/alamuti_textfield.dart';
 import 'package:alamuti/app/ui/widgets/buttom_navbar_items.dart';
 import 'package:alamuti/app/ui/widgets/exception_indicators/empty_chat_indicator.dart';
 import 'package:bubble/bubble.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -79,6 +81,7 @@ class _ChatState extends State<Chat> {
         title: 'پیامها',
         hasBackButton: true,
         backwidget: "/chat",
+        method: showMenu,
       ),
       body: WillPopScope(
         onWillPop: () async {
@@ -89,52 +92,56 @@ class _ChatState extends State<Chat> {
           newMessageController.haveNewMessage.value = false;
           return true;
         },
-        child: Column(
-          children: [
-            Expanded(
-              child: PagedListView.separated(
-                pagingController: _chatScreenPagingController,
-                separatorBuilder: (context, index) => const SizedBox(
-                  height: 0,
-                ),
-                shrinkWrap: true,
-                reverse: true,
-                builderDelegate: PagedChildBuilderDelegate<ChatMessage>(
-                  itemBuilder: (context, message, index) {
-                    if (message.sender ==
-                        storage.read(CacheManagerKey.USERID.toString())) {
-                      return Padding(
-                        padding:
-                            EdgeInsets.symmetric(vertical: Get.height / 70),
-                        child: Bubble(
-                          style: styleMe,
-                          child: Text(
-                            message.message,
-                            textDirection: TextDirection.rtl,
+        child: GestureDetector(
+          onTap: () => FocusScope.of(context).unfocus(),
+          child: Column(
+            children: [
+              Expanded(
+                child: PagedListView.separated(
+                  pagingController: _chatScreenPagingController,
+                  separatorBuilder: (context, index) => const SizedBox(
+                    height: 0,
+                  ),
+                  shrinkWrap: true,
+                  reverse: true,
+                  builderDelegate: PagedChildBuilderDelegate<ChatMessage>(
+                    itemBuilder: (context, message, index) {
+                      if (message.sender ==
+                          storage.read(CacheManagerKey.USERID.toString())) {
+                        return Padding(
+                          padding:
+                              EdgeInsets.symmetric(vertical: Get.height / 70),
+                          child: Bubble(
+                            style: styleMe,
+                            child: Text(
+                              message.message,
+                              textDirection: TextDirection.rtl,
+                            ),
                           ),
-                        ),
-                      );
-                    } else {
-                      return Padding(
-                        padding:
-                            EdgeInsets.symmetric(vertical: Get.height / 70),
-                        child: Bubble(
-                          style: styleSomebody,
-                          child: Text(
-                            message.message,
-                            textDirection: TextDirection.rtl,
+                        );
+                      } else {
+                        return Padding(
+                          padding:
+                              EdgeInsets.symmetric(vertical: Get.height / 70),
+                          child: Bubble(
+                            style: styleSomebody,
+                            child: Text(
+                              message.message,
+                              textDirection: TextDirection.rtl,
+                            ),
                           ),
-                        ),
-                      );
-                    }
-                  },
-                  noItemsFoundIndicatorBuilder: (context) => EmptyChatIndicator(
-                    onTryAgain: () {},
+                        );
+                      }
+                    },
+                    noItemsFoundIndicatorBuilder: (context) =>
+                        EmptyChatIndicator(
+                      onTryAgain: () {},
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
       bottomNavigationBar: Padding(
@@ -166,32 +173,7 @@ class _ChatState extends State<Chat> {
                         TextButton(
                             onPressed: () async {
                               if (_formKey.currentState!.validate()) {
-                                await widget.signalRHelper?.sendMessage(
-                                    receiverId: receiverId,
-                                    senderId: storage.read(
-                                      CacheManagerKey.USERID.toString(),
-                                    ),
-                                    message: messageTextEditingController.text,
-                                    groupname: chatInfoController.chat[0].name,
-                                    groupImage:
-                                        chatInfoController.chat[0].groupImage,
-                                    grouptitle:
-                                        chatInfoController.chat[0].title);
-
-                                await Pushe.sendNotificationToUser(
-                                    IdType.CustomId,
-                                    receiverId, // Or another Id
-                                    'پیام جدید در الموتی',
-                                    messageTextEditingController
-                                        .text, // content
-                                    bigTitle:
-                                        'یک پیام جدید برای آگهی ${chatInfoController.chat[0].title}',
-                                    bigContent: messageTextEditingController.text,
-                                    imageUrl: null,
-                                    iconUrl: null,
-                                    customContent: {'key1': 'value1'});
-
-                                messageTextEditingController.text = '';
+                                sendMessage();
                               }
                             },
                             child: Text(
@@ -205,6 +187,115 @@ class _ChatState extends State<Chat> {
         ),
       ),
     );
+  }
+
+  showMenu() async {
+    await showModalBottomSheet(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(10.0)),
+        ),
+        context: context,
+        builder: (context) {
+          return BottomSheet(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(10.0)),
+            ),
+            enableDrag: false,
+            onClosing: () {},
+            builder: (BuildContext context) {
+              return FractionallySizedBox(
+                heightFactor: 0.4,
+                child: Column(
+                  children: [
+                    SizedBox(
+                      width: 50,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Divider(height: 2, thickness: 5),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8.0, horizontal: 12),
+                      child: GestureDetector(
+                        onTap: () async {
+                          Alert.chatDeleteDialog(
+                              groupName: chatInfoController.chat[0].name,
+                              context: context);
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text(
+                              'حذف و اتمام مکالمه',
+                              style: TextStyle(fontSize: Get.width / 27),
+                            ),
+                            SizedBox(width: 10),
+                            Icon(
+                              Icons.delete,
+                              color: Colors.grey,
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8.0, horizontal: 12),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Text(
+                            'گزارش و مسدود کردن',
+                            style: TextStyle(fontSize: Get.width / 27),
+                          ),
+                          SizedBox(width: 10),
+                          Icon(
+                            CupertinoIcons.exclamationmark_circle_fill,
+                            color: Colors.grey,
+                          )
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              );
+            },
+          );
+        });
+  }
+
+  Future<void> sendMessage() async {
+    await widget.signalRHelper?.sendMessage(
+        receiverId: receiverId,
+        senderId: storage.read(
+          CacheManagerKey.USERID.toString(),
+        ),
+        message: messageTextEditingController.text,
+        groupname: chatInfoController.chat[0].name,
+        groupImage: chatInfoController.chat[0].groupImage,
+        grouptitle: chatInfoController.chat[0].title);
+
+    _chatScreenPagingController.refresh();
+
+    await Pushe.sendNotificationToUser(
+        IdType.CustomId,
+        receiverId, // Or another Id
+        'چت الموتی',
+        messageTextEditingController.text, // content
+        bigTitle: 'چت الموتی',
+        bigContent: messageTextEditingController.text,
+        imageUrl: null,
+        iconUrl: null,
+        customContent: {'key1': 'value1'});
+
+    messageTextEditingController.text = '';
   }
 
   Future<void> _fetchMessage(int pageKey) async {

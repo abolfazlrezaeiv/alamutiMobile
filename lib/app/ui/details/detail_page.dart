@@ -6,6 +6,7 @@ import 'package:alamuti/app/controller/detail_page_advertisement.dart';
 import 'package:alamuti/app/data/entities/chat_message.dart';
 import 'package:alamuti/app/data/entities/chatgroup.dart';
 import 'package:alamuti/app/data/provider/advertisement_provider.dart';
+import 'package:alamuti/app/data/provider/chat_message_provider.dart';
 import 'package:alamuti/app/data/provider/signalr_helper.dart';
 import 'package:alamuti/app/data/storage/cache_manager.dart';
 import 'package:alamuti/app/ui/chat/chat.dart';
@@ -38,6 +39,8 @@ class _DetailState extends State<Detail> with CacheManager {
   TextEditingController reportTextEditingCtrl = TextEditingController();
 
   final AdvertisementProvider advertisementProvider = AdvertisementProvider();
+
+  final messageProvider = MessageProvider();
 
   final SignalRHelper signalRHelper = SignalRHelper(
     handler: () => print('created in detail'),
@@ -280,72 +283,71 @@ class _DetailState extends State<Detail> with CacheManager {
             crossAxisAlignment: CrossAxisAlignment.end,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              ElevatedButton(
-                style: ButtonStyle(
-                  fixedSize: MaterialStateProperty.all(
-                      Size.fromWidth(MediaQuery.of(context).size.width / 2.2)),
-                ),
-                onPressed: () async {
-                  _makePhoneCall(detailPageController.details[0].phoneNumber);
-                },
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: Get.width / 40),
-                  child: Text(
-                    'تماس',
-                    style: TextStyle(
-                      color: Color.fromRGBO(88, 77, 77, 1.0),
-                      fontWeight: FontWeight.w400,
+              Flexible(
+                child: FractionallySizedBox(
+                  widthFactor: 1,
+                  heightFactor: 0.1 / 1.7,
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      await _makePhoneCall(
+                          detailPageController.details[0].phoneNumber);
+                    },
+                    child: Text(
+                      'تماس',
+                      style: TextStyle(
+                        color: Color.fromRGBO(88, 77, 77, 1.0),
+                        fontWeight: FontWeight.w400,
+                      ),
                     ),
                   ),
                 ),
               ),
-              ElevatedButton(
-                style: ButtonStyle(
-                  fixedSize: MaterialStateProperty.all(
-                      Size.fromWidth(MediaQuery.of(context).size.width / 2.2)),
-                ),
-                onPressed: () async {
-                  var chatImage = await _getListviewImage();
+              const SizedBox(
+                width: 10,
+              ),
+              Flexible(
+                child: FractionallySizedBox(
+                  widthFactor: 1,
+                  heightFactor: 0.1 / 1.7,
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      print('1');
+                      var chatImage = await _getListviewImage();
+                      print('2');
+                      var groupName = detailPageController.details[0].userId +
+                          '_' +
+                          await getUserId() +
+                          '_' +
+                          detailPageController.details[0].title;
+                      print('3');
 
-                  var groupName = detailPageController.details[0].userId +
-                      '_' +
-                      await getUserId() +
-                      '_' +
-                      detailPageController.details[0].title;
+                      await signalRHelper.initializeChat(
+                          receiverId: detailPageController.details[0].userId,
+                          senderId: await getUserId(),
+                          groupname: groupName,
+                          groupImage: chatImage,
+                          grouptitle: detailPageController.details[0].title);
 
-                  await signalRHelper.initializeChat(
-                      receiverId: detailPageController.details[0].userId,
-                      senderId: await getUserId(),
-                      groupname: groupName,
-                      groupImage: chatImage,
-                      grouptitle: detailPageController.details[0].title);
+                      var group = await messageProvider.getGroup(groupName);
 
-                  var target = ChatGroup(
-                      groupImage: chatImage,
-                      lastMessage: ChatMessage(
-                        reciever: detailPageController.details[0].userId,
-                        sender: '',
-                        daySended: '',
-                        message: '',
-                        id: 2,
+                      print('4');
+                      if (group != null && group.isDeleted == true) {
+                        var message = 'مخاطب مکالمه را حذف کرده است';
+                        showDeletedMessageDialog(
+                            context: context, message: message);
+                      } else if (group != null && group.isDeleted == false) {
+                        chatInfoController.chat.value = [group];
+
+                        Get.to(() => Chat(signalRHelper: signalRHelper),
+                            transition: Transition.fadeIn);
+                      }
+                    },
+                    child: Text(
+                      'چت',
+                      style: TextStyle(
+                        color: Color.fromRGBO(88, 77, 77, 1.0),
+                        fontWeight: FontWeight.w400,
                       ),
-                      id: 1,
-                      isChecked: true,
-                      name: groupName,
-                      title: detailPageController.details[0].title);
-
-                  chatInfoController.chat.value = [target];
-
-                  Get.to(() => Chat(signalRHelper: signalRHelper),
-                      transition: Transition.fadeIn);
-                },
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: Get.width / 40),
-                  child: Text(
-                    'چت',
-                    style: TextStyle(
-                      color: Color.fromRGBO(88, 77, 77, 1.0),
-                      fontWeight: FontWeight.w400,
                     ),
                   ),
                 ),
@@ -384,6 +386,42 @@ class _DetailState extends State<Detail> with CacheManager {
     return result;
   }
 
+  showDeletedMessageDialog({required context, required String message}) {
+    AlertDialog alert = AlertDialog(
+      backgroundColor: Colors.white,
+      elevation: 3,
+      content: Text(
+        message,
+        textDirection: TextDirection.rtl,
+        style: TextStyle(
+          fontWeight: FontWeight.w300,
+          fontSize: Get.width / 25,
+        ),
+      ),
+      actions: [
+        TextButton(
+            onPressed: () {
+              Get.back(closeOverlays: true);
+            },
+            child: Text(
+              'تایید',
+              style: TextStyle(
+                color: Colors.greenAccent,
+                fontWeight: FontWeight.w400,
+                fontSize: Get.width / 27,
+              ),
+            ))
+      ],
+    );
+    showDialog(
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return alert;
+      },
+      context: context,
+    );
+  }
+
   Future<void> _makePhoneCall(String phoneNumber) async {
     final Uri launchUri = Uri(
       scheme: 'tel',
@@ -395,7 +433,7 @@ class _DetailState extends State<Detail> with CacheManager {
   Widget getImageSlider() {
     return ImageSlideshow(
       width: double.infinity,
-      height: Get.height / 2.5,
+      height: Get.height / 2.2,
       initialPage: 0,
       indicatorColor: Colors.greenAccent,
       indicatorBackgroundColor: Colors.white,
@@ -454,7 +492,7 @@ class _DetailState extends State<Detail> with CacheManager {
         );
       },
       child: Container(
-        height: Get.height / 2.5,
+        height: Get.height / 2.2,
         width: Get.width,
         child: Image.memory(
           base64Decode(image!),

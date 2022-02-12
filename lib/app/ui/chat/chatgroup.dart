@@ -70,9 +70,10 @@ class _ChatGroupsState extends State<ChatGroups> with CacheManager {
         },
         child: RefreshIndicator(
           color: Colors.greenAccent,
-          onRefresh: () => Future.sync(
-            () => groupChatScreenPagingController.refresh(),
-          ),
+          onRefresh: () => Future.sync(() {
+            newMessageController.haveNewMessage.value = false;
+            groupChatScreenPagingController.refresh();
+          }),
           child: PagedListView.separated(
             pagingController: groupChatScreenPagingController,
             separatorBuilder: (context, index) => const SizedBox(
@@ -88,59 +89,7 @@ class _ChatGroupsState extends State<ChatGroups> with CacheManager {
                   joinToGroups();
                   return GestureDetector(
                     onLongPress: () {
-                      Get.defaultDialog(
-                        radius: 5,
-                        title: 'از حذف چت مطمئن هستید ؟ ',
-                        barrierDismissible: false,
-                        titlePadding: EdgeInsets.all(20),
-                        titleStyle: TextStyle(
-                          fontWeight: FontWeight.w300,
-                          fontSize: 16,
-                        ),
-                        content: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            'پیامهای مربوط به این کاربر حذف میشوند',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w200,
-                              fontSize: 14,
-                            ),
-                          ),
-                        ),
-                        cancel: Padding(
-                          padding: const EdgeInsets.all(5.0),
-                          child: TextButton(
-                            onPressed: () {
-                              Get.back();
-                            },
-                            child: Text(
-                              'انصراف',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w300,
-                                  fontSize: 14,
-                                  color: Colors.green),
-                            ),
-                          ),
-                        ),
-                        confirm: Padding(
-                          padding: const EdgeInsets.all(5.0),
-                          child: TextButton(
-                              onPressed: () async {
-                                await messageProvider.deleteMessageGroup(
-                                  groupName: group.name,
-                                );
-                                groupChatScreenPagingController.refresh();
-                                Get.back();
-                              },
-                              child: Text(
-                                'حذف',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w300,
-                                    fontSize: 14,
-                                    color: Colors.red),
-                              )),
-                        ),
-                      );
+                      deleteChatAlert(group.name);
                     },
                     onTap: () async {
                       if (await storage
@@ -191,7 +140,7 @@ class _ChatGroupsState extends State<ChatGroups> with CacheManager {
                                                   ))
                                           ? FontWeight.w500
                                           : FontWeight.w300,
-                                      fontSize: 13),
+                                      fontSize: 11),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                 ),
@@ -203,13 +152,13 @@ class _ChatGroupsState extends State<ChatGroups> with CacheManager {
                                   children: [
                                     Text(
                                       group.title == 'الموتی'
-                                          ? ''
+                                          ? 'پیام الموتی'
                                           : group.title,
                                       textDirection: TextDirection.rtl,
                                       style: TextStyle(
                                           fontWeight: FontWeight.w400,
                                           fontFamily: persianNumber,
-                                          fontSize: 12),
+                                          fontSize: 13),
                                     ),
                                     SizedBox(
                                       width: Get.width / 30,
@@ -226,21 +175,37 @@ class _ChatGroupsState extends State<ChatGroups> with CacheManager {
                                                 filterQuality:
                                                     FilterQuality.low,
                                                 fit: BoxFit.cover,
-                                                width: Get.width / 7,
-                                                height: Get.width / 7,
+                                                width: Get.width / 9,
+                                                height: Get.width / 9,
                                               )
                                             : ((group.title == 'الموتی'
                                                 ? Image.asset(
-                                                    'assets/logo/logo.png',
+                                                    'assets/logo/square_logo.png',
                                                     fit: BoxFit.fitWidth,
-                                                    width: Get.width / 7,
-                                                    height: Get.width / 7,
+                                                    width: Get.width / 9,
+                                                    height: Get.width / 9,
                                                   )
-                                                : Image.asset(
-                                                    'assets/logo/no-image.png',
-                                                    fit: BoxFit.cover,
-                                                    width: Get.width / 7,
-                                                    height: Get.width / 7,
+                                                : Opacity(
+                                                    opacity: 0.4,
+                                                    child: Container(
+                                                      height: Get.height / 15,
+                                                      width: Get.height / 15,
+                                                      decoration: BoxDecoration(
+                                                        // color: Colors.grey,
+                                                        border: Border.all(
+                                                            color: Colors.grey,
+                                                            width: 3),
+                                                      ),
+                                                      child:
+                                                          FractionallySizedBox(
+                                                        heightFactor: 0.7,
+                                                        widthFactor: 0.7,
+                                                        child: Image.asset(
+                                                          'assets/logo/no-image.png',
+                                                          fit: BoxFit.cover,
+                                                        ),
+                                                      ),
+                                                    ),
                                                   ))),
                                       ),
                                     )
@@ -297,6 +262,57 @@ class _ChatGroupsState extends State<ChatGroups> with CacheManager {
                 }),
           ),
         ),
+      ),
+    );
+  }
+
+  deleteChatAlert(String groupname) {
+    Get.defaultDialog(
+      radius: 5,
+      title: 'از حذف چت مطمئن هستید ؟ ',
+      barrierDismissible: false,
+      titlePadding: EdgeInsets.all(20),
+      titleStyle: TextStyle(
+        fontWeight: FontWeight.w300,
+        fontSize: 16,
+      ),
+      content: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Text(
+          'پیامهای مربوط به این کاربر حذف میشوند',
+          style: TextStyle(
+            fontWeight: FontWeight.w200,
+            fontSize: 14,
+          ),
+        ),
+      ),
+      cancel: Padding(
+        padding: const EdgeInsets.all(5.0),
+        child: TextButton(
+          onPressed: () {
+            Get.back();
+          },
+          child: Text(
+            'انصراف',
+            style: TextStyle(
+                fontWeight: FontWeight.w300, fontSize: 14, color: Colors.green),
+          ),
+        ),
+      ),
+      confirm: Padding(
+        padding: const EdgeInsets.all(5.0),
+        child: TextButton(
+            onPressed: () async {
+              await messageProvider.deleteMessageGroup(
+                  groupName: groupname, context: context);
+              groupChatScreenPagingController.refresh();
+              Get.back();
+            },
+            child: Text(
+              'حذف',
+              style: TextStyle(
+                  fontWeight: FontWeight.w300, fontSize: 14, color: Colors.red),
+            )),
       ),
     );
   }

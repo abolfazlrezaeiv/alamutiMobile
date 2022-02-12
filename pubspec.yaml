@@ -64,7 +64,8 @@ flutter:
     - assets/icons/advertisement-empty.jpg
     - assets/icons/messages.jpg
     - assets/icons/no-connection.jpg
-    - assets/icons/search-empty.jpg 
+    - assets/icons/search-empty.jpg
+    - assets/logo/square_logo.png
    
   #   - images/a_dot_ham.jpeg
 

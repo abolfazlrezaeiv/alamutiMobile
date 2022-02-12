@@ -71,7 +71,7 @@ class _HomePageState extends State<HomePage> {
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(mq.height / 6.1),
         child: Card(
-          elevation: 7,
+          elevation: 9,
           margin: EdgeInsets.zero,
           shape: RoundedRectangleBorder(
             side: BorderSide(color: Colors.transparent, width: 0),
@@ -87,7 +87,6 @@ class _HomePageState extends State<HomePage> {
                 searchController: searchController,
               ),
               Obx(() => ChipsChoice<int>.single(
-                    padding: EdgeInsets.all(0),
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     value: categoryFilterController.selectedTapIndex.value,
@@ -164,11 +163,22 @@ class _HomePageState extends State<HomePage> {
                             child: (ads.listviewPhoto == null)
                                 ? Opacity(
                                     opacity: 0.2,
-                                    child: Image.asset(
-                                      'assets/logo/no-image.png',
-                                      fit: BoxFit.cover,
-                                      height: Get.height / 6,
-                                      width: Get.height / 6,
+                                    child: Container(
+                                      height: Get.height / 7,
+                                      width: Get.height / 7,
+                                      decoration: BoxDecoration(
+                                        // color: Colors.grey,
+                                        border: Border.all(
+                                            color: Colors.grey, width: 5),
+                                      ),
+                                      child: FractionallySizedBox(
+                                        heightFactor: 0.7,
+                                        widthFactor: 0.7,
+                                        child: Image.asset(
+                                          'assets/logo/no-image.png',
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
                                     ),
                                   )
                                 : Image.memory(
@@ -176,8 +186,8 @@ class _HomePageState extends State<HomePage> {
                                       ads.listviewPhoto!,
                                     ),
                                     fit: BoxFit.cover,
-                                    height: Get.height / 6,
-                                    width: Get.height / 6,
+                                    height: Get.height / 7,
+                                    width: Get.height / 7,
                                   ),
                           ),
                         ),
