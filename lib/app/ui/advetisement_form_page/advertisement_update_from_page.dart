@@ -415,7 +415,7 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
       title = 'قیمت (به تومان)';
     }
     if (widget.ads.adsType == AdsFormState.JOB.toString().toLowerCase()) {
-      title = 'حقوق ماهیانه';
+      title = 'دستمزد';
     }
     if (widget.ads.adsType == AdsFormState.REALSTATE.toString().toLowerCase()) {
       title = 'قیمت کل';

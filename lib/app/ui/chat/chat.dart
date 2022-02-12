@@ -164,14 +164,22 @@ class _ChatState extends State<Chat> {
                     child: Row(
                       children: [
                         Expanded(
+                          child: PhysicalModel(
+                            borderRadius: BorderRadius.circular(9),
+                            color: Colors.white,
+                            elevation: 2.0,
+                            shadowColor: Colors.black,
                             child: AlamutiTextField(
-                          textEditingController: messageTextEditingController,
-                          isNumber: false,
-                          isPrice: false,
-                          isChatTextField: true,
-                          hasCharacterLimitation: false,
-                          prefix: '',
-                        )),
+                              textEditingController:
+                                  messageTextEditingController,
+                              isNumber: false,
+                              isPrice: false,
+                              isChatTextField: true,
+                              hasCharacterLimitation: false,
+                              prefix: '',
+                            ),
+                          ),
+                        ),
                         TextButton(
                             onPressed: () async {
                               if (_formKey.currentState!.validate()) {

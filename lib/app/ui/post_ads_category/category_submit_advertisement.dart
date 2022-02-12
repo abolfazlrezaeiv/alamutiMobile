@@ -56,7 +56,7 @@ class CategorySubmitAds extends StatelessWidget {
               ),
               CategoryItem(
                 advertisementTypeController: advertisementTypeController,
-                categoryName: 'مشاغل',
+                categoryName: 'خدمات',
                 category: AdsFormState.JOB,
                 categoryIcon: Icon(
                   CupertinoIcons.person_3,

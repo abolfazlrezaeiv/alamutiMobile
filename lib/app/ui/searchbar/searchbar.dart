@@ -70,7 +70,7 @@ class _SearchState extends State<Search> {
                         'جستجو در',
                         style: TextStyle(
                             backgroundColor: Colors.transparent,
-                            color: Colors.black,
+                            color: Colors.green,
                             fontWeight: FontWeight.w400,
                             fontSize: Get.width / 28),
                       ),
@@ -114,13 +114,13 @@ class _SearchState extends State<Search> {
                 borderSide: BorderSide(color: Colors.greenAccent, width: 2.0),
               ),
               enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(9),
-                  borderSide: BorderSide(color: Color.fromRGBO(112, 112, 112, 0.6), width: 1.0)),
-
-              ),
+                  borderRadius: BorderRadius.circular(9),
+                  borderSide: BorderSide(
+                      color: Color.fromRGBO(112, 112, 112, 0.6), width: 1.0)),
             ),
           ),
         ),
+      ),
     );
   }
 

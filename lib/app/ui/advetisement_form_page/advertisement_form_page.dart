@@ -396,7 +396,7 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
       title = 'قیمت';
     }
     if (advertisementTypeController.formState.value == AdsFormState.JOB) {
-      title = 'حقوق ماهیانه';
+      title = 'دستمزد';
     }
     if (advertisementTypeController.formState.value == AdsFormState.REALSTATE) {
       title = 'قیمت کل';

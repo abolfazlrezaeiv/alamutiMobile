@@ -47,7 +47,7 @@ class _HomePageState extends State<HomePage> {
     'همه',
     'مواد غذایی',
     'دام',
-    'مشاغل',
+    'خدمات',
     'املاک',
   ];
 
@@ -70,7 +70,7 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: Colors.white,
       // backgroundColor: Color.fromRGBO(78, 198, 122, 1.0),
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(mq.height / 8),
+        preferredSize: Size.fromHeight(mq.height / 6.1),
         child: Card(
           elevation: 9,
           margin: EdgeInsets.zero,

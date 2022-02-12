@@ -382,8 +382,31 @@ class _DetailState extends State<Detail> with CacheManager {
     if (detailPageController.details[0].photo2 != null) {
       return singleImage(detailPageController.details[0].photo2);
     }
+    return emptyImage();
+  }
 
-    return Container(height: 0,);
+  Widget emptyImage() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(5),
+        child: Opacity(
+          opacity: 0.2,
+          child: Container(
+            height: Get.height / 2.9,
+            width: Get.width,
+            decoration: BoxDecoration(
+              // color: Colors.grey,
+              border: Border.all(color: Colors.grey, width: 5),
+            ),
+            child: Image.asset(
+              'assets/logo/no-image.png',
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   Widget singleImage(String? image) {
