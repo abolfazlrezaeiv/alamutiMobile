@@ -4,6 +4,7 @@ import 'package:alamuti/app/controller/ads_form_controller.dart';
 import 'package:alamuti/app/controller/category_tag_selected_item_controller.dart';
 import 'package:alamuti/app/controller/search_controller.dart';
 import 'package:alamuti/app/data/entities/advertisement.dart';
+import 'package:alamuti/app/data/entities/chatgroup.dart';
 import 'package:alamuti/app/data/provider/advertisement_provider.dart';
 import 'package:alamuti/app/data/provider/chat_message_provider.dart';
 import 'package:alamuti/app/data/provider/signalr_helper.dart';
@@ -69,7 +70,7 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: Colors.white,
       // backgroundColor: Color.fromRGBO(78, 198, 122, 1.0),
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(mq.height / 6.1),
+        preferredSize: Size.fromHeight(mq.height / 8),
         child: Card(
           elevation: 9,
           margin: EdgeInsets.zero,
@@ -86,29 +87,31 @@ class _HomePageState extends State<HomePage> {
                 categoryFilterController: categoryFilterController,
                 searchController: searchController,
               ),
-              Obx(() => ChipsChoice<int>.single(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    value: categoryFilterController.selectedTapIndex.value,
-                    onChanged: (val) {
-                      FocusScope.of(context).unfocus();
-                      searchTextEditingController.text = '';
-                      searchController.isSearchResult.value = false;
-                      categoryFilterController.selectedFilterString.value =
-                          filterType[val];
+              Obx(
+                () => ChipsChoice<int>.single(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  value: categoryFilterController.selectedTapIndex.value,
+                  onChanged: (val) {
+                    FocusScope.of(context).unfocus();
+                    searchTextEditingController.text = '';
+                    searchController.isSearchResult.value = false;
+                    categoryFilterController.selectedFilterString.value =
+                        filterType[val];
 
-                      _pagingController.refresh();
-                      categoryFilterController.selectedTapIndex.value = val;
-                    },
-                    choiceItems: C2Choice.listFrom<int, String>(
-                      source: options,
-                      value: (i, v) => i,
-                      label: (i, v) => v,
-                    ),
-                    choiceStyle: C2ChoiceStyle(
-                      color: Color.fromRGBO(8, 212, 76, 1),
-                    ),
-                  ))
+                    _pagingController.refresh();
+                    categoryFilterController.selectedTapIndex.value = val;
+                  },
+                  choiceItems: C2Choice.listFrom<int, String>(
+                    source: options,
+                    value: (i, v) => i,
+                    label: (i, v) => v,
+                  ),
+                  choiceStyle: C2ChoiceStyle(
+                    color: Color.fromRGBO(8, 212, 76, 1),
+                  ),
+                ),
+              ),
             ],
           ),
         ),

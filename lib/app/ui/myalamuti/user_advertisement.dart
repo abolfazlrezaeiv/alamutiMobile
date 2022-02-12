@@ -223,8 +223,10 @@ class _UserAdvertisementState extends State<UserAdvertisement> {
                 ),
                 ads.published == false
                     ? Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: Get.width / 3, vertical: Get.width / 6),
+                        padding: EdgeInsets.only(
+                            left: Get.width / 2.7,
+                            top: Get.width / 6,
+                            bottom: Get.width / 6),
                         child: Transform.rotate(
                           angle: -math.pi / 4,
                           child: Container(
@@ -234,7 +236,7 @@ class _UserAdvertisementState extends State<UserAdvertisement> {
                               textDirection: TextDirection.rtl,
                               style: TextStyle(
                                   fontWeight: FontWeight.w700,
-                                  fontSize: Get.width / 30,
+                                  fontSize: Get.width / 22,
                                   color: Color.fromRGBO(239, 122, 122, 1.0)),
                             ),
                             decoration: BoxDecoration(
@@ -242,16 +244,18 @@ class _UserAdvertisementState extends State<UserAdvertisement> {
                                 color: Color.fromRGBO(239, 122, 122, 1.0),
                                 width: 2,
                               ),
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(0),
-                              ),
+                              // borderRadius: BorderRadius.all(
+                              //   Radius.circular(0),
+                              // ),
                             ),
                           ),
                         ),
                       )
                     : Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: Get.width / 3, vertical: Get.width / 6),
+                        padding: EdgeInsets.only(
+                            left: Get.width / 2.7,
+                            top: Get.width / 6,
+                            bottom: Get.width / 6),
                         child: Transform.rotate(
                           angle: -math.pi / 4,
                           child: Container(
@@ -261,7 +265,7 @@ class _UserAdvertisementState extends State<UserAdvertisement> {
                               textDirection: TextDirection.rtl,
                               style: TextStyle(
                                 fontWeight: FontWeight.w700,
-                                fontSize: Get.width / 30,
+                                fontSize: Get.width / 22,
                                 color: Color.fromRGBO(81, 224, 82, 1.0),
                               ),
                             ),

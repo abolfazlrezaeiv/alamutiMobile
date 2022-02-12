@@ -3,8 +3,6 @@ import 'dart:typed_data';
 import 'package:alamuti/app/controller/ads_form_controller.dart';
 import 'package:alamuti/app/controller/chat_info_controller.dart';
 import 'package:alamuti/app/controller/detail_page_advertisement.dart';
-import 'package:alamuti/app/data/entities/chat_message.dart';
-import 'package:alamuti/app/data/entities/chatgroup.dart';
 import 'package:alamuti/app/data/provider/advertisement_provider.dart';
 import 'package:alamuti/app/data/provider/chat_message_provider.dart';
 import 'package:alamuti/app/data/provider/signalr_helper.dart';
@@ -14,7 +12,6 @@ import 'package:alamuti/app/ui/chat/chat.dart';
 import 'package:alamuti/app/ui/details/fullscreen_image.dart';
 import 'package:alamuti/app/ui/details/fullscreen_slider.dart';
 import 'package:alamuti/app/ui/theme.dart';
-import 'package:alamuti/app/ui/widgets/description_textfield.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
@@ -51,17 +48,19 @@ class _DetailState extends State<Detail> with CacheManager {
 
   @override
   Widget build(BuildContext context) {
+    var hasImage = (detailPageController.details[0].photo1 != null) &&
+        (detailPageController.details[0].photo2 != null);
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         automaticallyImplyLeading: true,
-        elevation: 0,
+        elevation: 8,
         foregroundColor: Colors.black,
-        shadowColor: Colors.transparent,
-        backgroundColor: Colors.white.withOpacity(0.1),
+        shadowColor: Colors.grey,
+        backgroundColor: Color.fromRGBO(78, 198, 122, 1.0),
       ),
       resizeToAvoidBottomInset: false,
-      extendBodyBehindAppBar: true,
+      extendBodyBehindAppBar: false,
       body: Obx(
         () => ListView(
           padding: EdgeInsets.zero,
@@ -384,7 +383,7 @@ class _DetailState extends State<Detail> with CacheManager {
       return singleImage(detailPageController.details[0].photo2);
     }
 
-    return getAppbarWithBack();
+    return Container(height: 0,);
   }
 
   Widget singleImage(String? image) {
@@ -455,18 +454,18 @@ class _DetailState extends State<Detail> with CacheManager {
         : Container();
   }
 
-  Widget getAppbarWithBack() {
-    return Card(
-      margin: EdgeInsets.all(0),
-      elevation: 3,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(0.0),
-      ),
-      color: Color.fromRGBO(78, 198, 122, 1.0),
-      child: Container(
-        width: Get.width,
-        height: 80,
-      ),
-    );
-  }
+  // Widget getAppbarWithBack() {
+  //   return Card(
+  //     margin: EdgeInsets.all(0),
+  //     elevation: 0,
+  //     shape: RoundedRectangleBorder(
+  //       borderRadius: BorderRadius.circular(0.0),
+  //     ),
+  //     color: Colors.transparent,
+  //     child: Container(
+  //       width: Get.width,
+  //       height: Get.height/8,
+  //     ),
+  //   );
+  // }
 }

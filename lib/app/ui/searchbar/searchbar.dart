@@ -29,14 +29,14 @@ class _SearchState extends State<Search> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 25.0),
       child: Directionality(
         textDirection: TextDirection.rtl,
         child: PhysicalModel(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(9),
           color: Colors.white,
-          elevation: 4.0,
-          shadowColor: Colors.grey.withOpacity(1),
+          elevation: 8.0,
+          shadowColor: Colors.black,
           child: TextField(
             controller: widget.textEditingController,
             style: TextStyle(
@@ -100,7 +100,7 @@ class _SearchState extends State<Search> {
                 borderSide: BorderSide(color: Colors.red, width: 0.6),
               ),
               errorBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(9),
                 borderSide: BorderSide(
                   color: Colors.red,
                   width: 0.6,
@@ -110,18 +110,17 @@ class _SearchState extends State<Search> {
               contentPadding:
                   EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
               focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(9),
                 borderSide: BorderSide(color: Colors.greenAccent, width: 2.0),
               ),
               enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide(color: Colors.white, width: 2.0),
-                // color: Color.fromRGBO(112, 112, 112, 0.2), width: 2.0),
+                borderRadius: BorderRadius.circular(9),
+                  borderSide: BorderSide(color: Color.fromRGBO(112, 112, 112, 0.6), width: 1.0)),
+
               ),
             ),
           ),
         ),
-      ),
     );
   }
 
