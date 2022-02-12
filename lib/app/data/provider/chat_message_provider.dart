@@ -6,6 +6,7 @@ import 'package:alamuti/app/data/entities/list_page.dart';
 import 'package:alamuti/app/data/provider/token_provider.dart';
 import 'package:alamuti/app/data/provider/base_url.dart';
 import 'package:alamuti/app/data/storage/cache_manager.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/route_manager.dart';
@@ -86,13 +87,22 @@ class MessageProvider with CacheManager {
   }
 
   Future<void> reportChat(
+    BuildContext context,
     String groupName,
     String blockedUserId,
     String reportMessage,
   ) async {
-    await tokenProvider.api.put(
-      baseChatUrl + 'api/Chat/group/$groupName',
-    );
+    var formData = FormData.fromMap({
+      'groupname': groupName,
+      'blockedUserId': blockedUserId,
+      'reportMessage': reportMessage,
+    });
+
+    showLoaderDialog(context);
+
+    await tokenProvider.api
+        .put(baseChatUrl + 'api/Chat/reportgroup', data: formData)
+        .whenComplete(() => Get.back());
   }
 
   Future<ChatGroup?> getGroup(String groupName) async {

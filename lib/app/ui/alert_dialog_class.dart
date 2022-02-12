@@ -1,12 +1,13 @@
 import 'package:alamuti/app/controller/chat_info_controller.dart';
+import 'package:alamuti/app/controller/selected_tap_controller.dart';
+import 'package:alamuti/app/data/provider/advertisement_provider.dart';
 import 'package:alamuti/app/data/provider/chat_message_provider.dart';
 import 'package:alamuti/app/ui/widgets/buttom_navbar_items.dart';
+import 'package:alamuti/app/ui/widgets/description_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class Alert {
-  final ChatInfoController chatInfoController = Get.put(ChatInfoController());
-
   static void showStatusDialog({required context, required String message}) {
     AlertDialog alert = AlertDialog(
       backgroundColor: Colors.white,
@@ -89,7 +90,7 @@ class Alert {
                 context: context,
                 groupName: groupName,
               );
-
+              Get.put(ScreenController()).selectedIndex.value = 3;
               Get.toNamed('/home');
             },
             child: Text(
@@ -98,6 +99,169 @@ class Alert {
                   fontWeight: FontWeight.w300, fontSize: 14, color: Colors.red),
             )),
       ),
+    );
+  }
+
+  static showAdvertisementReportDialog(
+    context,
+    TextEditingController reportTextEditingCtrl,
+    int adsId,
+  ) {
+    AlertDialog alert = AlertDialog(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        content: Container(
+          height: Get.height / 2.9,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                'درباره مشکل توضیح دهید.',
+                textDirection: TextDirection.rtl,
+                style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: Get.width / 30,
+                    fontWeight: FontWeight.w300),
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    height: 5,
+                  ),
+                  DescriptionTextField(
+                      minline: 6,
+                      maxline: 6,
+                      textEditingController: reportTextEditingCtrl),
+                  TextButton(
+                      onPressed: () async {
+                        Get.back();
+                        AdvertisementProvider ap = AdvertisementProvider();
+                        await ap.sendReport(
+                          context: context,
+                          id: adsId,
+                          report: reportTextEditingCtrl.text,
+                        );
+                      },
+                      child: Text(
+                        'ثبت گزارش',
+                        style: TextStyle(
+                            color: Colors.greenAccent,
+                            fontWeight: FontWeight.w500),
+                      ))
+                ],
+              ),
+            ],
+          ),
+        ));
+    showDialog(
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return alert;
+      },
+      context: context,
+    );
+  }
+
+  static showChatReportDialog(
+      context,
+      TextEditingController reportTextEditingCtrl,
+      String groupName,
+      String blockedUserId) {
+    AlertDialog alert = AlertDialog(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        content: Container(
+          height: Get.height / 2.9,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                'درباره مشکل توضیح دهید.',
+                textDirection: TextDirection.rtl,
+                style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: Get.width / 30,
+                    fontWeight: FontWeight.w300),
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    height: 5,
+                  ),
+                  DescriptionTextField(
+                      minline: 6,
+                      maxline: 6,
+                      textEditingController: reportTextEditingCtrl),
+                  TextButton(
+                      onPressed: () async {
+                        Get.back();
+
+                        MessageProvider mp = MessageProvider();
+
+                        await mp.reportChat(
+                          context,
+                          groupName,
+                          blockedUserId,
+                          reportTextEditingCtrl.text,
+                        );
+                        Get.put(ScreenController()).selectedIndex.value = 3;
+                        Get.toNamed('/home');
+                      },
+                      child: Text(
+                        'ثبت گزارش',
+                        style: TextStyle(
+                            color: Colors.greenAccent,
+                            fontWeight: FontWeight.w500),
+                      ))
+                ],
+              ),
+            ],
+          ),
+        ));
+    showDialog(
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return alert;
+      },
+      context: context,
+    );
+  }
+
+  static showDeletedMessageDialog({required context, required String message}) {
+    AlertDialog alert = AlertDialog(
+      backgroundColor: Colors.white,
+      elevation: 3,
+      content: Text(
+        message,
+        textDirection: TextDirection.rtl,
+        style: TextStyle(
+          fontWeight: FontWeight.w300,
+          fontSize: Get.width / 25,
+        ),
+      ),
+      actions: [
+        TextButton(
+            onPressed: () {
+              Get.back(closeOverlays: true);
+            },
+            child: Text(
+              'تایید',
+              style: TextStyle(
+                color: Colors.greenAccent,
+                fontWeight: FontWeight.w400,
+                fontSize: Get.width / 27,
+              ),
+            ))
+      ],
+    );
+    showDialog(
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return alert;
+      },
+      context: context,
     );
   }
 }

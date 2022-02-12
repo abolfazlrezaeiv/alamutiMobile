@@ -33,6 +33,8 @@ class _ChatState extends State<Chat> {
   final TextEditingController messageTextEditingController =
       TextEditingController();
 
+  final TextEditingController reportTextEditingCtrl = TextEditingController();
+
   final ScreenController screenController = Get.find();
 
   final ChatInfoController chatInfoController = Get.find();
@@ -248,19 +250,28 @@ class _ChatState extends State<Chat> {
                     Padding(
                       padding: const EdgeInsets.symmetric(
                           vertical: 8.0, horizontal: 12),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Text(
-                            'گزارش و مسدود کردن',
-                            style: TextStyle(fontSize: Get.width / 27),
-                          ),
-                          SizedBox(width: 10),
-                          Icon(
-                            CupertinoIcons.exclamationmark_circle_fill,
-                            color: Colors.grey,
-                          )
-                        ],
+                      child: GestureDetector(
+                        onTap: () async {
+                          Alert.showChatReportDialog(
+                              context,
+                              reportTextEditingCtrl,
+                              chatInfoController.chat[0].name,
+                              receiverId);
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text(
+                              'گزارش و مسدود کردن',
+                              style: TextStyle(fontSize: Get.width / 27),
+                            ),
+                            SizedBox(width: 10),
+                            Icon(
+                              CupertinoIcons.exclamationmark_circle_fill,
+                              color: Colors.grey,
+                            )
+                          ],
+                        ),
                       ),
                     )
                   ],
@@ -326,6 +337,7 @@ class _ChatState extends State<Chat> {
   @override
   void dispose() {
     messageTextEditingController.dispose();
+    reportTextEditingCtrl.dispose();
     _chatScreenPagingController.dispose();
     super.dispose();
   }

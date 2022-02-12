@@ -9,6 +9,7 @@ import 'package:alamuti/app/data/provider/advertisement_provider.dart';
 import 'package:alamuti/app/data/provider/chat_message_provider.dart';
 import 'package:alamuti/app/data/provider/signalr_helper.dart';
 import 'package:alamuti/app/data/storage/cache_manager.dart';
+import 'package:alamuti/app/ui/alert_dialog_class.dart';
 import 'package:alamuti/app/ui/chat/chat.dart';
 import 'package:alamuti/app/ui/details/fullscreen_image.dart';
 import 'package:alamuti/app/ui/details/fullscreen_slider.dart';
@@ -147,72 +148,10 @@ class _DetailState extends State<Detail> with CacheManager {
                         children: [
                           GestureDetector(
                             onTap: () {
-                              showReportDialog(context) {
-                                AlertDialog alert = AlertDialog(
-                                    backgroundColor: Colors.white,
-                                    elevation: 0,
-                                    content: Container(
-                                      height: Get.height / 2.9,
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.end,
-                                        children: [
-                                          Text(
-                                            'درباره مشکل توضیح دهید.',
-                                            textDirection: TextDirection.rtl,
-                                            style: TextStyle(
-                                                color: Colors.grey,
-                                                fontSize: Get.width / 30,
-                                                fontWeight: FontWeight.w300),
-                                          ),
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: [
-                                              SizedBox(
-                                                height: 5,
-                                              ),
-                                              DescriptionTextField(
-                                                  minline: 6,
-                                                  maxline: 6,
-                                                  textEditingController:
-                                                      reportTextEditingCtrl),
-                                              TextButton(
-                                                  onPressed: () async {
-                                                    Get.back();
-                                                    await advertisementProvider
-                                                        .sendReport(
-                                                      context: context,
-                                                      id: detailPageController
-                                                          .details[0].id,
-                                                      report:
-                                                          reportTextEditingCtrl
-                                                              .text,
-                                                    );
-                                                  },
-                                                  child: Text(
-                                                    'ثبت گزارش',
-                                                    style: TextStyle(
-                                                        color:
-                                                            Colors.greenAccent,
-                                                        fontWeight:
-                                                            FontWeight.w500),
-                                                  ))
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ));
-                                showDialog(
-                                  barrierDismissible: true,
-                                  builder: (BuildContext context) {
-                                    return alert;
-                                  },
-                                  context: context,
-                                );
-                              }
-
-                              return showReportDialog(context);
+                              return Alert.showAdvertisementReportDialog(
+                                  context,
+                                  reportTextEditingCtrl,
+                                  detailPageController.details[0].id);
                             },
                             child: Container(
                               decoration: BoxDecoration(
@@ -333,7 +272,7 @@ class _DetailState extends State<Detail> with CacheManager {
                       print('4');
                       if (group != null && group.isDeleted == true) {
                         var message = 'مخاطب مکالمه را حذف کرده است';
-                        showDeletedMessageDialog(
+                        Alert.showDeletedMessageDialog(
                             context: context, message: message);
                       } else if (group != null && group.isDeleted == false) {
                         chatInfoController.chat.value = [group];
@@ -384,42 +323,6 @@ class _DetailState extends State<Detail> with CacheManager {
     );
 
     return result;
-  }
-
-  showDeletedMessageDialog({required context, required String message}) {
-    AlertDialog alert = AlertDialog(
-      backgroundColor: Colors.white,
-      elevation: 3,
-      content: Text(
-        message,
-        textDirection: TextDirection.rtl,
-        style: TextStyle(
-          fontWeight: FontWeight.w300,
-          fontSize: Get.width / 25,
-        ),
-      ),
-      actions: [
-        TextButton(
-            onPressed: () {
-              Get.back(closeOverlays: true);
-            },
-            child: Text(
-              'تایید',
-              style: TextStyle(
-                color: Colors.greenAccent,
-                fontWeight: FontWeight.w400,
-                fontSize: Get.width / 27,
-              ),
-            ))
-      ],
-    );
-    showDialog(
-      barrierDismissible: true,
-      builder: (BuildContext context) {
-        return alert;
-      },
-      context: context,
-    );
   }
 
   Future<void> _makePhoneCall(String phoneNumber) async {
