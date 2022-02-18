@@ -13,6 +13,7 @@ import 'package:alamuti/app/ui/widgets/description_textfield.dart';
 import 'package:alamuti/app/ui/widgets/update_image_card_left.dart';
 import 'package:alamuti/app/ui/widgets/update_image_card_right.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -250,50 +251,79 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
                 SizedBox(
                   height: Get.height / 80,
                 ),
-                Container(
-                  padding: EdgeInsets.only(
-                      right: Get.width / 2,
-                      left: Get.width / 35,
-                      bottom: Get.width / 35),
-                  child: ElevatedButton(
-                    style: ButtonStyle(
-                      fixedSize: MaterialStateProperty.all(Size.fromWidth(
-                          MediaQuery.of(context).size.width / 2.2)),
-                    ),
-                    onPressed: () async {
-                      FocusScope.of(context).unfocus();
-                      if (_formKey.currentState!.validate()) {
-                        await advertisementProvider.updateAdvertisement(
-                          context: context,
-                          area: areaTextFieldController.text.isEmpty
-                              ? 0
-                              : int.parse(areaTextFieldController.text),
-                          description: descriptionTextFieldController.text,
-                          photo1: updateUploadImageController
-                              .leftImagebyteCode.value,
-                          photo2: updateUploadImageController
-                              .rightImagebyteCode.value,
-                          listviewPhoto: await _getListviewImage(),
-                          price: int.parse(priceTextFieldController.text
-                              .replaceAll(RegExp(r','), '')),
-                          village: vilageNameTextFieldController.text,
-                          title: titleTextFieldController.text,
-                          id: widget.ads.id,
-                        );
-                      }
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: Text(
-                        'ثبت',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w400,
-                          fontSize: Get.width / 25,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                      style: ButtonStyle(
+                        fixedSize: MaterialStateProperty.all(Size.fromWidth(
+                            MediaQuery.of(context).size.width / 2.2)),
+                      ),
+                      onPressed: () async {
+                        FocusScope.of(context).unfocus();
+                        if (_formKey.currentState!.validate()) {
+                          await advertisementProvider.updateAdvertisement(
+                            context: context,
+                            area: areaTextFieldController.text.isEmpty
+                                ? 0
+                                : int.parse(areaTextFieldController.text),
+                            description: descriptionTextFieldController.text,
+                            photo1: updateUploadImageController
+                                .leftImagebyteCode.value,
+                            photo2: updateUploadImageController
+                                .rightImagebyteCode.value,
+                            listviewPhoto: await _getListviewImage(),
+                            price: int.parse(priceTextFieldController.text
+                                .replaceAll(RegExp(r','), '')),
+                            village: vilageNameTextFieldController.text,
+                            title: titleTextFieldController.text,
+                            id: widget.ads.id,
+                          );
+                        }
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: Text(
+                          'ذخیره',
+                          style: TextStyle(
+                            color: Color.fromRGBO(88, 77, 77, 1.0),
+                            fontWeight: FontWeight.w400,
+                            fontSize: Get.width / 25,
+                          ),
                         ),
                       ),
                     ),
-                  ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    ElevatedButton(
+                      style: ButtonStyle(
+                        fixedSize: MaterialStateProperty.all(
+                          Size.fromWidth(
+                              MediaQuery.of(context).size.width / 2.2),
+                        ),
+                        backgroundColor: MaterialStateProperty.all(
+                          // Color.fromRGBO(224, 224, 224, 1.0)
+                          Colors.white
+                        ),
+                      ),
+                      onPressed: () async {
+                        FocusScope.of(context).unfocus();
+                        Get.back();
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: Text(
+                          'انصراف',
+                          style: TextStyle(
+                         color: Color.fromRGBO(88, 77, 77, 1.0),
+                            fontWeight: FontWeight.w400,
+                            fontSize: Get.width / 25,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
