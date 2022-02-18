@@ -1,3 +1,4 @@
+import 'package:alamuti/app/controller/chat_info_controller.dart';
 import 'package:alamuti/app/controller/selected_tap_controller.dart';
 import 'package:alamuti/app/ui/theme.dart';
 import 'package:alamuti/app/ui/widgets/buttom_navbar_items.dart';
@@ -12,14 +13,14 @@ class AlamutiAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String? backwidget;
   final VoidCallback? method;
 
-  AlamutiAppBar(
-      {Key? key,
-      required this.title,
-      required this.appBar,
-      this.backwidget,
-      required this.hasBackButton,
-      this.method})
-      : super(key: key);
+  AlamutiAppBar({
+    Key? key,
+    required this.title,
+    required this.appBar,
+    this.backwidget,
+    required this.hasBackButton,
+    this.method,
+  }) : super(key: key);
 
   final ScreenController screenController = Get.put(ScreenController());
 
@@ -27,7 +28,8 @@ class AlamutiAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) => AppBar(
         leadingWidth: 100,
         actions: [
-          backwidget == '/chat'
+          backwidget == '/chat' &&
+                  Get.put(ChatInfoController()).chat[0].title != 'الموتی'
               ? Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: InkWell(

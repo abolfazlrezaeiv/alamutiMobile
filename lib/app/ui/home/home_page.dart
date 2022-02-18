@@ -231,16 +231,16 @@ class _HomePageState extends State<HomePage> {
                                           fontSize: 13),
                                       textDirection: TextDirection.rtl,
                                     ),
-                                    SizedBox(
-                                      width: 2,
-                                    ),
+                                    // SizedBox(
+                                    //   width: 2,
+                                    // ),
                                     Text(
                                       ads.village,
                                       style: TextStyle(
                                           fontWeight: FontWeight.w200,
                                           fontFamily: persianNumber,
                                           fontSize: 13),
-                                      textDirection: TextDirection.rtl,
+                                      // textDirection: TextDirection.rtl,
                                     ),
                                   ],
                                 ),

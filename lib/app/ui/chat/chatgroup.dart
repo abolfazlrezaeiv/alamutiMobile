@@ -89,7 +89,9 @@ class _ChatGroupsState extends State<ChatGroups> with CacheManager {
                   joinToGroups();
                   return GestureDetector(
                     onLongPress: () {
-                      deleteChatAlert(group.name);
+                      group.title == 'الموتی'
+                          ? print('d')
+                          : deleteChatAlert(group.name);
                     },
                     onTap: () async {
                       if (await storage

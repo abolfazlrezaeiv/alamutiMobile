@@ -83,7 +83,7 @@ class _ChatState extends State<Chat> {
         title: 'پیامها',
         hasBackButton: true,
         backwidget: "/chat",
-        method: showMenu,
+        method: isAlamutiMessage ? null : showMenu,
       ),
       body: WillPopScope(
         onWillPop: () async {

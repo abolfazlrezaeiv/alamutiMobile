@@ -55,7 +55,7 @@ class _DetailState extends State<Detail> with CacheManager {
       appBar: AppBar(
         automaticallyImplyLeading: true,
         elevation: 8,
-        foregroundColor: Colors.black,
+        foregroundColor: Colors.white,
         shadowColor: Colors.grey,
         backgroundColor: Color.fromRGBO(78, 198, 122, 1.0),
       ),

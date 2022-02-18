@@ -236,7 +236,7 @@ class _UserAdvertisementState extends State<UserAdvertisement> {
                               textDirection: TextDirection.rtl,
                               style: TextStyle(
                                   fontWeight: FontWeight.w700,
-                                  fontSize: Get.width / 22,
+                                  fontSize: Get.width / 28,
                                   color: Color.fromRGBO(239, 122, 122, 1.0)),
                             ),
                             decoration: BoxDecoration(
@@ -265,7 +265,7 @@ class _UserAdvertisementState extends State<UserAdvertisement> {
                               textDirection: TextDirection.rtl,
                               style: TextStyle(
                                 fontWeight: FontWeight.w700,
-                                fontSize: Get.width / 22,
+                                fontSize: Get.width / 28,
                                 color: Color.fromRGBO(81, 224, 82, 1.0),
                               ),
                             ),
