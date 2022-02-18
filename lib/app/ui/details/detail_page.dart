@@ -428,13 +428,15 @@ class _DetailState extends State<Detail> with CacheManager {
   }
 
   String getPriceTitle() {
+
+
     if (detailPageController.details[0].adsType ==
         AdsFormState.FOOD.toString().toLowerCase()) {
       return 'قیمت';
     }
     if (detailPageController.details[0].adsType ==
         AdsFormState.JOB.toString().toLowerCase()) {
-      return 'حقوق ماهیانه';
+      return 'دستمزد';
     }
 
     return 'قیمت کل';
