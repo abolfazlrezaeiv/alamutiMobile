@@ -1,3 +1,4 @@
+import 'package:alamuti/app/controller/authentication_manager_controller.dart';
 import 'package:alamuti/app/controller/chat_info_controller.dart';
 import 'package:alamuti/app/controller/selected_tap_controller.dart';
 import 'package:alamuti/app/data/provider/advertisement_provider.dart';
@@ -95,6 +96,48 @@ class Alert {
             },
             child: Text(
               'حذف',
+              style: TextStyle(
+                  fontWeight: FontWeight.w300, fontSize: 14, color: Colors.red),
+            )),
+      ),
+    );
+  }
+
+  static logoutAlertDialog({required BuildContext context}) {
+    Get.defaultDialog(
+      radius: 5,
+      title: 'از خروج از حساب مطمعن هستید',
+      barrierDismissible: false,
+      titlePadding: EdgeInsets.all(20),
+      titleStyle: TextStyle(
+        fontWeight: FontWeight.w300,
+        fontSize: 16,
+      ),
+      content: Text(
+        '',
+      ),
+      cancel: Padding(
+        padding: const EdgeInsets.all(5.0),
+        child: TextButton(
+          onPressed: () {
+            Get.back();
+          },
+          child: Text(
+            'انصراف',
+            style: TextStyle(
+                fontWeight: FontWeight.w300, fontSize: 14, color: Colors.green),
+          ),
+        ),
+      ),
+      confirm: Padding(
+        padding: const EdgeInsets.all(5.0),
+        child: TextButton(
+            onPressed: () async {
+              AuthenticationManager auth = Get.put(AuthenticationManager());
+              auth.logOut();
+            },
+            child: Text(
+              'خروج',
               style: TextStyle(
                   fontWeight: FontWeight.w300, fontSize: 14, color: Colors.red),
             )),

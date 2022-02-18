@@ -1,6 +1,7 @@
 import 'package:alamuti/app/controller/authentication_manager_controller.dart';
 import 'package:alamuti/app/controller/selected_tap_controller.dart';
 import 'package:alamuti/app/data/storage/cache_manager.dart';
+import 'package:alamuti/app/ui/alert_dialog_class.dart';
 import 'package:alamuti/app/ui/theme.dart';
 import 'package:alamuti/app/ui/widgets/alamuti_appbar.dart';
 import 'package:alamuti/app/ui/widgets/bottom_navbar.dart';
@@ -11,7 +12,6 @@ import 'package:get/get.dart';
 // ignore: must_be_immutable
 class MyAlamutiPage extends StatelessWidget with CacheManager {
   MyAlamutiPage({Key? key}) : super(key: key);
-  AuthenticationManager auth = Get.put(AuthenticationManager());
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +50,7 @@ class MyAlamutiPage extends StatelessWidget with CacheManager {
                               children: [
                                 TextButton(
                                   onPressed: () {
-                                    auth.logOut();
+                                    Alert.logoutAlertDialog(context: context);
                                   },
                                   child: Padding(
                                     padding: EdgeInsets.symmetric(
