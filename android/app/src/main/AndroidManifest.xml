@@ -27,6 +27,7 @@
    <application
         android:label="alamuti"
         android:icon="@mipmap/ic_launcher">
+        android:usesCleartextTraffic="true"
        <meta-data
            android:name="pushe_token"
            android:value="OWdsNm95bTUxMzRtcjgzZ0BydHJANjIzNzk2NjM4ODY3" />

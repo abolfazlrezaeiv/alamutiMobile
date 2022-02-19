@@ -236,7 +236,7 @@ class _HomePageState extends State<HomePage> {
                                           fontWeight: FontWeight.w200,
                                           fontFamily: persianNumber,
                                           fontSize: 13),
-                                      // textDirection: TextDirection.rtl,
+                                      textDirection: TextDirection.rtl,
                                     ),
                                   ],
                                 ),
