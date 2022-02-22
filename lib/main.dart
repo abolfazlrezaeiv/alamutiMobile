@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:alamuti/app/data/provider/chat_message_provider.dart';
 import 'package:alamuti/app/data/provider/signalr_helper.dart';
 import 'package:alamuti/app/data/storage/cache_manager.dart';
@@ -12,6 +13,7 @@ import 'package:pushe_flutter/pushe.dart';
 
 Future<void> main() async {
   await GetStorage.init();
+  HttpOverrides.global = new MyHttpOverrides();
   var messageProvider = MessageProvider();
 
   await Pushe.enableNotificationForceForegroundAware();
@@ -47,5 +49,14 @@ class Application extends StatelessWidget {
       smartManagement: SmartManagement.full,
       theme: themes,
     );
+  }
+}
+
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
   }
 }

@@ -1,11 +1,9 @@
 class RegisterResponseModel {
-  String? phonenumber;
-  int? userid;
-  String? error;
-  RegisterResponseModel({this.phonenumber, this.userid});
+  String phonenumber;
 
-  RegisterResponseModel.fromJson(Map<String, dynamic> json) {
-    phonenumber = json['phonenumber'];
-    userid = json['userid'];
+  RegisterResponseModel({required this.phonenumber});
+
+  factory RegisterResponseModel.fromJson(Map<String, dynamic> json) {
+    return RegisterResponseModel(phonenumber: json['phonenumber']);
   }
 }

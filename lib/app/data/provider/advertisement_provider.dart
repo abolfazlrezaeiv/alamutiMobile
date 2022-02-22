@@ -6,15 +6,17 @@ import 'package:alamuti/app/data/entities/advertisement.dart';
 import 'package:alamuti/app/data/entities/list_page.dart';
 import 'package:alamuti/app/data/provider/token_provider.dart';
 import 'package:alamuti/app/data/provider/base_url.dart';
+import 'package:alamuti/app/data/storage/cache_manager.dart';
 import 'package:alamuti/app/ui/alert_dialog_class.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/utils.dart';
+import 'package:http/http.dart' as http;
 
-class AdvertisementProvider {
-  final TokenProvider tokenProvider = Get.put(TokenProvider());
+class AdvertisementProvider with CacheManager {
+  final TokenProvider tokenProvider = TokenProvider();
 
   List<Advertisement> advertisementFromApi = [];
 
@@ -25,14 +27,14 @@ class AdvertisementProvider {
 
     showLoaderDialog(context);
 
-    var response = await tokenProvider.api
-        .get(baseUrl + 'Advertisement/$id')
-        .whenComplete(() => Get.back());
+    var url = Uri.parse(baseUrl + 'Advertisement/$id');
+
+    var response = await http.get(url).whenComplete(() => Get.back());
+
+    var body = jsonDecode(response.body);
 
     if (response.statusCode == 200) {
-      detailPageController.details.value = [
-        Advertisement.fromJson(response.data)
-      ];
+      detailPageController.details.value = [Advertisement.fromJson(body)];
     } else {
       var message = 'متاسفانه ارتباط ناموفق بود لطفا دوباره امتحان کنید';
       Alert.showStatusDialog(context: context, message: message);
@@ -40,36 +42,33 @@ class AdvertisementProvider {
   }
 
   Future<ListPage<Advertisement>> getAll(
-      {int number = 1, int size = 8, String? adstype}) async {
+      {int number = 1, int size = 8, String? adsType}) async {
     advertisementFromApi = [];
 
-    Response response;
-
-    var argument = (adstype == null || adstype.isEmpty) ? ' ' : adstype;
+    var argument = (adsType == null || adsType.isEmpty) ? ' ' : adsType;
 
     try {
-      response = await tokenProvider.api
-          .get(baseUrl +
-              'Advertisement/filter/$argument?pageNumber=$number&pageSize=$size')
-          .timeout(Duration(seconds: 14));
+      var url = Uri.parse(baseUrl +
+          'Advertisement/filter/$argument?PageNumber=$number&PageSize=$size');
 
-      var xPagination = jsonDecode(response.headers['X-Pagination']![0]);
-      print(xPagination);
+      var response = await http.get(url);
+
+      var body = jsonDecode(response.body);
+      var pagination = jsonDecode(response.headers['x-pagination']!);
 
       if (response.statusCode == 200) {
-        response.data.forEach(
+        body.forEach(
           (element) {
             advertisementFromApi.add(Advertisement.fromJson(element));
           },
         );
-
         return ListPage(
             itemList: advertisementFromApi,
-            grandTotalCount: xPagination['TotalCount']);
+            grandTotalCount: pagination['TotalCount']);
       } else {
         return ListPage(
             itemList: advertisementFromApi,
-            grandTotalCount: xPagination['TotalCount']);
+            grandTotalCount: pagination['TotalCount']);
       }
     } on TimeoutException catch (_) {
       throw TimeoutException('');
@@ -80,27 +79,28 @@ class AdvertisementProvider {
       {int number = 1, int size = 10, required String searchInput}) async {
     advertisementFromApi = [];
     try {
-      var response = await tokenProvider.api
-          .get(baseUrl +
-              'Advertisement/search/$searchInput?pageNumber=$number&pageSize=$size')
-          .timeout(Duration(seconds: 4));
+      var url = Uri.parse(baseUrl +
+          'Advertisement/search/$searchInput?pageNumber=$number&pageSize=$size');
 
-      var xPagination = jsonDecode(response.headers['X-Pagination']![0]);
-      print(xPagination);
+      var response = await http.get(url).timeout(Duration(seconds: 8));
+
+      var body = jsonDecode(response.body);
+
+      var pagination = jsonDecode(response.headers['x-pagination']!);
 
       if (response.statusCode == 200) {
-        response.data.forEach(
+        body.forEach(
           (element) {
             advertisementFromApi.add(Advertisement.fromJson(element));
           },
         );
         return ListPage(
             itemList: advertisementFromApi,
-            grandTotalCount: xPagination['TotalCount']);
+            grandTotalCount: pagination['TotalCount']);
       } else {
         return ListPage(
             itemList: advertisementFromApi,
-            grandTotalCount: xPagination['TotalCount']);
+            grandTotalCount: pagination['TotalCount']);
       }
     } on TimeoutException catch (_) {
       throw TimeoutException('');

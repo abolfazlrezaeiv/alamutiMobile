@@ -1,21 +1,17 @@
 import 'package:alamuti/app/data/provider/base_url.dart';
 import 'package:alamuti/app/data/storage/cache_manager.dart';
 import 'package:dio/dio.dart';
-import 'package:get/state_manager.dart';
-import 'package:get_storage/get_storage.dart';
 
-class TokenProvider extends GetxController with CacheManager {
+class TokenProvider with CacheManager {
   var api = Dio();
 
   var token;
   var refreshtoken;
 
-  var _storage = GetStorage();
-
   Future<Response> refreshToken() async {
-    refreshtoken =
-        await this._storage.read(CacheManagerKey.REFRESHTOKEN.toString());
-    token = await this._storage.read(CacheManagerKey.TOKEN.toString());
+    var tokenAndRefresh = getTokenRefreshToken();
+    refreshtoken = tokenAndRefresh.refreshtoken;
+    token = tokenAndRefresh.token;
 
     final response = await this.api.post(baseLoginUrl + 'RefreshToken', data: {
       'token': token.toString(),

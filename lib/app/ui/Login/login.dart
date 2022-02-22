@@ -159,8 +159,13 @@ class Login extends StatelessWidget {
                         ),
                         onPressed: () async {
                           if (formKey.currentState?.validate() ?? false) {
-                            var result = await loginViewModelController
-                                .loginUser(passwordCtr.text, context);
+                            var result =
+                                await loginViewModelController.loginUser(
+                              password: passwordCtr.text,
+                              phone: otpRequestController.phoneNumber.value,
+                              context: context,
+                            );
+
                             if (result == true) {
                               Get.offAll(() => HomePage(),
                                   binding: HomeBinding(),

@@ -1,10 +1,10 @@
 class ChatMessage {
-  late int id;
-  late String sender;
+  final int id;
+  final String sender;
+  final String message;
+  final String reciever;
+  final String daySended;
 
-  late String message;
-  late String reciever;
-  late String daySended;
   ChatMessage(
       {required this.id,
       required this.sender,

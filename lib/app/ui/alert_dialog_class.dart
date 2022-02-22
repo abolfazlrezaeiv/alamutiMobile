@@ -106,7 +106,7 @@ class Alert {
   static logoutAlertDialog({required BuildContext context}) {
     Get.defaultDialog(
       radius: 5,
-      title: 'از خروج از حساب مطمعن هستید',
+      title: 'از خروج از حساب مطمعن هستید؟',
       barrierDismissible: false,
       titlePadding: EdgeInsets.all(20),
       titleStyle: TextStyle(
@@ -151,52 +151,90 @@ class Alert {
     int adsId,
   ) {
     AlertDialog alert = AlertDialog(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        content: Container(
-          height: Get.height / 2.9,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                'درباره مشکل توضیح دهید.',
-                textDirection: TextDirection.rtl,
-                style: TextStyle(
-                    color: Colors.grey,
-                    fontSize: Get.width / 30,
-                    fontWeight: FontWeight.w300),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    height: 5,
-                  ),
-                  DescriptionTextField(
-                      minline: 6,
-                      maxline: 6,
-                      textEditingController: reportTextEditingCtrl),
-                  TextButton(
-                      onPressed: () async {
-                        Get.back();
-                        AdvertisementProvider ap = AdvertisementProvider();
-                        await ap.sendReport(
-                          context: context,
-                          id: adsId,
-                          report: reportTextEditingCtrl.text,
-                        );
-                      },
-                      child: Text(
-                        'ثبت گزارش',
-                        style: TextStyle(
-                            color: Colors.greenAccent,
-                            fontWeight: FontWeight.w500),
-                      ))
-                ],
-              ),
-            ],
+      backgroundColor: Colors.white,
+      elevation: 0,
+      content: Container(
+        height: Get.height / 2.9,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Text(
+              'درباره مشکل توضیح دهید.',
+              textDirection: TextDirection.rtl,
+              style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: Get.width / 30,
+                  fontWeight: FontWeight.w300),
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(
+                  height: 5,
+                ),
+                DescriptionTextField(
+                    minline: 6,
+                    maxline: 6,
+                    textEditingController: reportTextEditingCtrl),
+                TextButton(
+                    onPressed: () async {
+                      Get.back();
+                      AdvertisementProvider ap = AdvertisementProvider();
+                      await ap.sendReport(
+                        context: context,
+                        id: adsId,
+                        report: reportTextEditingCtrl.text,
+                      );
+                    },
+                    child: Text(
+                      'ثبت گزارش',
+                      style: TextStyle(
+                          color: Colors.greenAccent,
+                          fontWeight: FontWeight.w500),
+                    ))
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+    showDialog(
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return alert;
+      },
+      context: context,
+    );
+  }
+
+  static showNoConnectionDialog({required context, required String message}) {
+    AlertDialog alert = AlertDialog(
+      backgroundColor: Colors.white,
+      elevation: 3,
+      content: Text(
+        message,
+        textDirection: TextDirection.rtl,
+        style: TextStyle(
+          fontWeight: FontWeight.w300,
+          fontSize: Get.width / 25,
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Get.back(closeOverlays: true);
+          },
+          child: Text(
+            'تایید',
+            style: TextStyle(
+              color: Colors.greenAccent,
+              fontWeight: FontWeight.w400,
+              fontSize: Get.width / 27,
+            ),
           ),
-        ));
+        )
+      ],
+    );
     showDialog(
       barrierDismissible: true,
       builder: (BuildContext context) {
@@ -212,57 +250,58 @@ class Alert {
       String groupName,
       String blockedUserId) {
     AlertDialog alert = AlertDialog(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        content: Container(
-          height: Get.height / 2.9,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                'درباره مشکل توضیح دهید.',
-                textDirection: TextDirection.rtl,
-                style: TextStyle(
-                    color: Colors.grey,
-                    fontSize: Get.width / 30,
-                    fontWeight: FontWeight.w300),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    height: 5,
-                  ),
-                  DescriptionTextField(
-                      minline: 6,
-                      maxline: 6,
-                      textEditingController: reportTextEditingCtrl),
-                  TextButton(
-                      onPressed: () async {
-                        Get.back();
+      backgroundColor: Colors.white,
+      elevation: 0,
+      content: Container(
+        height: Get.height / 2.9,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Text(
+              'درباره مشکل توضیح دهید.',
+              textDirection: TextDirection.rtl,
+              style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: Get.width / 30,
+                  fontWeight: FontWeight.w300),
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(
+                  height: 5,
+                ),
+                DescriptionTextField(
+                    minline: 6,
+                    maxline: 6,
+                    textEditingController: reportTextEditingCtrl),
+                TextButton(
+                    onPressed: () async {
+                      Get.back();
 
-                        MessageProvider mp = MessageProvider();
+                      MessageProvider mp = MessageProvider();
 
-                        await mp.reportChat(
-                          context,
-                          groupName,
-                          blockedUserId,
-                          reportTextEditingCtrl.text,
-                        );
-                        Get.put(ScreenController()).selectedIndex.value = 3;
-                        Get.toNamed('/home');
-                      },
-                      child: Text(
-                        'ثبت گزارش',
-                        style: TextStyle(
-                            color: Colors.greenAccent,
-                            fontWeight: FontWeight.w500),
-                      ))
-                ],
-              ),
-            ],
-          ),
-        ));
+                      await mp.reportChat(
+                        context,
+                        groupName,
+                        blockedUserId,
+                        reportTextEditingCtrl.text,
+                      );
+                      Get.put(ScreenController()).selectedIndex.value = 3;
+                      Get.toNamed('/home');
+                    },
+                    child: Text(
+                      'ثبت گزارش',
+                      style: TextStyle(
+                          color: Colors.greenAccent,
+                          fontWeight: FontWeight.w500),
+                    ))
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
     showDialog(
       barrierDismissible: true,
       builder: (BuildContext context) {
@@ -286,17 +325,18 @@ class Alert {
       ),
       actions: [
         TextButton(
-            onPressed: () {
-              Get.back(closeOverlays: true);
-            },
-            child: Text(
-              'تایید',
-              style: TextStyle(
-                color: Colors.greenAccent,
-                fontWeight: FontWeight.w400,
-                fontSize: Get.width / 27,
-              ),
-            ))
+          onPressed: () {
+            Get.back(closeOverlays: true);
+          },
+          child: Text(
+            'تایید',
+            style: TextStyle(
+              color: Colors.greenAccent,
+              fontWeight: FontWeight.w400,
+              fontSize: Get.width / 27,
+            ),
+          ),
+        )
       ],
     );
     showDialog(

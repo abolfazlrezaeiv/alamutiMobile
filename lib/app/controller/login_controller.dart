@@ -16,9 +16,13 @@ class LoginViewModel extends GetxController {
     _authManager = Get.find();
   }
 
-  Future<bool> loginUser(String password, BuildContext context) async {
+  Future<bool> loginUser({
+    required String password,
+    required String phone,
+    required BuildContext context,
+  }) async {
     final response = await _loginProvider.fetchLogin(
-        LoginRequestModel(password: password), context);
+        LoginRequestModel(password: password, phone: phone), context);
 
     if (response != null) {
       if (response.success == true) {

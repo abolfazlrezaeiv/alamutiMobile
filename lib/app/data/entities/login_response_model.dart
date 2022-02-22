@@ -1,11 +1,15 @@
 class LoginResponseModel {
-  String? token;
-  String? refreshtoken;
-  bool? success = false;
+  final String? token;
+  final String? refreshtoken;
+  final bool success;
 
-  LoginResponseModel.fromJson(Map<String, dynamic> json) {
-    token = json['token'];
-    refreshtoken = json['refreshToken'];
-    success = json['success'].toString().toLowerCase() == 'true';
+  LoginResponseModel(this.token, this.refreshtoken, this.success);
+
+  factory LoginResponseModel.fromJson(Map<String, dynamic> json) {
+    return LoginResponseModel(
+      json['token'],
+      json['refreshToken'],
+      json['success'],
+    );
   }
 }

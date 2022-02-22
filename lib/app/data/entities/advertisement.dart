@@ -1,18 +1,19 @@
 class Advertisement {
-  late int id;
-  late String title;
-  late String description;
+  final int id;
+  final String title;
+  final String description;
   late String price;
-  late String? photo1;
-  late String? photo2;
-  late String? listviewPhoto;
-  late String datePosted;
-  late String adsType;
-  late String area;
-  late String userId;
-  late bool published;
-  late String? phoneNumber;
-  late String village;
+  final String? photo1;
+  final String? photo2;
+  final String? listviewPhoto;
+  final String datePosted;
+  final String adsType;
+  final String area;
+  final String userId;
+  final bool published;
+  final String? phoneNumber;
+  final String village;
+
   Advertisement(
       {required this.id,
       required this.title,

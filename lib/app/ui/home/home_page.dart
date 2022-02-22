@@ -294,7 +294,7 @@ class _HomePageState extends State<HomePage> {
         newPage = await advertisementProvider.getAll(
             number: pageKey,
             size: 6,
-            adstype: categoryFilterController.selectedFilterString.value);
+            adsType: categoryFilterController.selectedFilterString.value);
       }
 
       final previouslyFetchedItemsCount =

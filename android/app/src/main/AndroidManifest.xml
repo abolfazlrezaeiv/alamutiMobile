@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="ir.alamuti.alamuti">
-<uses-permission android:name="android.permission.INTERNET" />
-<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 <queries>
   <!-- If your app opens https URLs -->
   <intent>
@@ -27,7 +27,7 @@
    <application
         android:label="alamuti"
         android:icon="@mipmap/ic_launcher">
-        android:usesCleartextTraffic="true"
+        android:usesCleartextTraffic="false">
        <meta-data
            android:name="pushe_token"
            android:value="OWdsNm95bTUxMzRtcjgzZ0BydHJANjIzNzk2NjM4ODY3" />
