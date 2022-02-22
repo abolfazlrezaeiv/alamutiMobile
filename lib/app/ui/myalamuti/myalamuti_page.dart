@@ -10,9 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 // ignore: must_be_immutable
-class MyAlamutiPage extends StatelessWidget with CacheManager {
-  MyAlamutiPage({Key? key}) : super(key: key);
-
+class MyAlamuti extends StatelessWidget with CacheManager {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,7 +24,6 @@ class MyAlamutiPage extends StatelessWidget with CacheManager {
         onWillPop: () async {
           Get.put(ScreenController()).selectedIndex.value = 3;
           Get.offAllNamed('/home');
-
           return false;
         },
         child: Padding(

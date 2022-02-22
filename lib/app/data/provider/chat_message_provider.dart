@@ -10,7 +10,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/route_manager.dart';
-import 'package:get_storage/get_storage.dart';
 
 class MessageProvider with CacheManager {
   TokenProvider tokenProvider = Get.put(TokenProvider());
@@ -18,8 +17,6 @@ class MessageProvider with CacheManager {
   List<ChatMessage> listMessagesFromApi = [];
 
   List<ChatGroup> listGroupsFromApi = [];
-
-  GetStorage storage = GetStorage();
 
   Future<ListPage<ChatMessage>> getGroupMessages(
       {int number = 1, int size = 10, required String groupname}) async {

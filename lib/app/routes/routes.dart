@@ -67,7 +67,7 @@ var routes = [
   ),
   GetPage(
     name: "/myalamuti",
-    page: () => MyAlamutiPage(),
+    page: () => MyAlamuti(),
     transition: trans.Transition.noTransition,
   ),
   GetPage(

@@ -118,8 +118,8 @@ class AdvertisementProvider with CacheManager {
               'Advertisement/useradvertisement?PageNumber=$number&PageSize=$size')
           .timeout(Duration(seconds: 12));
 
-      var xPagination = jsonDecode(response.headers['X-Pagination']![0]);
-      print(xPagination);
+      var pagination = jsonDecode(response.headers['X-Pagination']![0]);
+      print(pagination);
 
       if (response.statusCode == 200) {
         response.data.forEach(
@@ -129,11 +129,11 @@ class AdvertisementProvider with CacheManager {
         );
         return ListPage(
             itemList: advertisementFromApi,
-            grandTotalCount: xPagination['TotalCount']);
+            grandTotalCount: pagination['TotalCount']);
       } else {
         return ListPage(
             itemList: advertisementFromApi,
-            grandTotalCount: xPagination['TotalCount']);
+            grandTotalCount: pagination['TotalCount']);
       }
     } on TimeoutException catch (_) {
       throw TimeoutException('');
@@ -177,7 +177,7 @@ class AdvertisementProvider with CacheManager {
     if (response.statusCode == 200) {
       Get.offNamed('/myads');
 
-      var message = 'آگهی شما با موفقیت ارسال شد و پس از تایید منتشر خواهد شد';
+      var message = 'آگهی شما با موفقیت ثبت شد و پس از تایید منتشر خواهد شد';
 
       Alert.showStatusDialog(context: context, message: message);
     } else {

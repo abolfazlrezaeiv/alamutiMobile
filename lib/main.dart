@@ -28,15 +28,17 @@ Future<void> main() async {
 
   var chats = await messageProvider.getGroupsNoPagination();
 
-  chats.forEach((chat) async => {
-        await signalRHelper.joinToGroup(chat.name),
-        if (chat.isChecked == false &&
-            chat.lastMessage.sender !=
-                storage.read(
-                  CacheManagerKey.USERID.toString(),
-                ))
-          {newMessageController.haveNewMessage.value = true}
-      });
+  chats.forEach(
+    (chat) async => {
+      await signalRHelper.joinToGroup(chat.name),
+      if (chat.isChecked == false &&
+          chat.lastMessage.sender !=
+              storage.read(
+                CacheManagerKey.USERID.toString(),
+              ))
+        {newMessageController.haveNewMessage.value = true}
+    },
+  );
 }
 
 class Application extends StatelessWidget {

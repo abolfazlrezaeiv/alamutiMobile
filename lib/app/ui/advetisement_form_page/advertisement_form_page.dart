@@ -347,7 +347,7 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
       list,
       minWidth: 640,
       minHeight: 480,
-      quality: 13,
+      quality: 10,
       rotate: 0,
     );
 
@@ -366,7 +366,6 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
     return result!;
   }
 
-//for list view
   chooseImage() async {
     var uploadImageController = Get.put(UploadImageController());
 
