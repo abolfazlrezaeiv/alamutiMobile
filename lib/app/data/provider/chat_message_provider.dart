@@ -26,8 +26,8 @@ class MessageProvider with CacheManager {
     );
 
     listMessagesFromApi = [];
-    var xPagination = jsonDecode(response.headers['X-Pagination']![0]);
-    print(xPagination);
+    var pagination = jsonDecode(response.headers['X-Pagination']![0]);
+    print(pagination);
 
     response.data.forEach(
       (element) {
@@ -39,7 +39,7 @@ class MessageProvider with CacheManager {
 
     return ListPage(
         itemList: listMessagesFromApi,
-        grandTotalCount: xPagination['TotalCount']);
+        grandTotalCount: pagination['TotalCount']);
   }
 
   Future<ListPage<ChatGroup>> getGroups({int number = 1, int size = 10}) async {
@@ -48,8 +48,8 @@ class MessageProvider with CacheManager {
       baseChatUrl +
           'api/Chat/groupswithmessages?pageNumber=$number&pageSize=$size',
     );
-    var xPagination = jsonDecode(response.headers['X-Pagination']![0]);
-    print(xPagination);
+    var pagination = jsonDecode(response.headers['Pagination']![0]);
+    print(pagination);
 
     response.data.forEach(
       (element) {
@@ -58,8 +58,7 @@ class MessageProvider with CacheManager {
     );
 
     return ListPage(
-        itemList: listGroupsFromApi,
-        grandTotalCount: xPagination['TotalCount']);
+        itemList: listGroupsFromApi, grandTotalCount: pagination['TotalCount']);
   }
 
   Future<List<ChatGroup>> getGroupsNoPagination() async {
