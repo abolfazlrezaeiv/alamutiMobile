@@ -99,7 +99,7 @@ class CategoryItem extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         advertisementTypeController.formState.value = category;
-        Get.toNamed('/ads_form');
+        Get.toNamed('/ads-form');
       },
       child: Container(
         child: Column(

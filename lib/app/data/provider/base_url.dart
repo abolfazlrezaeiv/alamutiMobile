@@ -2,6 +2,6 @@
 // const baseLoginUrl = 'https://alamuti.ir/';
 // const baseChatUrl = 'https://alamuti.ir/';
 
-const baseUrl = 'http://192.168.1.104:7105/api/';
-const baseLoginUrl = 'http://192.168.1.104:7105/';
-const baseChatUrl = 'http://192.168.1.104:7105/';
+const baseAdvertisementUrl = 'http://192.168.169.107:7105/api/advertisement';
+const baseAuthUrl = 'http://192.168.169.107:7105/api/auth';
+const baseChatUrl = 'http://192.168.169.107:7105/api/chat/groups';

@@ -29,4 +29,4 @@ var bottomTapItems = <BottomNavigationBarItem>[
   BottomNavigationBarItem(icon: Icon(CupertinoIcons.home), label: "خانه"),
 ];
 
-var bottomNavBarScreens = ['/myalamuti', '/chat', '/add_ads', '/home'];
+var bottomNavBarScreens = ['/my-alamuti', '/chat', '/add-ads', '/home'];

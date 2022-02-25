@@ -14,7 +14,7 @@ import 'package:pushe_flutter/pushe.dart';
 class LoginProvider with CacheManager {
   Future<LoginResponseModel?> fetchLogin(
       LoginRequestModel model, BuildContext context) async {
-    var url = Uri.parse(baseLoginUrl + 'login');
+    var url = Uri.parse(baseAuthUrl + '/login');
 
     var response = await http.post(
       url,
@@ -29,13 +29,11 @@ class LoginProvider with CacheManager {
 
     if (response.statusCode == 200) {
       print(body['token']);
-
       print(body['refreshToken']);
 
       return LoginResponseModel.fromJson(body);
     } else {
       var message = 'کد ورود اشتباه است ...';
-
       Alert.showNoConnectionDialog(context: context, message: message);
 
       return null;
@@ -45,7 +43,7 @@ class LoginProvider with CacheManager {
   Future<RegisterResponseModel?> fetchRegister(
       RegisterRequestModel model, BuildContext context) async {
     try {
-      var url = Uri.parse(baseLoginUrl + 'register');
+      var url = Uri.parse(baseAuthUrl + '/Authenticate');
 
       var response = await http.post(
         url,
@@ -62,7 +60,6 @@ class LoginProvider with CacheManager {
         print('successful');
 
         await saveUserId(body['id']);
-
         await savePhoneNumber(body['phonenumber']);
 
         Pushe.setCustomId(await getUserId());
@@ -70,9 +67,7 @@ class LoginProvider with CacheManager {
         return RegisterResponseModel.fromJson(body);
       } else {
         var message = 'خطا در اتصال به اینترنت ...';
-
         Alert.showNoConnectionDialog(context: context, message: message);
-
         print('not successful');
 
         return null;

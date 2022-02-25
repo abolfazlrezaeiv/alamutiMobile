@@ -1,11 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
-import 'package:alamuti/app/controller/ads_form_controller.dart';
 import 'package:alamuti/app/controller/selected_tap_controller.dart';
 import 'package:alamuti/app/controller/update_image_advertisement_controller.dart';
 import 'package:alamuti/app/data/entities/advertisement.dart';
 import 'package:alamuti/app/data/provider/advertisement_provider.dart';
+import 'package:alamuti/app/ui/advertisement_form_page/form_functions.dart';
 import 'package:alamuti/app/ui/widgets/add_ads_photo_card.dart';
 import 'package:alamuti/app/ui/widgets/alamuti_appbar.dart';
 import 'package:alamuti/app/ui/widgets/alamuti_textfield.dart';
@@ -13,7 +13,6 @@ import 'package:alamuti/app/ui/widgets/description_textfield.dart';
 import 'package:alamuti/app/ui/widgets/update_image_card_left.dart';
 import 'package:alamuti/app/ui/widgets/update_image_card_right.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -39,7 +38,7 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
 
   late TextEditingController priceTextFieldController;
 
-  late TextEditingController vilageNameTextFieldController;
+  late TextEditingController villageNameTextFieldController;
 
   late TextEditingController areaTextFieldController;
 
@@ -50,7 +49,6 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
     WidgetsBinding.instance?.addPostFrameCallback((_) {
       updateUploadImageController.leftImagebyteCode.value =
           widget.ads.photo1 ?? '';
-
       updateUploadImageController.rightImagebyteCode.value =
           widget.ads.photo2 ?? '';
     });
@@ -58,9 +56,8 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
     titleTextFieldController = TextEditingController(text: widget.ads.title);
     priceTextFieldController =
         TextEditingController(text: widget.ads.price.toString());
-
     areaTextFieldController = TextEditingController(text: widget.ads.area);
-    vilageNameTextFieldController =
+    villageNameTextFieldController =
         TextEditingController(text: widget.ads.village);
     descriptionTextFieldController =
         TextEditingController(text: widget.ads.description);
@@ -91,9 +88,7 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
               children: [
                 Column(
                   children: [
-                    SizedBox(
-                      height: Get.height / 45,
-                    ),
+                    SizedBox(height: Get.height / 45),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.end,
@@ -101,17 +96,14 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
                         UpdateLeftPhotoCard(),
                         UpdateRightPhotoCard(),
                         GestureDetector(
-                            onTap: () {
-                              chooseImage();
-                            },
+                            onTap: () => FormFunction.chooseImage(
+                                updateUploadImageController),
                             child: AddPhotoWidget()),
                       ],
                     ),
                   ],
                 ),
-                SizedBox(
-                  height: Get.height / 45,
-                ),
+                SizedBox(height: Get.height / 45),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
@@ -148,7 +140,7 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
                         isChatTextField: false,
                         isPrice: false,
                         hasCharacterLimitation: true,
-                        prefix: titleTextfiledPrefix(),
+                        prefix: FormFunction.titleTextfieldPrefix(),
                       ),
                     ),
                   ],
@@ -159,11 +151,10 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
                   children: [
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: Get.width / 25),
-                      child: getPriceTextFieldTitle(),
+                      child:
+                          FormFunction.getPriceTextFieldTitle(isUpdate: true),
                     ),
-                    SizedBox(
-                      height: Get.height / 80,
-                    ),
+                    SizedBox(height: Get.height / 80),
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: Get.width / 35),
                       child: AlamutiTextField(
@@ -177,7 +168,7 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
                     ),
                   ],
                 ),
-                getAreaTextField(),
+                FormFunction.getAreaTextField(areaTextFieldController),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
@@ -192,13 +183,11 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
                         textDirection: TextDirection.rtl,
                       ),
                     ),
-                    SizedBox(
-                      height: Get.height / 80,
-                    ),
+                    SizedBox(height: Get.height / 80),
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: Get.width / 35),
                       child: AlamutiTextField(
-                        textEditingController: vilageNameTextFieldController,
+                        textEditingController: villageNameTextFieldController,
                         isNumber: false,
                         isPrice: false,
                         isChatTextField: false,
@@ -211,9 +200,7 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    SizedBox(
-                      height: Get.height / 20,
-                    ),
+                    SizedBox(height: Get.height / 20),
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: Get.width / 25),
                       child: Column(
@@ -248,9 +235,7 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
                     ),
                   ],
                 ),
-                SizedBox(
-                  height: Get.height / 80,
-                ),
+                SizedBox(height: Get.height / 80),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -275,7 +260,7 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
                             listviewPhoto: await _getListviewImage(),
                             price: int.parse(priceTextFieldController.text
                                 .replaceAll(RegExp(r','), '')),
-                            village: vilageNameTextFieldController.text,
+                            village: villageNameTextFieldController.text,
                             title: titleTextFieldController.text,
                             id: widget.ads.id,
                           );
@@ -293,9 +278,7 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
                         ),
                       ),
                     ),
-                    SizedBox(
-                      width: 10,
-                    ),
+                    SizedBox(width: 10),
                     ElevatedButton(
                       style: ButtonStyle(
                         fixedSize: MaterialStateProperty.all(
@@ -303,9 +286,8 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
                               MediaQuery.of(context).size.width / 2.2),
                         ),
                         backgroundColor: MaterialStateProperty.all(
-                          // Color.fromRGBO(224, 224, 224, 1.0)
-                          Colors.white
-                        ),
+                            // Color.fromRGBO(224, 224, 224, 1.0)
+                            Colors.white),
                       ),
                       onPressed: () async {
                         FocusScope.of(context).unfocus();
@@ -316,7 +298,7 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
                         child: Text(
                           'انصراف',
                           style: TextStyle(
-                         color: Color.fromRGBO(88, 77, 77, 1.0),
+                            color: Color.fromRGBO(88, 77, 77, 1.0),
                             fontWeight: FontWeight.w400,
                             fontSize: Get.width / 25,
                           ),
@@ -333,40 +315,6 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
     );
   }
 
-  Widget getAreaTextField() {
-    return widget.ads.adsType == AdsFormState.REALSTATE.toString().toLowerCase()
-        ? Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              SizedBox(height: Get.height / 40),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: Get.width / 28),
-                child: Text(
-                  "متراژ",
-                  style: TextStyle(
-                      fontSize: Get.width / 28, fontWeight: FontWeight.w400),
-                  textDirection: TextDirection.rtl,
-                ),
-              ),
-              SizedBox(
-                height: Get.height / 80,
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: Get.width / 35),
-                child: AlamutiTextField(
-                  textEditingController: areaTextFieldController,
-                  isNumber: true,
-                  isPrice: false,
-                  isChatTextField: false,
-                  hasCharacterLimitation: true,
-                  prefix: 'متر',
-                ),
-              ),
-            ],
-          )
-        : Container();
-  }
-
   Future<String> _getListviewImage() async {
     String imageForListView = '';
     if (updateUploadImageController.rightImagebyteCode.value.length > 2) {
@@ -376,85 +324,10 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
       imageForListView = updateUploadImageController.leftImagebyteCode.value;
     }
     if (imageForListView.length > 2) {
-      imageForListView =
-          base64Encode(await _comporessList(base64Decode(imageForListView)));
+      imageForListView = base64Encode(
+          await FormFunction.compressList(base64Decode(imageForListView)));
     }
     return imageForListView;
-  }
-
-  Future<Uint8List> _comporessList(Uint8List list) async {
-    var result = await FlutterImageCompress.compressWithList(
-      list,
-      minWidth: 640,
-      minHeight: 480,
-      quality: 13,
-      rotate: 0,
-    );
-    return result;
-  }
-
-  Future<Uint8List> _compressFile(File file) async {
-    var result = await FlutterImageCompress.compressWithFile(
-      file.absolute.path,
-      minWidth: 1334,
-      minHeight: 750,
-      quality: 40,
-      rotate: 0,
-    );
-
-    return result!;
-  }
-
-  chooseImage() async {
-    UpdateUploadImageController updateUploadImageController =
-        Get.put(UpdateUploadImageController());
-
-    XFile? image = await ImagePicker().pickImage(
-        source: ImageSource.gallery,
-        imageQuality: 100,
-        maxHeight: 750,
-        maxWidth: 1334);
-    if (image != null) {
-      // final bytes = File(image.path).readAsBytesSync();
-      File file = File(image.path);
-      String img64 = base64Encode(await _compressFile(file));
-
-      updateUploadImageController.getImage(img64);
-    } else {
-      print('picked image is null');
-    }
-  }
-
-  String titleTextfiledPrefix() {
-    var prifix;
-    if (widget.ads.adsType == AdsFormState.FOOD.toString().toLowerCase()) {
-      prifix = 'مثال : "گیلاس آتان"';
-    }
-    if (widget.ads.adsType == AdsFormState.JOB.toString().toLowerCase()) {
-      prifix = 'مثال : "راننده با ماشین"';
-    }
-    if (widget.ads.adsType == AdsFormState.REALSTATE.toString().toLowerCase()) {
-      prifix = 'مثال : "زمین کشاورزی"';
-    }
-    return prifix;
-  }
-
-  Widget getPriceTextFieldTitle() {
-    var title;
-    if (widget.ads.adsType == AdsFormState.FOOD.toString().toLowerCase()) {
-      title = 'قیمت (به تومان)';
-    }
-    if (widget.ads.adsType == AdsFormState.JOB.toString().toLowerCase()) {
-      title = 'دستمزد';
-    }
-    if (widget.ads.adsType == AdsFormState.REALSTATE.toString().toLowerCase()) {
-      title = 'قیمت کل';
-    }
-    return Text(
-      title,
-      style: TextStyle(fontSize: Get.width / 28, fontWeight: FontWeight.w400),
-      textDirection: TextDirection.rtl,
-    );
   }
 
   @override
@@ -462,7 +335,7 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
     areaTextFieldController.dispose();
     priceTextFieldController.dispose();
     titleTextFieldController.dispose();
-    vilageNameTextFieldController.dispose();
+    villageNameTextFieldController.dispose();
     descriptionTextFieldController.dispose();
     super.dispose();
   }

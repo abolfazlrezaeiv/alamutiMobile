@@ -79,7 +79,7 @@ class MyAlamuti extends StatelessWidget with CacheManager {
                                   width: Get.width / 60,
                                 ),
                                 Text(
-                                  'شما با شماره موبایل ${getPhonenNumber()} وارد شده اید',
+                                  'شما با شماره موبایل ${getPhoneNumber()} وارد شده اید',
                                   textDirection: TextDirection.rtl,
                                   style: TextStyle(
                                       fontSize: Get.width / 35,
@@ -92,7 +92,7 @@ class MyAlamuti extends StatelessWidget with CacheManager {
                         ),
                         GestureDetector(
                           onTap: () {
-                            Get.toNamed('/myads');
+                            Get.toNamed('/user-ads');
                           },
                           child: Container(
                             child: Column(

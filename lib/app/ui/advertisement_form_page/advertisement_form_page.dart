@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
-import 'package:alamuti/app/controller/ads_form_controller.dart';
 import 'package:alamuti/app/controller/upload_image_controller.dart';
 import 'package:alamuti/app/data/provider/advertisement_provider.dart';
+import 'package:alamuti/app/ui/advertisement_form_page/form_functions.dart';
 import 'package:alamuti/app/ui/widgets/add_ads_photo_card.dart';
 import 'package:alamuti/app/ui/widgets/alamuti_appbar.dart';
 import 'package:alamuti/app/ui/widgets/alamuti_textfield.dart';
@@ -21,7 +21,7 @@ class AdvertisementForm extends StatefulWidget {
 }
 
 class _AdvertisementFormState extends State<AdvertisementForm> {
-  UploadImageController controller = Get.find();
+  UploadImageController uploadImageController = Get.find();
 
   final areaTextFieldController = TextEditingController();
 
@@ -33,7 +33,7 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
   final TextEditingController titleTextFieldController =
       TextEditingController();
 
-  final TextEditingController vilageNameTextFieldController =
+  final TextEditingController villageNameTextFieldController =
       TextEditingController();
 
   final TextEditingController descriptionTextFieldController =
@@ -58,9 +58,7 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
             children: [
               Column(
                 children: [
-                  SizedBox(
-                    height: Get.height / 45,
-                  ),
+                  SizedBox(height: Get.height / 45),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.end,
@@ -68,17 +66,12 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
                       LeftPhotoCard(),
                       RightPhotoCard(),
                       GestureDetector(
-                          onTap: () {
-                            chooseImage();
-                          },
-                          child: AddPhotoWidget()),
+                          onTap: () => FormFunction.chooseImage(uploadImageController), child: AddPhotoWidget()),
                     ],
                   ),
                 ],
               ),
-              SizedBox(
-                height: Get.height / 45,
-              ),
+              SizedBox(height: Get.height / 45),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
@@ -115,7 +108,7 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
                       isChatTextField: false,
                       isPrice: false,
                       hasCharacterLimitation: true,
-                      prefix: titleTextfiledPrefix(),
+                      prefix: FormFunction.titleTextfieldPrefix(),
                     ),
                   ),
                 ],
@@ -126,11 +119,9 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
                 children: [
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: Get.width / 25),
-                    child: getPriceTextFieldTitle(),
+                    child: FormFunction.getPriceTextFieldTitle(isUpdate: false),
                   ),
-                  SizedBox(
-                    height: Get.height / 80,
-                  ),
+                  SizedBox(height: Get.height / 80),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: Get.width / 35),
                     child: AlamutiTextField(
@@ -144,7 +135,7 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
                   ),
                 ],
               ),
-              getAreaTextField(),
+              FormFunction.getAreaTextField(areaTextFieldController),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
@@ -159,13 +150,11 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
                       textDirection: TextDirection.rtl,
                     ),
                   ),
-                  SizedBox(
-                    height: Get.height / 80,
-                  ),
+                  SizedBox(height: Get.height / 80),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: Get.width / 35),
                     child: AlamutiTextField(
-                      textEditingController: vilageNameTextFieldController,
+                      textEditingController: villageNameTextFieldController,
                       isNumber: false,
                       isPrice: false,
                       isChatTextField: false,
@@ -178,9 +167,7 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  SizedBox(
-                    height: Get.height / 20,
-                  ),
+                  SizedBox(height: Get.height / 20),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: Get.width / 25),
                     child: Column(
@@ -214,9 +201,7 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
                   ),
                 ],
               ),
-              SizedBox(
-                height: Get.height / 80,
-              ),
+              SizedBox(height: Get.height / 80),
               Container(
                 padding: EdgeInsets.only(
                     right: Get.width / 2,
@@ -238,18 +223,18 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
                         area: areaTextFieldController.text.isEmpty
                             ? 0
                             : int.parse(areaTextFieldController.text),
-                        village: vilageNameTextFieldController.text,
+                        village: villageNameTextFieldController.text,
                         description: descriptionTextFieldController.text,
-                        photo1: controller.leftImagebyteCode.value,
-                        photo2: controller.rightImagebyteCode.value,
+                        photo1: uploadImageController.leftImagebyteCode.value,
+                        photo2: uploadImageController.rightImagebyteCode.value,
                         listviewPhoto: await getListviewImage(),
                         price: int.parse(
                             priceTextFieldController.text.replaceAll(',', '')),
                         title: titleTextFieldController.text,
                       );
                     }
-                    controller.leftImagebyteCode.value = '';
-                    controller.rightImagebyteCode.value = '';
+                    uploadImageController.leftImagebyteCode.value = '';
+                    uploadImageController.rightImagebyteCode.value = '';
                   },
                   child: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -271,148 +256,28 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
     );
   }
 
-  Widget getAreaTextField() {
-    var advertisementTypeController = Get.put(AdvertisementTypeController());
-
-    return advertisementTypeController.formState.value.toString() ==
-            AdsFormState.REALSTATE.toString()
-        ? Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              SizedBox(height: Get.height / 40),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: Get.width / 28),
-                child: Text(
-                  "متراژ",
-                  style: TextStyle(
-                      fontSize: Get.width / 28, fontWeight: FontWeight.w400),
-                  textDirection: TextDirection.rtl,
-                ),
-              ),
-              SizedBox(
-                height: Get.height / 80,
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: Get.width / 35),
-                child: AlamutiTextField(
-                  textEditingController: areaTextFieldController,
-                  isNumber: true,
-                  isPrice: false,
-                  isChatTextField: false,
-                  hasCharacterLimitation: true,
-                  prefix: 'متر',
-                ),
-              ),
-            ],
-          )
-        : Container();
-  }
-
-  String titleTextfiledPrefix() {
-    var advertisementTypeController = Get.put(AdvertisementTypeController());
-
-    var prifix;
-    if (advertisementTypeController.formState.value == AdsFormState.FOOD) {
-      prifix = 'مثال : "گیلاس آتان"';
-    }
-    if (advertisementTypeController.formState.value == AdsFormState.Trap) {
-      prifix = 'مثال : "فروش 10 راس گوسفند"';
-    }
-    if (advertisementTypeController.formState.value == AdsFormState.JOB) {
-      prifix = 'مثال : "راننده با ماشین"';
-    }
-    if (advertisementTypeController.formState.value == AdsFormState.REALSTATE) {
-      prifix = 'مثال : "زمین کشاورزی"';
-    }
-    return prifix;
-  }
-
   Future<String> getListviewImage() async {
     String imageForListView = '';
-    if (controller.rightImagebyteCode.value.length > 2) {
-      imageForListView = controller.rightImagebyteCode.value;
+    if (uploadImageController.rightImagebyteCode.value.length > 2) {
+      imageForListView = uploadImageController.rightImagebyteCode.value;
     }
-    if (controller.leftImagebyteCode.value.length > 2) {
-      imageForListView = controller.leftImagebyteCode.value;
+    if (uploadImageController.leftImagebyteCode.value.length > 2) {
+      imageForListView = uploadImageController.leftImagebyteCode.value;
     }
     if (imageForListView.length > 2) {
       imageForListView =
-          base64Encode(await comporessList(base64Decode(imageForListView)));
+          base64Encode(await FormFunction.compressList(base64Decode(imageForListView)));
     }
     return imageForListView;
   }
 
-  Future<Uint8List> comporessList(Uint8List list) async {
-    var result = await FlutterImageCompress.compressWithList(
-      list,
-      minWidth: 640,
-      minHeight: 480,
-      quality: 10,
-      rotate: 0,
-    );
-
-    return result;
-  }
-
-  Future<Uint8List> compressFile(File file) async {
-    var result = await FlutterImageCompress.compressWithFile(
-      file.absolute.path,
-      minWidth: 1334,
-      minHeight: 750,
-      quality: 40,
-      rotate: 0,
-    );
-
-    return result!;
-  }
-
-  chooseImage() async {
-    var uploadImageController = Get.put(UploadImageController());
-
-    var image = await ImagePicker().pickImage(
-        source: ImageSource.gallery,
-        imageQuality: 100,
-        maxHeight: 750,
-        maxWidth: 1334);
-    if (image != null) {
-      File file = File(image.path);
-      String img64 = base64Encode(await compressFile(file));
-
-      uploadImageController.getImage(img64);
-    } else {
-      print('picked image is null');
-    }
-  }
-
-  Widget getPriceTextFieldTitle() {
-    var advertisementTypeController = Get.put(AdvertisementTypeController());
-
-    var title;
-    if (advertisementTypeController.formState.value == AdsFormState.FOOD) {
-      title = 'قیمت';
-    }
-    if (advertisementTypeController.formState.value == AdsFormState.Trap) {
-      title = 'قیمت';
-    }
-    if (advertisementTypeController.formState.value == AdsFormState.JOB) {
-      title = 'دستمزد';
-    }
-    if (advertisementTypeController.formState.value == AdsFormState.REALSTATE) {
-      title = 'قیمت کل';
-    }
-    return Text(
-      title,
-      style: TextStyle(fontSize: Get.width / 28, fontWeight: FontWeight.w400),
-      textDirection: TextDirection.rtl,
-    );
-  }
 
   @override
   void dispose() {
     areaTextFieldController.dispose();
     priceTextFieldController.dispose();
     titleTextFieldController.dispose();
-    vilageNameTextFieldController.dispose();
+    villageNameTextFieldController.dispose();
     descriptionTextFieldController.dispose();
     super.dispose();
   }

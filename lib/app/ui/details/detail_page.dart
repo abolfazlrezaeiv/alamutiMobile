@@ -262,9 +262,9 @@ class _DetailState extends State<Detail> with CacheManager {
                       await signalRHelper.initializeChat(
                           receiverId: detailPageController.details[0].userId,
                           senderId: await getUserId(),
-                          groupname: groupName,
+                          groupName: groupName,
                           groupImage: chatImage,
-                          grouptitle: detailPageController.details[0].title);
+                          groupTitle: detailPageController.details[0].title);
 
                       var group = await messageProvider.getGroup(groupName);
 

@@ -8,77 +8,82 @@ import 'package:alamuti/app/data/provider/base_url.dart';
 import 'package:alamuti/app/data/storage/cache_manager.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_instance/src/extension_instance.dart';
+import 'package:get/instance_manager.dart';
 import 'package:get/route_manager.dart';
+import 'package:get/state_manager.dart';
+
 
 class MessageProvider with CacheManager {
-  TokenProvider tokenProvider = Get.put(TokenProvider());
+  var authenticatedRequest = Get.put(TokenProvider());
 
-  List<ChatMessage> listMessagesFromApi = [];
+  List<ChatMessage> messages = [];
+  List<ChatGroup> groups = [];
 
-  List<ChatGroup> listGroupsFromApi = [];
+  String getPagingQuery(int number, int size) =>
+      '?PageNumber=$number&PageSize=$size';
 
-  Future<ListPage<ChatMessage>> getGroupMessages(
-      {int number = 1, int size = 10, required String groupname}) async {
-    var response = await tokenProvider.api.get(
-      baseChatUrl +
-          'api/Chat/massages/$groupname?pageNumber=$number&pageSize=$size',
-    );
+  dynamic getHeaderPagination(Response response) =>
+      jsonDecode(response.headers['pagination']![0]);
 
-    listMessagesFromApi = [];
-    var pagination = jsonDecode(response.headers['X-Pagination']![0]);
+
+  void responseBodyToGroupList(Response response) => response.data
+      .forEach((element) => groups.add(ChatGroup.fromJson(element)));
+
+  void responseBodyToMessageList(Response response) => response.data
+      .forEach((element) => messages.add(ChatMessage.fromJson(element)));
+
+  Future<ListPage<ChatMessage>> getMessages(
+      {int number = 1, int size = 10, required String groupName}) async {
+    messages = [];
+
+    var endpoint = '/$groupName/massages${getPagingQuery(number, size)}';
+    var response = await authenticatedRequest.api.get(baseChatUrl + endpoint);
+
+
+    var pagination = getHeaderPagination(response);
     print(pagination);
 
-    response.data.forEach(
-      (element) {
-        listMessagesFromApi.add(
-          ChatMessage.fromJson(element),
-        );
-      },
-    );
+    responseBodyToMessageList(response);
 
     return ListPage(
-        itemList: listMessagesFromApi,
+        itemList: messages,
         grandTotalCount: pagination['TotalCount']);
   }
 
   Future<ListPage<ChatGroup>> getGroups({int number = 1, int size = 10}) async {
-    listGroupsFromApi = [];
-    var response = await tokenProvider.api.get(
-      baseChatUrl +
-          'api/Chat/groupswithmessages?pageNumber=$number&pageSize=$size',
-    );
+    groups = [];
+    print('0');
+
+
+    var endpoint = getPagingQuery(number, size);
+    print('0.5');
+
+    var response = await authenticatedRequest.api.get(baseChatUrl + endpoint);
+
+    print('1');
+
     var pagination = jsonDecode(response.headers['Pagination']![0]);
     print(pagination);
+    print('2');
 
-    response.data.forEach(
-      (element) {
-        listGroupsFromApi.add(ChatGroup.fromJson(element));
-      },
-    );
+    responseBodyToGroupList(response);
 
     return ListPage(
-        itemList: listGroupsFromApi, grandTotalCount: pagination['TotalCount']);
+        itemList: groups, grandTotalCount: pagination['TotalCount']);
   }
 
   Future<List<ChatGroup>> getGroupsNoPagination() async {
     List<ChatGroup> listGroupsToJoin = [];
     try {
-      var response = await tokenProvider.api
-          .get(
-            baseChatUrl + 'api/Chat/groups',
-          )
-          .timeout(Duration(seconds: 5));
+      var response = await authenticatedRequest.api
+          .get(baseChatUrl + '/no-paginated')
+          .timeout(Duration(seconds: 10));
 
-      response.data.forEach(
-        (element) {
-          listGroupsToJoin.add(ChatGroup.fromJson(element));
-        },
-      );
+      responseBodyToGroupList(response);
+
     } on TimeoutException catch (_) {
       return listGroupsToJoin;
     }
-
     return listGroupsToJoin;
   }
 
@@ -93,41 +98,46 @@ class MessageProvider with CacheManager {
       'blockedUserId': blockedUserId,
       'reportMessage': reportMessage,
     });
-
     showLoaderDialog(context);
 
-    await tokenProvider.api
-        .put(baseChatUrl + 'api/Chat/reportgroup', data: formData)
+    await authenticatedRequest.api
+        .put(baseChatUrl + '/report', data: formData)
         .whenComplete(() => Get.back());
   }
 
   Future<ChatGroup?> getGroup(String groupName) async {
-    var response =
-        await tokenProvider.api.get(baseChatUrl + 'api/Chat/group/$groupName');
-    print(response.data);
-    if (response.statusCode == 200) {
-      return ChatGroup.fromJsonForInitialization(response.data);
-    } else {
-      return null;
+    try{
+      var response = await authenticatedRequest.api
+          .get(baseChatUrl + '/$groupName')
+          .timeout(Duration(seconds: 8));
+      print(response.data);
+      if (response.statusCode == 200) {
+        return ChatGroup.fromJsonForInitialization(response.data);
+      } else {
+        return null;
+      }
+    }on TimeoutException catch(_){
+      throw TimeoutException('');
     }
+
   }
 
   changeToSeen({
     required String groupname,
   }) async {
-    await tokenProvider.api.put(
-      baseChatUrl + 'api/Chat/group/$groupname',
+    await authenticatedRequest.api.put(
+      baseChatUrl + '/$groupname',
     );
   }
 
-  deleteMessageGroup({
+  deleteChat({
     required BuildContext context,
     required String groupName,
   }) async {
     showLoaderDialog(context);
-    await tokenProvider.api
+    await authenticatedRequest.api
         .delete(
-          baseChatUrl + 'api/Chat/group/$groupName',
+          baseChatUrl + '/$groupName',
         )
         .whenComplete(() => Get.back());
   }

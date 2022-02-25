@@ -17,7 +17,7 @@ class SignalRHelper with CacheManager {
 
   SignalRHelper({required this.handler}) {
     connection = HubConnectionBuilder()
-        .withUrl(baseLoginUrl + 'chat', HttpConnectionOptions())
+        .withUrl(baseChatUrl,HttpConnectionOptions())
         .withAutomaticReconnect()
         .build();
 
@@ -25,17 +25,13 @@ class SignalRHelper with CacheManager {
         .invoke('JoinToGroup',
             args: [storage.read(CacheManagerKey.USERID.toString())])
         .whenComplete(() => connection.on("InitializeChat", (arguments) {
-              // newMessageController.haveNewMessage.value = true;
               print('on initialize called');
-              // handler();
             }))
         .whenComplete(() => connection.on("ReceiveMessage", (arguments) async {
-              if (arguments![1] !=
-                  await storage.read(CacheManagerKey.USERID.toString())) {
+              if (arguments![1] != await getUserId()) {
                 newMessageController.haveNewMessage.value = true;
               }
-              print('on recivee called');
-
+              print('on receive called');
               handler();
             })));
   }
@@ -44,15 +40,15 @@ class SignalRHelper with CacheManager {
       {required String receiverId,
       required String senderId,
       required String message,
-      required String grouptitle,
-      String? groupname,
+      required String groupTitle,
+      String? groupName,
       String? groupImage}) async {
     await connection.invoke('SendMessage', args: [
       receiverId,
       senderId,
       message,
-      groupname,
-      grouptitle,
+      groupName,
+      groupTitle,
       groupImage
     ]);
   }
@@ -60,18 +56,18 @@ class SignalRHelper with CacheManager {
   Future<void> initializeChat(
       {required String receiverId,
       required String senderId,
-      required String grouptitle,
-      required String groupname,
+      required String groupTitle,
+      required String groupName,
       String? groupImage}) async {
     await connection.invoke('InitializeChat',
-        args: [receiverId, senderId, groupname, grouptitle, groupImage]);
+        args: [receiverId, senderId, groupName, groupTitle, groupImage]);
   }
 
   joinToGroup(String userId) async {
     await connection.invoke('JoinToGroup', args: [userId]);
   }
 
-  leaveGroup(String groupname) async {
-    await connection.invoke('LeaveGroup', args: [groupname]);
+  leaveGroup(String groupName) async {
+    await connection.invoke('LeaveGroup', args: [groupName]);
   }
 }

@@ -16,9 +16,16 @@ import 'package:get/utils.dart';
 import 'package:http/http.dart' as http;
 
 class AdvertisementProvider with CacheManager {
-  final TokenProvider tokenProvider = TokenProvider();
+  var authenticatedRequest = Get.put(TokenProvider());
 
-  List<Advertisement> advertisementFromApi = [];
+  List<Advertisement> advertisements = [];
+
+  String getPagingQuery(int number, int size) =>
+      '?pageNumber=$number&pageSize=$size';
+
+
+  void bodyToAdvertisementList(dynamic body) => body
+      .forEach((element) => advertisements.add(Advertisement.fromJson(element)));
 
   Future<void> getDetails(
       {required BuildContext context, required int id}) async {
@@ -27,7 +34,7 @@ class AdvertisementProvider with CacheManager {
 
     showLoaderDialog(context);
 
-    var url = Uri.parse(baseUrl + 'Advertisement/$id');
+    var url = Uri.parse(baseAdvertisementUrl + '/$id');
 
     var response = await http.get(url).whenComplete(() => Get.back());
 
@@ -43,31 +50,29 @@ class AdvertisementProvider with CacheManager {
 
   Future<ListPage<Advertisement>> getAll(
       {int number = 1, int size = 8, String? adsType}) async {
-    advertisementFromApi = [];
+    advertisements = [];
 
     var argument = (adsType == null || adsType.isEmpty) ? ' ' : adsType;
 
+    var endpoint = '/all/$argument${getPagingQuery(number,size)}';
+
     try {
-      var url = Uri.parse(baseUrl +
-          'Advertisement/filter/$argument?PageNumber=$number&PageSize=$size');
+      var url = Uri.parse(baseAdvertisementUrl + endpoint);
 
       var response = await http.get(url);
 
       var body = jsonDecode(response.body);
-      var pagination = jsonDecode(response.headers['x-pagination']!);
+      var pagination = jsonDecode(response.headers['pagination']!);
 
       if (response.statusCode == 200) {
-        body.forEach(
-          (element) {
-            advertisementFromApi.add(Advertisement.fromJson(element));
-          },
-        );
+        bodyToAdvertisementList(body);
+
         return ListPage(
-            itemList: advertisementFromApi,
+            itemList: advertisements,
             grandTotalCount: pagination['TotalCount']);
       } else {
         return ListPage(
-            itemList: advertisementFromApi,
+            itemList: advertisements,
             grandTotalCount: pagination['TotalCount']);
       }
     } on TimeoutException catch (_) {
@@ -77,29 +82,26 @@ class AdvertisementProvider with CacheManager {
 
   Future<ListPage<Advertisement>> search(
       {int number = 1, int size = 10, required String searchInput}) async {
-    advertisementFromApi = [];
+    advertisements = [];
     try {
-      var url = Uri.parse(baseUrl +
-          'Advertisement/search/$searchInput?pageNumber=$number&pageSize=$size');
+      var url = Uri.parse(baseAdvertisementUrl +
+          '/search/$searchInput${getPagingQuery(number,size)}');
 
       var response = await http.get(url).timeout(Duration(seconds: 8));
 
       var body = jsonDecode(response.body);
 
-      var pagination = jsonDecode(response.headers['x-pagination']!);
+      var pagination = jsonDecode(response.headers['pagination']!);
 
       if (response.statusCode == 200) {
-        body.forEach(
-          (element) {
-            advertisementFromApi.add(Advertisement.fromJson(element));
-          },
-        );
+        bodyToAdvertisementList(body);
+
         return ListPage(
-            itemList: advertisementFromApi,
+            itemList: advertisements,
             grandTotalCount: pagination['TotalCount']);
       } else {
         return ListPage(
-            itemList: advertisementFromApi,
+            itemList: advertisements,
             grandTotalCount: pagination['TotalCount']);
       }
     } on TimeoutException catch (_) {
@@ -111,28 +113,28 @@ class AdvertisementProvider with CacheManager {
     int number = 1,
     int size = 10,
   }) async {
-    advertisementFromApi = [];
+    advertisements = [];
     try {
-      var response = await tokenProvider.api
-          .get(baseUrl +
-              'Advertisement/useradvertisement?PageNumber=$number&PageSize=$size')
+      var response = await authenticatedRequest.api
+          .get(baseAdvertisementUrl +
+              '/user-advertisements${getPagingQuery(number,size)}')
           .timeout(Duration(seconds: 12));
 
-      var pagination = jsonDecode(response.headers['X-Pagination']![0]);
+      var pagination = jsonDecode(response.headers['pagination']![0]);
       print(pagination);
 
       if (response.statusCode == 200) {
         response.data.forEach(
           (element) {
-            advertisementFromApi.add(Advertisement.fromJson(element));
+            advertisements.add(Advertisement.fromJson(element));
           },
         );
         return ListPage(
-            itemList: advertisementFromApi,
+            itemList: advertisements,
             grandTotalCount: pagination['TotalCount']);
       } else {
         return ListPage(
-            itemList: advertisementFromApi,
+            itemList: advertisements,
             grandTotalCount: pagination['TotalCount']);
       }
     } on TimeoutException catch (_) {
@@ -167,15 +169,15 @@ class AdvertisementProvider with CacheManager {
 
     showLoaderDialog(context);
 
-    var response = await tokenProvider.api
+    var response = await authenticatedRequest.api
         .post(
-          baseUrl + 'Advertisement',
+          baseAdvertisementUrl,
           data: formData,
         )
         .whenComplete(() => Get.back());
 
     if (response.statusCode == 200) {
-      Get.offNamed('/myads');
+      Get.offNamed('/user-ads');
 
       var message = 'آگهی شما با موفقیت ثبت شد و پس از تایید منتشر خواهد شد';
 
@@ -189,8 +191,8 @@ class AdvertisementProvider with CacheManager {
   Future<void> deleteAds(
       {required BuildContext context, required int id}) async {
     showLoaderDialog(context);
-    Response response = await tokenProvider.api
-        .delete(baseUrl + 'Advertisement/$id')
+    Response response = await authenticatedRequest.api
+        .delete(baseAdvertisementUrl + '/$id')
         .whenComplete(() => Get.back());
 
     if (response.statusCode == 200) {
@@ -231,15 +233,15 @@ class AdvertisementProvider with CacheManager {
 
     showLoaderDialog(context);
 
-    var response = await tokenProvider.api
+    var response = await authenticatedRequest.api
         .put(
-          baseUrl + 'Advertisement',
+          baseAdvertisementUrl,
           data: formData,
         )
         .whenComplete(() => Get.back());
 
     if (response.statusCode == 200) {
-      Get.toNamed('/myads');
+      Get.toNamed('/user-ads');
 
       var message =
           'تغییرات شما با موفقیت ذخیره شدند و آگهی شما پس از بررسی مجدد منتشر خواهد شد.';
@@ -260,8 +262,8 @@ class AdvertisementProvider with CacheManager {
       'message': report,
     });
 
-    var response = await tokenProvider.api.put(
-      baseUrl + 'Advertisement/report',
+    var response = await authenticatedRequest.api.put(
+      baseAdvertisementUrl + '/report',
       data: formData,
     );
 

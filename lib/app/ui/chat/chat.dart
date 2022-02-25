@@ -8,7 +8,7 @@ import 'package:alamuti/app/ui/alert_dialog_class.dart';
 import 'package:alamuti/app/ui/theme.dart';
 import 'package:alamuti/app/ui/widgets/alamuti_appbar.dart';
 import 'package:alamuti/app/ui/widgets/alamuti_textfield.dart';
-import 'package:alamuti/app/ui/widgets/buttom_navbar_items.dart';
+import 'package:alamuti/app/ui/widgets/bottom_navbar_items.dart';
 import 'package:alamuti/app/ui/widgets/exception_indicators/empty_chat_indicator.dart';
 import 'package:bubble/bubble.dart';
 import 'package:flutter/cupertino.dart';
@@ -297,9 +297,9 @@ class _ChatState extends State<Chat> {
           CacheManagerKey.USERID.toString(),
         ),
         message: messageTextEditingController.text,
-        groupname: chatInfoController.chat[0].name,
+        groupName: chatInfoController.chat[0].name,
         groupImage: chatInfoController.chat[0].groupImage,
-        grouptitle: chatInfoController.chat[0].title);
+        groupTitle: chatInfoController.chat[0].title);
 
     _chatScreenPagingController.refresh();
 
@@ -319,10 +319,10 @@ class _ChatState extends State<Chat> {
 
   Future<void> _fetchMessage(int pageKey) async {
     try {
-      var newPage = await messageProvider.getGroupMessages(
+      var newPage = await messageProvider.getMessages(
         number: pageKey,
         size: 11,
-        groupname: chatInfoController.chat[0].name,
+        groupName: chatInfoController.chat[0].name,
       );
 
       final previouslyFetchedItemsCount =

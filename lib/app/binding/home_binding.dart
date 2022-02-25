@@ -6,7 +6,6 @@ class HomeBinding implements Bindings {
   @override
   void dependencies() {
     Get.put<CategoryFilterController>(CategoryFilterController());
-
     Get.lazyPut<SearchController>(() => SearchController());
   }
 }

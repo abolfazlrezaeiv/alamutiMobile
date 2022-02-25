@@ -25,7 +25,7 @@
   </intent>
 </queries>
    <application
-        android:label="alamuti"
+        android:label="Alamuti"
         android:icon="@mipmap/ic_launcher">
         android:usesCleartextTraffic="false">
        <meta-data

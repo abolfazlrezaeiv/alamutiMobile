@@ -22,7 +22,7 @@ mixin CacheManager {
     await box.write(CacheManagerKey.PHONENUMBER.toString(), phoneNumber);
   }
 
-  String getPhonenNumber() {
+  String getPhoneNumber() {
     return box.read(CacheManagerKey.PHONENUMBER.toString());
   }
 
@@ -41,7 +41,7 @@ mixin CacheManager {
   }
 
   Future<bool> isLoggedIn() async {
-    var status = await box.read(CacheManagerKey.ISLOGGEDIN.toString());
+    var status = await box.read(CacheManagerKey.AUTHENTICATED.toString());
     if (status == null) {
       return false;
     }
@@ -49,11 +49,11 @@ mixin CacheManager {
   }
 
   Future<void> saveLogin() async {
-    await box.write(CacheManagerKey.ISLOGGEDIN.toString(), true);
+    await box.write(CacheManagerKey.AUTHENTICATED.toString(), true);
   }
 
   Future<void> saveLogout() async {
-    await box.write(CacheManagerKey.ISLOGGEDIN.toString(), false);
+    await box.write(CacheManagerKey.AUTHENTICATED.toString(), false);
   }
 }
 
@@ -62,7 +62,7 @@ enum CacheManagerKey {
   REFRESHTOKEN,
   PHONENUMBER,
   PASSWORD,
-  ISLOGGEDIN,
+  AUTHENTICATED,
   USERID
 }
 

@@ -4,7 +4,7 @@ import 'package:alamuti/app/data/provider/signalr_helper.dart';
 import 'package:alamuti/app/data/storage/cache_manager.dart';
 import 'package:alamuti/app/routes/routes.dart';
 import 'package:alamuti/app/ui/theme.dart';
-import 'package:alamuti/app/ui/widgets/buttom_navbar_items.dart';
+import 'package:alamuti/app/ui/widgets/bottom_navbar_items.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

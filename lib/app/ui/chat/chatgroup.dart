@@ -12,6 +12,7 @@ import 'package:alamuti/app/ui/theme.dart';
 import 'package:alamuti/app/ui/widgets/alamuti_appbar.dart';
 import 'package:alamuti/app/ui/widgets/bottom_navbar.dart';
 import 'package:alamuti/app/ui/widgets/exception_indicators/empty_chat_group_page.dart';
+import 'package:alamuti/app/ui/widgets/exception_indicators/error_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -76,6 +77,7 @@ class _ChatGroupsState extends State<ChatGroups> with CacheManager {
           }),
           child: PagedListView.separated(
             pagingController: groupChatScreenPagingController,
+
             separatorBuilder: (context, index) => const SizedBox(
               height: 0,
             ),
@@ -147,7 +149,7 @@ class _ChatGroupsState extends State<ChatGroups> with CacheManager {
                                   overflow: TextOverflow.ellipsis,
                                 ),
                                 SizedBox(
-                                  height: Get.height / 80,
+                                  height: Get.height / 80
                                 ),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
@@ -163,7 +165,7 @@ class _ChatGroupsState extends State<ChatGroups> with CacheManager {
                                           fontSize: 13),
                                     ),
                                     SizedBox(
-                                      width: Get.width / 30,
+                                      width: Get.width / 30
                                     ),
                                     FittedBox(
                                       fit: BoxFit.fill,
@@ -261,14 +263,31 @@ class _ChatGroupsState extends State<ChatGroups> with CacheManager {
                       ],
                     ),
                   );
-                }),
+                },
+              // firstPageErrorIndicatorBuilder: (context) => ErrorIndicator(
+              //   error: groupChatScreenPagingController.error,
+              //   onTryAgain: () async {
+              //     var messageProvider = MessageProvider();
+              //
+              //     SignalRHelper signalRHelper = SignalRHelper(
+              //         handler: () => print(
+              //             'instance of signalr created! on reveive registered'));
+              //     var chats = await messageProvider.getGroupsNoPagination();
+              //
+              //     chats.forEach(
+              //             (group) => signalRHelper.joinToGroup(group.name));
+              //     groupChatScreenPagingController.refresh();
+              //   },
+              // ),
+
+            ),
           ),
         ),
       ),
     );
   }
 
-  deleteChatAlert(String groupname) {
+  deleteChatAlert(String groupName) {
     Get.defaultDialog(
       radius: 5,
       title: 'از حذف چت مطمئن هستید ؟ ',
@@ -305,8 +324,8 @@ class _ChatGroupsState extends State<ChatGroups> with CacheManager {
         padding: const EdgeInsets.all(5.0),
         child: TextButton(
             onPressed: () async {
-              await messageProvider.deleteMessageGroup(
-                  groupName: groupname, context: context);
+              await messageProvider.deleteChat(
+                  groupName: groupName, context: context);
               groupChatScreenPagingController.refresh();
               Get.back();
             },

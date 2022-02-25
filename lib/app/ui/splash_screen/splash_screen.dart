@@ -16,7 +16,7 @@ class _SplashScreenState extends State<SplashScreen> {
     if (await _authManager.checkLoginStatus()) {
       Get.offNamed('/home');
     } else {
-      Get.toNamed('/register');
+      Get.toNamed('/authenticate');
     }
   }
 

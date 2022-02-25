@@ -272,9 +272,7 @@ class _HomePageState extends State<HomePage> {
                 },
               ),
             ),
-            separatorBuilder: (context, index) => const SizedBox(
-              height: 0,
-            ),
+            separatorBuilder: (context, index) => const SizedBox(height: 0),
           ),
         ),
       ),

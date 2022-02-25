@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:alamuti/app/binding/advertisement_update_binding.dart';
 import 'package:alamuti/app/data/entities/advertisement.dart';
 import 'package:alamuti/app/data/provider/advertisement_provider.dart';
-import 'package:alamuti/app/ui/advetisement_form_page/advertisement_update_from_page.dart';
+import 'package:alamuti/app/ui/advertisement_form_page/advertisement_update_from_page.dart';
 import 'package:alamuti/app/ui/widgets/alamuti_appbar.dart';
 import 'package:alamuti/app/ui/widgets/bottom_navbar.dart';
 import 'package:alamuti/app/ui/widgets/exception_indicators/empty_user_advertisement_screen.dart';
@@ -131,16 +131,12 @@ class _UserAdvertisementState extends State<UserAdvertisement> {
                                   textDirection: TextDirection.rtl,
                                   overflow: TextOverflow.visible,
                                 ),
-                                SizedBox(
-                                  height: Get.height / 13,
-                                ),
+                                SizedBox(height: Get.height / 13),
                                 Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    SizedBox(
-                                      width: Get.width / 60,
-                                    ),
+                                    SizedBox(width: Get.width / 60),
                                     Row(
                                       children: [
                                         TextButton(
@@ -171,9 +167,7 @@ class _UserAdvertisementState extends State<UserAdvertisement> {
                                             ),
                                           ),
                                         ),
-                                        SizedBox(
-                                          width: 5,
-                                        ),
+                                        SizedBox(width: 5),
                                         TextButton(
                                           onPressed: () {
                                             Get.to(

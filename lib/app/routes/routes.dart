@@ -6,17 +6,16 @@ import 'package:alamuti/app/binding/home_binding.dart';
 import 'package:alamuti/app/binding/login_binding.dart';
 import 'package:alamuti/app/binding/register_binding.dart';
 import 'package:alamuti/app/binding/splash_screen_binding.dart';
-import 'package:alamuti/app/binding/user_advertisement_binding.dart';
 import 'package:alamuti/app/ui/Login/login.dart';
 import 'package:alamuti/app/ui/Login/register.dart';
-import 'package:alamuti/app/ui/advetisement_form_page/advertisement_form_page.dart';
+import 'package:alamuti/app/ui/advertisement_form_page/advertisement_form_page.dart';
 import 'package:alamuti/app/ui/chat/chatgroup.dart';
 import 'package:alamuti/app/ui/details/detail_page.dart';
 import 'package:alamuti/app/ui/home/home_page.dart';
-import 'package:alamuti/app/ui/myalamuti/about_alamuti.dart';
-import 'package:alamuti/app/ui/myalamuti/contactus.dart';
-import 'package:alamuti/app/ui/myalamuti/user_advertisement.dart';
-import 'package:alamuti/app/ui/myalamuti/myalamuti_page.dart';
+import 'package:alamuti/app/ui/my_alamuti/about_alamuti.dart';
+import 'package:alamuti/app/ui/my_alamuti/contactus.dart';
+import 'package:alamuti/app/ui/my_alamuti/user_advertisement.dart';
+import 'package:alamuti/app/ui/my_alamuti/my_alamuti_page.dart';
 import 'package:alamuti/app/ui/post_ads_category/category_submit_advertisement.dart';
 import 'package:alamuti/app/ui/splash_screen/splash_screen.dart';
 import 'package:get/get_navigation/src/routes/get_route.dart';
@@ -42,7 +41,7 @@ var routes = [
     transition: trans.Transition.fadeIn,
   ),
   GetPage(
-    name: '/add_ads',
+    name: '/add-ads',
     page: () => CategorySubmitAds(),
     transition: trans.Transition.noTransition,
     binding: CategorySubmitAdsBinding(),
@@ -54,19 +53,18 @@ var routes = [
     transition: trans.Transition.noTransition,
   ),
   GetPage(
-    name: "/myads",
+    name: "/user-ads",
     page: () => UserAdvertisement(),
-    binding: UserAdvertisementBinding(),
     transition: trans.Transition.noTransition,
   ),
   GetPage(
-    name: "/ads_form",
+    name: "/ads-form",
     page: () => AdvertisementForm(),
     binding: FormAdvertisementBinding(),
     transition: trans.Transition.noTransition,
   ),
   GetPage(
-    name: "/myalamuti",
+    name: "/my-alamuti",
     page: () => MyAlamuti(),
     transition: trans.Transition.noTransition,
   ),
@@ -81,14 +79,15 @@ var routes = [
     transition: trans.Transition.noTransition,
   ),
   GetPage(
-    name: "/register",
+    name: "/authenticate",
     page: () => Registration(),
     transition: trans.Transition.noTransition,
     binding: RegisterPageBinding(),
   ),
   GetPage(
-      name: "/login",
-      page: () => Login(),
-      transition: trans.Transition.noTransition,
-      binding: LoginPageBinding()),
+    name: "/login",
+    page: () => Login(),
+    transition: trans.Transition.noTransition,
+    binding: LoginPageBinding(),
+  ),
 ];

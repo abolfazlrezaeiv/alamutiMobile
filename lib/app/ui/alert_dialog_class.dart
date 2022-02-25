@@ -1,9 +1,8 @@
 import 'package:alamuti/app/controller/authentication_manager_controller.dart';
-import 'package:alamuti/app/controller/chat_info_controller.dart';
 import 'package:alamuti/app/controller/selected_tap_controller.dart';
 import 'package:alamuti/app/data/provider/advertisement_provider.dart';
 import 'package:alamuti/app/data/provider/chat_message_provider.dart';
-import 'package:alamuti/app/ui/widgets/buttom_navbar_items.dart';
+import 'package:alamuti/app/ui/widgets/bottom_navbar_items.dart';
 import 'package:alamuti/app/ui/widgets/description_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -87,7 +86,7 @@ class Alert {
 
               MessageProvider messageProvider = MessageProvider();
 
-              await messageProvider.deleteMessageGroup(
+              await messageProvider.deleteChat(
                 context: context,
                 groupName: groupName,
               );
