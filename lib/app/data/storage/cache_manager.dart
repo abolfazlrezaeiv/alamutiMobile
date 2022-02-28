@@ -2,9 +2,10 @@ import 'package:get_storage/get_storage.dart';
 
 mixin CacheManager {
   final box = GetStorage();
-  Future<void> saveTokenRefreshToken(String token, String refreshtoken) async {
+
+  Future<void> saveTokenRefreshToken(String token, String refreshToken) async {
     await box.write(CacheManagerKey.TOKEN.toString(), token);
-    await box.write(CacheManagerKey.REFRESHTOKEN.toString(), refreshtoken);
+    await box.write(CacheManagerKey.REFRESHTOKEN.toString(), refreshToken);
   }
 
   RefreshToken getTokenRefreshToken() {
@@ -30,18 +31,18 @@ mixin CacheManager {
     await box.write(CacheManagerKey.USERID.toString(), userId);
   }
 
-  Future<String> getUserId() async {
-    return await box.read(CacheManagerKey.USERID.toString());
+  String getUserId() {
+    return box.read(CacheManagerKey.USERID.toString());
   }
 
-  Future<UserInfo> getUserInfo(String phoneNumber, String password) async {
-    var phone = await box.read(CacheManagerKey.PHONENUMBER.toString());
-    var pass = await box.read(CacheManagerKey.PASSWORD.toString());
+  UserInfo getUserInfo(String phoneNumber, String password) {
+    var phone = box.read(CacheManagerKey.PHONENUMBER.toString());
+    var pass = box.read(CacheManagerKey.PASSWORD.toString());
     return UserInfo(phone, pass);
   }
 
-  Future<bool> isLoggedIn() async {
-    var status = await box.read(CacheManagerKey.AUTHENTICATED.toString());
+  bool isLoggedIn() {
+    var status = box.read(CacheManagerKey.AUTHENTICATED.toString());
     if (status == null) {
       return false;
     }
@@ -68,14 +69,14 @@ enum CacheManagerKey {
 
 class RefreshToken {
   final String token;
-  final String refreshtoken;
+  final String refreshToken;
 
-  RefreshToken(this.token, this.refreshtoken);
+  RefreshToken(this.token, this.refreshToken);
 }
 
 class UserInfo {
-  final String phonenumber;
+  final String phoneNumber;
   final String password;
 
-  UserInfo(this.phonenumber, this.password);
+  UserInfo(this.phoneNumber, this.password);
 }

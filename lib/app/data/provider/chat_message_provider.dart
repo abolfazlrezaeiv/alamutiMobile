@@ -10,8 +10,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/instance_manager.dart';
 import 'package:get/route_manager.dart';
-import 'package:get/state_manager.dart';
-
 
 class MessageProvider with CacheManager {
   var authenticatedRequest = Get.put(TokenProvider());
@@ -23,8 +21,7 @@ class MessageProvider with CacheManager {
       '?PageNumber=$number&PageSize=$size';
 
   dynamic getHeaderPagination(Response response) =>
-      jsonDecode(response.headers['pagination']![0]);
-
+      jsonDecode(response.headers['Pagination']![0]);
 
   void responseBodyToGroupList(Response response) => response.data
       .forEach((element) => groups.add(ChatGroup.fromJson(element)));
@@ -35,39 +32,25 @@ class MessageProvider with CacheManager {
   Future<ListPage<ChatMessage>> getMessages(
       {int number = 1, int size = 10, required String groupName}) async {
     messages = [];
-
-    var endpoint = '/$groupName/massages${getPagingQuery(number, size)}';
+    var endpoint = '/$groupName/messages${getPagingQuery(number, size)}';
     var response = await authenticatedRequest.api.get(baseChatUrl + endpoint);
-
-
     var pagination = getHeaderPagination(response);
     print(pagination);
-
     responseBodyToMessageList(response);
-
     return ListPage(
-        itemList: messages,
-        grandTotalCount: pagination['TotalCount']);
+        itemList: messages, grandTotalCount: pagination['TotalCount']);
   }
 
   Future<ListPage<ChatGroup>> getGroups({int number = 1, int size = 10}) async {
     groups = [];
-    print('0');
-
-
     var endpoint = getPagingQuery(number, size);
-    print('0.5');
-
     var response = await authenticatedRequest.api.get(baseChatUrl + endpoint);
-
-    print('1');
-
     var pagination = jsonDecode(response.headers['Pagination']![0]);
     print(pagination);
-    print('2');
-
+    var tokenAndRefresh = getTokenRefreshToken();
+    print(tokenAndRefresh.token);
+    print(tokenAndRefresh.refreshToken);
     responseBodyToGroupList(response);
-
     return ListPage(
         itemList: groups, grandTotalCount: pagination['TotalCount']);
   }
@@ -78,9 +61,7 @@ class MessageProvider with CacheManager {
       var response = await authenticatedRequest.api
           .get(baseChatUrl + '/no-paginated')
           .timeout(Duration(seconds: 10));
-
       responseBodyToGroupList(response);
-
     } on TimeoutException catch (_) {
       return listGroupsToJoin;
     }
@@ -99,14 +80,13 @@ class MessageProvider with CacheManager {
       'reportMessage': reportMessage,
     });
     showLoaderDialog(context);
-
     await authenticatedRequest.api
         .put(baseChatUrl + '/report', data: formData)
         .whenComplete(() => Get.back());
   }
 
   Future<ChatGroup?> getGroup(String groupName) async {
-    try{
+    try {
       var response = await authenticatedRequest.api
           .get(baseChatUrl + '/$groupName')
           .timeout(Duration(seconds: 8));
@@ -116,17 +96,16 @@ class MessageProvider with CacheManager {
       } else {
         return null;
       }
-    }on TimeoutException catch(_){
+    } on TimeoutException catch (_) {
       throw TimeoutException('');
     }
-
   }
 
   changeToSeen({
-    required String groupname,
+    required String groupName,
   }) async {
     await authenticatedRequest.api.put(
-      baseChatUrl + '/$groupname',
+      baseChatUrl + '/$groupName',
     );
   }
 

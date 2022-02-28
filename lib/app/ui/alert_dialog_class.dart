@@ -172,8 +172,8 @@ class Alert {
                   height: 5,
                 ),
                 DescriptionTextField(
-                    minline: 6,
-                    maxline: 6,
+                    minLine: 6,
+                    maxLine: 6,
                     textEditingController: reportTextEditingCtrl),
                 TextButton(
                     onPressed: () async {
@@ -271,8 +271,8 @@ class Alert {
                   height: 5,
                 ),
                 DescriptionTextField(
-                    minline: 6,
-                    maxline: 6,
+                    minLine: 6,
+                    maxLine: 6,
                     textEditingController: reportTextEditingCtrl),
                 TextButton(
                     onPressed: () async {

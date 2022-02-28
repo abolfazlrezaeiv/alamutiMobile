@@ -3,14 +3,14 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:alamuti/app/controller/ads_form_controller.dart';
+import 'package:alamuti/app/ui/theme.dart';
 import 'package:alamuti/app/ui/widgets/alamuti_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
-class FormFunction{
-
+class FormFunction {
   static String titleTextfieldPrefix() {
     var advertisementTypeController = Get.put(AdvertisementTypeController());
     var prefix;
@@ -31,47 +31,45 @@ class FormFunction{
     return prefix;
   }
 
-
-  static Widget getAreaTextField(TextEditingController areaTextFieldController) {
+  static Widget getAreaTextField(
+      TextEditingController areaTextFieldController) {
     var advertisementTypeController = Get.put(AdvertisementTypeController());
 
     return advertisementTypeController.formState.value.toString() ==
-        AdsFormState.REALSTATE.toString()
+            AdsFormState.REALSTATE.toString()
         ? Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        SizedBox(height: Get.height / 40),
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: Get.width / 28),
-          child: Text(
-            "متراژ",
-            style: TextStyle(
-                fontSize: Get.width / 28, fontWeight: FontWeight.w400),
-            textDirection: TextDirection.rtl,
-          ),
-        ),
-        SizedBox(
-          height: Get.height / 80,
-        ),
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: Get.width / 35),
-          child: AlamutiTextField(
-            textEditingController: areaTextFieldController,
-            isNumber: true,
-            isPrice: false,
-            isChatTextField: false,
-            hasCharacterLimitation: true,
-            prefix: 'متر',
-          ),
-        ),
-      ],
-    )
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              SizedBox(height: Get.height / 40),
+              Padding(
+                padding: formTitlePadding,
+                child: Text(
+                  "متراژ",
+                  style: titleStyle,
+                  textDirection: TextDirection.rtl,
+                ),
+              ),
+              SizedBox(height: Get.height / 80),
+              Padding(
+                padding: formFieldPadding,
+                child: AlamutiTextField(
+                  textEditingController: areaTextFieldController,
+                  isNumber: true,
+                  isPrice: false,
+                  isChatTextField: false,
+                  hasCharacterLimitation: true,
+                  prefix: 'متر',
+                ),
+              ),
+            ],
+          )
         : Container();
   }
 
-  static Widget getPriceTextFieldTitle({String adsType ='',required bool isUpdate }) {
+  static Widget getPriceTextFieldTitle(
+      {String adsType = '', required bool isUpdate}) {
     var title;
-    if(isUpdate){
+    if (isUpdate) {
       if (adsType == AdsFormState.FOOD.toString().toLowerCase()) {
         title = 'قیمت (به تومان)';
       }
@@ -86,10 +84,10 @@ class FormFunction{
       }
       return Text(
         title,
-        style: TextStyle(fontSize: Get.width / 28, fontWeight: FontWeight.w400),
+        style: titleStyle,
         textDirection: TextDirection.rtl,
       );
-    }else{
+    } else {
       var advertisementTypeController = Get.put(AdvertisementTypeController());
       switch (advertisementTypeController.formState.value) {
         case AdsFormState.FOOD:
@@ -107,7 +105,7 @@ class FormFunction{
       }
       return Text(
         title,
-        style: TextStyle(fontSize: Get.width / 28, fontWeight: FontWeight.w400),
+        style: titleStyle,
         textDirection: TextDirection.rtl,
       );
     }
@@ -125,7 +123,7 @@ class FormFunction{
     return result;
   }
 
-  static  Future<Uint8List> compressFile(File file) async {
+  static Future<Uint8List> compressFile(File file) async {
     var result = await FlutterImageCompress.compressWithFile(
       file.absolute.path,
       minWidth: 1334,
@@ -151,10 +149,4 @@ class FormFunction{
       print('picked image is null');
     }
   }
-
 }
-
-
-
-
-

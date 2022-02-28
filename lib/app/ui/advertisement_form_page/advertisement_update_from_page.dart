@@ -1,11 +1,10 @@
 import 'dart:convert';
-import 'dart:io';
-import 'dart:typed_data';
 import 'package:alamuti/app/controller/selected_tap_controller.dart';
 import 'package:alamuti/app/controller/update_image_advertisement_controller.dart';
 import 'package:alamuti/app/data/entities/advertisement.dart';
 import 'package:alamuti/app/data/provider/advertisement_provider.dart';
 import 'package:alamuti/app/ui/advertisement_form_page/form_functions.dart';
+import 'package:alamuti/app/ui/theme.dart';
 import 'package:alamuti/app/ui/widgets/add_ads_photo_card.dart';
 import 'package:alamuti/app/ui/widgets/alamuti_appbar.dart';
 import 'package:alamuti/app/ui/widgets/alamuti_textfield.dart';
@@ -13,9 +12,7 @@ import 'package:alamuti/app/ui/widgets/description_textfield.dart';
 import 'package:alamuti/app/ui/widgets/update_image_card_left.dart';
 import 'package:alamuti/app/ui/widgets/update_image_card_right.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
 
 class AdvertisementUpdateForm extends StatefulWidget {
   final Advertisement ads;
@@ -108,24 +105,20 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: Get.width / 25),
+                      padding: formTitlePadding,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Text(
                             'عنوان آگهی',
-                            style: TextStyle(
-                                fontSize: Get.width / 28,
-                                fontWeight: FontWeight.w400),
+                            style: titleStyle,
                             textDirection: TextDirection.rtl,
                           ),
                           SizedBox(height: Get.height / 65),
                           Text(
                             'در عنوان آگهی به موارد مهم و چشمگیر اشاره کنید',
-                            style: TextStyle(
-                                fontSize: Get.width / 31,
-                                fontWeight: FontWeight.w300),
+                            style: secondTile,
                             textDirection: TextDirection.rtl,
                           ),
                         ],
@@ -133,7 +126,7 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
                     ),
                     SizedBox(height: Get.height / 80),
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: Get.width / 35),
+                      padding: formFieldPadding,
                       child: AlamutiTextField(
                         textEditingController: titleTextFieldController,
                         isNumber: false,
@@ -150,13 +143,13 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: Get.width / 25),
-                      child:
-                          FormFunction.getPriceTextFieldTitle(isUpdate: true),
+                      padding: formTitlePadding,
+                      child: FormFunction.getPriceTextFieldTitle(
+                          adsType: widget.ads.adsType, isUpdate: true),
                     ),
                     SizedBox(height: Get.height / 80),
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: Get.width / 35),
+                      padding: formFieldPadding,
                       child: AlamutiTextField(
                         textEditingController: priceTextFieldController,
                         isNumber: true,
@@ -174,18 +167,16 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
                   children: [
                     SizedBox(height: Get.height / 40),
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: Get.width / 25),
+                      padding: formTitlePadding,
                       child: Text(
                         'نام روستا',
-                        style: TextStyle(
-                            fontSize: Get.width / 28,
-                            fontWeight: FontWeight.w400),
+                        style: titleStyle,
                         textDirection: TextDirection.rtl,
                       ),
                     ),
                     SizedBox(height: Get.height / 80),
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: Get.width / 35),
+                      padding: formFieldPadding,
                       child: AlamutiTextField(
                         textEditingController: villageNameTextFieldController,
                         isNumber: false,
@@ -202,23 +193,19 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
                   children: [
                     SizedBox(height: Get.height / 20),
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: Get.width / 25),
+                      padding: formTitlePadding,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Text(
                             'توضیحات آگهی',
-                            style: TextStyle(
-                                fontSize: Get.width / 28,
-                                fontWeight: FontWeight.w400),
+                            style: titleStyle,
                             textDirection: TextDirection.rtl,
                           ),
                           SizedBox(height: Get.height / 65),
                           Text(
                             'جزئیات و نکات قابل توجه آگهی خود را کامل و دقیق بنویسید',
-                            style: TextStyle(
-                                fontSize: Get.width / 31,
-                                fontWeight: FontWeight.w300),
+                            style: secondTile,
                             textDirection: TextDirection.rtl,
                           ),
                         ],
@@ -226,10 +213,10 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
                     ),
                     SizedBox(height: Get.height / 80),
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: Get.width / 35),
+                      padding: formFieldPadding,
                       child: DescriptionTextField(
-                          minline: 5,
-                          maxline: 8,
+                          minLine: 5,
+                          maxLine: 8,
                           textEditingController:
                               descriptionTextFieldController),
                     ),
@@ -241,8 +228,10 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
                   children: [
                     ElevatedButton(
                       style: ButtonStyle(
-                        fixedSize: MaterialStateProperty.all(Size.fromWidth(
-                            MediaQuery.of(context).size.width / 2.2)),
+                        fixedSize: MaterialStateProperty.all(
+                          Size.fromWidth(
+                              MediaQuery.of(context).size.width / 2.2),
+                        ),
                       ),
                       onPressed: () async {
                         FocusScope.of(context).unfocus();
@@ -270,25 +259,13 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: Text(
                           'ذخیره',
-                          style: TextStyle(
-                            color: Color.fromRGBO(88, 77, 77, 1.0),
-                            fontWeight: FontWeight.w400,
-                            fontSize: Get.width / 25,
-                          ),
+                          style: formTextButtonStyle,
                         ),
                       ),
                     ),
                     SizedBox(width: 10),
                     ElevatedButton(
-                      style: ButtonStyle(
-                        fixedSize: MaterialStateProperty.all(
-                          Size.fromWidth(
-                              MediaQuery.of(context).size.width / 2.2),
-                        ),
-                        backgroundColor: MaterialStateProperty.all(
-                            // Color.fromRGBO(224, 224, 224, 1.0)
-                            Colors.white),
-                      ),
+                      style: getCancelButtonStyle(context),
                       onPressed: () async {
                         FocusScope.of(context).unfocus();
                         Get.back();
@@ -297,16 +274,13 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: Text(
                           'انصراف',
-                          style: TextStyle(
-                            color: Color.fromRGBO(88, 77, 77, 1.0),
-                            fontWeight: FontWeight.w400,
-                            fontSize: Get.width / 25,
-                          ),
+                          style: formTextButtonStyle,
                         ),
                       ),
                     ),
                   ],
                 ),
+                SizedBox(height: 15),
               ],
             ),
           ),

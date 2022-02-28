@@ -62,7 +62,7 @@ class LoginProvider with CacheManager {
         await saveUserId(body['id']);
         await savePhoneNumber(body['phonenumber']);
 
-        Pushe.setCustomId(await getUserId());
+        Pushe.setCustomId(getUserId());
 
         return RegisterResponseModel.fromJson(body);
       } else {

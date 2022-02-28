@@ -24,51 +24,35 @@ class Chat extends StatefulWidget {
     Key? key,
     this.signalRHelper,
   }) : super(key: key);
-
   @override
   State<Chat> createState() => _ChatState();
 }
 
-class _ChatState extends State<Chat> {
+class _ChatState extends State<Chat> with CacheManager {
   final TextEditingController messageTextEditingController =
       TextEditingController();
-
   final TextEditingController reportTextEditingCtrl = TextEditingController();
-
   final ScreenController screenController = Get.find();
-
   final ChatInfoController chatInfoController = Get.find();
-
   final GlobalKey<FormState> _formKey = GlobalKey();
-
   final MessageProvider messageProvider = MessageProvider();
-
   final GetStorage storage = GetStorage();
-
   final _chatScreenPagingController =
       PagingController<int, ChatMessage>(firstPageKey: 1);
-
   late SignalRHelper signalRHelper;
-
   var receiverId;
 
   @override
   void initState() {
-    _chatScreenPagingController.addPageRequestListener((pageKey) {
-      _fetchMessage(pageKey);
-    });
-
-    widget.signalRHelper?.handler = () {
-      _chatScreenPagingController.refresh();
-    };
-
+    _chatScreenPagingController
+        .addPageRequestListener((pageKey) => _fetchMessage(pageKey));
+    widget.signalRHelper?.handler = () => _chatScreenPagingController.refresh();
     if (chatInfoController.chat[0].name.toString().split('_')[0] ==
-        storage.read(CacheManagerKey.USERID.toString())) {
+        getUserId()) {
       receiverId = chatInfoController.chat[0].name.toString().split('_')[1];
     } else {
       receiverId = chatInfoController.chat[0].name.toString().split('_')[0];
     }
-
     super.initState();
   }
 
@@ -101,15 +85,13 @@ class _ChatState extends State<Chat> {
               Expanded(
                 child: PagedListView.separated(
                   pagingController: _chatScreenPagingController,
-                  separatorBuilder: (context, index) => const SizedBox(
-                    height: 0,
-                  ),
+                  separatorBuilder: (context, index) =>
+                      const SizedBox(height: 0),
                   shrinkWrap: true,
                   reverse: true,
                   builderDelegate: PagedChildBuilderDelegate<ChatMessage>(
                     itemBuilder: (context, message, index) {
-                      if (message.sender ==
-                          storage.read(CacheManagerKey.USERID.toString())) {
+                      if (message.sender == getUserId()) {
                         return Padding(
                           padding:
                               EdgeInsets.symmetric(vertical: Get.height / 70),
@@ -181,15 +163,16 @@ class _ChatState extends State<Chat> {
                           ),
                         ),
                         TextButton(
-                            onPressed: () async {
-                              if (_formKey.currentState!.validate()) {
-                                sendMessage();
-                              }
-                            },
-                            child: Text(
-                              'ارسال',
-                              style: TextStyle(color: Colors.greenAccent),
-                            ))
+                          onPressed: () async {
+                            if (_formKey.currentState!.validate()) {
+                              sendMessage();
+                            }
+                          },
+                          child: Text(
+                            'ارسال',
+                            style: TextStyle(color: Colors.greenAccent),
+                          ),
+                        )
                       ],
                     ),
                   ),
@@ -244,17 +227,12 @@ class _ChatState extends State<Chat> {
                               style: TextStyle(fontSize: Get.width / 27),
                             ),
                             SizedBox(width: 10),
-                            Icon(
-                              Icons.delete,
-                              color: Colors.grey,
-                            )
+                            Icon(Icons.delete, color: Colors.grey)
                           ],
                         ),
                       ),
                     ),
-                    const SizedBox(
-                      height: 10,
-                    ),
+                    const SizedBox(height: 10),
                     Padding(
                       padding: const EdgeInsets.symmetric(
                           vertical: 8.0, horizontal: 12),
@@ -293,9 +271,7 @@ class _ChatState extends State<Chat> {
   Future<void> sendMessage() async {
     await widget.signalRHelper?.sendMessage(
         receiverId: receiverId,
-        senderId: storage.read(
-          CacheManagerKey.USERID.toString(),
-        ),
+        senderId: getUserId(),
         message: messageTextEditingController.text,
         groupName: chatInfoController.chat[0].name,
         groupImage: chatInfoController.chat[0].groupImage,

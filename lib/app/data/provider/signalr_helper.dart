@@ -1,9 +1,9 @@
 import 'package:alamuti/app/controller/new_message_controller.dart';
 import 'package:alamuti/app/data/provider/base_url.dart';
+import 'package:alamuti/app/data/provider/chat_message_provider.dart';
 import 'package:alamuti/app/data/storage/cache_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:signalr_core/signalr_core.dart';
 
 class SignalRHelper with CacheManager {
@@ -11,29 +11,38 @@ class SignalRHelper with CacheManager {
 
   NewMessageController newMessageController = Get.put(NewMessageController());
 
-  GetStorage storage = GetStorage();
-
   VoidCallback handler;
 
   SignalRHelper({required this.handler}) {
     connection = HubConnectionBuilder()
-        .withUrl(baseChatUrl,HttpConnectionOptions())
+        .withUrl(signalrUrl, HttpConnectionOptions())
         .withAutomaticReconnect()
         .build();
 
     connection.start()?.whenComplete(() => connection
-        .invoke('JoinToGroup',
-            args: [storage.read(CacheManagerKey.USERID.toString())])
+        .invoke('JoinToGroup', args: [getUserId()])
         .whenComplete(() => connection.on("InitializeChat", (arguments) {
               print('on initialize called');
             }))
         .whenComplete(() => connection.on("ReceiveMessage", (arguments) async {
-              if (arguments![1] != await getUserId()) {
+              if (arguments![1] != getUserId()) {
                 newMessageController.haveNewMessage.value = true;
               }
               print('on receive called');
               handler();
             })));
+  }
+
+  joinToGroups() async {
+    var messageProvider = MessageProvider();
+    var chats = await messageProvider.getGroupsNoPagination();
+    chats.forEach(
+      (chat) async => {
+        await joinToGroup(chat.name),
+        if (chat.isChecked == false && chat.lastMessage.sender != getUserId())
+          {newMessageController.haveNewMessage.value = true}
+      },
+    );
   }
 
   sendMessage(

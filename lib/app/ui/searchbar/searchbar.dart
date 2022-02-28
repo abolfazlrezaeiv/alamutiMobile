@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 class Search extends StatefulWidget {
   final PagingController pagingController;
@@ -48,7 +47,7 @@ class _SearchState extends State<Search> {
               if (widget.textEditingController.text.isEmpty) {
                 widget.pagingController.refresh();
               } else {
-                _seach();
+                _search();
               }
             },
             textAlign: TextAlign.right,
@@ -92,7 +91,7 @@ class _SearchState extends State<Search> {
                   if (widget.textEditingController.text.isEmpty) {
                     widget.pagingController.refresh();
                   } else {
-                    _seach();
+                    _search();
                   }
                 },
               ),
@@ -124,7 +123,7 @@ class _SearchState extends State<Search> {
     );
   }
 
-  _seach() {
+  _search() {
     FocusScope.of(context).unfocus();
 
     widget.searchController.isSearchResult.value = true;

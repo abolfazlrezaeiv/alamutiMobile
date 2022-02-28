@@ -1,4 +1,3 @@
-import 'package:alamuti/app/controller/authentication_manager_controller.dart';
 import 'package:alamuti/app/controller/selected_tap_controller.dart';
 import 'package:alamuti/app/data/storage/cache_manager.dart';
 import 'package:alamuti/app/ui/alert_dialog_class.dart';
@@ -9,7 +8,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-// ignore: must_be_immutable
 class MyAlamuti extends StatelessWidget with CacheManager {
   @override
   Widget build(BuildContext context) {

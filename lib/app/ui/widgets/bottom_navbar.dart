@@ -5,19 +5,15 @@ import 'package:alamuti/app/data/storage/cache_manager.dart';
 import 'package:alamuti/app/ui/widgets/bottom_navbar_items.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 
-// ignore: must_be_immutable
-class AlamutBottomNavBar extends StatelessWidget {
+class AlamutBottomNavBar extends StatelessWidget with CacheManager {
   AlamutBottomNavBar({Key? key}) : super(key: key);
 
   final ScreenController selectedTapController =
       Get.put(ScreenController(), permanent: true);
-  var messageProvider = MessageProvider();
-  var storage = GetStorage();
-  SignalRHelper signalRHelper = SignalRHelper(handler: () {
-    newMessageController.haveNewMessage.value = true;
-  });
+  final messageProvider = MessageProvider();
+  final SignalRHelper signalRHelper = SignalRHelper(
+      handler: () => newMessageController.haveNewMessage.value = true);
   @override
   Widget build(BuildContext context) {
     return Obx(
@@ -35,17 +31,7 @@ class AlamutBottomNavBar extends StatelessWidget {
             newMessageController.haveNewMessage.value = true;
           });
 
-          var chats = await messageProvider.getGroupsNoPagination();
-
-          chats.forEach((chat) async => {
-                await signalRHelper.joinToGroup(chat.name),
-                if (chat.isChecked == false &&
-                    chat.lastMessage.sender !=
-                        storage.read(
-                          CacheManagerKey.USERID.toString(),
-                        ))
-                  {newMessageController.haveNewMessage.value = true}
-              });
+          signalRHelper.joinToGroups();
         },
         items: bottomTapItems,
       ),

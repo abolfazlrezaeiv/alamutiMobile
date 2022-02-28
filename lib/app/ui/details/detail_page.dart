@@ -17,7 +17,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Detail extends StatefulWidget {
@@ -31,25 +30,16 @@ class Detail extends StatefulWidget {
 
 class _DetailState extends State<Detail> with CacheManager {
   final DetailPageController detailPageController = Get.find();
-
   final ChatInfoController chatInfoController = Get.find();
-
-  TextEditingController reportTextEditingCtrl = TextEditingController();
-
+  final TextEditingController reportTextEditingCtrl = TextEditingController();
   final AdvertisementProvider advertisementProvider = AdvertisementProvider();
-
   final messageProvider = MessageProvider();
-
   final SignalRHelper signalRHelper = SignalRHelper(
     handler: () => print('created in detail'),
   );
 
-  final GetStorage storage = GetStorage();
-
   @override
   Widget build(BuildContext context) {
-    var hasImage = (detailPageController.details[0].photo1 != null) &&
-        (detailPageController.details[0].photo2 != null);
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -254,21 +244,19 @@ class _DetailState extends State<Detail> with CacheManager {
                       print('2');
                       var groupName = detailPageController.details[0].userId +
                           '_' +
-                          await getUserId() +
+                          getUserId() +
                           '_' +
                           detailPageController.details[0].title;
-                      print('3');
 
                       await signalRHelper.initializeChat(
                           receiverId: detailPageController.details[0].userId,
-                          senderId: await getUserId(),
+                          senderId: getUserId(),
                           groupName: groupName,
                           groupImage: chatImage,
                           groupTitle: detailPageController.details[0].title);
 
                       var group = await messageProvider.getGroup(groupName);
 
-                      print('4');
                       if (group != null && group.isDeleted == true) {
                         var message = 'مخاطب مکالمه را حذف کرده است';
                         Alert.showDeletedMessageDialog(
@@ -428,8 +416,6 @@ class _DetailState extends State<Detail> with CacheManager {
   }
 
   String getPriceTitle() {
-
-
     if (detailPageController.details[0].adsType ==
         AdsFormState.FOOD.toString().toLowerCase()) {
       return 'قیمت';

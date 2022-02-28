@@ -18,7 +18,7 @@ class AuthenticationManager extends GetxController with CacheManager {
   }
 
   checkLoginStatus() async {
-    var loginStatus = await isLoggedIn();
+    var loginStatus = isLoggedIn();
     return loginStatus;
   }
 }

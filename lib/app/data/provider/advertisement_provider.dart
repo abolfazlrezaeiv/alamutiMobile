@@ -21,25 +21,19 @@ class AdvertisementProvider with CacheManager {
   List<Advertisement> advertisements = [];
 
   String getPagingQuery(int number, int size) =>
-      '?pageNumber=$number&pageSize=$size';
+      '?PageNumber=$number&PageSize=$size';
 
-
-  void bodyToAdvertisementList(dynamic body) => body
-      .forEach((element) => advertisements.add(Advertisement.fromJson(element)));
+  void bodyToAdvertisementList(dynamic body) => body.forEach(
+      (element) => advertisements.add(Advertisement.fromJson(element)));
 
   Future<void> getDetails(
       {required BuildContext context, required int id}) async {
     final DetailPageController detailPageController =
         Get.put(DetailPageController());
-
     showLoaderDialog(context);
-
     var url = Uri.parse(baseAdvertisementUrl + '/$id');
-
     var response = await http.get(url).whenComplete(() => Get.back());
-
     var body = jsonDecode(response.body);
-
     if (response.statusCode == 200) {
       detailPageController.details.value = [Advertisement.fromJson(body)];
     } else {
@@ -51,22 +45,16 @@ class AdvertisementProvider with CacheManager {
   Future<ListPage<Advertisement>> getAll(
       {int number = 1, int size = 8, String? adsType}) async {
     advertisements = [];
-
     var argument = (adsType == null || adsType.isEmpty) ? ' ' : adsType;
-
-    var endpoint = '/all/$argument${getPagingQuery(number,size)}';
-
+    var endpoint = '/all/$argument${getPagingQuery(number, size)}';
     try {
       var url = Uri.parse(baseAdvertisementUrl + endpoint);
-
       var response = await http.get(url);
-
       var body = jsonDecode(response.body);
       var pagination = jsonDecode(response.headers['pagination']!);
-
+      print(pagination);
       if (response.statusCode == 200) {
         bodyToAdvertisementList(body);
-
         return ListPage(
             itemList: advertisements,
             grandTotalCount: pagination['TotalCount']);
@@ -85,17 +73,12 @@ class AdvertisementProvider with CacheManager {
     advertisements = [];
     try {
       var url = Uri.parse(baseAdvertisementUrl +
-          '/search/$searchInput${getPagingQuery(number,size)}');
-
+          '/search/$searchInput${getPagingQuery(number, size)}');
       var response = await http.get(url).timeout(Duration(seconds: 8));
-
       var body = jsonDecode(response.body);
-
       var pagination = jsonDecode(response.headers['pagination']!);
-
       if (response.statusCode == 200) {
         bodyToAdvertisementList(body);
-
         return ListPage(
             itemList: advertisements,
             grandTotalCount: pagination['TotalCount']);
@@ -117,12 +100,10 @@ class AdvertisementProvider with CacheManager {
     try {
       var response = await authenticatedRequest.api
           .get(baseAdvertisementUrl +
-              '/user-advertisements${getPagingQuery(number,size)}')
+              '/user-advertisements${getPagingQuery(number, size)}')
           .timeout(Duration(seconds: 12));
-
-      var pagination = jsonDecode(response.headers['pagination']![0]);
+      var pagination = jsonDecode(response.headers['Pagination']![0]);
       print(pagination);
-
       if (response.statusCode == 200) {
         response.data.forEach(
           (element) {
@@ -151,9 +132,8 @@ class AdvertisementProvider with CacheManager {
       required String listviewPhoto,
       required String photo1,
       required String village,
+      required String adsType,
       required String photo2}) async {
-    var advertisementTypeController = Get.put(AdvertisementTypeController());
-
     var formData = FormData.fromMap({
       'title': title,
       'description': description,
@@ -163,24 +143,15 @@ class AdvertisementProvider with CacheManager {
       'listViewPhoto': listviewPhoto,
       'area': area,
       'village': village,
-      'adsType':
-          advertisementTypeController.formState.value.toString().toLowerCase(),
+      'adsType': adsType,
     });
-
     showLoaderDialog(context);
-
     var response = await authenticatedRequest.api
-        .post(
-          baseAdvertisementUrl,
-          data: formData,
-        )
+        .post(baseAdvertisementUrl, data: formData)
         .whenComplete(() => Get.back());
-
     if (response.statusCode == 200) {
       Get.offNamed('/user-ads');
-
       var message = 'آگهی شما با موفقیت ثبت شد و پس از تایید منتشر خواهد شد';
-
       Alert.showStatusDialog(context: context, message: message);
     } else {
       var message = 'متاسفانه ارتباط ناموفق بود لطفا دوباره امتحان کنید';
@@ -194,7 +165,6 @@ class AdvertisementProvider with CacheManager {
     Response response = await authenticatedRequest.api
         .delete(baseAdvertisementUrl + '/$id')
         .whenComplete(() => Get.back());
-
     if (response.statusCode == 200) {
       var message = 'آگهی با موفقیت حذف شد';
       Alert.showStatusDialog(context: context, message: message);
@@ -216,7 +186,6 @@ class AdvertisementProvider with CacheManager {
       required String village,
       required String photo2}) async {
     var advertisementTypeController = Get.put(AdvertisementTypeController());
-
     var formData = FormData.fromMap({
       'id': id,
       'title': title,
@@ -230,19 +199,15 @@ class AdvertisementProvider with CacheManager {
       'adsType':
           advertisementTypeController.formState.value.toString().toLowerCase(),
     });
-
     showLoaderDialog(context);
-
     var response = await authenticatedRequest.api
         .put(
           baseAdvertisementUrl,
           data: formData,
         )
         .whenComplete(() => Get.back());
-
     if (response.statusCode == 200) {
       Get.toNamed('/user-ads');
-
       var message =
           'تغییرات شما با موفقیت ذخیره شدند و آگهی شما پس از بررسی مجدد منتشر خواهد شد.';
       Alert.showStatusDialog(context: context, message: message);
@@ -261,12 +226,10 @@ class AdvertisementProvider with CacheManager {
       'id': id,
       'message': report,
     });
-
     var response = await authenticatedRequest.api.put(
       baseAdvertisementUrl + '/report',
       data: formData,
     );
-
     if (response.statusCode == 200) {
       var message =
           'باتشکر از گزارش شما. کارشناسان ما در اسرع وقت به مشکل رسیدگی می کنند.';

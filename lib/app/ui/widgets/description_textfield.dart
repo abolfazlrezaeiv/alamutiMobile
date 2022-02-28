@@ -4,19 +4,16 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'dart:math' as math;
 
-// ignore: must_be_immutable
 class DescriptionTextField extends StatelessWidget {
-  String? initialvalue = ' ';
-  final int maxline;
-  final int minline;
+  final int maxLine;
+  final int minLine;
   final TextEditingController textEditingController;
 
   DescriptionTextField(
       {Key? key,
       required this.textEditingController,
-      this.initialvalue,
-      required this.maxline,
-      required this.minline})
+      required this.maxLine,
+      required this.minLine})
       : super(key: key);
 
   @override
@@ -34,16 +31,15 @@ class DescriptionTextField extends StatelessWidget {
           }
 
           if (textEditingController.text.length > 600) {
-            var aditionalCahracter = textEditingController.text.length - 600;
-            return 'طول متن $aditionalCahracter حرف بیشتر از حد مجاز';
+            var additionalCharacter = textEditingController.text.length - 600;
+            return 'طول متن $additionalCharacter حرف بیشتر از حد مجاز';
           }
 
           return null;
         },
-        inputFormatters: [MaxLinesTextInputFormatter(maxline)],
-        // expands: true,
+        inputFormatters: [MaxLinesTextInputFormatter(maxLine)],
         maxLines: null,
-        minLines: minline,
+        minLines: minLine,
         textAlign: TextAlign.start,
         style: TextStyle(
             backgroundColor: Colors.white,
@@ -82,7 +78,7 @@ class DescriptionTextField extends StatelessWidget {
 
 class MaxLinesTextInputFormatter extends TextInputFormatter {
   MaxLinesTextInputFormatter(this.maxLines)
-      : assert(maxLines == null || maxLines == -1 || maxLines > 0);
+      : assert(maxLines == -1 || maxLines > 0);
 
   final int maxLines;
 
@@ -91,7 +87,7 @@ class MaxLinesTextInputFormatter extends TextInputFormatter {
     TextEditingValue oldValue, // unused.
     TextEditingValue newValue,
   ) {
-    if (maxLines != null && maxLines > 0) {
+    if (maxLines > 0) {
       final regEx = RegExp("^.*((\n?.*){0,${maxLines - 1}})");
       String newString = regEx.stringMatch(newValue.text) ?? "";
 

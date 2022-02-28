@@ -1,6 +1,5 @@
 import 'package:alamuti/app/controller/login_controller.dart';
 import 'package:alamuti/app/controller/otp_request_controller.dart';
-import 'package:alamuti/app/data/storage/cache_manager.dart';
 import 'package:alamuti/app/ui/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
