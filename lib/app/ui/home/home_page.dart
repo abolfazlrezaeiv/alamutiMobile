@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:alamuti/app/controller/category_tag_selected_item_controller.dart';
 import 'package:alamuti/app/controller/search_controller.dart';
+import 'package:alamuti/app/controller/text_focus_controller.dart';
 import 'package:alamuti/app/data/entities/advertisement.dart';
 import 'package:alamuti/app/data/entities/list_page.dart';
 import 'package:alamuti/app/data/provider/advertisement_provider.dart';
@@ -29,6 +30,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   CategoryFilterController categoryFilterController = Get.find();
   SearchController searchController = Get.find();
+  TextFocusController textFocusController = Get.find();
 
   var searchTextEditingController = TextEditingController();
   var advertisementProvider = AdvertisementProvider();
@@ -49,6 +51,33 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     var mq = MediaQuery.of(context).size;
     return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(mq.height / 9),
+        child: Card(
+          elevation: 7,
+          margin: EdgeInsets.zero,
+          shape: RoundedRectangleBorder(
+            side: BorderSide(color: Colors.transparent, width: 0),
+            borderRadius: BorderRadius.circular(0.0),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: Search(
+                  pagingController: _pagingController,
+                  textEditingController: searchTextEditingController,
+                  categoryFilterController: categoryFilterController,
+                  searchController: searchController,
+                  textFocusController: textFocusController,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerTop,
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(top: 50.0),
@@ -108,32 +137,6 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
-          ),
-        ),
-      ),
-      backgroundColor: Colors.white,
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(mq.height / 9),
-        child: Card(
-          elevation: 7,
-          margin: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(
-            side: BorderSide(color: Colors.transparent, width: 0),
-            borderRadius: BorderRadius.circular(0.0),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: Search(
-                  pagingController: _pagingController,
-                  textEditingController: searchTextEditingController,
-                  categoryFilterController: categoryFilterController,
-                  searchController: searchController,
-                ),
-              ),
-            ],
           ),
         ),
       ),
@@ -279,6 +282,7 @@ class _HomePageState extends State<HomePage> {
                 firstPageErrorIndicatorBuilder: (context) => ErrorIndicator(
                   error: _pagingController.error,
                   onTryAgain: () async {
+                    CircularProgressIndicator();
                     SignalRHelper signalRHelper = SignalRHelper(
                         handler: () => print(
                             'instance of signalr created! on receive registered'));
@@ -289,6 +293,7 @@ class _HomePageState extends State<HomePage> {
                   onTryAgain: () {
                     searchTextEditingController.text = '';
                     searchController.isSearchResult.value = false;
+                    CircularProgressIndicator();
                     return _pagingController.refresh();
                   },
                 ),
@@ -342,6 +347,7 @@ class _HomePageState extends State<HomePage> {
           height: 400,
           width: 30,
           child: ListView.builder(
+            physics: ClampingScrollPhysics(),
             itemCount: villages.length,
             itemBuilder: (BuildContext context, int index) {
               return ListTile(

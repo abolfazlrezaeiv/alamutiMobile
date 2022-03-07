@@ -1,5 +1,6 @@
 import 'package:alamuti/app/controller/category_tag_selected_item_controller.dart';
 import 'package:alamuti/app/controller/search_controller.dart';
+import 'package:alamuti/app/controller/text_focus_controller.dart';
 import 'package:alamuti/app/ui/theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,12 +14,14 @@ class Search extends StatefulWidget {
   final PagingController pagingController;
   final TextEditingController textEditingController;
   final CategoryFilterController categoryFilterController;
+  final TextFocusController textFocusController;
   final SearchController searchController;
   Search(
       {Key? key,
       required this.pagingController,
       required this.textEditingController,
       required this.categoryFilterController,
+      required this.textFocusController,
       required this.searchController})
       : super(key: key);
 
@@ -39,98 +42,107 @@ class _SearchState extends State<Search> {
           elevation: 4.0,
           shadowColor: Colors.black,
           child: Obx(
-            ()=> TextField(
-              controller:widget.textEditingController,
-              style: TextStyle(
-                  backgroundColor: Colors.white,
-                  fontSize: Get.width / 27,
-                  fontFamily: persianNumber,
-                  fontWeight: FontWeight.w300),
-              onSubmitted: (value) {
-                if (widget.textEditingController.text.isEmpty) {
-                  widget.pagingController.refresh();
-                } else {
-                  _search();
-                }
-              },
-              onTap:()=> widget.searchController.isSearchResult.value = true,
-              textAlign: TextAlign.right,
-              decoration: InputDecoration(
-                hintText: 'نام منطقه یا محصول مورد نظرتان را وارد کنید',
-                hintStyle: TextStyle(
-                    backgroundColor: Colors.transparent,
-                    color: Colors.black,
-                    fontWeight: FontWeight.w200,
-                    fontSize: Get.width / 31),
-                label: SizedBox(
-                  width: Get.width / 3,
-                  child: Opacity(
-                    opacity: 0.5,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Text(
-                          'جستجو در',
-                          style: TextStyle(
-                              backgroundColor: Colors.transparent,
-                              color: Colors.green,
-                              fontWeight: FontWeight.w400,
-                              fontSize: Get.width / 28),
-                        ),
-                        Image.asset(
-                          'assets/logo/logo.png',
-                          width: Get.width / 8,
-                        ),
-                      ],
+            () => Focus(
+              onFocusChange: (focus) =>
+                  widget.textFocusController.isFocused.value = focus,
+              child: TextField(
+                controller: widget.textEditingController,
+                style: TextStyle(
+                    backgroundColor: Colors.white,
+                    fontSize: Get.width / 27,
+                    fontFamily: persianNumber,
+                    fontWeight: FontWeight.w300),
+                onSubmitted: (value) {
+                  if (widget.textEditingController.text.isEmpty) {
+                    widget.pagingController.refresh();
+                  } else {
+                    _search();
+                  }
+                },
+                textAlign: TextAlign.right,
+                decoration: InputDecoration(
+                  hintText: 'نام منطقه یا محصول مورد نظرتان را وارد کنید',
+                  hintStyle: TextStyle(
+                      backgroundColor: Colors.transparent,
+                      color: Colors.black,
+                      fontWeight: FontWeight.w200,
+                      fontSize: Get.width / 31),
+                  label: SizedBox(
+                    width: Get.width / 3,
+                    child: Opacity(
+                      opacity: 0.5,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(
+                            'جستجو در',
+                            style: TextStyle(
+                                backgroundColor: Colors.transparent,
+                                color: Colors.green,
+                                fontWeight: FontWeight.w400,
+                                fontSize: Get.width / 28),
+                          ),
+                          Image.asset(
+                            'assets/logo/logo.png',
+                            width: Get.width / 8,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-
-                prefixIcon: IconButton(
-                  icon: Icon(
-                    CupertinoIcons.search,
-                    size: Get.width / 15,
-                    color: Colors.grey,
-                    // color: Color.fromRGBO(8, 212, 76, 0.5),
+                  prefixIcon: IconButton(
+                    icon: Icon(
+                      CupertinoIcons.search,
+                      size: Get.width / 15,
+                      color: Colors.grey,
+                      // color: Color.fromRGBO(8, 212, 76, 0.5),
+                    ),
+                    onPressed: () {
+                      if (widget.textEditingController.text.isEmpty) {
+                        widget.pagingController.refresh();
+                      } else {
+                        _search();
+                      }
+                    },
                   ),
-                  onPressed: () {
-                    if (widget.textEditingController.text.isEmpty) {
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      CupertinoIcons.multiply_circle_fill,
+                      textDirection: TextDirection.ltr,
+                      color: widget.textFocusController.isFocused.value == true
+                          ? Colors.grey
+                          : Colors.transparent,
+                    ),
+                    onPressed: () {
+                      widget.searchController.isSearchResult.value = false;
+                      widget.textEditingController.text = '';
+                      FocusScope.of(context).unfocus();
                       widget.pagingController.refresh();
-                    } else {
-                      _search();
-                    }
-                  },
-                ),
-                suffixIcon: widget.searchController.isSearchResult.value == true ? IconButton(
-                  icon: Icon(CupertinoIcons.multiply_circle_fill,textDirection: TextDirection.ltr,color: Colors.grey,),
-                  onPressed: () {
-                    widget.searchController.isSearchResult.value = false;
-                    widget.textEditingController.text = '';
-                    FocusScope.of(context).unfocus();
-                    widget.pagingController.refresh();
-                  },
-                ) : SizedBox(),
-                focusedErrorBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.red, width: 0.6),
-                ),
-                errorBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(9),
-                  borderSide: BorderSide(
-                    color: Colors.red,
-                    width: 0.6,
-                    style: BorderStyle.solid,
+                    },
                   ),
-                ),
-                contentPadding:
-                    EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(9),
-                  borderSide: BorderSide(color: Colors.greenAccent, width: 2.0),
-                ),
-                enabledBorder: OutlineInputBorder(
+                  focusedErrorBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.red, width: 0.6),
+                  ),
+                  errorBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(9),
                     borderSide: BorderSide(
-                        color: alamutPrimaryColor, width: 1.0)),
+                      color: Colors.red,
+                      width: 0.6,
+                      style: BorderStyle.solid,
+                    ),
+                  ),
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(9),
+                    borderSide:
+                        BorderSide(color: Colors.greenAccent, width: 2.0),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(9),
+                      borderSide:
+                          BorderSide(color: alamutPrimaryColor, width: 1.0)),
+                ),
               ),
             ),
           ),

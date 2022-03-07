@@ -141,13 +141,18 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
                   SizedBox(height: Get.height / 80),
                   Padding(
                     padding: formFieldPadding,
-                    child: AlamutiTextField(
-                      textEditingController: villageNameTextFieldController,
-                      isNumber: false,
-                      isPrice: false,
-                      isChatTextField: false,
-                      hasCharacterLimitation: true,
-                      prefix: 'مثال : وناش بالا',
+                    child: Container(
+                      child: Row(
+                        children: [
+                          TextButton(
+                            onPressed: () {
+                              // showCategoryDialog(context: context);
+                            },
+                            child: Text('انتخاب'),
+                          ),
+                          Container(),
+                        ],
+                      ),
                     ),
                   ),
                 ],
