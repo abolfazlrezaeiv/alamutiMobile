@@ -45,9 +45,9 @@ class AdvertisementProvider with CacheManager {
   Future<ListPage<Advertisement>> getAll(
       {int number = 1, int size = 8, String? adsType}) async {
     advertisements = [];
-    var argument = (adsType == null || adsType.isEmpty) ? ' ' : adsType;
-    var endpoint = '/all/$argument${getPagingQuery(number, size)}';
     try {
+      var argument = (adsType == null || adsType.isEmpty) ? ' ' : adsType;
+      var endpoint = '/all/$argument${getPagingQuery(number, size)}';
       var url = Uri.parse(baseAdvertisementUrl + endpoint);
       var response = await http.get(url);
       var body = jsonDecode(response.body);
@@ -72,11 +72,13 @@ class AdvertisementProvider with CacheManager {
       {int number = 1, int size = 10, required String searchInput}) async {
     advertisements = [];
     try {
-      var url = Uri.parse(baseAdvertisementUrl +
-          '/search/$searchInput${getPagingQuery(number, size)}');
+      var url = Uri.parse( baseAdvertisementUrl + '/search/$searchInput${getPagingQuery(number, size)}');
       var response = await http.get(url).timeout(Duration(seconds: 8));
       var body = jsonDecode(response.body);
+      print(url);
+      print(response.statusCode);
       var pagination = jsonDecode(response.headers['pagination']!);
+      print(pagination);
       if (response.statusCode == 200) {
         bodyToAdvertisementList(body);
         return ListPage(
@@ -105,11 +107,7 @@ class AdvertisementProvider with CacheManager {
       var pagination = jsonDecode(response.headers['Pagination']![0]);
       print(pagination);
       if (response.statusCode == 200) {
-        response.data.forEach(
-          (element) {
-            advertisements.add(Advertisement.fromJson(element));
-          },
-        );
+        bodyToAdvertisementList(response.data);
         return ListPage(
             itemList: advertisements,
             grandTotalCount: pagination['TotalCount']);
@@ -176,6 +174,7 @@ class AdvertisementProvider with CacheManager {
 
   Future<void> updateAdvertisement(
       {required BuildContext context,
+      required String userId,
       required String title,
       required int id,
       required String description,
@@ -194,6 +193,7 @@ class AdvertisementProvider with CacheManager {
       'price': price,
       'photo1': photo1,
       'photo2': photo2,
+      'userId': userId,
       'area': area,
       'village': village,
       'adsType':
@@ -201,10 +201,7 @@ class AdvertisementProvider with CacheManager {
     });
     showLoaderDialog(context);
     var response = await authenticatedRequest.api
-        .put(
-          baseAdvertisementUrl,
-          data: formData,
-        )
+        .put(baseAdvertisementUrl, data: formData)
         .whenComplete(() => Get.back());
     if (response.statusCode == 200) {
       Get.toNamed('/user-ads');
@@ -227,7 +224,7 @@ class AdvertisementProvider with CacheManager {
       'message': report,
     });
     var response = await authenticatedRequest.api.put(
-      baseAdvertisementUrl + '/report',
+      baseAdvertisementUrl + '/reports',
       data: formData,
     );
     if (response.statusCode == 200) {

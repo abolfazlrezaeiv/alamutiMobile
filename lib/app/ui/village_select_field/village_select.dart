@@ -40,36 +40,6 @@ class AlamutiTextField extends StatelessWidget {
             FocusScope.of(context).unfocus();
           },
           controller: textEditingController,
-          onChanged: (text) {
-            if (isPrice) {
-              priceController.price.value = text;
-              textEditingController.text = getPersianPriceHint(text);
-              textEditingController.value =
-                  textEditingController.value.copyWith(
-                selection: TextSelection(
-                    baseOffset: getPersianPriceHint(text).length,
-                    extentOffset: getPersianPriceHint(text).length),
-                composing: TextRange.empty,
-              );
-            }
-          },
-          minLines: 1,
-          maxLines: isChatTextField ? 4 : 1,
-          validator: (value) {
-            if (value == null || value.isEmpty || value.length < 0) {
-              return 'این مورد را کامل کنید';
-            }
-
-            if (hasCharacterLimitation) {
-              if (textEditingController.text.length > 27) {
-                var additionalCharacter = textEditingController.text.length - 27;
-                return 'طول متن $additionalCharacter حرف بیشتر از حد مجاز';
-              }
-            }
-
-            return null;
-          },
-          textDirection: TextDirection.rtl,
           keyboardType:
               isNumber ? TextInputType.number : TextInputType.multiline,
           textAlign: TextAlign.start,
@@ -116,28 +86,5 @@ class AlamutiTextField extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  String getPersianPriceHint(String text) {
-    var commaAddedPrice = priceController.price.value
-        .split('')
-        .reversed
-        .join()
-        .replaceAll(',', '')
-        .replaceAllMapped(RegExp(r".{3}"), (match) => "${match.group(0)},")
-        .split('')
-        .reversed
-        .join();
-    if (commaAddedPrice.startsWith(',')) {
-      commaAddedPrice = commaAddedPrice.substring(1, commaAddedPrice.length);
-    }
-    if (commaAddedPrice.endsWith(',')) {
-      commaAddedPrice =
-          commaAddedPrice.substring(0, commaAddedPrice.length - 1);
-    }
-
-    var result = commaAddedPrice;
-
-    return result;
   }
 }

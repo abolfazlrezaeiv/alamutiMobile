@@ -41,7 +41,7 @@ const styleMe = BubbleStyle(
   alignment: Alignment.topRight,
 );
 
-const alamutPrimaryColor = Color.fromRGBO(8, 212, 76, 0.5);
+const alamutPrimaryColor = Color.fromRGBO(113, 234, 155, 1.0);
 const persianNumber = 'IRANSansXFaNum';
 
 InputDecoration inputDecoration(String labelText, IconData iconData,

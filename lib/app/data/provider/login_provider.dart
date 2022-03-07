@@ -43,7 +43,7 @@ class LoginProvider with CacheManager {
   Future<RegisterResponseModel?> fetchRegister(
       RegisterRequestModel model, BuildContext context) async {
     try {
-      var url = Uri.parse(baseAuthUrl + '/Authenticate');
+      var url = Uri.parse(baseAuthUrl + '/authenticate');
 
       var response = await http.post(
         url,
@@ -52,7 +52,7 @@ class LoginProvider with CacheManager {
           "Accept": "application/json",
           "content-type": "application/json"
         },
-      );
+      ).timeout(Duration(seconds: 8));
 
       var body = jsonDecode(response.body);
 

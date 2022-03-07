@@ -65,12 +65,11 @@ class TokenProvider extends GetxController with CacheManager {
                         options: opts,
                         data: e.requestOptions.data,
                         queryParameters: e.requestOptions.queryParameters);
-                    print(
-                        'ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd');
                     return handler.resolve(cloneReq);
                   }
                   return handler.next(e);
-                } catch (e, _) {}
+                } catch (e, _) {
+                }
               }
             },
           ),

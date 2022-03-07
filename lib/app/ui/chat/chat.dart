@@ -296,10 +296,9 @@ class _ChatState extends State<Chat> with CacheManager {
   Future<void> _fetchMessage(int pageKey) async {
     try {
       var newPage = await messageProvider.getMessages(
-        number: pageKey,
-        size: 11,
-        groupName: chatInfoController.chat[0].name,
-      );
+          number: pageKey,
+          size: 11,
+          groupName: chatInfoController.chat[0].name);
 
       final previouslyFetchedItemsCount =
           _chatScreenPagingController.itemList?.length ?? 0;

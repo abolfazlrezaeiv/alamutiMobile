@@ -3,6 +3,7 @@ import 'package:alamuti/app/controller/selected_tap_controller.dart';
 import 'package:alamuti/app/controller/update_image_advertisement_controller.dart';
 import 'package:alamuti/app/data/entities/advertisement.dart';
 import 'package:alamuti/app/data/provider/advertisement_provider.dart';
+import 'package:alamuti/app/data/storage/cache_manager.dart';
 import 'package:alamuti/app/ui/advertisement_form_page/form_functions.dart';
 import 'package:alamuti/app/ui/theme.dart';
 import 'package:alamuti/app/ui/widgets/add_ads_photo_card.dart';
@@ -24,7 +25,7 @@ class AdvertisementUpdateForm extends StatefulWidget {
       _AdvertisementUpdateFormState();
 }
 
-class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
+class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> with CacheManager {
   final GlobalKey<FormState> _formKey = GlobalKey();
 
   final UpdateUploadImageController updateUploadImageController = Get.find();
@@ -247,6 +248,7 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> {
                             photo2: updateUploadImageController
                                 .rightImagebyteCode.value,
                             listviewPhoto: await _getListviewImage(),
+                            userId : getUserId(),
                             price: int.parse(priceTextFieldController.text
                                 .replaceAll(RegExp(r','), '')),
                             village: villageNameTextFieldController.text,
