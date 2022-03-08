@@ -126,33 +126,41 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
                 ],
               ),
               FormFunction.getAreaTextField(areaTextFieldController),
+              SizedBox(height: Get.height / 40),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  SizedBox(height: Get.height / 40),
                   Padding(
                     padding: formTitlePadding,
-                    child: Text(
-                      'نام روستا',
-                      style: titleStyle,
-                      textDirection: TextDirection.rtl,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          'نام روستا',
+                          style: titleStyle,
+                          textDirection: TextDirection.rtl,
+                        ),
+                        SizedBox(height: Get.height / 65),
+                        Text(
+                          'نام روستا به تنهایی، در توضیحات میتوانید ادرس دقیق را وارد کنید',
+                          style: secondTile,
+                          textDirection: TextDirection.rtl,
+                        ),
+                      ],
                     ),
                   ),
                   SizedBox(height: Get.height / 80),
                   Padding(
                     padding: formFieldPadding,
-                    child: Container(
-                      child: Row(
-                        children: [
-                          TextButton(
-                            onPressed: () {
-                              // showCategoryDialog(context: context);
-                            },
-                            child: Text('انتخاب'),
-                          ),
-                          Container(),
-                        ],
-                      ),
+                    child: AlamutiTextField(
+                      textEditingController: villageNameTextFieldController,
+                      hasCharacterLimitation: true,
+                      isChatTextField: false,
+                      isNumber: false,
+                      isPrice: false,
+                      isVillageField: true,
+                      prefix: 'مثال : وناش بالا',
                     ),
                   ),
                 ],
