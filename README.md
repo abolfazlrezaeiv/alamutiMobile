@@ -1,4 +1,4 @@
-realtime messaging 
-getx state management
-jwt token authentication 
+- realtime messaging 
+- getx state management
+- jwt token authentication 
 
