@@ -1,20 +1,17 @@
+import 'package:alamuti/app/ui/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 /// Basic layout for indicating that an exception occurred.
-class ExceptionIndicator extends StatelessWidget {
-  const ExceptionIndicator({
+class EmptyIndicator extends StatelessWidget {
+  const EmptyIndicator({
     required this.title,
     required this.assetName,
     required this.message,
-    required this.onTryAgain,
-    required this.buttonTitle,
   });
   final String title;
   final String message;
   final String assetName;
-  final String buttonTitle;
-  final VoidCallback onTryAgain;
 
   @override
   Widget build(BuildContext context) => Center(
@@ -24,7 +21,13 @@ class ExceptionIndicator extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const SizedBox(height: 40),
-              Image.asset(assetName, height: Get.height / 8),
+              Container(
+                child: Image.asset(
+                  assetName,
+                  height: Get.height / 8,
+                  fit: BoxFit.fill,
+                ),
+              ),
               const SizedBox(
                 height: 25,
               ),
@@ -39,23 +42,6 @@ class ExceptionIndicator extends StatelessWidget {
               Text(
                 message,
                 textAlign: TextAlign.center,
-              ),
-              SizedBox(
-                height: Get.height / 40,
-              ),
-              SizedBox(
-                height: 50,
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: onTryAgain,
-                  child: Text(
-                    this.buttonTitle,
-                    style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.white,
-                        fontWeight: FontWeight.w700),
-                  ),
-                ),
               ),
             ],
           ),

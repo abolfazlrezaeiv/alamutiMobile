@@ -25,7 +25,8 @@ class AdvertisementUpdateForm extends StatefulWidget {
       _AdvertisementUpdateFormState();
 }
 
-class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> with CacheManager {
+class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm>
+    with CacheManager {
   final GlobalKey<FormState> _formKey = GlobalKey();
 
   final UpdateUploadImageController updateUploadImageController = Get.find();
@@ -163,16 +164,28 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> with 
                   ],
                 ),
                 FormFunction.getAreaTextField(areaTextFieldController),
+                SizedBox(height: Get.height / 40),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    SizedBox(height: Get.height / 40),
                     Padding(
                       padding: formTitlePadding,
-                      child: Text(
-                        'نام روستا',
-                        style: titleStyle,
-                        textDirection: TextDirection.rtl,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            'نام روستا',
+                            style: titleStyle,
+                            textDirection: TextDirection.rtl,
+                          ),
+                          SizedBox(height: Get.height / 65),
+                          Text(
+                            'روستا به تنهایی، جزئیات ادرس را در توضیحات اضافه کنید',
+                            style: secondTile,
+                            textDirection: TextDirection.rtl,
+                          ),
+                        ],
                       ),
                     ),
                     SizedBox(height: Get.height / 80),
@@ -180,10 +193,11 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> with 
                       padding: formFieldPadding,
                       child: AlamutiTextField(
                         textEditingController: villageNameTextFieldController,
+                        hasCharacterLimitation: true,
+                        isChatTextField: false,
                         isNumber: false,
                         isPrice: false,
-                        isChatTextField: false,
-                        hasCharacterLimitation: true,
+                        isVillageField: true,
                         prefix: 'مثال : وناش بالا',
                       ),
                     ),
@@ -248,7 +262,7 @@ class _AdvertisementUpdateFormState extends State<AdvertisementUpdateForm> with 
                             photo2: updateUploadImageController
                                 .rightImagebyteCode.value,
                             listviewPhoto: await _getListviewImage(),
-                            userId : getUserId(),
+                            userId: getUserId(),
                             price: int.parse(priceTextFieldController.text
                                 .replaceAll(RegExp(r','), '')),
                             village: villageNameTextFieldController.text,

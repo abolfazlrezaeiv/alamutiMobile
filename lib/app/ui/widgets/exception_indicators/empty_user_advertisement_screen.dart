@@ -1,3 +1,4 @@
+import 'package:alamuti/app/ui/widgets/exception_indicators/empty_indicator.dart';
 import 'package:flutter/material.dart';
 import 'exception_indicator.dart';
 
@@ -8,11 +9,9 @@ class EmptyUserAdsScreenIndicator extends StatelessWidget {
   });
   final VoidCallback onTryAgain;
   @override
-  Widget build(BuildContext context) => ExceptionIndicator(
-        title: 'لیست آگهی های شما خالی است',
-        message: 'جهت ثبت آگهی به صفحه ثبت آگهی بروید',
-        assetName: 'assets/icons/advertisement-empty.jpg',
-        buttonTitle: '',
-        onTryAgain: onTryAgain,
+  Widget build(BuildContext context) => EmptyIndicator(
+        title: '',
+        message: '',
+        assetName: 'assets/icons/search-empty.jpg',
       );
 }

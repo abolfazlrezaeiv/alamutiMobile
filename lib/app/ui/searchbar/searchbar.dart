@@ -33,13 +33,13 @@ class _SearchState extends State<Search> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 25.0),
+      padding: EdgeInsets.symmetric(horizontal: Get.width / 15),
       child: Directionality(
         textDirection: TextDirection.rtl,
         child: PhysicalModel(
           borderRadius: BorderRadius.circular(9),
           color: Colors.white,
-          elevation: 4.0,
+          elevation: 12,
           shadowColor: Colors.black,
           child: Obx(
             () => Focus(
@@ -61,12 +61,6 @@ class _SearchState extends State<Search> {
                 },
                 textAlign: TextAlign.right,
                 decoration: InputDecoration(
-                  hintText: 'نام منطقه یا محصول مورد نظرتان را وارد کنید',
-                  hintStyle: TextStyle(
-                      backgroundColor: Colors.transparent,
-                      color: Colors.black,
-                      fontWeight: FontWeight.w200,
-                      fontSize: Get.width / 31),
                   label: SizedBox(
                     width: Get.width / 3,
                     child: Opacity(
@@ -78,8 +72,8 @@ class _SearchState extends State<Search> {
                             'جستجو در',
                             style: TextStyle(
                                 backgroundColor: Colors.transparent,
-                                color: Colors.green,
-                                fontWeight: FontWeight.w400,
+                                color: Colors.black54,
+                                fontWeight: FontWeight.w600,
                                 fontSize: Get.width / 28),
                           ),
                           Image.asset(
@@ -94,8 +88,8 @@ class _SearchState extends State<Search> {
                     icon: Icon(
                       CupertinoIcons.search,
                       size: Get.width / 15,
-                      color: Colors.grey,
-                      // color: Color.fromRGBO(8, 212, 76, 0.5),
+                      // color: alamutPrimaryColor,
+                      color: Colors.black26,
                     ),
                     onPressed: () {
                       if (widget.textEditingController.text.isEmpty) {
@@ -135,8 +129,7 @@ class _SearchState extends State<Search> {
                       EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(9),
-                    borderSide:
-                        BorderSide(color: Colors.greenAccent, width: 2.0),
+                    borderSide: BorderSide(color: Colors.white, width: 2.0),
                   ),
                   enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(9),

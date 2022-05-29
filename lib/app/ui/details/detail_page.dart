@@ -376,17 +376,18 @@ class _DetailState extends State<Detail> with CacheManager {
   Widget emptyImage() {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(5),
-        child: Opacity(
-          opacity: 0.2,
-          child: Container(
-            height: Get.height / 2.9,
-            width: Get.width,
-            decoration: BoxDecoration(
-              // color: Colors.grey,
-              border: Border.all(color: Colors.grey, width: 5),
-            ),
+      child: Opacity(
+        opacity: 0.2,
+        child: Container(
+          height: Get.height / 2.9,
+          width: Get.width,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            border: Border.all(color: Colors.grey, width: 5),
+          ),
+          child: FractionallySizedBox(
+            heightFactor: 0.6,
+            widthFactor: 0.6,
             child: Image.asset(
               'assets/logo/no-image.png',
               fit: BoxFit.cover,
@@ -464,19 +465,4 @@ class _DetailState extends State<Detail> with CacheManager {
           )
         : Container();
   }
-
-  // Widget getAppbarWithBack() {
-  //   return Card(
-  //     margin: EdgeInsets.all(0),
-  //     elevation: 0,
-  //     shape: RoundedRectangleBorder(
-  //       borderRadius: BorderRadius.circular(0.0),
-  //     ),
-  //     color: Colors.transparent,
-  //     child: Container(
-  //       width: Get.width,
-  //       height: Get.height/8,
-  //     ),
-  //   );
-  // }
 }

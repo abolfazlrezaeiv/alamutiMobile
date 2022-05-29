@@ -143,7 +143,7 @@ class _AdvertisementFormState extends State<AdvertisementForm> {
                         ),
                         SizedBox(height: Get.height / 65),
                         Text(
-                          'نام روستا به تنهایی، در توضیحات میتوانید ادرس دقیق را وارد کنید',
+                          'روستا به تنهایی، جزئیات ادرس را در توضیحات اضافه کنید',
                           style: secondTile,
                           textDirection: TextDirection.rtl,
                         ),
