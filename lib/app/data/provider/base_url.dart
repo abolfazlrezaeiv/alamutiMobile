@@ -1,3 +1,13 @@
-var baseUrl = 'http://192.168.1.102:7105/api/';
-var baseLoginUrl = 'http://192.168.1.102:7105/';
-var baseChatUrl = 'http://192.168.1.102:7105/';
+// const baseUrl = 'https://alamuti.ir/api/';
+// const baseLoginUrl = 'https://alamuti.ir/';
+// const baseChatUrl = 'https://alamuti.ir/';
+
+const baseAdvertisementUrl = 'http://192.168.169.107:7105/api/advertisements';
+const baseAuthUrl = 'http://192.168.169.107:7105/api/auth';
+const signalrUrl = 'http://192.168.169.107:7105/chat';
+const baseChatUrl = 'http://192.168.169.107:7105/api/chat/groups';
+
+// const baseAdvertisementUrl = 'http://192.168.1.100:7105/api/advertisements';
+// const baseAuthUrl = 'http://192.168.1.100:7105/api/auth';
+// const signalrUrl = 'http://192.168.1.100:7105/chat';
+// const baseChatUrl = 'http://192.168.1.100:7105/api/chat/groups';

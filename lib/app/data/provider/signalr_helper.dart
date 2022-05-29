@@ -1,91 +1,82 @@
-import 'package:alamuti/app/controller/chat_group_controller.dart';
-import 'package:alamuti/app/controller/chat_message_controller.dart';
-import 'package:alamuti/app/controller/chat_target_controller.dart';
 import 'package:alamuti/app/controller/new_message_controller.dart';
 import 'package:alamuti/app/data/provider/base_url.dart';
 import 'package:alamuti/app/data/provider/chat_message_provider.dart';
-import 'package:alamuti/app/data/storage/cachemanager.dart';
+import 'package:alamuti/app/data/storage/cache_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:signalr_core/signalr_core.dart';
 
 class SignalRHelper with CacheManager {
   late HubConnection connection;
-  ChatTargetUserController chatTargetUserController =
-      Get.put(ChatTargetUserController());
-  ChatMessageController chatMessageController =
-      Get.put(ChatMessageController());
-  ChatGroupController chatGroupController = Get.put(ChatGroupController());
+
   NewMessageController newMessageController = Get.put(NewMessageController());
 
-  var mp = MessageProvider();
+  VoidCallback handler;
 
-  SignalRHelper() {
+  SignalRHelper({required this.handler}) {
     connection = HubConnectionBuilder()
-        .withUrl(
-          baseLoginUrl + 'chat',
-          HttpConnectionOptions(
-            // logging: (level, message) => print(message),
-            skipNegotiation: true,
-            transport: HttpTransportType.webSockets,
-          ),
-        )
+        .withUrl(signalrUrl, HttpConnectionOptions())
+        .withAutomaticReconnect()
         .build();
+
+    connection.start()?.whenComplete(() => connection
+        .invoke('JoinToGroup', args: [getUserId()])
+        .whenComplete(() => connection.on("InitializeChat", (arguments) {
+              print('on initialize called');
+            }))
+        .whenComplete(() => connection.on("ReceiveMessage", (arguments) async {
+              if (arguments![1] != getUserId()) {
+                newMessageController.haveNewMessage.value = true;
+              }
+              print('on receive called');
+              handler();
+            })));
   }
 
-  initiateConnection() async {
-    await connection.start();
-  }
-
-  reciveMessage() {
-    connection.on("ReceiveMessage", (arguments) async {
-      print('on recive signal');
-
-      chatTargetUserController.userId.value = arguments![1];
-
-      MessageProvider mp = MessageProvider();
-      await mp.getGroupMessages(arguments[3]);
-
-      await connection
-          .invoke('CreatenewGroup', args: [arguments[3], arguments[4]]);
-      if (arguments[1] != getUserId()) {
-        newMessageController.haveNewMessage.value = true;
-      }
-      await mp.getGroups();
-      await mp.getGroupMessages(arguments[3]);
-    });
+  joinToGroups() async {
+    var messageProvider = MessageProvider();
+    var chats = await messageProvider.getGroupsNoPagination();
+    chats.forEach(
+      (chat) async => {
+        await joinToGroup(chat.name),
+        if (chat.isChecked == false && chat.lastMessage.sender != getUserId())
+          {newMessageController.haveNewMessage.value = true}
+      },
+    );
   }
 
   sendMessage(
       {required String receiverId,
       required String senderId,
       required String message,
-      required String grouptitle,
-      String? groupname,
+      required String groupTitle,
+      String? groupName,
       String? groupImage}) async {
     await connection.invoke('SendMessage', args: [
       receiverId,
       senderId,
       message,
-      groupname,
-      grouptitle,
+      groupName,
+      groupTitle,
       groupImage
     ]);
   }
 
-  createGroup(String userId) async {
-    await connection.invoke('CreateMyGroup', args: [userId]);
-    print('joined the group');
+  Future<void> initializeChat(
+      {required String receiverId,
+      required String senderId,
+      required String groupTitle,
+      required String groupName,
+      String? groupImage}) async {
+    await connection.invoke('InitializeChat',
+        args: [receiverId, senderId, groupName, groupTitle, groupImage]);
   }
 
-  leaveGroup(String groupname) async {
-    await connection.invoke('LeaveGroup', args: [groupname]);
-    print('left the group');
+  joinToGroup(String userId) async {
+    await connection.invoke('JoinToGroup', args: [userId]);
   }
 
-  closeConnection(BuildContext context) async {
-    if (connection.state == HubConnectionState.connected) {
-      await connection.stop();
-    }
+  leaveGroup(String groupName) async {
+    await connection.invoke('LeaveGroup', args: [groupName]);
   }
 }
