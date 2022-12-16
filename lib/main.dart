@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:alamuti/app/data/provider/signalr_helper.dart';
 import 'package:alamuti/app/routes/routes.dart';
 import 'package:alamuti/app/ui/theme.dart';
@@ -15,25 +16,20 @@ Future<void> main() async {
 
   await Pushe.enableNotificationForceForegroundAware();
 
-  runApp(Application());
-
-  SignalRHelper signalRHelper = SignalRHelper(
-      handler: () => newMessageController.haveNewMessage.value = true);
-
-  signalRHelper.joinToGroups();
-}
-
-class Application extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return GetMaterialApp(
+  runApp(
+    GetMaterialApp(
       debugShowCheckedModeBanner: false,
       initialRoute: '/',
       getPages: routes,
       smartManagement: SmartManagement.full,
       theme: themes,
-    );
-  }
+    ),
+  );
+
+  SignalRHelper signalRHelper = SignalRHelper(
+      handler: () => newMessageController.haveNewMessage.value = true);
+
+  signalRHelper.joinToGroups();
 }
 
 class MyHttpOverrides extends HttpOverrides {

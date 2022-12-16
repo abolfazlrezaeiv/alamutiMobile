@@ -14,12 +14,12 @@ import 'package:alamuti/app/ui/details/detail_page.dart';
 import 'package:alamuti/app/ui/home/home_page.dart';
 import 'package:alamuti/app/ui/my_alamuti/about_alamuti.dart';
 import 'package:alamuti/app/ui/my_alamuti/contactus.dart';
-import 'package:alamuti/app/ui/my_alamuti/user_advertisement.dart';
 import 'package:alamuti/app/ui/my_alamuti/my_alamuti_page.dart';
+import 'package:alamuti/app/ui/my_alamuti/user_advertisement.dart';
 import 'package:alamuti/app/ui/post_ads_category/category_submit_advertisement.dart';
 import 'package:alamuti/app/ui/splash_screen/splash_screen.dart';
-import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:get/get_navigation/get_navigation.dart' as trans;
+import 'package:get/get_navigation/src/routes/get_route.dart';
 
 var routes = [
   GetPage(
@@ -80,13 +80,13 @@ var routes = [
   ),
   GetPage(
     name: "/authenticate",
-    page: () => Registration(),
+    page: () => AuthenticationScreen(),
     transition: trans.Transition.noTransition,
     binding: RegisterPageBinding(),
   ),
   GetPage(
     name: "/login",
-    page: () => Login(),
+    page: () => OtpVerificationScreen(),
     transition: trans.Transition.noTransition,
     binding: LoginPageBinding(),
   ),

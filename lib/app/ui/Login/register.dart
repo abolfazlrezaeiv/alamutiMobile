@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
-class Registration extends StatefulWidget {
+class AuthenticationScreen extends StatefulWidget {
   @override
-  State<Registration> createState() => _RegistrationState();
+  State<AuthenticationScreen> createState() => _AuthenticationScreenState();
 }
 
-class _RegistrationState extends State<Registration> {
+class _AuthenticationScreenState extends State<AuthenticationScreen> {
   final GlobalKey<FormState> formKey = GlobalKey();
 
   final OTPRequestController otpRequestController = Get.find();

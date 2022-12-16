@@ -4,14 +4,14 @@ import 'package:alamuti/app/controller/otp_request_controller.dart';
 import 'package:alamuti/app/data/storage/cache_manager.dart';
 import 'package:alamuti/app/ui/home/home_page.dart';
 import 'package:alamuti/app/ui/theme.dart';
-import 'package:argon_buttons_flutter/argon_buttons_flutter.dart';
+import 'package:argon_buttons_flutter_fix/argon_buttons_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
-class Login extends StatelessWidget {
+class OtpVerificationScreen extends StatelessWidget {
   final OTPRequestController otpRequestController = Get.find();
 
   final LoginViewModel loginViewModelController = Get.find();

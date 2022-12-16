@@ -1,8 +1,8 @@
 import 'package:alamuti/app/data/entities/login_request_model.dart';
-import 'package:alamuti/app/data/entities/register_request_model.dart';
 import 'package:alamuti/app/data/provider/login_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+
 import 'authentication_manager_controller.dart';
 
 class LoginViewModel extends GetxController {
@@ -34,12 +34,12 @@ class LoginViewModel extends GetxController {
   }
 
   Future<bool> registerUser(String phone, BuildContext context) async {
-    final response = await _loginProvider.fetchRegister(
-        RegisterRequestModel(phonenumber: phone), context);
+    // final response = await _loginProvider.authenticateByPhoneNumber(
+    // AuthByPhoneNumberRequestModel(phonenumber: phone), context);
 
-    if (response != null) {
-      return true;
-    }
+    // if (response != null) {
+    //   return true;
+    // }
     return false;
   }
 }
