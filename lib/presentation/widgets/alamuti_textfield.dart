@@ -1,4 +1,4 @@
-import 'package:alamuti/domain/controller/price_with_symbol.dart';
+import 'package:alamuti/domain/controllers/price_with_symbol.dart';
 import 'package:alamuti/presentation/themes/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

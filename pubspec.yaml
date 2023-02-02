@@ -48,6 +48,7 @@ flutter:
     - assets/icons/no-connection.jpg
     - assets/icons/search-empty.jpg
     - assets/logo/square_logo.png
+    - assets/logo/logo-in-search.png
 
   fonts:
     - family: IRANSansX

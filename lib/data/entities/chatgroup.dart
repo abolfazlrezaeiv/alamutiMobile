@@ -1,5 +1,5 @@
-import 'package:alamuti/domain/controller/detail_page_advertisement.dart';
 import 'package:alamuti/data/entities/chat_message.dart';
+import 'package:alamuti/domain/controllers/detail_page_advertisement.dart';
 import 'package:get/get.dart';
 
 class ChatGroup {

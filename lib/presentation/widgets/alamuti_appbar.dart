@@ -1,5 +1,5 @@
-import 'package:alamuti/domain/controller/chat_info_controller.dart';
-import 'package:alamuti/domain/controller/selected_tap_controller.dart';
+import 'package:alamuti/domain/controllers/chat_info_controller.dart';
+import 'package:alamuti/domain/controllers/selected_tap_controller.dart';
 import 'package:alamuti/presentation/themes/theme.dart';
 import 'package:alamuti/presentation/widgets/buttom_navbar_items.dart';
 import 'package:flutter/cupertino.dart';

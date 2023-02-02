@@ -1,4 +1,4 @@
-import 'package:alamuti/domain/controller/authentication_manager_controller.dart';
+import 'package:alamuti/domain/controllers/authentication_manager_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

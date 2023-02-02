@@ -1,6 +1,6 @@
 import 'package:alamuti/data/datasources/apicalls/base_url.dart';
 import 'package:alamuti/data/datasources/storage/cache_manager.dart';
-import 'package:alamuti/domain/controller/new_message_controller.dart';
+import 'package:alamuti/domain/controllers/new_message_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';

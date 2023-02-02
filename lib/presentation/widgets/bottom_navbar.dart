@@ -1,7 +1,7 @@
 import 'package:alamuti/data/datasources/apicalls/chat_message_apicall.dart';
 import 'package:alamuti/data/datasources/apicalls/signalr_helper.dart';
 import 'package:alamuti/data/datasources/storage/cache_manager.dart';
-import 'package:alamuti/domain/controller/selected_tap_controller.dart';
+import 'package:alamuti/domain/controllers/selected_tap_controller.dart';
 import 'package:alamuti/presentation/widgets/buttom_navbar_items.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

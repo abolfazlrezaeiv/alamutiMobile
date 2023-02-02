@@ -1,7 +1,7 @@
 import 'package:alamuti/data/datasources/apicalls/advertisement_apicall.dart';
 import 'package:alamuti/data/datasources/apicalls/chat_message_apicall.dart';
-import 'package:alamuti/domain/controller/authentication_manager_controller.dart';
-import 'package:alamuti/domain/controller/selected_tap_controller.dart';
+import 'package:alamuti/domain/controllers/authentication_manager_controller.dart';
+import 'package:alamuti/domain/controllers/selected_tap_controller.dart';
 import 'package:alamuti/presentation/widgets/buttom_navbar_items.dart';
 import 'package:alamuti/presentation/widgets/description_textfield.dart';
 import 'package:flutter/material.dart';

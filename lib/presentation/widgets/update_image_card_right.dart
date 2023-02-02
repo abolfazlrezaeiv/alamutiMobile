@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:alamuti/domain/controller/update_image_advertisement_controller.dart';
+import 'package:alamuti/domain/controllers/update_image_advertisement_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
