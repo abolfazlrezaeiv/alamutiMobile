@@ -1,0 +1,3 @@
+analyzer:
+  exclude:
+    - path/to/generated/freezed_files/
