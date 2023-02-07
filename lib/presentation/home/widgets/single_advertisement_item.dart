@@ -42,7 +42,7 @@ class SingleAdvertisementItem extends StatelessWidget {
                           height: 120,
                           width: 120,
                           child: Image.asset(
-                            AppAsset.imagePlaceHolder,
+                            AppAsset.SEARCH_FIELD_LOGO,
                             fit: BoxFit.cover,
                           ),
                         )),

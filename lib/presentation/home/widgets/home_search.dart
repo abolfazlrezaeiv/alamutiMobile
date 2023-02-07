@@ -41,7 +41,7 @@ class _HomeSearchFieldState extends State<HomeSearchField> {
           },
           textAlign: TextAlign.right,
           decoration: InputDecoration(
-            hintText: AppString.searchHintText,
+            hintText: AppString.SEARCH_HINT_TEXT,
             hintStyle: TextStyle(
                 backgroundColor: Colors.transparent,
                 color: Colors.black,
@@ -61,7 +61,7 @@ class _HomeSearchFieldState extends State<HomeSearchField> {
                         fontSize: 15),
                   ),
                   Image.asset(
-                    AppAsset.appLogoInSearchField,
+                    AppAsset.APP_LOGO_IN_SEARCH_FIELD,
                     width: 50,
                   ),
                 ],

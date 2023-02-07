@@ -49,6 +49,9 @@ flutter:
     - assets/icons/search-empty.jpg
     - assets/logo/square_logo.png
     - assets/logo/logo-in-search.png
+    - assets/icons/categories.png
+#    for test
+    - assets/images/alamutsilver.png
 
   fonts:
     - family: IRANSansX

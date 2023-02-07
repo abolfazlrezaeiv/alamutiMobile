@@ -1,15 +1,15 @@
 class AppString {
-  static const homeAdsCategoryList = [
+  static const HOME_ADS_CATEGORY_LIST = [
     'همه',
     'مواد غذایی',
     'دام',
     'خدمات',
     'املاک',
   ];
-  static const advertisementSearchHint =
+  static const ADVERTISEMENT_SEARCH_HINT =
       'نام منطقه یا محصول مورد نظرتان را وارد کنید';
-  static const searchFieldLabel = 'جستجو در';
-  static const List<String> filterType = [
+  static const SEARCH_FIELD_LABEL = 'جستجو در';
+  static const List<String> FILTER_TYPE = [
     '',
     'AdsFormState.FOOD',
     'AdsFormState.Trap',
@@ -17,7 +17,7 @@ class AppString {
     'AdsFormState.REALSTATE'
   ];
 
-  static const pageRefreshMessage = 'صفحه بروز رسانی شد';
-  static const pullToRefreshMessage = 'رها کنید';
-  static const searchHintText = 'نام منطقه یا محصول مورد نظرتان را وارد کنید';
+  static const PAGE_REFRESH_MESSAGE = 'صفحه بروز رسانی شد';
+  static const PULL_TO_REFRESH_MESSAGE = 'رها کنید';
+  static const SEARCH_HINT_TEXT = 'نام منطقه یا محصول مورد نظرتان را وارد کنید';
 }

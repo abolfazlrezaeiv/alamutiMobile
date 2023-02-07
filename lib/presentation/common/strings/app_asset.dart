@@ -1,6 +1,6 @@
 class AppAsset {
-  static const appLogo = 'assets/logo/logo.png';
-  static const appLogoInSearchField = 'assets/logo/logo-in-search.png';
-  static const imagePlaceHolder = 'assets/logo/no-image.png';
-  static const searchFieldLabel = 'جستجو در';
+  static const APP_LOGO = 'assets/logo/logo.png';
+  static const APP_LOGO_IN_SEARCH_FIELD = 'assets/logo/logo-in-search.png';
+  static const SEARCH_FIELD_LOGO = 'assets/logo/no-image.png';
+  static const SEARCH_FIELD_LABEL = 'جستجو در';
 }

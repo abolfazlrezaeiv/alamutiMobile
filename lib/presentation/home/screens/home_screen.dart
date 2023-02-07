@@ -96,8 +96,8 @@ class HomeScreen extends StatelessWidget {
                 enablePullDown: true,
                 enablePullUp: true,
                 header: ClassicHeader(
-                  completeText: AppString.pageRefreshMessage,
-                  releaseText: AppString.pullToRefreshMessage,
+                  completeText: AppString.PAGE_REFRESH_MESSAGE,
+                  releaseText: AppString.PULL_TO_REFRESH_MESSAGE,
                 ),
                 footer: CustomFooter(
                   builder: (context, mode) => buildListFooter(mode),

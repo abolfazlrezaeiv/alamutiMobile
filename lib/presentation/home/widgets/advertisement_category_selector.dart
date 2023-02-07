@@ -28,14 +28,14 @@ class _AdvertisementCategorySelectorState
             shrinkWrap: true,
             padding: const EdgeInsets.symmetric(horizontal: 2.0),
             scrollDirection: Axis.horizontal,
-            itemCount: AppString.homeAdsCategoryList.length,
+            itemCount: AppString.HOME_ADS_CATEGORY_LIST.length,
             itemBuilder: (context, index) {
               return GestureDetector(
                 onTap: () {
                   widget.onSelected();
                   context.read<HomeScreenBloc>().add(ChangeCategoryEvent(
                         pageNumber: 1,
-                        category: AppString.filterType[index],
+                        category: AppString.FILTER_TYPE[index],
                       ));
                   setState(() {
                     itemIndex = index;
@@ -45,7 +45,7 @@ class _AdvertisementCategorySelectorState
                     padding: const EdgeInsets.symmetric(horizontal: 18),
                     child: SizedBox(
                       child: Text(
-                        AppString.homeAdsCategoryList[index],
+                        AppString.HOME_ADS_CATEGORY_LIST[index],
                         style: itemIndex == index
                             ? TextStyle(
                                 color: Color.fromRGBO(8, 212, 76, 1),
