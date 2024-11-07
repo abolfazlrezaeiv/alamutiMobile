@@ -1,4 +1,4 @@
-package ir.alamuti.alamuti
+package com.example.alamuti
 
 import io.flutter.embedding.android.FlutterActivity
 

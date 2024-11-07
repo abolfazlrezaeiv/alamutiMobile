@@ -1,11 +1,14 @@
 import 'dart:convert';
-import 'package:alamuti/app/controller/update_image_advertisement_controller.dart';
+import 'package:alamuti/app/controller/update_image_advertisement.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class UpdateRightPhotoCard extends GetView<UpdateUploadImageController> {
+// ignore: must_be_immutable
+class UpdateRightPhotoCard extends StatelessWidget {
   UpdateRightPhotoCard({Key? key}) : super(key: key);
+
+  var updateUploadImageController = Get.put(UpdateUploadImageController());
 
   @override
   Widget build(BuildContext context) {
@@ -16,11 +19,13 @@ class UpdateRightPhotoCard extends GetView<UpdateUploadImageController> {
         () => Card(
           elevation: 3,
           clipBehavior: Clip.antiAliasWithSaveLayer,
-          child: (controller.rightImagebyteCode.value.length > 2)
+          child: (updateUploadImageController.rightImagebyteCode.value.length >
+                  2)
               ? Stack(
                   children: [
                     Image.memory(
-                      base64Decode(controller.rightImagebyteCode.value),
+                      base64Decode(
+                          updateUploadImageController.rightImagebyteCode.value),
                       fit: BoxFit.cover,
                     ),
                     IconButton(
@@ -29,7 +34,8 @@ class UpdateRightPhotoCard extends GetView<UpdateUploadImageController> {
                         color: Colors.white,
                       ),
                       onPressed: () {
-                        controller.rightImagebyteCode.value = '';
+                        updateUploadImageController.rightImagebyteCode.value =
+                            '';
                       },
                     )
                   ],

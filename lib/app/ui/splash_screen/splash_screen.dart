@@ -1,4 +1,5 @@
-import 'package:alamuti/app/controller/authentication_manager_controller.dart';
+import 'package:alamuti/app/controller/ConnectionController.dart';
+import 'package:alamuti/app/ui/onboard/onboard.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -10,33 +11,41 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  AuthenticationManager _authManager = Get.find();
-
-  Future<void> initializeApp() async {
-    if (await _authManager.checkLoginStatus()) {
-      Get.offNamed('/home');
-    } else {
-      Get.toNamed('/authenticate');
-    }
-  }
-
-  @override
-  void initState() {
-    initializeApp();
-    super.initState();
+  Future<void> initializeSettings() async {
+    await Future.delayed(Duration(seconds: 2));
   }
 
   @override
   Widget build(BuildContext context) {
-    return WaitingSplashScreen();
+    return FutureBuilder(
+      future: initializeSettings(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return WaitingSplashScreen();
+        } else {
+          if (snapshot.hasError)
+            return errorView(snapshot);
+          else {
+            return OnBoard();
+          }
+        }
+      },
+    );
   }
 }
 
+Scaffold errorView(AsyncSnapshot<Object?> snapshot) {
+  return Scaffold(body: Center(child: Text('Error: ${snapshot.error}')));
+}
+
+// ignore: must_be_immutable
 class WaitingSplashScreen extends StatelessWidget {
   WaitingSplashScreen({Key? key}) : super(key: key);
+  ConnectionController connectionController = Get.put(ConnectionController());
 
   @override
   Widget build(BuildContext context) {
+    connectionController.checkConnectionStatus();
     return Scaffold(
         body: Stack(
       children: [
@@ -59,10 +68,12 @@ class WaitingSplashScreen extends StatelessWidget {
             height: 200,
             child: Column(
               children: [
-                CircularProgressIndicator(
-                  strokeWidth: 4,
-                  color: Colors.greenAccent[700],
-                )
+                connectionController.isConnected.value
+                    ? CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Color.fromRGBO(189, 121, 97, 1),
+                      )
+                    : Text('لطفا ارتباط با اینترنت همراه خود را بررسی کنید')
               ],
             ),
           ),

@@ -1,81 +1,42 @@
-import 'dart:async';
-import 'dart:convert';
-import 'package:alamuti/app/data/entities/login_request_model.dart';
-import 'package:alamuti/app/data/entities/login_response_model.dart';
-import 'package:alamuti/app/data/entities/register_request_model.dart';
-import 'package:alamuti/app/data/entities/register_response_model.dart';
+import 'package:alamuti/app/data/model/login_request_model.dart';
+import 'package:alamuti/app/data/model/login_response_model.dart';
+import 'package:alamuti/app/data/model/register_request_model.dart';
+import 'package:alamuti/app/data/model/register_response_model.dart';
 import 'package:alamuti/app/data/provider/base_url.dart';
-import 'package:alamuti/app/data/storage/cache_manager.dart';
-import 'package:alamuti/app/ui/alert_dialog_class.dart';
-import 'package:http/http.dart' as http;
-import 'package:flutter/material.dart';
-import 'package:pushe_flutter/pushe.dart';
+import 'package:alamuti/app/data/storage/cachemanager.dart';
+import 'package:dio/dio.dart';
+import 'package:get/get.dart';
+import 'package:get/get_connect/http/src/status/http_status.dart';
 
-class LoginProvider with CacheManager {
-  Future<LoginResponseModel?> fetchLogin(
-      LoginRequestModel model, BuildContext context) async {
-    var url = Uri.parse(baseAuthUrl + '/login');
+class LoginProvider extends GetConnect with CacheManager {
+  final String loginUrl = baseLoginUrl + 'login';
 
-    var response = await http.post(
-      url,
-      body: jsonEncode(model),
-      headers: {
-        "Accept": "application/json",
-        "content-type": "application/json"
-      },
-    );
+  final String registerUrl = baseLoginUrl + 'register';
+  final Dio dio = Dio();
 
-    var body = jsonDecode(response.body);
+  Future<LoginResponseModel?> fetchLogin(LoginRequestModel model) async {
+    final response = await post(loginUrl, model.toJson());
 
-    if (response.statusCode == 200) {
-      print(body['token']);
-      print(body['refreshToken']);
-
-      return LoginResponseModel.fromJson(body);
+    if (response.statusCode == HttpStatus.ok) {
+      print(response.body['token']);
+      print(response.body['refreshToken']);
+      return LoginResponseModel.fromJson(response.body);
     } else {
-      var message = 'کد ورود اشتباه است ...';
-      Alert.showNoConnectionDialog(context: context, message: message);
-
       return null;
     }
   }
 
   Future<RegisterResponseModel?> fetchRegister(
-      RegisterRequestModel model, BuildContext context) async {
-    try {
-      var url = Uri.parse(baseAuthUrl + '/authenticate');
+      RegisterRequestModel model) async {
+    final response = await post(registerUrl, model.toJson());
 
-      var response = await http.post(
-        url,
-        body: jsonEncode(model),
-        headers: {
-          "Accept": "application/json",
-          "content-type": "application/json"
-        },
-      ).timeout(Duration(seconds: 8));
-
-      var body = jsonDecode(response.body);
-
-      if (response.statusCode == 200) {
-        print('successful');
-
-        await saveUserId(body['id']);
-        await savePhoneNumber(body['phonenumber']);
-
-        Pushe.setCustomId(getUserId());
-
-        return RegisterResponseModel.fromJson(body);
-      } else {
-        var message = 'خطا در اتصال به اینترنت ...';
-        Alert.showNoConnectionDialog(context: context, message: message);
-        print('not successful');
-
-        return null;
-      }
-    } on TimeoutException catch (_) {
-      var message = 'خطا در اتصال به اینترنت ...';
-
-      Alert.showNoConnectionDialog(context: context, message: message);
+    if (response.statusCode == HttpStatus.ok) {
+      print('sucessful');
+      saveUserId(response.body['id']);
+      return RegisterResponseModel.fromJson(response.body);
+    } else {
+      print(response.statusText);
+      print('not successful');
 
       return null;
     }

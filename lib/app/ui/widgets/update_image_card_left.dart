@@ -1,14 +1,14 @@
 import 'dart:convert';
-import 'package:alamuti/app/controller/update_image_advertisement_controller.dart';
+import 'package:alamuti/app/controller/update_image_advertisement.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+// ignore: must_be_immutable
 class UpdateLeftPhotoCard extends StatelessWidget {
   UpdateLeftPhotoCard({Key? key}) : super(key: key);
 
-  final UpdateUploadImageController updateUploadImageController =
-      Get.put(UpdateUploadImageController());
+  var updateUploadImageController = Get.put(UpdateUploadImageController());
 
   @override
   Widget build(BuildContext context) {

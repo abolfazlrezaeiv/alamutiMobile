@@ -13,13 +13,10 @@ class FullscreenImage extends StatelessWidget {
       ),
       backgroundColor: Colors.black,
       body: Center(
-        child: FractionallySizedBox(
-          heightFactor: 0.7,
-          widthFactor: 1,
-          child: Image.memory(
-            base64Decode(image),
-            fit: BoxFit.contain,
-          ),
+        child: Image.memory(
+          base64Decode(image),
+          fit: BoxFit.cover,
+          width: double.infinity,
         ),
       ),
     );
