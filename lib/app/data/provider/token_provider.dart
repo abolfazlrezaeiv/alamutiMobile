@@ -1,5 +1,4 @@
 import 'package:alamuti/app/controller/authentication_manager_controller.dart';
-import 'package:alamuti/app/data/provider/base_url.dart';
 import 'package:alamuti/app/data/storage/cache_manager.dart';
 import 'package:dio/dio.dart';
 import 'package:get/instance_manager.dart';
@@ -17,7 +16,9 @@ class TokenProvider extends GetxController with CacheManager {
     refreshtoken = tokenAndRefresh.refreshToken;
     token = tokenAndRefresh.token;
 
-    final response = await this.api.post(baseAuthUrl + 'RefreshToken', data: {
+    final response = await this
+        .api
+        .post('https://alamuti.ir/api/auth/refreshtoken', data: {
       'token': token.toString(),
       'refreshToken': refreshtoken.toString()
     });
@@ -68,8 +69,7 @@ class TokenProvider extends GetxController with CacheManager {
                     return handler.resolve(cloneReq);
                   }
                   return handler.next(e);
-                } catch (e, _) {
-                }
+                } catch (e, _) {}
               }
             },
           ),

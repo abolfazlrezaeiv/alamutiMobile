@@ -133,9 +133,10 @@ class _RegistrationState extends State<Registration> {
                         padding: EdgeInsets.symmetric(horizontal: 8),
                         child: TextButton(
                           style: ElevatedButton.styleFrom(
-                            primary: otpRequestController.isPhoneNumber.value
-                                ? Color.fromRGBO(141, 235, 172, 1)
-                                : Colors.grey.withOpacity(0.5),
+                            backgroundColor:
+                                otpRequestController.isPhoneNumber.value
+                                    ? Color.fromRGBO(141, 235, 172, 1)
+                                    : Colors.grey.withOpacity(0.5),
                           ),
                           onPressed: () async {
                             if (formKey.currentState?.validate() ?? false) {
@@ -143,7 +144,8 @@ class _RegistrationState extends State<Registration> {
 
                               var result = await loginViewModel.registerUser(
                                   phoneNumberTextEditingCtr.text, context);
-
+                              print(result);
+print('================== $result');
                               if (result == true) {
                                 otpRequestController.isSendingSms.value = true;
 

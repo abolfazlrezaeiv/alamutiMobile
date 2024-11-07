@@ -5,9 +5,6 @@ import 'package:alamuti/app/ui/theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_instance/src/extension_instance.dart';
-import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 class Search extends StatefulWidget {
@@ -15,7 +12,7 @@ class Search extends StatefulWidget {
   final TextEditingController textEditingController;
   final CategoryFilterController categoryFilterController;
   final TextFocusController textFocusController;
-  final SearchController searchController;
+  final SearchKeywordController searchController;
   Search(
       {Key? key,
       required this.pagingController,
@@ -39,7 +36,7 @@ class _SearchState extends State<Search> {
         child: PhysicalModel(
           borderRadius: BorderRadius.circular(9),
           color: Colors.white,
-          elevation: 12,
+          elevation: 4,
           shadowColor: Colors.black,
           child: Obx(
             () => Focus(

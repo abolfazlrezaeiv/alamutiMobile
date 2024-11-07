@@ -36,7 +36,9 @@ class LoginViewModel extends GetxController {
   Future<bool> registerUser(String phone, BuildContext context) async {
     final response = await _loginProvider.fetchRegister(
         RegisterRequestModel(phonenumber: phone), context);
-
+print('==============');
+    print(response?.phonenumber ?? 'error');
+print(response.runtimeType);
     if (response != null) {
       return true;
     }

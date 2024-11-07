@@ -1,10 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
+
 import 'package:alamuti/app/data/entities/chat_message.dart';
 import 'package:alamuti/app/data/entities/chatgroup.dart';
 import 'package:alamuti/app/data/entities/list_page.dart';
-import 'package:alamuti/app/data/provider/token_provider.dart';
 import 'package:alamuti/app/data/provider/base_url.dart';
+import 'package:alamuti/app/data/provider/token_provider.dart';
 import 'package:alamuti/app/data/storage/cache_manager.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -32,19 +33,26 @@ class MessageProvider with CacheManager {
   Future<ListPage<ChatMessage>> getMessages(
       {int number = 1, int size = 10, required String groupName}) async {
     messages = [];
+    print('====================get messages');
     var endpoint = '/$groupName/messages${getPagingQuery(number, size)}';
     var response = await authenticatedRequest.api.get(baseChatUrl + endpoint);
     var pagination = getHeaderPagination(response);
     print(pagination);
     responseBodyToMessageList(response);
+    print(response);
     return ListPage(
         itemList: messages, grandTotalCount: pagination['TotalCount']);
   }
 
   Future<ListPage<ChatGroup>> getGroups({int number = 1, int size = 10}) async {
     groups = [];
+    print('====================get groups');
+
     var endpoint = getPagingQuery(number, size);
-    var response = await authenticatedRequest.api.get(baseChatUrl + endpoint);
+    print('$baseChatUrl$endpoint');
+    var response = await authenticatedRequest.api
+        .get('https://alamuti.ir/api/chat/groups' + endpoint);
+    print('$baseChatUrl$endpoint');
     var pagination = jsonDecode(response.headers['Pagination']![0]);
     print(pagination);
     var tokenAndRefresh = getTokenRefreshToken();

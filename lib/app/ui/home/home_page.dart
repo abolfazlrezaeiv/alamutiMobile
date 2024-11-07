@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:alamuti/app/controller/category_tag_selected_item_controller.dart';
 import 'package:alamuti/app/controller/search_controller.dart';
 import 'package:alamuti/app/controller/text_focus_controller.dart';
@@ -6,15 +7,12 @@ import 'package:alamuti/app/data/entities/advertisement.dart';
 import 'package:alamuti/app/data/entities/list_page.dart';
 import 'package:alamuti/app/data/provider/advertisement_provider.dart';
 import 'package:alamuti/app/data/provider/signalr_helper.dart';
-import 'package:alamuti/app/ui/alert_dialog_class.dart';
 import 'package:alamuti/app/ui/constants.dart';
 import 'package:alamuti/app/ui/searchbar/searchbar.dart';
 import 'package:alamuti/app/ui/theme.dart';
 import 'package:alamuti/app/ui/widgets/bottom_navbar.dart';
 import 'package:alamuti/app/ui/widgets/exception_indicators/empty_list_indicator.dart';
 import 'package:alamuti/app/ui/widgets/exception_indicators/error_indicator.dart';
-import 'package:chips_choice_null_safety/chips_choice_null_safety.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -29,7 +27,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   CategoryFilterController categoryFilterController = Get.find();
-  SearchController searchController = Get.find();
+  SearchKeywordController searchController = Get.find();
   TextFocusController textFocusController = Get.find();
 
   var searchTextEditingController = TextEditingController();
@@ -55,8 +53,8 @@ class _HomePageState extends State<HomePage> {
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(mq.height / 6.1),
         child: Card(
-          color: alamutPrimaryColor,
-          elevation: 9,
+          color: Colors.white,
+          elevation: 3,
           margin: EdgeInsets.zero,
           shape: RoundedRectangleBorder(
             side: BorderSide(color: Colors.transparent, width: 0),
@@ -85,7 +83,7 @@ class _HomePageState extends State<HomePage> {
                         Text(
                           'همه ی آگهی ها',
                           style: TextStyle(
-                            color: Colors.blue,
+                            color: Colors.grey,
                             fontWeight: FontWeight.w600,
                           ),
                           overflow: TextOverflow.visible,
@@ -95,7 +93,7 @@ class _HomePageState extends State<HomePage> {
                           'دسته بندی : ',
                           textDirection: TextDirection.rtl,
                           style: TextStyle(
-                            color: Colors.white,
+                            color: Colors.grey,
                             fontWeight: FontWeight.w500,
                             fontSize: 13,
                           ),

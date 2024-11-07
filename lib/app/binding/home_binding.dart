@@ -8,6 +8,6 @@ class HomeBinding implements Bindings {
   void dependencies() {
     Get.put<CategoryFilterController>(CategoryFilterController());
     Get.put<TextFocusController>(TextFocusController());
-    Get.lazyPut<SearchController>(() => SearchController());
+    Get.lazyPut<SearchKeywordController>(() => SearchKeywordController());
   }
 }

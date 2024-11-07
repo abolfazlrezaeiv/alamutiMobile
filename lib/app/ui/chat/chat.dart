@@ -16,7 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:pushe_flutter/pushe.dart';
+// import 'package:pushe_flutter/pushe.dart';
 
 class Chat extends StatefulWidget {
   final SignalRHelper? signalRHelper;
@@ -279,16 +279,16 @@ class _ChatState extends State<Chat> with CacheManager {
 
     _chatScreenPagingController.refresh();
 
-    await Pushe.sendNotificationToUser(
-        IdType.CustomId,
-        receiverId, // Or another Id
-        'چت الموتی',
-        messageTextEditingController.text, // content
-        bigTitle: 'چت الموتی',
-        bigContent: messageTextEditingController.text,
-        imageUrl: null,
-        iconUrl: null,
-        customContent: {'key1': 'value1'});
+    // await Pushe.sendNotificationToUser(
+    //     IdType.CustomId,
+    //     receiverId, // Or another Id
+    //     'چت الموتی',
+    //     messageTextEditingController.text, // content
+    //     bigTitle: 'چت الموتی',
+    //     bigContent: messageTextEditingController.text,
+    //     imageUrl: null,
+    //     iconUrl: null,
+    //     customContent: {'key1': 'value1'});
 
     messageTextEditingController.text = '';
   }

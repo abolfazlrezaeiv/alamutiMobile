@@ -4,7 +4,7 @@ import 'package:alamuti/app/controller/otp_request_controller.dart';
 import 'package:alamuti/app/data/storage/cache_manager.dart';
 import 'package:alamuti/app/ui/home/home_page.dart';
 import 'package:alamuti/app/ui/theme.dart';
-import 'package:argon_buttons_flutter/argon_buttons_flutter.dart';
+// import 'package:argon_buttons_flutter/argon_buttons_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -153,7 +153,7 @@ class Login extends StatelessWidget {
                       padding: EdgeInsets.symmetric(horizontal: 8),
                       child: TextButton(
                         style: ElevatedButton.styleFrom(
-                          primary: otpRequestController.isOTP.value
+                          backgroundColor: otpRequestController.isOTP.value
                               ? Color.fromRGBO(141, 235, 172, 1)
                               : Colors.grey.withOpacity(0.5),
                         ),
@@ -189,63 +189,63 @@ class Login extends StatelessWidget {
                     SizedBox(
                       height: Get.height / 50,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ArgonTimerButton(
-                        width: Get.width,
-                        height: Get.height / 11,
-                        minWidth: Get.width * 2,
-                        highlightColor: Colors.transparent,
-                        highlightElevation: 0,
-                        roundLoadingShape: true,
-                        splashColor: Colors.transparent,
-                        onTap: (startTimer, btnState) async {
-                          if (btnState == ButtonState.Idle) {
-                            startTimer(90);
-                            await loginViewModelController.registerUser(
-                                otpRequestController.phoneNumber.value,
-                                context);
-                          }
-                        },
-                        initialTimer: 90,
-                        child: Container(
-                          alignment: Alignment.center,
-                          width: Get.width,
-                          height: Get.height / 11,
-                          color: Colors.red.withOpacity(0.4),
-                          child: Text(
-                            "ارسال کد",
-                            style: TextStyle(
-                                color: Colors.grey,
-                                fontSize: 15,
-                                fontWeight: FontWeight.w500),
-                          ),
-                        ),
-                        loader: (timeLeft) {
-                          return Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SizedBox(
-                                  height: 10,
-                                  width: 10,
-                                  child: CircularProgressIndicator()),
-                              Text(
-                                'ارسال کد تا ${timeLeft.seconds.inSeconds.toString()} ثانیه ',
-                                textDirection: TextDirection.rtl,
-                                style: TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: 15,
-                                    fontFamily: persianNumber,
-                                    fontWeight: FontWeight.w300),
-                              ),
-                            ],
-                          );
-                        },
-                        borderRadius: 5.0,
-                        color: Colors.transparent,
-                        elevation: 0,
-                      ),
-                    ),
+                    // Padding(
+                    //   padding: const EdgeInsets.all(8.0),
+                    //   child: ArgonTimerButton(
+                    //     width: Get.width,
+                    //     height: Get.height / 11,
+                    //     minWidth: Get.width * 2,
+                    //     highlightColor: Colors.transparent,
+                    //     highlightElevation: 0,
+                    //     roundLoadingShape: true,
+                    //     splashColor: Colors.transparent,
+                    //     onTap: (startTimer, btnState) async {
+                    //       if (btnState == ButtonState.Idle) {
+                    //         startTimer(90);
+                    //         await loginViewModelController.registerUser(
+                    //             otpRequestController.phoneNumber.value,
+                    //             context);
+                    //       }
+                    //     },
+                    //     initialTimer: 90,
+                    //     child: Container(
+                    //       alignment: Alignment.center,
+                    //       width: Get.width,
+                    //       height: Get.height / 11,
+                    //       color: Colors.red.withOpacity(0.4),
+                    //       child: Text(
+                    //         "ارسال کد",
+                    //         style: TextStyle(
+                    //             color: Colors.grey,
+                    //             fontSize: 15,
+                    //             fontWeight: FontWeight.w500),
+                    //       ),
+                    //     ),
+                    //     loader: (timeLeft) {
+                    //       return Row(
+                    //         mainAxisAlignment: MainAxisAlignment.center,
+                    //         children: [
+                    //           SizedBox(
+                    //               height: 10,
+                    //               width: 10,
+                    //               child: CircularProgressIndicator()),
+                    //           Text(
+                    //             'ارسال کد تا ${timeLeft.seconds.inSeconds.toString()} ثانیه ',
+                    //             textDirection: TextDirection.rtl,
+                    //             style: TextStyle(
+                    //                 color: Colors.grey,
+                    //                 fontSize: 15,
+                    //                 fontFamily: persianNumber,
+                    //                 fontWeight: FontWeight.w300),
+                    //           ),
+                    //         ],
+                    //       );
+                    //     },
+                    //     borderRadius: 5.0,
+                    //     color: Colors.transparent,
+                    //     elevation: 0,
+                    //   ),
+                    // ),
                     SizedBox(
                       height: 50,
                     ),
