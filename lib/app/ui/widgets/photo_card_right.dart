@@ -7,9 +7,11 @@ import 'package:get/get.dart';
 class RightPhotoCard extends StatelessWidget {
   RightPhotoCard({Key? key}) : super(key: key);
 
+  final UploadImageController uploadImageController =
+      Get.put(UploadImageController());
+
   @override
   Widget build(BuildContext context) {
-    var uploadImageController = Get.put(UploadImageController());
     return Container(
       height: Get.width / 3,
       width: Get.width / 3,
